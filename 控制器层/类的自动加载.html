@@ -18,7 +18,7 @@
 spl_autoload_register()去指定调用哪个自动加载函数或类方法。 
        如今，PHP有了composer的依赖工具，其中可以实现类的自动加载。
        所以，本框架安装时可以通过composer安装，如果不通过它安装也可以，本框架自动实现类的自动加载。
-       自动加载，都是通过命名空间来实现的。
+       自动加载，都是通过命名空间来实现的。遵循PRS-4命名规范。
 
 <strong>2、自动加载哪个目录？</strong>
        类的自动加载都是通过命名空间来指定路径的。
@@ -66,33 +66,25 @@ spl_autoload_register()去指定调用哪个自动加载函数或类方法。
        （4）不符合上面规则的自定义类，都映射到当前应用根目录下service/library中:
               <img src="../style/images/自定义类路径.png"/>
 
-<strong>4、类和文件的命名规则</strong>
-        类名由类目录的子目录名和文件名组成。目录名和文件名必须首字母大写，以下划线“_”分隔。
-        比如Bbs_User，表示library/Bbs/User.php中定义的Bbs_User类。
-       （1）类文件在类根目录（service/library）下面
-                如果类文件在类根目录下面，则类名只需文件名，大小写要一致。
-                比如在类根目录中新建一个User.php类文件，其中定义了Use类：
-<pre class="brush: php;">class User {
-    //类的代码
-}
-</pre>
-       （2）类文件在类根目录的子目录中
-                如果是在类根目录的子目录中，则要将子目录名与文件名组成类名，以下划线“_”分隔。
-                比如在service/library/Bbs/Test下面新建一个User.php类文件，其中定义的类名如下代码：
-<pre class="brush: php;">class Bbs_Test_User {
-    //类的代码
-}
-</pre>
+<strong>3、类和文件的命名规则</strong>
+        自定主的类一般放在应用根目录的service/library下面。
+        其下面子目录，首字母要大写，类名要与文件名一样。
+        比如Bbs_User，表示library/BBS/UserChecker.php中定义的UserChecker类。
+        类文件定义如下实例：
+<pre class="brush: php;">
+namespace BBS;
+use Ocara\Base;
 
-<pre><strong>3、如何调用类</strong>
-        自动加载的类调用时直接写类名即可，不需要使用include和service函数手动加载类文件。
-        比如上例中，要加载library/Bbs/Test/User.php的类，定义的类名必是Bbs_Test_User，调用如下：
-</pre><pre class="brush: php;"> $user = new Bbs_Test_User();</pre>
+class User extends Base
+{
+    //类的代码
+}
+</pre>
 
 <strong>4、第三方程序是否与框架的自动加载类函数冲突？</strong>
         Ocara框架类的自动加载，不会与其他第三方程序的自动加载冲突，只不过自定义或第三方程序中务必使用<strong>spl_autoload_register()</strong>函数
 注册自动加载类的函数或方法。
-        Ocara会先调用Ocara框架的自动加载函数或方法，找不到时才去调用自定义或第三方程序中的自动加载函数或方法，如果再找不到类，则会抛出错误。
+        Ocara会先使用自己的自动加载函数或方法，找不到时才去调用自定义或第三方程序中的自动加载函数或方法，如果再找不到类，则会抛出错误。
 
 
 </pre>

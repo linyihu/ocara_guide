@@ -58,11 +58,20 @@
 	</tr>
     <tr>
         <td>return</td>
-        <td>可选。这个参数指定控制器动作是否需要返回值，默认为true。<br/>
-            如果指定需要返回值，有以下两种情况：<br/>
-        （1）如果控制器动作是控制器的一个方法， 则只要在该方法中返回值即可。<br/>
-            如下实例：
-            <pre class="brush: php;">
+        <td>可选。这个参数指定控制器动作是否需要返回值，默认为true。
+        </td>
+    </tr>
+    <tr>
+        <td>required</td>
+        <td>可选。设置出错时是否显示错误，为false时则不会打印错误而是返回null。</td>
+    </tr>
+</table>
+<pre>
+                对于控制器动作回调， 第三个参数return才有效。
+                对于该参数，如果指定需要返回值，有以下两种情况：
+                （1）如果控制器动作是控制器的一个方法， 则只要在该方法中返回值即可。
+                如下实例：
+<pre class="brush: php;">
 class HomeController extends CommonController
 {
 	/**
@@ -74,10 +83,9 @@ class HomeController extends CommonController
 		return $result;
 	}
 }
-</pre>
-         （2）如果控制器动作是一个Action类，则要在该类中的_action()方法中返回值。<br/>
-            如果没有提交数据或者不是AJAX提交数据，会调用控制器的display()显示Action的模板文件
-             如下实例：
+</pre>                （2）如果控制器动作是一个Action类，则要在该类中的_action()方法中返回值。
+                        如果没有提交数据或者不是AJAX提交数据，会调用控制器的display()显示Action的模板文件
+                        如下实例：
 <pre class="brush: php;">
 class IndexAction extends HomeController
 {
@@ -91,16 +99,7 @@ class IndexAction extends HomeController
 	}
 }
 </pre>
-        </td>
-    </tr>
-    <tr>
-        <td>required</td>
-        <td>可选。设置出错时是否显示错误，为false时则不会打印错误而是返回null。</td>
-    </tr>
-</table>
-<pre>
-
-                  实例如下：
+                  回调实例如下：
 <pre class="brush: php;">
 $params = array(1);
 

@@ -37,8 +37,7 @@ $obj->b = 2;
 
 $arr = ocArray($obj);
 
-ocPrint($arr); 
-//输出Array ( [a] => 1 [b] => 2 )
+ocPrint($arr); //输出Array ( [a] => 1 [b] => 2 )
 </pre>
 <pre><strong>2、 ocObject(data)</strong>
       数组递归转换成对象。
@@ -57,8 +56,10 @@ ocPrint($arr);
 </pre>
 <pre class="brush: php;">
 $arr = array( 'a' => 1, 'b' => 2 );
-$arr = ocObject($arr);ocPrint($arr); 
-//输出stdClass Object ( [a] => 1 [b] => 2 )
+$arr = ocObject($arr);
+
+ocPrint($arr); //输出stdClass Object ( [a] => 1 [b] => 2 )
+
 </pre>
 </div>
 </body>

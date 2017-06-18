@@ -26,23 +26,23 @@ $(document).ready(function(){
 </script>
 </head><body><pre><h2>单元测试</h2>
 
-在前后端分离的团队开发中，单元测试对于后端开发，可以不需要联调就能测试自己的代码逻辑，比较重要。
+      在前后端分离的团队开发中，单元测试对于后端开发，可以不需要联调就能测试自己的代码逻辑，比较重要。
 
 <strong>1、如何使用单元测试</strong>
-    首先，我们需要安装单元测试程序，比如PHPUnit，安装过程请看官方教程。
-    然后就按照下面的方法开始单元测试。
+      首先，我们需要安装单元测试程序，比如PHPUnit，安装过程请看官方教程。
+      然后就按照下面的方法开始单元测试。
 
 <strong>2、如何开始单元测试</strong>
-    在单元测试时，最主要的问题是如何加载框架，从而在单元测试的代码中能够使用框架。
-    加载框架，要用到\Ocara\OcaraInvoke类。
-    （1）要加载框架的system/library/OcaraInvoke.php文件，如下实例:
+      在单元测试时，最主要的问题是如何加载框架，从而在单元测试的代码中能够使用框架。
+      加载框架，要用到\Ocara\OcaraInvoke类。
+      （1）要加载框架的system/library/OcaraInvoke.php文件，如下实例:
 <pre class="brush: php;">/*
 require_once __DIR__ . '/../../vendor/linyihu/ocara/system/library/OcaraInvoke.php';
 </pre>
 
-    （2）要使用OcaraInvoke::init()方法初始化。
+      （2）要使用OcaraInvoke::init()方法初始化。
     <strong>init(rootPath, fileSelf)</strong>
-    参数说明：
+      参数说明：
  </pre>
 <table>
     <tr class="head">
@@ -58,32 +58,32 @@ require_once __DIR__ . '/../../vendor/linyihu/ocara/system/library/OcaraInvoke.p
     <td>必需。指定当前单元测试文件，一般只要使用__FILE__即可。</td>
 </tr>
 </table>
-实例如下：
+      实例如下：
 <pre class="brush: php;">
 require_once __DIR__ . '/../../vendor/linyihu/ocara/system/library/OcaraInvoke.php';
 OcaraInvoke::init(__DIR__.'/../', __FILE__);
 </pre>
 
 <pre>
-（3）在单元测试代码中可以使用框架
-    除了使用框架中的相关类和函数，可以使用Call::run()来执行某一个控制器动作。
-Action有返回值，如下实例：
+      （3）在单元测试代码中可以使用框架
+            除了使用框架中的相关类和函数，可以使用Call::run()来执行某一个控制器动作。
+            Action有返回值，如下实例：
 </pre>
 <pre class="brush: php;">
 $users = Call::run('home/getUsers');
 </pre>
 
 <pre>
-Action无返回值，如下实例：
+            Action无返回值，如下实例：
 </pre>
 <pre class="brush: php;">
 OcaraInvoke::run('home/index', array(), false);
 </pre>
 <pre>
 <strong>3、实例</strong>
-假设已经安装了PHPUnit，在我们的应用根目录中新建tests目录，里面添加一个OneTest.文件，截图如下：
-    <img src="../style/images/单元测试目录.png" alt="单元测试目录"/>
-文件内容如下:
+      假设已经安装了PHPUnit，在我们的应用根目录中新建tests目录，里面添加一个OneTest.文件，截图如下：
+            <img src="../style/images/单元测试目录.png" alt="单元测试目录"/>
+      文件内容如下:
 </pre>
 <pre class="brush: php;">
 use Ocara\OcaraInvoke;
@@ -102,9 +102,9 @@ class OneTest extends PHPUnit_Framework_TestCase
     }
 }
 </pre>
-
-然后，新建home控制器的index动作。
-
+<pre>
+      然后，新建home控制器的index动作。
+</pre>
 <pre class="brush: php;">
 namespace Controller\User\Action;
 use Controller\User\UserController;
@@ -125,9 +125,9 @@ class ViewAction extends UserController
 }
 </pre>
 <pre>
-最后，使用编辑器（这里假设使用的是phpstorm）来运行该testA()方法.
-将鼠标指针放到testA()方法中，并且右击选择“Run OneTest.testA”运行，就可以看到该单元测试运行结果，打印出user_id为1的记录数据。
-    <img src="../style/images/单元测试结果.png" alt="单元测试结果"/>
+      最后，使用编辑器（这里假设使用的是phpstorm）来运行该testA()方法.
+      将鼠标指针放到testA()方法中，并且右击选择“Run OneTest.testA”运行，就可以看到该单元测试运行结果，打印出user_id为1的记录数据。
+            <img src="../style/images/单元测试结果.png" alt="单元测试结果"/>
 </pre>
 </pre>
 </body></html>

@@ -11,19 +11,19 @@
 <script type="text/javascript" src="../treeview/base.js"></script>
 </head><body><pre><h2>依赖注入容器</h2>
 
-依赖注入容器，可以实现类或接口的绑定、实例化或实现，以及依赖管理。
+      依赖注入容器，可以实现类或接口的绑定、实例化或实现，以及依赖管理。
 
 <strong>1、容器的使用</strong>
-    （1）默认容器
-    框架开始时便生成了一个默认容器，该容器保存在\Ocara\Base::$container属性中。因此有以下使用方法:
-    （a）任意处可以使用\Ocara\Base::$container来调用默认容器。
-       实例如下：
+      （1）默认容器
+            框架开始时便生成了一个默认容器，该容器保存在\Ocara\Base::$container属性中。因此有以下使用方法:
+            （a）任意处可以使用\Ocara\Base::$container来调用默认容器。
+                  实例如下：
 <pre class="brush: php;">
 //使用Base::$container
 $container = Base::$container;
 </pre>
-    （b）在继承了\Ocara\Base的类中，可以使用self::$container来调用默认容器。
-        实例如下：
+            （b）在继承了\Ocara\Base的类中，可以使用self::$container来调用默认容器。
+                  实例如下：
 <pre class="brush: php;">
 //继承自Base的类中使用
 class test extends \Ocara\Base
@@ -34,8 +34,8 @@ class test extends \Ocara\Base
     }
 }
 </pre>
-框架的每个类，都继承了\Ocara\Base，所以控制器动作或Model中，都可以使用self::$container来调用默认容器。
-    控制器中使用默认容器，实例如下：
+                  框架的每个类，都继承了\Ocara\Base，所以控制器动作或Model中，都可以使用self::$container来调用默认容器。
+                  控制器中使用默认容器，实例如下：
 <pre class="brush: php;">
 class EditAction extends ItemController
 {
@@ -59,7 +59,7 @@ class EditAction extends ItemController
     }
 }
 </pre>
-    Model中使用默认容器，实例如下：
+                  Model中使用默认容器，实例如下：
 <pre class="brush: php;">
 use Ocara\Model\Database as DatabaseModel;
 
@@ -74,10 +74,9 @@ class User extends DatabaseModel
     }
 }
 </pre>
-
-    （2）生成新的容器
-除了使用默认容器，我们还可以新建一个容器，只要新建\Ocara\Container类即可。
-    如下所示：
+      （2）生成新的容器
+            除了使用默认容器，我们还可以新建一个容器，只要新建\Ocara\Container类即可。
+            如下所示：
 <pre class="brush: php;">
 //使用new 关键字新建容器
 $container = new \Ocara\Container();
@@ -87,10 +86,10 @@ $container = \Ocara\Container::build();
 </pre>
 
 <strong>2、容器中类的绑定</strong>
-    （1）动态绑定
-    动态绑定使用容器的bind()方法，也可以使用容器的属性来操作。
-  <span class="STYLE1">bind(name, source[, params])</span>
-      参数说明：
+      （1）动态绑定
+            动态绑定使用容器的bind()方法，也可以使用容器的属性来操作。
+                  <span class="STYLE1">bind(name, source[, params])</span>
+            参数说明：
 </pre>
 <table>
     <tr class="head">
@@ -111,7 +110,7 @@ $container = \Ocara\Container::build();
     </tr>
 </table>
 <pre>
-      实例如下：
+            实例如下：
 </pre>
 <pre class="brush: php;">
 //方法数组
@@ -125,7 +124,9 @@ Base::$container->bind('userChecker', function(){
 //获取类名
 Base::$container->bind('userChecker', '\User\Checker');
 </pre>
-另外，可以不用bind()方法，直接使用未定义的属性来绑定。实例如下：
+<pre>
+            另外，可以不用bind()方法，直接使用未定义的属性来绑定。实例如下：
+</pre>
 <pre class="brush: php;">
 //方法数组
 Base::$container->userChecker = array('User', 'getChecker');
@@ -140,21 +141,20 @@ Base::$container->userChecker = '\User\Checker';
 </pre>
 
 <pre>
-（2）单例模式绑定
-单例模式绑定类，与动态绑定区别在于：
-    （1）动态绑定的类可以通过容器的create()方法重新新建一个实例，但是单例模式绑定的则不会。
-    （2）动态绑定的类可以用容器中未定义的绑定名称属性来绑定（如上介绍），但是单例模式则不能，只能通过bindSingleton()实现。
-
-要单例模式绑定类，需使用容器的bindSingleton()方法。
-<span class="STYLE1">bind(name, source[, params])</span>
-参数和实例同上。
+      （2）单例模式绑定
+            单例模式绑定类，与动态绑定区别在于：
+                  （1）动态绑定的类可以通过容器的create()方法重新新建一个实例，但是单例模式绑定的则不会。
+                  （2）动态绑定的类可以用容器中未定义的绑定名称属性来绑定（如上介绍），但是单例模式则不能，只能通过bindSingleton()实现。
+            要单例模式绑定类，需使用容器的bindSingleton()方法。
+                  <span class="STYLE1">bind(name, source[, params])</span>
+            参数和实例同上。
 </pre>
 <pre>
 
 <strong>3、替换类的依赖、接口的实现</strong>
-依赖注入容器自动会处理依赖关系，如果要将某个接口用某个类实现，或将某个类通过其他类代替，可以使用容器的replace()方法实现。
-<span class="STYLE1">replace(target, replace)</span>
-参数说明：
+      依赖注入容器自动会处理依赖关系，如果要将某个接口用某个类实现，或将某个类通过其他类代替，可以使用容器的replace()方法实现。
+                  <span class="STYLE1">replace(target, replace)</span>
+      参数说明：
 </pre>
 <table>
     <tr class="head">
@@ -170,7 +170,7 @@ Base::$container->userChecker = '\User\Checker';
         <td>必需。要替换的类。</td>
     </tr>
 </table>
-实例如下：
+      实例如下：
 <pre class="brush: php;">
 //用类实现接口
 Base::$container->replace('\Interface\User\Checker', '\User\Checker');
@@ -181,10 +181,10 @@ Base::$container->replace('\User\Checker', '\User\NewChecker');
 
 <pre>
 <strong>4、容器中绑定类的使用</strong>
-使用容器的get()方法，或者使用容器绑定过的名称属性，就可以获取实例化后的绑定类。
-    （1）使用get()方法
-<span class="STYLE1">get(name)</span>
-参数说明：
+      使用容器的get()方法，或者使用容器绑定过的名称属性，就可以获取实例化后的绑定类。
+      （1）使用get()方法
+                  <span class="STYLE1">get(name)</span>
+            参数说明：
 </pre>
 <table>
     <tr class="head">
@@ -196,13 +196,17 @@ Base::$container->replace('\User\Checker', '\User\NewChecker');
         <td>必需。绑定名称。</td>
     </tr>
 </table>
-实例如下：
+<pre>
+            实例如下：
+</pre>
 <pre class="brush: php;">
 $userChecker = Base::$container->get('userChecker');
 </pre>
-（2）使用未定义的属性
-使用容器中未定义的绑定名称属性， 也可以实现在同样的效果。
-上述实例等同于：
+<pre>
+      （2）使用未定义的属性
+            使用容器中未定义的绑定名称属性， 也可以实现在同样的效果。
+            上述实例等同于：
+</pre>
 <pre class="brush: php;">
 $userChecker = Base::$container->userChecker;
 </pre>
