@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>权限设置</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>Auth</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       权限设置插件，是Ocara框架的权限控制的一部分，可以用来指定任意的模块、控制和动作权限，而且权限检测框架会自动完成。</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>可以指定任意的路由，定任意的权限。权限检测框架自动完成。</td>
+	</tr>
+</table>
+<p><strong>二、应用实例</strong></p>
+<pre class="brush: php;">
+		 $auth = new Auth();
+        $auth->setRole('g1.g2.g3'); 
+        $auth->setAuth('g1.g2.g3', 'menu.index');
+        $auth->save();
+        ocPrint($auth->getAuth());
+</pre>
+<p>输出结果：Array ( [g1] => Array ( [g2] => Array ( [g3] => Array ( [menu] => Array ( [index] => 1 ) ) ) ) )
+		</p><p><strong>三、方法函数介绍</strong></p>
+<div class="function">
+<pre>
+<strong>1、setSaveFile(file)</strong>
+  设置权限要保存的文件。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>file</td>
+		<td>必需。文件路径。</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>2、addRole(groupList)</strong>
+  新建角色。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>groupList</td>
+		<td>必需。角色列表字符串。以逗号分隔的层级角色字符串。</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>3、delRole(groupList)</strong>
+  删除角色。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>groupList</td>
+		<td>必需。同上</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>4、addAuth(groupList, authList)</strong>
+  添加权限。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>groupList</td>
+		<td>必需。同上</td>
+	</tr>
+		<tr>
+		<td>authList</td>
+		<td>必需。权限列表字符串。以逗号分隔的层级权限字符串。</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>5、delAuth(groupList, authList)</strong>
+  删除权限。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>groupList</td>
+		<td>必需。同上</td>
+	</tr>
+		<tr>
+		<td>authList</td>
+		<td>必需。同上</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>6、save()</strong>
+  保存权限。 </pre>
+<pre>
+
+<strong>7、getAuth(groupList)</strong>
+  按动作action生成HTML。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>groupList</td>
+		<td>可选。同上</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>8、check(groupList, authList)</strong>
+  检测权限。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>groupList</td>
+		<td>必需。同上</td>
+	</tr>
+		<tr>
+		<td>authList</td>
+		<td>必需。同上</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>9、getFileAuth()</strong>
+  获取文件权限缓存。
+			 </pre>
+</div>
+</body>
+</html>

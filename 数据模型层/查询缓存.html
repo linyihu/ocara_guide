@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>查询缓存</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>查询缓存</h2>
+
+<strong>1、什么是查询缓存</strong>
+      一般的数据库查询都是直接使用SQL从数据库去查询，对于一些静态或不常改变的数据，我们可以放到缓存，从而减少数据库查询，降低数据库负载。
+      
+<strong>2、如何使用查询缓存</strong>
+      框架中要使用查询缓存，只要使用Model的cache()方法，它会将SQL语句时行md5()加密，保存到缓存。格式如下：
+               <span class="STYLE1">cache([server, required])</span>
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>server</td>
+		<td>可选。服务器名称。</td>
+	</tr>
+	<tr>
+		<td>required</td>
+		<td>可选。是否必须，默认为false。如果为true，那么如果扩展无法加载或不在时，会抛出错误提示。</td>
+	</tr>
+</table>
+
+      实例如下：
+</pre>
+<pre class="brush: php;">
+$where = array(
+	'uid' => 21
+);
+
+//保存到默认缓存，假设默认是Memcache缓存连接
+$userModel = new \Model\User();
+$result = $userModel->where($where)
+	->cache()
+	->find();
+
+//保存到Redis缓存，假设已经配置了Redis的缓存连接
+$userModel = new \Model\User();
+$result = $userModel->where($where)
+	->cache('cache_redis')
+	->find();
+</pre>
+<pre>
+<strong>3、自定义缓存的保存和查询方式</strong>
+         Model的cache()可以进行缓存保存和查询，是以md5加密SQL为键名，以json_encode()函数转为Json格式保存的。
+         如果我们不满意这种保存方法，则可以使用自定义回调。
+         该自定义回调的配置选项是conf/callback.php中的$CONF['CALLBACK']['model']['query']['get_cache_data']。
+         比如，我们想让其保存时使用QueryCache类的save()方法进行回调，而查询时使用querycache控制器的find动作进行回调。
+         保存时的回调方法代码为：
+<pre class="brush: php;">
+class QueryCache extends Base
+{
+	public function save($cacheObj, $sql, $ret, $required)
+	{
+		$value = serialize($ret);
+		$key   = md5($sql . '123');
+		
+		$cacheObj->setVar($key, $value);	
+	}
+}
+</pre>
+         查询时的回调动作代码为：
+<pre class="brush: php;">
+class FindAction extends QuerycacheController
+{
+	/**
+	 * 初始化
+	 */
+	public function _action($cacheObj, $sql, $required)
+	{
+		$key   = md5($sql . '123');
+		$value = $cacheObj->getVar($key);
+		$ret   = unserialize($value);
+		
+		//查询要返回查询数组，所以反序列化
+		return $ret;	
+	}
+}
+</pre>
+         然后，在conf/callback.php进行回调配置：
+<pre class="brush: php;">
+/*
+ * 数据模型Model相关回调
+ */
+$CONF['CALLBACK']['model'] = array(
+	'query' => array( //Model查询缓存回调
+		'save_cache_data' => '/querycache/find', //保存为缓存数据
+		'get_cache_data' => 'QueryCache::save', //获取缓存数据
+	)
+);
+</pre>
+<pre>
+</pre>
+</body>
+</html>

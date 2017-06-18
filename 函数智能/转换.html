@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>智能转换</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body><pre>
+<h1>转换函数</h1>
+
+</pre>
+<div class="function">
+<pre><strong>1、ocArray(data)</strong>
+  　　对象递归转换成关联数组。
+  　　参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>data</td>
+		<td>对象</td>
+	</tr>
+</table>
+     实例如下：
+</pre>
+<pre class="brush: php;">
+$obj = new stdClass();
+$obj->a = 1;
+$obj->b = 2;
+
+$arr = ocArray($obj);
+
+ocPrint($arr); 
+//输出Array ( [a] => 1 [b] => 2 )
+</pre>
+<pre><strong>2、 ocObject(data)</strong>
+      数组递归转换成对象。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>data</td>
+		<td>数组</td>
+	</tr>
+</table>
+     实例如下：
+</pre>
+<pre class="brush: php;">
+$arr = array( 'a' => 1, 'b' => 2 );
+$arr = ocObject($arr);ocPrint($arr); 
+//输出stdClass Object ( [a] => 1 [b] => 2 )
+</pre>
+</div>
+</body>
+</html>

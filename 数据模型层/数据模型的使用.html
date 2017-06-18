@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>数据模型的使用</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h2>数据模型（Model）</h2>
+
+<strong>1、新建模型</strong>
+      新建模型有两种方法：
+      （1）直接新建Model类。
+      （2）使用Model类的build()方法。
+      （3）使用控制器动作的model()方法，用于建立默认的Model。
+
+<strong>2、详细说明</strong>
+      （1）直接新建Model类
+             实例如下：
+<pre class="brush: php;">
+//会新建application/model下面的User模型类实例
+$userModel = new \Model\User();
+
+//会新建application/model/BBS下面的User模型类实例
+$userModel = new \Model\BBS\User();
+</pre>
+      （2）使用build()方法
+          本框架所有的类，都继随自\Ocara\Base基类，该基类定义了build()方法，可以新增当前对象。
+             实例如下：
+<pre class="brush: php;">
+//会新建application/model下面的User模型类实例
+$userModel = \Model\User::build();
+
+//会新建application/model/BBS下面的User模型类实例
+$userModel = \Model\BBS\User::build();
+</pre>
+      （3）使用控制器动作的model()方法
+             该方法的参数和格式同上ocModel()。如下所示：
+                  <span class="function"><strong>model(modelName, [server, required])</strong></span>
+             参数说明：
+             参数同上ocModel函数，不同在于如果不传递参数，则建立的是与当前控制器同名的模型类，并且只会在第一次使用时新建对象，其他地方可重复使用。
+             上述实例可以改成如下：
+<pre class="brush: php;">
+$userModel = $this->model('\Model\User');
+</pre>
+             如果是bbs服务器默认库中的user表，则是：
+<pre class="brush: php;">
+$userModel = $this->model('\Model\Bbs\User'); //会调用bbs数据库连接的目录中的User模型
+</pre>
+             其他地方再次使用时，不会再重新建立该模型对象。如下示例：
+<pre class="brush: php;">
+class UpdateAction extends HomeController
+{
+	public function _action()
+	{}
+
+	/**
+	 * 初始化
+	 */
+	public function _display()
+	{
+        //用户表Model使用
+		$userData = $this
+                ->model('\Model\UserInfo') //第一次使用时，会新建该模型类对象
+                ->limit(0, 100)
+                ->find();
+
+        //用户表Model使用
+        $userData2 = $this
+                ->model('\Model\UserInfo') //第二次使用，不会再新建类
+                ->limit(0, 100)
+                ->find();
+
+        //home表Model使用
+        $homeData = $this
+            ->model() //因为home表模型名与控制名称同名，可以不传递参数建立模型
+            ->limit(0, 100)
+            ->find();
+	}
+
+    /**
+     * 表单提交的处理
+     */
+	public function _submit()
+	{}
+}
+</pre>
+ <strong>3、如何切换数据库和数据表（分库分表）？</strong>
+      如果数据库要进行分库，方法如下：
+      首先在Model类内部使用用_sharding()定义分库规则，然后外部调用sharing()方法传递分库规则要使用的具体数据，就可以进行分库。
+      而在_sharding()中，可以使用selectDatabase()和selectTabe()切换数据库和表。
+      请参考<a href="分库分表.html">分库分表</a>。
+
+</pre></body></html>

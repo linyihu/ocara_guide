@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>分库分表</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
+</head>
+
+<body><pre>
+<h2>分库分表</h2>
+
+      大型Web应用由于访问量和数据量很大，一般要进行分库分表，分库分表有一定的规则。
+      本框架以数据表模型为单位，提供了十分灵活的分库分表方法，规则自由设定。
+      只需用_sharding()来设置规则，用sharding()指定规则数据并执行分库分表。
+      具体步骤请看下文。
+
+<strong>1、设置数据表模型的分库分表规则</strong>
+      设置规则只需添加数据表模型的_sharding()方法，在其中设置数据库名和表名即可。该方法格式如下：
+           <span class="STYLE1">_sharding([data])</span>
+      参数说明：
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>data</td>
+        <td>可选。分库分表要用的规则数组。具体的什么数据自行决定，只要是数组。</td>
+    </tr>
+</table>
+      实例如下：
+</pre>
+<pre class="brush: php;">
+class UserModel extends Model
+{
+	protected $_primary='id';
+    protected $_table='user_info';
+
+	/**
+	 * 初始化
+	 */
+	public function _model(){}
+
+    /**
+     * 分库分表规则设置
+     */
+	protected function _sharding($data = array())
+	{
+        //规则数据
+        $groupId   = $data['group_id'];
+        $dateNum   = $data['date_num'];
+        $userGroup = $data['user_group'];
+
+        //切换数据库
+        $dbName = 'user_db' . '_' . $groupId;
+        $this->selectDatabase($dbName);
+
+        //切换表名
+        $tableName = 'user_info' . '_' . $userGroup . '_' . $dateNum;
+		$this->selectTable();
+	}
+}
+</pre>
+<pre>
+
+<strong>2、数据操作时执行分库分表</strong>
+      设置规则只需添加数据表模型的_sharding()方法，在其中设置数据库名和表名即可。该方法格式如下：
+           <span class="STYLE1">sharding([data])</span>
+      参数说明：
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>data</td>
+        <td>可选。上述_sharding()方法规定要传入的数据数组。上述_sharding()要求传什么数据，这里就传什么数据。</td>
+    </tr>
+</table>
+      实例如下：
+           比如上例设置了规则后，我们就可以如下示例执行分库分表使用数据表模型了。
+</pre>
+<pre class="brush: php;">
+class IndexAction extends UserController
+{
+	/**
+	 * 初始化
+	 */
+	public function _action(){}
+
+	public function _display()
+	{
+        //获取用户组ID
+        $userGroupId = Request::getGet('user_group_id');
+
+        //分库分表规则数据
+		$shardingData = array(
+            'group_id'   => '2', //业务分组ID，作为分库信息
+            'user_group' => $userGroupId,
+            'date_num'   => date('Ym'),
+        );
+
+        //查询用户列表，执行分库分表
+        $userModel = $this->model('\Model\User');
+		$userList = $userModel->sharding($shardingData)
+                              ->orderBy('create_time DESC')
+                              ->limit(0, 100)
+                              ->find();
+
+		$this->assign(compact('userList');
+	}
+}
+</pre>
+<pre>
+</pre></body>
+</html>

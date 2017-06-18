@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>文件下载</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>Download</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       文件下载插件，能够实现XML的新建、保存、导出、显示和生成XML数组等操作。</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>使用方便。</td>
+	</tr>
+</table>
+<p><strong>二、方法函数介绍</strong></p>
+<div class="function">
+<pre><strong>1、download(filePath[, saveName, encode])</strong>
+  全部静态生成。将按照静态配置中的路由对指定的路由全部进行静态生成。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>filePath</td>
+		<td>必需。下载文件路径。</td>
+	</tr>
+		<tr>
+		<td>saveName</td>
+		<td>可选。保存名称。也就是用户点击弹出下载框以后，默认保存的名称。</td>
+	</tr>
+		<tr>
+		<td>encode</td>
+		<td>可选。编码，默认是utf-8。</td>
+	</tr>
+	</table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+  //假设data目录有一个文件test.txt
+$download = new Download();
+$download->download(ocPath('data', ''test.txt'), 'test.txt'); //执行该页面，会提示下载或设置了不需提示时直接就下载。 </pre>
+</div>
+</body>
+</html>

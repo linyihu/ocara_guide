@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>文件上传</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>Upload</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       文件上传插件，可以很方便地实现图片等文件的上传。</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>使用方便，还可以配置上传规则。</td>
+	</tr>
+</table>
+<p><strong>二、应用实例</strong></p>
+<pre class="brush: php;">$uploadObj = new Upload();
+
+//设置保存目录，不存在时会自动新建该目录
+//这里目录为public/temp/upload/item下面的当前商品ID目录（$item_id）
+$path = 'upload/item/' . $item_id;
+$uploadPath = ocPath('temp', $path);
+
+if ($uploadObj->setSavePath($uploadPath) == false) {
+	Error::show('图片保存目录新建失败!');
+}
+
+//设置上传文件类型
+$uploadObj->setRules(array(
+	'jpg', 'jpeg', 'gif', 'png'
+));
+
+//上传文件
+if ($result = $uploadObj->upload()) {
+   $thumb = ocGet('thumb.save_path', $result);
+   $image = ocGet('image.save_path', $result);
+} else {
+   //输出上传错误
+   Error::show($uploadObj->getError(), '返回');
+}
+
+//使用上传文件
+$condition = array('id'	=> $id);
+$data = array(
+   'thumb' => $thumb,
+   'image' => $image
+);
+
+//保存到数据库
+$this->model->update($condition, $data);</pre>
+<p><pre>实例结果：
+	（1）$thumb和$image变量存放的都是保存的图片文件路径。
+	（2）图片的文件名是根据框架当前时间戳自动生成唯一的随机字符，所以文件名没有重复性问题。
+	（3）本例中使用了setSavePath()设置保存目录，setRules()设置文件类型。
+	（4）表单必须是POST方式提交，并且使用了enctype="multipart/form-data"属性。这个可以自己添加，也可以使用表单的upload()方法。</pre></p>
+<p><strong>三、方法函数介绍</strong></p>
+<div class="function">
+<pre><strong>1、setSavePath(savePath[, prefix])</strong>
+  设置上传文件要保存的目录。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>savePath</td>
+		<td>必需。保存目录。</td>
+	</tr>
+		<tr>
+		<td>prefix</td>
+		<td>可选。保存文件名的前缀。</td>
+	</tr>
+	</table>  
+<pre><strong>2、setRules(rules)</strong>
+  设置允许上传的文件类型。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>rules</td>
+		<td>必需。允许上传的文件类型数组。</td>
+	</tr>
+	</table>  
+<pre><strong>3、existsFile()</strong>
+  检查是否存在上传的文件。 </pre>
+<pre><strong>4、upload(required)</strong>
+  上传文件。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>required</td>
+		<td>可选。是否打印错误。默认为false</td>
+	</tr>
+	</table>  
+<pre><strong>5、clear(path)</strong>
+  清理上传过的文件。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>path</td>
+		<td>必需。目录路径。</td>
+	</tr>
+	</table>  
+<pre><strong>6、errorExists()</strong>
+  检测上传文件是否出错。 </pre>
+<pre><strong>7、setError(type[, params])</strong>
+  设置错误信息。 </pre>
+</div>
+</body>
+</html>

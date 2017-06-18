@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>开发者中心介绍</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>开发者中心介绍</h2>
+
+    Ocara框架新模块、建控制器、动作、模型和视图等，都要统一在开发者中心新建，不允许自己去手动新建，以免弄乱了。
+    开发者中心，是独立于整个应用的。
+   
+<h2>开发者中心的使用</h2>
+
+<strong>（1）开启开发模式</strong>
+     在resource/conf/develop.php中，将$CONF['SYS_MODE']改为'develop'。应用上线在生产环境下，要将这个改为其他任意值即可。
+<pre class="brush: php;">/*
+ * 系统模式配置
+ * 分为开发模式和运营模式两种
+ * 配置为develop时是开发模式，其他均为运营模式
+ */
+$CONF['SYS_MODEL'] 	= 'develop'; 	
+</pre>
+<strong>（2）进入开发者中心</strong>
+     进入开发者中心，要使用开发者中心标志。该标志是在resource/conf/develop.php中修改$CONF['DEV_SIGN']，默认为'dev'，如下所示：
+
+<pre class="brush: php;">/*
+ * 开发者中心标志配置
+ */
+$CONF['DEV_SIGN']   = 'dev';		
+</pre>
+     此时，要进入开发者中心，只要在浏览器中输入http://localhost/dev进入，默认根用户名和密码都是root。
+</pre>
+</body>
+</html>

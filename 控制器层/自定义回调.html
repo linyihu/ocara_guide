@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自定义回调</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>自定义回调</h2>
+
+        本手册中，经常提及自定义回调。
+        自定义回调是本框架一个非常有用的功能，为框架中相关功能的自定义提供了渠道。
+      <table class="hint">
+          <tr class="head">
+              <td><h2>注：</h2><br/>
+                  自定义回调与依赖注入容器的区别如下：<br/>
+                  依赖注入容器只针对类或接口，而自定义回调不仅可以回调类，还可以回调函数、控制器动作。
+              </td>
+          </tr>
+      </table>
+
+<strong>一、自定义回调使用方法</strong>
+        对于自定义回调，我们有两种使用方法：
+       （1）框架自动回调
+                一般在框架相关功能手册中会提到。使用时只要在callback.php配置文件中作相关配置。
+                比如异常错误处理，我们可以查看<a href="异常错误处理.html">异常错误处理</a>一节中的第三点“如何处理错误？”
+
+       （2）手动回调
+                除了框架提供的相关回调，我们还可以在代码某处手动回调。
+                使用的是\Ocara\Call类的run()方法。格式如下：
+                       <span class="STYLE1">Call::run(route[, params, return, required = true])</span>
+                参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>route</td>
+		<td>必需。回调路由。一般是要回调的函数、类方法或动作路由。</td>
+	</tr>
+	<tr>
+		<td>params</td>
+		<td>可选。回调时要使用到的参数数组。</td>
+	</tr>
+    <tr>
+        <td>return</td>
+        <td>可选。这个参数指定控制器动作是否需要返回值，默认为true。<br/>
+            如果指定需要返回值，有以下两种情况：<br/>
+        （1）如果控制器动作是控制器的一个方法， 则只要在该方法中返回值即可。<br/>
+            如下实例：
+            <pre class="brush: php;">
+class HomeController extends CommonController
+{
+	/**
+	 * 初始化
+	 */
+	public function indexAction()
+	{
+        $result = 'test';
+		return $result;
+	}
+}
+</pre>
+         （2）如果控制器动作是一个Action类，则要在该类中的_action()方法中返回值。<br/>
+            如果没有提交数据或者不是AJAX提交数据，会调用控制器的display()显示Action的模板文件
+             如下实例：
+<pre class="brush: php;">
+class IndexAction extends HomeController
+{
+	/**
+	 * 初始化
+	 */
+	public function _action()
+	{
+        $result = 'test';
+		return $result;
+	}
+}
+</pre>
+        </td>
+    </tr>
+    <tr>
+        <td>required</td>
+        <td>可选。设置出错时是否显示错误，为false时则不会打印错误而是返回null。</td>
+    </tr>
+</table>
+<pre>
+
+                  实例如下：
+<pre class="brush: php;">
+$params = array(1);
+
+//函数回调
+$result = Call::run('userExists', $params);
+
+//类方法回调
+$result = Call::run('User::Exists', $params);
+
+//对象方法回调
+$userObj = new \Model\User();
+$result = Call::run(array($userObj, 'Exists'), $params);
+
+//动作回调
+$result = Call::run('user/exists', $params); //字符串格式
+$result = Call::run(array('user', 'exists'), $params); //数组格式
+
+//不需要返回值。相当于访问动作，显示模板文件
+Call::run('user/view', array('uid' => 1), false);
+</pre>
+<strong>二、回调类型及格式</strong>
+        主要有三种回调类型：
+        <strong>1、函数回调</strong>
+              指的是使用自定义函数来回调。
+              回调使用时直接写该函数名称。
+              实例如下：
+                     以异常错误处理回调为例，如果回调函数是errorOutput()。
+                    （1）框架自动回调
+                             配置如下：
+<pre class="brush: php;">
+/*
+ * 异常错误处理回调
+ */
+$CONF['CALLBACK']['error'] = array(
+	'system_error' => 'errorOutput', //程序错误提示输出回调
+	'exception_error' => '', //异常错误提示输出回调
+);
+</pre>                     （2）手动调用
+                              如果在代码某处，想手动调用该回调函数，则如下所示：
+<pre class="brush: php;">
+//无函数参数
+Call::run('errorOutput');
+
+//有函数参数
+$params = array(2, 'test');
+Call::run('errorOutput', $params);
+</pre>
+        <strong>2、类方法回调</strong>
+              指的是使用自定义的类方法来回调。
+              回调使用时，
+              （1）如果是某个类的方法，写法为：类名::方法名。
+              （2）如果是已知对象的方法，写法为：array(对象变量, 方法名)。
+              实例如下：
+                     比如上例，回调方法是ErrorHandler类的output()方法。
+                    （1）框架自动回调
+                             配置如下：
+<pre class="brush: php;">
+/*
+ * 异常错误处理回调
+ */
+$CONF['CALLBACK']['error'] = array(
+	'system_error' => 'ErrorHandler::output', //程序错误提示输出回调
+	'exception_error' => '', //异常错误提示输出回调
+);
+</pre>                    （2）手动调用
+                              如果在代码某处，想手动调用该方法，则如下所示：
+<pre class="brush: php;">
+$params = array(2, 'test');
+
+/**
+ * 类方法调用
+ */
+//无函数参数
+Call::run('ErrorHandler::outout');
+//有函数参数
+Call::run('ErrorHandler::outout', $params);
+
+/**
+ * 已知对象的方法调用
+ */
+//无函数参数
+$errorObj = new ErrorHandler();
+Call::run(array($errorObj, 'outout'));
+//有函数参数
+Call::run(array($errorObj, 'outout'), $params);
+
+</pre>
+       <strong>3、动作回调</strong>
+             指的是使用一个控制器动作来回调。
+             回调使用时使用MVC路由字符串或数组，如果是字符串，要以顺斜杠“/”进行分隔。
+             有以下两种情况。
+             <strong>（1）全局控制器的动作</strong>
+                      字符串格式：控制器名/动作名
+                      数组格式：array(控制器名，动作名)
+                      实例如下：
+                             比如上例，如果回调动作是error控制器的output动作。
+                            （1）框架自动调用
+                                     配置如下：
+<pre class="brush: php;">
+/*
+ * 字符串格式 - 异常错误处理回调
+ */
+$CONF['CALLBACK']['error'] = array(
+	'system_error' => '/error/output', //程序错误提示输出回调
+	'exception_error' => '', //异常错误提示输出回调
+);
+
+/*
+ * 数组格式 - 异常错误处理回调
+ */
+$CONF['CALLBACK']['error'] = array(
+	'system_error' => array('error', 'output'), //程序错误提示输出回调
+	'exception_error' => '', //异常错误提示输出回调
+);
+</pre>                              （2）手动调用
+                                        如果在代码某处，想手动调用该动作，则如下所示：
+<pre class="brush: php;">
+$params = array(2, 'test');
+
+/*
+ * 字符串格式
+ */
+//不带函数参数
+Call::run('/error/output');
+//带函数参数
+Call::run('/error/output', $params);
+
+/*
+ * 数组格式
+ */
+//不带函数参数
+Call::run(array('error', 'output'));
+//带函数参数
+Call::run(array('error', 'output'), $params);
+</pre>
+             <strong>（2）模块控制器的动作</strong>
+                      字符串格式：模块名/控制器名/动作名
+                      数组格式：array(模块名, 控制器名, 动作名)
+                      实例如下：
+                             比如上例，如果回调动作是admin模块error控制器的output动作。
+                           （1）框架自动调用
+                                    配置如下：
+<pre class="brush: php;">
+/*
+ * 字符串格式-异常错误处理回调
+ */
+$CONF['CALLBACK']['error'] = array(
+	'system_error' => '/admin/error/output', //程序错误提示输出回调
+	'exception_error' => '', //异常错误提示输出回调
+);
+
+/*
+ * 数组格式-异常错误处理回调
+ */
+$CONF['CALLBACK']['error'] = array(
+	'system_error' => array('admin', 'error', 'output'), //程序错误提示输出回调
+	'exception_error' => '', //异常错误提示输出回调
+);
+</pre>                             （2）手动调用
+                                      如果在代码某处，想手动调用该动作，则如下所示：
+<pre class="brush: php;">
+$params = array(2, 'test');
+
+/*
+ * 字符串格式
+ */
+//不带函数参数
+Call::run('/admin/error/output');
+//带函数参数
+Call::run('/admin/error/output', $params);
+
+/*
+ * 数组格式
+ */
+//不带函数参数
+Call::run(array('admin', 'error', 'output'));
+//带函数参数
+Call::run(array('admin', 'error', 'output'), $params);
+
+</pre>
+
+<strong>三、回调动作的写法</strong>
+        对于函数和类方法回调，我们只要在函数或方法中处理完信息，直接返回结果就行了。
+        可是对于动作回调，我们应当在动作中的_action()方法处理并返回结果。
+        比如<a href="静态生成.html">静态生成</a>中第二大点第2小点第（3）点，获取静态生成数据的动作回调。
+</pre>
+</pre>
+</body>
+</html>

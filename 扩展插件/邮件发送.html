@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>邮件发送</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>Email</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       邮件发送插件，可以方便地发送邮件。可以使用邮件服务器和Socket两种方法发送。</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>使用方便，没有自己的邮件服务器，也可以发送邮件，使用socket发送即可。</td>
+	</tr>
+</table>
+<p><strong>二、应用实例</strong></p>
+
+<p>（１）邮件配置</p><pre class="brush: php;"> /*
+* 邮箱配置
+*/
+$CONF['EMAIL'] = array(
+	'sender' 	=> 'it@ocara.cn', //发送人
+	'host'	 	=> 'smtp.ym.163.com', //smtp服务器
+	'port'	 	=> '25',    //smtp端口号
+	'username'	=> 'ocara',  //用户名
+	'password'	=> '123456'  //密码
+);</pre>
+<p><pre>（２）邮件发送</pre></p><pre class="brush: php;">$emailObj = new Email();
+
+//设置收件人地址
+$emailObj->setReceiver('service@ocara.cn');
+//设置不添加回复内容 
+$emailObj->noReply();  
+//设置标题
+$emailObj->setSubject('XX网邮箱验证（系统邮件，请勿回复）)'); 
+//设置html内容
+$emailObj->setHtml($content); 
+//socket发送
+$emailObj->socketSend();  
+</pre>
+<p>   注：以上使用的是邮箱配置。如果另外想重新设置邮箱配置信息，则可以在新建Email类时传递邮箱配置数组，如：
+</p>
+<pre class="brush: php;">
+$config = array(
+	 'sender' 	=> 'it@ocara.cn',
+	 'host'	 	=> 'smtp.ym.163.com',
+	 'port'	 	=> '25',
+	 'username'	=> 'ocara',
+	 'password'	=> '123456'
+);
+
+$emailObj = new Email($config);
+
+//发送邮件同上</pre><p><strong>三、方法函数介绍</strong></p>
+<div class="function">
+<pre><strong>1、setServer(host, port, username, password)</strong>
+     设置SMTP服务器。  
+     参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>host</td>
+		<td>必需。服务器IP或域名。</td>
+	</tr>
+		<tr>
+		<td>port</td>
+		<td>必需。端口号。</td>
+	</tr>
+		<tr>
+		<td>username</td>
+		<td>必需。用户名。</td>
+	</tr>
+		<tr>
+		<td>password</td>
+		<td>必需。密码。</td>
+	</tr>
+	</table>  
+  <p>   实例如下：</p>
+<p>上面应用例子中，使用了邮箱配置。如果某处想重新设置邮箱服务器，则可以使用该方法设置，如：</p>
+<pre class="brush: php;">
+ $emailObj->setServer('smtp.ym.163.com', 25, 'ocara', '123456'); </pre>
+  <pre>
+  <strong>2、setSender(sender)</strong>
+     设置发送人。  
+     参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>sender</td>
+		<td>必需。发送人邮箱地址</td>
+	</tr>
+	</table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+ $emailObj->sendSender('it@ocara.cn'); </pre>
+<pre><strong>3、setReceiver(receiver, cc, bcc)</strong>
+     设置收件人。  
+     参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>receiver</td>
+		<td>必需。收件人邮箱地址</td>
+	</tr>
+		<tr>
+		<td>cc</td>
+		<td>必需。抄送人</td>
+	</tr>
+		<tr>
+		<td>bcc</td>
+		<td>必需。紧急抄送人</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>4、setSubject(subject)</strong>
+     设置标题。  
+     参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>subject</td>
+		<td>必需。标题</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>5、localSend(header, params)</strong>
+      本地服务器发送（需要将当前web服务器配置为邮件服务器）。  
+      参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>header</td>
+		<td>必需。设置邮件头</td>
+	</tr>
+		<tr>
+		<td>params</td>
+		<td>必需。参数</td>
+	</tr>
+	</table>  
+<pre>
+
+<strong>6、socketSend()</strong>
+      通过Socket发送邮件。如果没有自己的邮件服务器，一般可以通过这个来发送邮件。打开socket扩展即可。 </pre>
+</div>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>内容处理</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body><pre>
+<h1>内容处理函数</h1>
+
+</pre>
+<div class="function">
+<pre><strong>1、ocWrite(filePath, content[, append, mode])</strong>
+      向文件中写入内容。如果所在目录不存在，则会自动新建目录，并默认设置为755权限，所以请注意这点。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>filePath</td>
+		<td>必须。文件路径。</td>
+	</tr>
+	<tr>
+		<td>content</td>
+		<td>必需。文件内容。</td>
+	</tr>
+	<tr>
+		<td>append</td>
+		<td>可选。是否追加内容，默认为false。如果为true，则内容会追加到文件末尾。</td>
+	</tr>
+	<tr>
+		<td>mode</td>
+		<td>可选。新建目录的权限，默认为0755。</td>
+	</tr>
+</table>
+       实例如下：
+</pre>
+<pre class="brush: php;">
+$path = ocPath('data', 'test/d.txt'); //返回/resource/data/test/d.txt
+ocWrite($path, 'test'); //向文件中写入字符串test，如果不存该文件，会自动新建
+ocWrite($path, 'append_test'); //向文件中追加内容append_test
+</pre>
+
+<pre><strong>2、ocRead(filePath)</strong>
+      读取文件内容。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>filePath</td>
+		<td>必须。</td>
+	</tr>
+		<tr>
+		<td>checkPath</td>
+		<td>可选。同上ocWrite()函数。</td>
+	</tr>
+</table>
+       实例如下：
+</pre>
+<pre class="brush: php;">
+//读取本地文件内容
+$path = ocPath('data', 'test/d.txt');
+$localConent = ocRead($path);
+</pre>
+<pre><strong>3、ocRemote(url[, data, headers])</strong>
+      远程获取内容。一般是使用file_get_contents获取，如果该函数不存在，则使用下面的ocCurl()函数获取。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>url</td>
+		<td>必须。</td>
+	</tr>
+	<tr>
+		<td>data</td>
+		<td>可选。远程获取要附带上的参数数据。如果为空，会使用GET方式获取，如果该参数不为空，则会使用POST方式获取。该参数可以是关联数据或查询字符串式的参数数据。</td>
+	</tr>
+	<tr>
+		<td>headers</td>
+		<td>可选。要传递的headers信息数组。</td>
+	</tr>
+</table>
+
+<table class="hint">
+<tr class="head">
+	<td><h2>注意：</h2>第三个参数headers不需要设置Content-type和Charset头信息。</td>
+</tr>
+</table>
+
+     实例如下：
+</pre>
+<pre class="brush: php;">
+/*
+ * 读取远程网址内容，没有带data参数，使用GET方式提交数据
+ * 返回百度首页内容
+ */
+$url = 'http://www.baidu.com';
+$baiduContent = ocRemote($url);
+
+/*
+ * 读远程网址内容，带上data参数，使用POST方式提交数据
+ * 返回内容大致如下：
+ * 获取POST提交过来 的值打印如下：
+ * Array ( [name] => lily [auth_token] => a983a98435DSD833l4l )
+ * 获取到的头信息如下：
+ * ... ...
+ */
+$data = array(
+  'name' => 'lily',
+  'auth_token' => 'a983a98435DSD833l4l'
+);
+
+$url = 'http://www.ocara.cn/test/index';
+$ocaraContent = ocRemote($url, $data);
+
+/*
+ * 传递头信息，POST方式提交获取数据
+ */
+$headers = array();
+$headers[] = 'Cache-Control: no-cache';
+$headers[] = 'charset=gbk';
+$ocaraContent2 = ocRemote($url, $data, $headers); //可以看到返回的头信息中多了两个数组元素就是上面$headers传递的头信息
+</pre>
+<pre><strong>4、ocCurl(url[, data, headers, showError]) </strong>
+  　 通过CURL获取远程内容。同上ocRemote()，只不过是使用CURL扩展。
+  　 参数同上。
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>url</td>
+		<td>必须。</td>
+	</tr>
+	<tr>
+		<td>data</td>
+		<td>可选。参数数据。同上。</td>
+	</tr>
+		<tr>
+		<td>headers</td>
+		<td>可选。要传递的headers信息数组。同上，不需要设置Content-type和Charset头信息。</td>
+	</tr>
+	<tr>
+		<td>showError</td>
+		<td>可选。是否显示错误。默认为false。如果为true，则如果CURL获取内容出错时，则会抛出错误。</td>
+	</tr>
+</table>
+       上例实例如下：
+</pre>
+<pre class="brush: php;">
+/*
+ * 同上 - 读取远程网址内容，没有带参数，使用GET方式获取
+ * 返回百度首页内容
+ */
+$url = 'http://www.baidu.com';
+$baiduContent = ocCurl($url);
+
+/*
+ * 同上 - 读远程网址内容，带上参数数据，使用POST方式获取
+ * 返回内容大致如下：
+ * 获取POST提交获取过来 的值打印如下：
+ * Array ( [name] => lily [auth_token] => a983a98435DSD833l4l )
+ * 获取到的头信息如下：
+ * ... ...
+ */
+$data = array(
+  'name' => 'lily',
+  'auth_token' => 'a983a98435DSD833l4l'
+);
+
+$url = 'http://www.ocara.cn/test/index';
+$ocaraContent = ocCurl($url, $data);
+
+/*
+ * 传递头信息，POST方式提交获取数据
+ */
+$headers = array();
+$headers[] = 'Cache-Control: no-cache';
+$ocaraContent2 = ocCurl($url, $data, $headers); //可以看到返回的头信息中多了两个数组元素就是上面$headers传递的头信息
+</pre>
+
+</div>
+</body>
+</html>

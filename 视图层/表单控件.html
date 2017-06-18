@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>表单控件的生成</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>表单控件的生成（Html）</h2>
+
+    表单控件类是Html，表单类Form已经将其集成为插件。
+    以下是该组件生成表单控件的方法函数：
+
+<span class="STYLE1">（1）input(type, name[, attributes = false, checked = false])</span>
+      生成Input标签元素。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>type</td>
+		<td>类型。INPUT元素类型，即type属性值，如“button”，“text”等。</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。要保存的xml文件路径</td>
+	</tr>
+	<tr>
+	<td>attributes</td>
+	<td>可选。如果是关联数组，用来指定标签属性，键名为属性名，键值为属性值。如果是字符串或者数字等，则指定的是标签的value属性值。</td>
+	</tr>
+</table>
+<pre>
+
+<span class="STYLE1">（1）text(name[, attributes])</span>
+      生成文本框。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。要保存的xml文件路径</td>
+	</tr><tr>
+		<td>attributes</td>
+		<td>可选。如果是关联数组，用来指定标签属性，键名为属性名，键值为属性值。如果是字符串或者数字等，则指定的是标签的value属性值。</td>
+	</tr>
+</table>
+<pre>
+
+<span class="STYLE1">（2）password(name[, attributes])</span>
+      生成密码框。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+
+<span class="STYLE1">（2）button(name[, attributes])</span>
+      生成按钮。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+
+<span class="STYLE1">（3）file(name[, attributes])</span>
+      生成上传文件控件。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+
+<span class="STYLE1">（4）hidden(name[, attributes])</span>
+      生成隐藏域。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+
+<span class="STYLE1">（5）textarea(name[, attributes])</span>
+      生成文本域。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre><span class="STYLE1">（6）radio(name, desc[, attributes, checked]) </span>
+      生成单选框。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>desc</td>
+		<td>必需。复选框右边的文字。</td>
+	</tr>
+	<tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+		<tr>
+		<td>checked</td>
+		<td>可选。checked属性值，指定是否选中单选框。</td>
+	</tr>
+</table>
+<pre><span class="STYLE1">（7）radioMulti(name, radios[, checked, attributes])</span>
+       生成批量单选框。单选框之间以空格分隔。
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>radios</td>
+		<td>必需。单选框数组。键名是单选项的value，键值是单选框右边的文字描述。</td>
+	</tr>
+	<tr>
+		<td>checked</td>
+		<td>可选。选中值。如果是字符串或数组，表示选中的单选框。如果是数组，每个数组元素都是要选中的单选框值。</td>
+	</tr>
+		<tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+<pre class="STYLE1">（8）checkbox(name, desc[, attributes, checked])
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>desc</td>
+		<td>必需。复选框右边的文字。</td>
+	</tr>
+	<tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+		<tr>
+		<td>checked</td>
+		<td>可选。同上radio()。</td>
+	</tr>
+</table>
+<pre><span class="STYLE1">（9）checkboxMulti(name, radios[, checked, attributes])</span>
+       生成批量复选框。复选框之间以空格分隔。
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>radios</td>
+		<td>必需。单选框数组。键名是单选项的value，键值是单选框右边的文字描述。</td>
+	</tr>
+	<tr>
+		<td>checked</td>
+		<td>可选。同上。</td>
+	</tr>
+		<tr>
+		<td>attributes</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+<pre><span class="STYLE1">（10）select(name, options[, attributes, nullText]) </span>
+      生成下拉框
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>options</td>
+		<td>必需。option选项列表数组，键名选项值即value属性值，键值是显示文本
+		  <option>。</td>
+	</tr>
+	<tr>
+		<td>attributes</td>
+		<td>可选。同上。不过如果是字符串或数字，表示默认选中的选项值。如果要设置select的value属性，则使用“{value}”作为属性数组中的键名。 </td>
+	</tr>
+		<tr>
+		<td>nullText</td>
+		<td>可选。下拉框一般有一个空选择的显示文本，如“请选择”，其值为空，表示未选中任何选项。</td>
+	</tr>
+</table>
+<pre><span class="STYLE1">（11）selectGroup(name, options[, attributes, nullText])</span>
+      生成分组下拉框。
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>options</td>
+		<td>必需。同上。每个选项组的第一个选项的选项值用数组，并且添加optgroup属性即可。</td>
+	</tr>
+	<tr>
+		<td>attributes</td>
+		<td>可选。同上。 </td>
+	</tr>
+		<tr>
+		<td>nullText</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre><span class="STYLE1">（12）options(options[, value, nullText])</span>
+      仅生成option选项列表。如果不加select框，只生成option列表框，可以使用该方法。
+      参数说明。
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+    <tr>
+		<td>options</td>
+		<td>必需。同上。每个选项组的第一个选项的选项值用数组，并且添加optgroup属性即可。</td>
+	</tr>
+	<tr>
+		<td>attributes</td>
+		<td>可选。同上。 </td>
+	</tr>
+		<tr>
+		<td>nullText</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+
+</pre>
+</body>
+</html>

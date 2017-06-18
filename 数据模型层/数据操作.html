@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>数据操作</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE3 {color: #0000FF; font-weight: bold; }
+-->
+</style>
+</head>
+
+<body><pre><h2>数据操作</h2>
+
+<strong>1、添加记录</strong>
+        （1）使用ORM模型
+                使用ORM模型的save()可以添加记录.只要Model未使用select()或where()设置条件，都是添加记录。
+                实例如下：
+                    （a）表单提交（POST）的数据
+<pre class="brush: php;">
+$userModel = new \Model\User();
+
+//建立ORM模型，获取POST提交的数据
+$userModel-&gt;data();
+$userModel->status = 0;
+$userModel->create_time = time();
+
+//保存记录
+$userModel->save();
+</pre>
+                    （b）指定数组的数据记录
+<pre class="brush: php;">
+$userModel = new \Model\User();
+
+//新建数据数组
+$data = array(
+  'user_name' =&gt; Request::getPost('userName'), //表单提交的
+  'email'  =&gt; 'test@163.com',  //手动指定的
+);
+
+//建立ORM模型
+$userModel-&gt;data($data);
+$userModel->status = 0;
+$userModel->create_time = time();
+
+//保存数据
+$userModel->save();
+</pre>
+            （2）使用create()方法
+                    使用Model的create()方法也可以添加记录，格式如下：
+                        <span class="STYLE3">create([data, debug])</span>
+                    参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>data</td>
+		<td>可选。如果为空，自动获取POST提交的数据。必须是关联数组。
+		键名为字段名或<a href="字段别名.html">字段别名</a>。<br/>
+		如果键名与表的字段名称或别名相同，则这条键值数据会保存，否则被忽略。
+	    </td>
+	</tr>
+	<tr>
+		<td>debug</td>
+		<td>可选。用于SQL语句调试，参见<a href="数据查询.html">数据查询</a>中的主键查询方法select()的debug参数。</td>
+	</tr>
+</table>
+<pre>
+
+                    实例如下：
+                    （a）表单提交（POST）的数据
+<pre class="brush: php;">
+//添加记录
+$userModel = new \Model\User();
+$userModel->create();
+</pre>
+                    （b）指定数组的数据记录
+<pre class="brush: php;">//新建数据数组
+$data = array(
+  'user_name' =&gt; Request::getPost('userName'), //表单提交的
+  'email'  =&gt; Request::getPost('email'),  //手动指定的
+  'status' => 0,
+  'create_time' => time()
+);
+
+//添加记录
+$userModel = new \Model\User();
+$userModel->create($data);
+</pre>
+
+<strong>2、更新记录</strong>
+        注：更新记录必须使用ORM模型where()方法设置更新条件。
+        （1）使用ORM模型
+                使用select()按主键获取记录并新建ORM模型，再使用data()设置修改数据，最后使用save()方法保存.
+                实例如下：
+                （a）获取表单POST提交的数据
+<pre class="brush: php;">
+$userModel = new \Model\User();
+
+//选择主键ID为1的记录，建立ORM模型
+$userModel = \Model\User::select(1);
+$userModel->update_time = time();
+
+//设置POST提交的数据
+$userModel->data();
+
+//保存记录
+$userModel->save();
+</pre>
+                （b）指定数据数组
+<pre class="brush: php;">
+//选择主键ID为1的记录，建立ORM模型
+$userModel = \Model\User::select(1);
+$userModel->update_time = time();
+
+//指定数据数组
+$data = array(
+  'user_name' =&gt; Request::getPost('test'), //表单提交的
+  'email'  =&gt; 'test@163.com',  //手动指定的
+);
+$userModel->data($data);
+
+//更新记录
+$userModel->save();
+</pre>
+        （2）使用update()方法（_beforeUpdate()和_afterUpdate()两个方法将失效）
+                先使用where()或cWhere()设置条件，再使用update()方法更新数据，格式如下：
+                        <span class="STYLE3">update([data, debug])</span>
+                参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>data</td>
+		<td>可选。同上。</td>
+	</tr>
+	<tr>
+		<td>debug</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+
+                实例如下：
+                （a）获取表单POST提交的数据
+<pre class="brush: php;">
+$userModel = new \Model\User();
+
+//设置条件
+$where = array(
+	'user_id' =&gt; 1
+);
+$userModel-&gt;where($where);
+
+//更新记录，未指定第一个参数data，则保存POST提交的数据
+$userModel->update();
+</pre>
+                （b）指定数据数组
+<pre class="brush: php;">
+$userModel = new \Model\User();
+
+//设置条件
+$where = array(
+	'user_id' =&gt; 1
+);
+$userModel-&gt;where($where);
+
+//新建数据数组
+$data = array(
+  'user_name' =&gt; Request::getPost('test'), //表单提交的
+  'email'  =&gt; 'test@163.com',  //手动指定的
+  'update_time' => time()
+);
+
+//更新记录，传递第一个参数data，指定数据
+$userModel->update($data);
+</pre>
+
+<strong>3、删除记录</strong>
+        更新记录必须先用where()或cWhere()设置条件，然后使用delete()方法删除记录，格式如下：
+            <span class="STYLE3">delete([debug])</span>
+        参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>debug</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+<pre>
+
+        实例如下：
+        （a）使用ORM模型
+<pre class="brush: php;">
+$userModel = \Model\User::select(1);
+$userModel-&gt;delete();
+</pre>
+        （b）使用条件where()（_beforeDelete()和_afterDelete()两个方法将失效）
+<pre class="brush: php;">
+$userModel = new \Model\User();
+$where = array(
+	'user_id' =&gt; 1
+);
+
+//删除记录
+$userModel-&gt;where($where)
+               -&gt;delete();
+</pre>
+
+ <strong>4、ORM模型下数据操作前后的处理</strong>
+	当使用ORM模型进行数据操作时，可以使用以下相关方法进行操作前后的数据处理。
+    （1）在Model中可以添加_beforeCreate()和_afterCreate()方法，处理添加记录前后的数据操作。
+        实例如下：
+<pre class="brush: php;">
+class GuestbookModel extends Model
+{
+	protected $_primary = 'id';
+	protected $_table = 'guestbook';
+
+	/**
+	 * 初始化模型
+	 */
+	protected function _model()
+	{}
+
+	protected function _beforeCreate()
+	{
+		$this->create_time = time();
+		echo 'create_time:' . $this->create_time . "|";
+	}
+
+	protected function _afterCreate()
+	{
+		echo 'id:' . $this->id;
+	}
+}
+</pre>
+    （2）在Model中可以添加_beforeUpdate()和_afterUpdate()方法，处理更新记录前后的数据操作。
+	注：必须是通过select()或selectedFirst()方法选择记录然后使用save()或update()方法时才会生效。
+        实例如下：
+<pre class="brush: php;">
+class GuestbookModel extends Model
+{
+	protected $_primary = 'id';
+	protected $_table = 'guestbook';
+
+	/**
+	 * 初始化模型
+	 */
+	protected function _model()
+	{}
+
+	protected function _beforeUpdate()
+	{
+		$this->update_time = time();
+		echo 'update_time:' . $this->update_time . "|";
+	}
+
+	protected function _afterUpdate()
+	{
+	    echo 'id:' . $this->id;
+	}
+}
+</pre>
+    （3）在Model中可以添加_beforeDelete()和_afterDelete()方法，处理删除记录前后的数据操作。
+	注：必须是通过select()或selectedFirst()方法选择记录然后使用delete()方法时才会生效。
+        实例如下：
+<pre class="brush: php;">
+class GuestbookModel extends Model
+{
+	protected $_primary = 'id';
+	protected $_table = 'guestbook';
+
+	/**
+	 * 初始化模型
+	 */
+	protected function _model()
+	{}
+
+	protected function _beforeDelete()
+	{
+		echo 'id:' . $this->id;
+	}
+
+	protected function _afterDelete()
+	{
+	    echo 'id:' . $this->id;
+	}
+}
+</pre>
+</pre>
+</body>
+</html>

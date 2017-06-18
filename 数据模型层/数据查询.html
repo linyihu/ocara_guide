@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>数据查询</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body>
+<pre><h2>数据查询</h2>
+
+<strong> 1、主键查询</strong>
+       使用Model的select()方法通过主键选择一条记录：
+            <span class="STYLE1">select([value, option, debug])</span>
+       静态方法。返回的是模型类对象。
+       参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>value</td>
+		<td>可选。主键值。如果是单字段主键，则直接传递该这字段值。如果是复合主键，以英文半解状态下的逗号“,”分隔。 
+		</td>
+	</tr>
+	<tr>
+		<td>option</td>
+		<td>可选。查询选项。<br/>
+		（1）如果是字符串，则表示字段列表。<br/>
+		（2）如果是数组，其键名可以是小写的order、group、fields或limit，
+		分别对应ORDER BY语句、GROUP BY语句、字段列表字符串和查询记录条数（Mysql中是limit语句）。
+	    </td>
+	</tr>
+	<tr>
+		<td>debug</td>
+		<td>可选。用于SQL语句调试，默认为false或0。<br/>
+		（1）值为false或0，不调试。默认值。<br/>
+		（2）值为1时，会停止代码执行而直接打印SQL语句。<br/>
+		（3）值为2时，不打印只会返回SQL语句，适合于将调试语句写到调试文件中。
+		</td>
+	</tr>
+</table>
+<pre>
+
+        实例如下：
+        （1）查询主键id为1记录的username和email字段值
+<pre class="brush: php;">
+$userModel = \Model\User::select(1, 'username, email');
+$result = $userModel->getData();
+</pre>
+        （2）查询detail表中的复合主键detail_id为1、line为2的记录
+                 假设detailModel已设置属性$_primary为'detail_id,line'：
+<pre class="brush: php;">
+//查询结果
+$result = \Model\Detail::select('1,2');
+</pre>
+        （3）按create_time降序排列，查询前100条记录的detail_id、line和price。
+                 假设detailModel已设置属性$_primary为'detail_id,line'：
+<pre class="brush: php;">
+//查询选项
+$option = array(
+    'fields' => 'detail_id, line, price',
+	'order'  => 'create_time DESC',
+	'limit'  => '0,100'
+);
+
+//方式1.使用select()的参数
+$result = \Model\Detail::select('1,2', $option)->getData();
+
+//方式2.使用SQL查询的生成方法函数
+$result = $detailModel->fields('detail_id, line, price')
+    ->where(array(
+		'detail_id' => 1,
+		'line' 	    => 2
+	))
+   	->orderBy('create_time DESC')
+	->limit(0, 100)
+	->find();
+</pre>
+
+<strong>2、查询多条记录</strong>
+     使用Model的find()方法可以查询多行记录：
+            <span class="STYLE1">find([condition, option, debug])</span>
+     注：（1）一般地，没有分页时返回查询数据。
+                  返回的是结果集数组，有数组和对象两种格式，默认是数组格式。设置返回类型参见<a href="SQL语句生成.html">SQL语句生成函数setDataType()</a>。
+           （2）分页时，返回总数和查询数据。
+                  如果使用了page()方法进行分页，则返回的数组只有total和data两个元素，total表示查询的总记录数，而data是查询数据，格式同上。
+                  page()方法的使用请参见<a href="SQL语句生成.html">SQL语句生成函数page()</a>。
+
+     参数说明：
+	</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>condition</td>
+		<td>可选。更新条件。可以是字符串，也可以是键值数组。<br/>
+		（1）如果为空，则取where()或cWhere()方法指定的条件。<br/>
+		（2）如果没有使用where()或cWhere()指定条件，则会提示错误，因为更新数据必须有条件。<br/>
+		（3）如果确实没有任何条件而需要更新所有记录，则使用where(1)即可。<br/>
+		（4）该参数的格式与where()方法的用法一致。请查看<a href="SQL语句生成.html">SQL语句生成函数</a>中的where()的使用方法。				
+		</td>
+	</tr>
+	<tr>
+		<td>option</td>
+		<td>可选。查询选项。同上。</td>
+	</tr>
+	<tr>
+		<td>debug</td>
+		<td>可选。调试参数，同上。
+		</td>
+	</tr>
+</table>
+<pre>
+
+        实例如下：
+（1）选择状态status为1并且按添加时间create_time降序排列的前10行记录的用户名和邮箱：
+<pre class="brush: php;">
+$fields= 'username, email';
+$order = 'create_time DESC';
+$limit = '1,10';
+$where = array('status' => 1);
+
+//方式1.使用find()参数
+$userModel = new \Model\User();
+$result = $userModel-&gt;find($where,
+    array(
+        'fields' =&gt; $fields, 
+        'order' =&gt; $order, 
+        'limit' =&gt; $limit
+    )
+);
+
+//方式2.使用SQL查询的生成方法函数
+$userModel = new \Model\User();
+$result = $userModel->where($where)
+     ->fields($fields)
+	 ->orderBy($order)
+	 ->limit($limit)
+	 ->find();
+
+//返回对象元素数组
+$userModel = new \Model\User();
+$result = $userModel->where($where)
+     ->fields($fields)
+	 ->orderBy($order)
+	 ->limit($limit)
+	 ->setDataType('object') //设置为返回对象类型
+	 ->find();
+</pre>
+（2）统计不同状态status的男性用户(sex字段值为1)数量，使用where()设置条件
+<pre class="brush: php;">$fields = '`status`, count(user_id) AS number';
+$group = 'status';
+$where = array('sex' => 1);
+
+//方式1.使用find()的参数
+$result = ocMode('user')-&gt;find($where, 
+     array(
+	     'fields' =&gt; $fields, 
+	     'group' =&gt; $group
+	 )
+);
+
+//方式2.使用查询函数
+$userModel = new \Model\User();
+$result = $userModel->where($where)
+     ->fields($fields)
+	 ->groupBy($group)
+     ->find();
+
+//返回对象元素类型
+$userModel = new \Model\User();
+$result = $userModel->where($where)
+     ->fields($fields)
+	 ->groupBy($group)
+	 ->setDataType() //设置为返回对象类型
+     ->find();
+</pre>
+<strong>3、查询一条记录</strong>
+        使用Model的findFirst()方法可以查询一条记录：
+               <span class="STYLE1">findFirst([condition，option, debug])</span>
+        返回一条记录的关联数组或对象，默认为数组，同上主键查询。
+        参数说明：
+	</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>condition</td>
+		<td>可选。查询条件，同上。				
+		</td>
+	</tr>
+	<tr>
+		<td>option</td>
+		<td>可选。查询选项，同上。
+	    </td>
+	</tr>
+	<tr>
+		<td>debug</td>
+		<td>可选。调试参数，同上。
+		</td>
+	</tr>
+</table>
+<pre>
+
+        实例如下：
+
+（1）选择状态status为1最新用户（按添加时间create_time降序排列）的用户名和邮箱：
+<pre class="brush: php;">
+$fields= 'username, email';
+$order = 'create_time DESC';
+$where = array(
+    'status' => 1
+);
+
+//方式1.使用findFirst()的参数
+$userModel = new \Model\User();
+$result = $userModel-&gt;findFirst($where,
+    array(
+	    'fields' =&gt; $fields, 
+		'order' =&gt; $order
+    )
+);
+
+//方式2.使用SQL查询的生成方法函数
+$userModel = new \Model\User();
+$result = $userModel->where($where)
+    ->fields($fields)
+	->orderBy($order)
+	->findRow();
+</pre>
+（2）选择user_id为1用户的用户名和邮箱
+<pre class="brush: php;">
+$fields= 'username, email';
+$where = array(
+    'user_id' => 1
+);
+
+//查询结果-只指定字段列表时，第二个参数可以直接使用该字段列表字符串
+$userModel = new \Model\User();
+$result = $userModel-&gt;findRow($where, $fields);
+</pre>
+<strong>4、查询某个字段值</strong>
+         使用Model的findValue()方法可以按条件查询一条记录的某个字段的值：
+                <span class="STYLE1">findValue(field, [condition, debug])</span>
+         返回字段值，如果没有查到，则返回false。
+         注：Limit语句请使用limit()方法。
+         参数说明：
+	</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>field</td>
+		<td>必需。字段名称。
+	    </td>
+	</tr>
+	<tr>
+		<td>condition</td>
+		<td>可选。查询条件，同上。				
+		</td>
+	</tr>
+	<tr>
+		<td>debug</td>
+		<td>可选。调试参数，同上。
+		</td>
+	</tr>
+</table>
+<pre>
+
+<pre class="brush: php;">
+$where = array(
+    'user_id' => 1
+);
+
+//方式1.使用findValue()的参数
+$userModel = new \Model\User();
+$result = $userModel->limit(1)-&gt;findValue('username', $where);
+
+//方式2.SQL查询的生成方法函数
+$userModel = new \Model\User();
+$result = $userModel->where($where)->limit(1)-&gt;findValue('username');
+
+</pre>
+
+<strong>5、原生SQL查询</strong>
+         使用Model的query()方法可以按条件查询一条记录的某个字段的值：
+                <span class="STYLE1">query(sql, [debug])</span>
+         成功时返回所有查询行的结果数组,每行结果是数组或者对象，如果没有查到，则返回false。
+         参数说明：
+	</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>sql</td>
+		<td>必需。原生SQL语句。
+		</td>
+	</tr>
+	<tr>
+		<td>debug</td>
+		<td>可选。调试参数，同上。
+		</td>
+	</tr>
+</table>
+<pre>
+         实例如下：
+<pre class="brush: php;">
+//查询10行
+$userModel = new \Model\User();
+$userModel->query('select * from user limit 10');
+
+</pre>
+
+<strong>6、原生SQL查询一行</strong>
+         使用Model的queryRow()方法可以按条件查询一条记录的某个字段的值：
+                <span class="STYLE1">queryRow(sql, [debug])</span>
+         成功时返回查询的那行数据关联数组或对象，如果没有查到，则返回false。
+         参数同上。
+         实例如下：
+<pre class="brush: php;">
+//查询一行
+$userModel = new \Model\User();
+$userModel->queryRow('select * from user limit 10');
+</pre>
+
+<strong>5、多表联接查询</strong>
+     使用<span class="STYLE1">leftJoin()、rightJoin()或innerJoin()</span>分别进行左联接、右联接和全联接的查询。
+<pre class="brush: php;">
+//查询结果
+$userModel = new \Model\User();
+$result = $userModel-&gt;innerJoin('threads','b','a.user_id=b.user_id')//相当于INNER JOIN forum AS b ON a.user_id = b.user_id
+    -&gt;leftJoin('posts', 'c', 'b.tid=c.tid')		//相当于LEFT JOIN posts AS c ON b.tid = c.tid
+    -&gt;fields('b.title, b.content, a.username,a.email,c.content AS post_content')	//字段列表
+    -&gt;where('a.user_id=1 AND b.status=1') //查询条件
+    -&gt;limit('1,100')		//limit语句
+    -&gt;orderBy('c.create_time DESC') //排序
+    -&gt;find();
+</pre>
+
+
+<strong>6、合并查询</strong>
+使用union()和unionAll方法可以合并多个查询，只要以某个设置查询的Model作为参数:
+                <span class="STYLE1">union(model) ｜ unionAll(model)</span>
+         返回当前Model对象，可用于连贯语句。
+         注：可以多次使用，如果去除重复值，最后一次的合并一定要用unionAll()。
+         参数说明：
+	</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>model</td>
+		<td>必需。数据模型类，必须是继承于框架的基本模型\Ocara\Model。
+		</td>
+	</tr>
+</table>
+<pre>
+
+<pre class="brush: php;">
+$userModel_1 = new \Model\User();
+$userModel_1->fields('user_Id, user_name')
+	->where(array('status' => 1))
+	->limit('0, 10');
+
+$userModel_2 = new \Model\User();
+$userModel_2->fields('user_Id, user_name')
+	->where(array('status' => 2))
+	->limit('0, 10');
+
+$model = new \Model\BBS\User();
+$model->fields('uid as user_id, uname as user_name')
+	->where('status' => 1)->limit('0, 5');
+
+$result = $model->union($userModel_1)
+	->unionAll($userModel_1)
+	->find();
+
+ocPrint($result);
+</pre>
+
+<strong>7、更多SQL查询语句的生成方法</strong>
+     更多SQL语句生成函数，请点击进入<a href="SQL语句生成.html">SQL查询语句的生成</a>。
+</pre>
+</body></html>

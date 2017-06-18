@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>XML处理</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>Xml</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       XML文档处理插件，能够实现XML的新建、保存、导出、显示和生成XML数组等操作。</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>使用方便。</td>
+	</tr>
+</table>
+<p><strong>二、方法函数介绍</strong></p>
+<div class="function">
+<pre><strong>1、setData(type, xmlSource)</strong>
+  新建XML。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>type</td>
+		<td>必需。数据来源类型。包括string、array和file三种。</td>
+	</tr>
+		<tr>
+		<td>xmlSource</td>
+		<td>必需。数据来源</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+<p>（1）字符串
+  </p>
+<pre class="brush: php;">
+ $str = '<?xml version="1.0" encoding="utf-8"?>
+       <users> 
+             <total>1</total>
+             <list>
+	              <user_name>小明</user_name>
+                  <user_id>12</user_id>
+             </list>
+       </users>';
+$xml = new Xml();
+$xml->setData('string',$str);
+</pre>
+  <p>（2）数组</p>
+<pre class="brush: php;">
+$xml = new Xml();
+$arr = array(
+   'users', 
+	array(
+		'total' => 1,
+		'list' => array(
+			'user_name' => '小明', 
+			'user_id' => '12'
+		)
+	)			
+);
+ $xml->setData('array', $arr)
+
+); </pre>
+  <p>（3）XML文件
+           假设，required/data下有source.xml。</p>
+<pre class="brush: php;">
+$xml= new Xml();
+$xml->setData('file', ocPath('data', 'source.xml')); </pre>
+  <pre><strong>2、save(filePath[, perm])</strong>
+  保存为XML文件。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>filePath</td>
+		<td>必需。要保存的文件路径</td>
+	</tr>
+	<tr>
+		<td>perm</td>
+		<td>必需。可选。如果文件不存在新建文件时添加的可读写权限，默认为0755。</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+<p>在上述实例中，使用setData()设置了数据来源。</p>
+<pre class="brush: php;">
+$xml->save(ocPath('data', test.xml')); //会在required/data下面生成test.xml </pre>
+  <pre><strong>3、export(fileName)</strong>
+  导出XML。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>fileName</td>
+		<td>必需。要导出的XML文件名。</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+ $xml->export(ocPath('data', test.xml')); //浏览器会提示下载。 </pre>
+<pre><strong>4、makeArray()</strong>
+  生成XML数组。 </pre>
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+$array = $xml->makeArray(); 
+ocPrint($array); //会打印出xml数组 </pre>
+<pre><strong>5、display()</strong>
+  显示XML。 </pre>
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+$xml->display(); //直接显示出xml </pre>
+<pre><strong>6、destroy()</strong>
+  清空。释放掉Xml的xml对象。 </pre>
+</div>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>数据库配置</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+.STYLE4 {color: #FF00FF; font-weight: bold; }
+-->
+</style>
+</head>
+<body><pre><h2>数据库配置</h2>
+
+     Ocara支持分布式数据库连接，支持读写分离。
+
+<strong>1、 关于数据库服务器名</strong>
+      在本框架中进行数据库配置时，要给连接的服务器或者分布式服务器的主节点设置一个别名，统一称为数据库服务器名称。
+      默认的数据库服务器名为“default”。
+			
+<strong>2、 配置数据库</strong>
+     （1）实例一（默认数据库）
+      默认的数据库服务器名为default, 配置文件是database.php。
+      实例如下：
+<pre class="brush: php;">/*
+* 数据库配置
+*/
+$CONF['DATABASE']['default'] = array(
+	'type' 	    => 'mysql',  		//数据库类型
+	'host' 	    => '192.168.1.40',  //数据库服务器主机和端口，默认3306可以省略
+	'default' 	=> 'db_main',  	 	//默认数据库名称
+	'username' 	=> 'mydb_user',  	//数据库用户名
+	'password' 	=> 'mypass',  	 	//数据库用户密码
+	'charset' 	=> 'utf8',   		//数据库编码，注意不是utf-8
+	'prefix' 	=> 'oc_' 	 		//表名前缀
+);
+</pre>
+      配置中有两个“default”，第一个$CONF['DATABASE']['default']中的default是默认数据库服务器名称。而下面的default是默认数据库名。
+      注：（1）端口一般要放在host后面的，但是默认的端口可以省略。
+                   比如，如果是8807端口，就要将host写成'192.168.1.40:8807'了。
+             （2）如果表没有前缀，可保持为空不填；表名前缀后面一般以下划线“_”与表名连接，这里要带上下划线。
+             （3）如果编码是utf8格式，别忘了数据库编码utf8是没有中间的横杠"-"的
+
+      （2）实例二
+      如下实例，假设我们另有一台论坛服务器或服务器主节点，可以将服务器命名为“bbs”，默认数据库假设为bbs_main，没有前缀。
+      可以在database.php中新增以下配置：
+<pre class="brush: php;">/*
+* BBS数据库配置
+*/
+$CONF['DATABASE']['bbs'] = array(
+	'type' 	    => 'mysql',  		//数据库类型
+	'host' 	    => '192.168.1.40',  //数据库服务器主机和端口，默认3306可以省略
+	'default' 	=> 'bbs_main',  	 	//默认数据库名称
+	'username' 	=> 'mydb_bbs',  	//数据库用户名
+	'password' 	=> 'mybbspass',  	 	//数据库用户密码
+	'charset' 	=> 'utf8',   		//数据库编码，注意不是utf-8
+	'prefix' 	=> '' 	 		    //表名前缀
+);
+</pre>
+<strong>3、数据库读写分离</strong>
+      Ocara支持数据库读写分离。做法很简单，只要将配置中的host改成包含2个元素的数组形式，分别表示主数据库和从数据库。
+      如上例中的默认数据库也进行读写分离配置时，如下实例：
+<pre class="brush: php;">/*
+* 数据库配置
+*/
+$CONF['DATABASE']['default'] = array(
+	'type' 	    => 'mysql',  		//数据库类型
+	'host' 	    => array(
+					'192.168.1.40', 
+					'192.168.1.41:3307'
+				),  				//数据库服务器主机（读写分离）
+	'default' 	=> 'db_main',  	 	//默认数据库名称
+	'username' 	=> 'mydb',			//数据库用户名
+	'password' 	=> 'mypass',  	 	//数据库用户密码
+	'charset' 	=> 'utf8',   		//数据库编码
+	'prefix' 	=> '' 	 			//表前缀
+);
+</pre>
+       配置读写分离后，查询数据库时都会使用从库，但是有时候可能不希望使用从库查询，可以使用Model的master()方法。如下示例：
+<pre class="brush: php;">
+$userModel = new \Model\User();
+$userModel->where(array('type' => 2))
+	->master() //规定使用主库查询
+	->find(); 
+</pre>
+<strong>4、多数据库或分布式数据库配置</strong>
+   （1）直接配置法
+    适合于简单的多数据库的配置。
+    复制一份$CONF['DATABASE']['default']，将default改成要新建的数据库服务器名称（如bbs, blog等），然后修改配置即可。
+    实例如下：
+<pre class="brush: php;">$CONF['DATABASE']['bbs'] = array(
+	'type' 	    => 'mysql',          //数据库类型
+	'host' 	    => '192.168.1.42',   //数据库服务器主机
+	'default' 	=> 'db_bbs',  	     //默认数据库名称
+	'username' 	=> 'mybbsdb',  	     //数据库用户名
+	'password' 	=> 'mybbspass',  	 //数据库用户密码
+	'charset' 	=> 'utf8',           //数据库编码
+	'prefix' 	=> 'dz_' 	         //表前缀
+);
+</pre>
+<pre class="brush: php;">$CONF['DATABASE']['blog'] = array(
+	'type' 	    => 'mysql',          //数据库类型
+	'host' 	    => array(
+						'192.168.1.43', 
+						'192.168.1.44:8890'
+					), 				 //数据库服务器主机（读写分离）
+	'default'   => 'db_blog',  	     //默认数据库名称
+	'username' 	=> 'myblogdb', 		 //数据库用户名
+	'password' 	=> 'myblogpass',  	 //数据库用户密码
+	'charset' 	=> 'utf8',           //数据库编码
+	'prefix' 	=> 'x_',			 //表前缀
+);
+</pre>
+     （2）使用自定义回调
+      适合于大型分布式数据库系统配置和扩展。
+      目前，众多公司都采用分布式数据库架构。因此可能配置多且复杂，并且有不确定性。所以本框架对于这种需求，提出了使用自定义回调配置数据库的方法。
+      具体实现时，首先要写一个回调函数、类方法或MVC路由，然后在配置文件中配置回调路径。这样就能让所有的数据库配置通过一个回调搞
+定，扩展性更强！
+      该回调功能是在Database::factory()获取数据库第一次连接时进行，需要返回配置数组。
+<table class="hint">
+	<tr class="head">
+		<td><h2>注：</h2>如果conf配置文件与自定义回调中重复设置了同一个连接配置，则优先使用后者。</td>
+	</tr>
+</table>
+      这里简单的做个配置类，现实中可能会有很多复杂的数据库配置，<span class="STYLE4">如下简单实例</span>：
+<pre class="brush: php;">class DatabaseConfig extends Base
+{
+	public static function get($server)
+	{
+		$database = array();
+		
+		switch($server)
+		{
+			case 'bbs':
+				$config = array(
+					'type' 	    => 'mysql',          //数据库类型
+					'host' 	    => '192.168.1.42',   //数据库服务器主机
+					'default' 	=> 'db_bbs',  	     //默认数据库名称
+					'username' 	=> 'mybbsdb',  	     //数据库用户名
+					'password' 	=> 'mybbspass',  	 //数据库用户密码
+					'charset' 	=> 'utf8',           //数据库编码
+					'prefix' 	=> 'dz_' 	         //表前缀
+				);
+				break;
+			case 'blog':
+				$config = array(
+					'type' 	    => 'mysql',          //数据库类型
+					'host' 	    => array(
+										'192.168.1.43', 
+										'192.168.1.44:8890'
+									), 				 //数据库服务器主机（读写分离）
+					'default' 	    => 'db_blog',  	 //默认数据库名称
+					'username' 	=> 'myblogdb', 		 //数据库用户名
+					'password' 	=> 'myblogpass',  	 //数据库用户密码
+					'charset' 	=> 'utf8',           //数据库编码
+					'prefix' 	=> 'x_',			 //表前缀
+				);
+				break;
+			default :
+				$config = array();
+		}
+		
+		return $config;
+	}
+}</pre>
+        然后，我们要配置好自定义回调就行。默认在resource/conf/callback.php中的$CONF['CALLBACK']['database']，如下所示：
+<pre class="brush: php;">$CONF['CALLBACK']['database'] = array(
+	'get' => 'DatabaseConfig::get', //数据库配置回调
+);</pre>
+
+<strong>5、获取数据库连接配置</strong>
+      如果想获取数据库的连接配置，则使用Database的getConfig()方法。
+      它能获取通过配置文件或自定义回调中配置的数据库连接配置。格式如下：
+              <span class="STYLE1">getConfig(server)</span>
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>server</td>
+		<td>可选。同上connect()。</td>
+	</tr>
+</table>
+<pre>
+      实例如下；
+<pre class="brush: php;">$config = Database::getConfig('bbs');
+</pre>	  
+
+</pre>
+</body></html>

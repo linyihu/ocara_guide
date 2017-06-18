@@ -1,0 +1,5 @@
+﻿/* CSS Document */
+
+.filetree span.file,.filetree span.folder{background-position:0 center}
+
+.treeview, .treeview ul{margin-left:75px;width:500px;}

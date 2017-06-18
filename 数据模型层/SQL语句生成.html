@@ -1,0 +1,532 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>SQL查询语句生成</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body><pre><h2>SQL查询语句的生成方法</h2>
+ 
+<strong> 1、联接查询</strong>
+      （1）左联接
+            <span class="STYLE1">leftJoin(class, alias, on)</span>
+      （2）右联接
+             <span class="STYLE1">rightJoin(class, alias, on)</span>
+      （3） 内全联接
+           <span class="STYLE1"> innerJoin(class, alias, on)</span>
+      联接查询可以使用关联配置（请参考<a href="../数据模型层/关联模型操作.html">数据模型层/关联模型操作</a>），也可以在查询时自定义关联。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>class</td>
+		<td>必需。数据表模型类名或关联配置名。<br/>
+			（1）数据表模型类名，如\Model\User;<br/>
+			（2）关联配置名，配置在resource/conf/model中的模型配置$CONF['JOIN']。
+		</td>
+	</tr>
+	<tr>
+		<td>alias</td>
+		<td>可选。表的别名。</td>
+	</tr>
+	<tr>
+		<td>on</td>
+		<td>可选。联接条件，如果class是数据表模型类，本参数必需！</td>
+	</tr>
+</table>
+<pre>
+      实例如下，查询商品的名称和分类名称信息：
+<pre class="brush: php;">
+//数据表模型类联接查询
+$itemModel = new \Model\Item();
+$result = $itemModel-&gt;leftJoin('\Model\Category', 'b', 'a.category_id=b.id')
+      				-&gt;fields('a.item_id,a.name,a.category_id')
+	                ->fields('b.name as category_name')
+      				-&gt;find();
+
+//关联配置联接查询（使用别名）
+$itemModel = new \Model\Item();
+$result = $itemModel-&gt;leftJoin('itemCatery', 'b') //在resource/conf/model中的item.php配置
+      				-&gt;fields('a.item_id,a.name,a.category_id')
+	                ->fields('b.name as category_name')
+      				-&gt;find();
+
+//关联配置联接查询（不使用别名）
+$itemModel = new \Model\Item();
+$result = $itemModel-&gt;leftJoin('itemCatery') //在resource/conf/model中的item.php配置
+      				-&gt;fields('a.item_id,a.name,a.category_id')
+	                ->fields('itemCatery.name as category_name')
+      				-&gt;find();
+</pre>
+
+<strong>  2、查询条件</strong>
+      <span class="STYLE1">where(where[, table])</span>
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>where</td>
+		<td>必需。查询条件，参见<a href="数据查询.html">数据查询</a>中的查询多行记录的condition参数。</td>
+	</tr>
+	<tr>
+		<td>table</td>
+		<td>可选。表名。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+      （1）键值数组条件（系统自动进行安全过滤）
+<pre class="brush: php;">
+$where = array(
+   'user_name' => Request::getGet('username')
+);
+
+//查询结果
+$itemModel = new \Model\Item();
+$userInfo = $itemModel-&gt;where($where)
+					  -&gt;findFirst();
+</pre>
+      （2）字符串条件（对变量进行SQL安全过滤）
+<pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
+
+//查询结果
+$itemModel = new \Model\Item();
+$userInfo = $itemModel-&gt;where(&quot;user_name='{$userName}'&quot;)
+					  -&gt;findFirst();
+</pre>
+
+<strong>  3、复杂查询条件</strong>
+      <span class="STYLE1">cWhere(sign, where[, table])</span>
+      函数说明：如果条件数组的比较符号不是等于号“=”时，可使用该方法生成复杂查询条件，并且可以多次使用。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>sign</td>
+		<td>必需。条件比较符号。</td>
+	</tr>
+	<tr>
+		<td>where</td>
+		<td>必需。条件数组，键名为字段名或字段别名，键值为比较值。</td>
+	</tr>
+	<tr>
+		<td>table</td>
+		<td>可选。表名。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+      （1）查出&quot;1,5,33&quot;字符串列表中ID值的商品
+<pre class="brush: php;">$itemIds = '1,5,33';
+$itemModel = new \Model\Item();
+$itemData = $itemModel-&gt;cWhere('in', array('id' =&gt; $itemIds ))
+					  -&gt;find();
+</pre>
+      （2）查出数组array(1,5,33)中ID值的商品
+<pre class="brush: php;">$itemIds = array(1,5,33);
+$itemModel = new \Model\Item();
+$itemData = $itemModel-&gt;cWhere('in', array('id' =&gt; $itemIds ))
+					  -&gt;find();
+</pre>
+
+<strong>  4、更多条件</strong>
+      <span class="STYLE1">mWhere(where[, sign])</span>
+      函数说明：此方法是在已有的整个where语句最后加上以sign参数指定的符号联接的查询条件，可以多次使用。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>where</td>
+		<td>必需。查询条件字符串。</td>
+	</tr>
+	<tr>
+		<td>sign</td>
+		<td>可选。查询条件联接符号，默认为“AND”。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+             查出ID为1的商品，如果商品的状态为0则不查询，可以使用status &lt;&gt; '0'，也可以使用IF(status = '0', 0, 1)条件，以下是第二种条件方案：
+<pre class="brush: php;">
+$itemModel = new \Model\Item();
+$itemModel-&gt;where(array('id'=&gt;1))
+		  -&gt;mWhere(&quot;IF(status = '0', 0, 1)&quot;, 'AND')
+	 	  -&gt;findFirst();
+</pre>
+       会在整个Where语句最后加上“ AND IF(status = '0', 0, 1)”的条件。
+
+<strong>  5、字段及选项列表</strong>
+      <span class="STYLE1">fields(string[, table])</span>
+      函数说明：生成字段列表语句，不会进行引号转义，可以多次使用。如果不指定字段列表，默认为“*”。
+      如果要添加字段选项，比如Distinct，就用花括号括起来，如：fields('{distinct}')
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>string</td>
+		<td>必需。字段列表字符串。</td>
+	</tr>
+	<tr>
+		<td>table</td>
+		<td>可选。表名全称（不含前缀）。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+            查出用户user1的用户和邮箱信息。
+<pre class="brush: php;">
+$userModel = new \Model\User();
+$userData = $userModel->where(array('user_name' =&gt; 'user1'))
+					  ->leftJoin('user_group', 'b', 'a.gid=b.id')
+	 				  ->fields('{distinct}') // 字段选项
+	  				  ->fields(array('a.id', 'a.name')) //使用别名
+	  				  ->fields('id', 'menu_category') //使用表名，框架会自动加上表的别名
+      				  ->fields('user_name, email') //不使用表别名
+					  ->findFirst();
+</pre>
+
+<strong>  6、排序</strong>
+      <span class="STYLE1">orderBy(orderBy)</span>
+      函数说明：生成排序语句，只能使用一次。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>order</td>
+		<td>必需。排序语句字符串。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+            查出分类ID的商品，按照添加时间降序排序：
+<pre class="brush: php;">
+$itemModel = new \Model\Item();
+$itemData = $itemModel-&gt;where(array('category_id' =&gt; $category_id))
+					  -&gt;orderBy('create_time DESC')
+					  -&gt;find();
+</pre>
+<strong>  7、分组</strong>
+      <span class="STYLE1">groupBy(group)</span>
+      函数说明：生成分组语句，只能使用一次。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>group</td>
+		<td>必需。分组语句字符串，'group by'语句不需要写。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+            统计商品分类的商品数：
+<pre class="brush: php;">
+$itemModel = new \Model\Item();
+$staticData = $itemModel-&gt;fields('count(id)	as num')
+						-&gt;groupBy('category_id')
+						-&gt;find();
+</pre>
+
+
+<strong>  8、分组条件</strong>
+      <span class="STYLE1">having(where[, table])</span>
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>where</td>
+		<td>必需。查询条件，参见<a href="数据查询.html">数据查询</a>中的查询多行记录的condition参数。</td>
+	</tr>
+	<tr>
+		<td>table</td>
+		<td>可选。表名。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+      （1）键值数组条件（系统自动进行安全过滤）
+<pre class="brush: php;">
+$where = array(
+   'user_name' => Request::getGet('username')
+);
+
+//查询结果
+$itemModel = new \Model\Item();
+$userInfo = $itemModel-&gt;where($where)
+					  -&gt;findFirst();
+</pre>
+      （2）字符串条件（对变量进行SQL安全过滤）
+<pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
+
+//查询结果
+$itemModel = new \Model\Item();
+$userInfo = $itemModel-&gt;where(&quot;user_name='{$userName}'&quot;)
+					  -&gt;findFirst();
+</pre>
+
+<strong>  8、分页</strong>
+      <span class="STYLE1">page(limitInfo)  </span> 
+      函数说明：生成分页语句，只能使用一次。
+<table class="hint">
+	<tr class="head">
+		<td><h2>注意：</h2>使用page()方法后，返回的结果不再只是数据记录，而是记录总数和数据记录。</td>
+	</tr>
+</table>
+
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td height="31">limitInfo</td>
+		<td>必需。Ocara框架分页插件所生成的分页信息。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+<pre class="brush: php;">
+class ListAction extends ItemController
+{
+     public function _action()
+	 {
+	    //设置分页
+		$this->pager()->config('page', 10, 10);
+		
+		$itemModel = new \Model\Item();
+		$where = array('category_id' => 2);
+		
+		$result = $itemModel
+					->where($where)
+					->page($this->pager()->getInfo())
+					->find();
+		
+		$total = $result['total'];
+		$data = $result['data'];
+		$this->pager()->setHtml($total);
+	}
+}
+</pre>
+
+<strong>  9、限制数据行数</strong>
+      <span class="STYLE1">limit(limit[, offset])  </span>
+      函数说明：用于限制查询的行数。
+      它与page()是互相覆盖的，还有不同处在于，page()返回的结果中，包含total和data两个元素，而limit()直接返回data的数组列表。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td height="31">limit</td>
+		<td>必需。限制数量或开始行。对于Mysql来说，这个参数是LIMIT语句的第一个参数。</td>
+	</tr>
+	<tr>
+		<td height="31">offset</td>
+		<td>可选。限制数量。对于Mysql来说，这个参数是LIMIT语句的第二个参数。Mysql中如果只传递第一个参数，开始行就是0。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+<pre class="brush: php;">
+class ListAction extends ItemController
+{
+     public function _action()
+	 {
+	    $itemModel = $this->model();
+	    $result = $itemModel->fields('item_id, item_name, status');
+	     		->where(array('status' => 1))
+				->limit(10) //只传第一个参数
+				->limit(0, 10) //传两个参数，效果一样
+				->find();
+
+		ocPrint($result);
+	}
+}
+</pre>
+
+<strong>  10、规定使用主库查询</strong>
+      <span class="STYLE1">master()  </span> 
+      如果设置了读写分离数据库配置，使用该方法则规定使用主库进行查询。
+      实例如下：
+<pre class="brush: php;">
+$userModel = new \Model\User();
+$userModel->where(array('type' => 2))
+	->master() //规定使用主库查询
+	->find(); 
+</pre>
+
+<strong>  11、设置返回结果类型</strong>
+      <span class="STYLE1">setDataType(type)</span>
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>type</td>
+		<td>必需。设置类型，有array和object两种值，分别表示关联数组和对象类型。</td>
+	</tr>
+</table>
+<pre>
+      函数说明：
+            （1）如果设置的是返回数组元素（默认类型）
+                    每个数组元素都是一条记录的关联数组，每个关联数组的键名是字段名，键值是字段值。
+                    如果没有查到记录，则返回空数组array()。
+            （2）如果设置的是返回对象元素
+                    每个数组元素都是一个Object对象，属性名是字段名，属性值是字段值。
+                    如果没有查到记录，则返回null。
+      实例如下：
+            （1）设置为array类型，并显示
+<pre class="brush: php;">
+$brandModel = new \Model\Brand();
+$brandArray= $brandModel
+	-&gt;fields('id, name')
+	-&gt;setDataType('array')
+	-&gt;find();
+
+foreach ($brandArray as $row) {
+   echo &quot;品牌：id为{$row['id']}，名称为：{$row['name']}&quot; . '&lt;br/&gt;';
+}
+</pre>
+            （2）设置为object类型，并显示
+<pre class="brush: php;">
+$brandModel = new \Model\Brand();
+$brandArray= $brandModel-&gt;fields('id, name')
+      -&gt;setDataType('object')
+      -&gt;find();
+
+foreach ($brandArray as $row) {
+   echo &quot;品牌：id为{$row-&gt;id}，名称为：{$row-&gt;name}&quot; . '&lt;br/&gt;';
+}
+</pre>
+
+<strong>  12、获取最后一次插入的ID</strong>
+      <span class="STYLE1">getInsertId()  </span>
+      函数说明：获取最后一次插入的ID。
+      实例如下：
+<pre class="brush: php;">
+class CreateAction extends ItemController
+{
+     public function _action()
+	 {
+	    $itemModel = $this->model();
+	    $itemModel->data();
+	    $itemModel->save();
+	    echo $itemModel->getInsertId(); //输出最后插入的item_id值
+	}
+}
+</pre>
+
+<strong>  13、切换数据库</strong>
+      <span class="STYLE1">selectDatabase(name)  </span>
+      函数说明：选择数据库，可用于切换Model的数据库。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td height="31">name</td>
+		<td>必需。新的数据库名。</td>
+	</tr>
+</table>
+      实例如下：
+<pre class="brush: php;">
+class CreateAction extends ItemController
+{
+     public function _action()
+	 {
+	    $itemModel = $this->model();
+	    $itemModel->selectDatabase('bbs');
+	}
+}
+</pre>
+
+<strong>  14、切换数据表</strong>
+      <span class="STYLE1">selectTable(name[, primary])  </span>
+      函数说明：选择数据表，可用于切换Model的数据表。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td height="31">name</td>
+		<td>必需。新的数据表名。</td>
+	</tr>
+	<tr>
+		<td height="31">primary</td>
+		<td>可选。主键。复合主键用英文逗号分隔，如"detail,line"。</td>
+	</tr>
+</table>
+      实例如下：
+<pre class="brush: php;">
+class CreateAction extends ItemController
+{
+     public function _action()
+	 {
+	    $itemModel = $this->model();
+	    $itemModel->selectTable('item_201702');
+	}
+}
+</pre>
+
+<strong>  15、获取数据表字段</strong>
+      <span class="STYLE1">getFields()  </span>
+      函数说明：返回表的字段数组，如果没有字段，返回空数组array()
+
+</pre>
+</body>
+</html>

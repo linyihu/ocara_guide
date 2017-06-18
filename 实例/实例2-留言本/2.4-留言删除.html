@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>2.4-留言删除</title>
+<script type="text/javascript" src="../../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+<body><pre><h2>2.3-后台管理留言</h2>
+       上一节后台管理留言的列表页面中，每条留言右边都有一个删除的超链接。
+要删除留言，点击该链接，通过AJAX后台删除这条记录，然后刷新当前列表页。
+  
+<strong>1、添加JS</strong>
+      在JS根目录/public/js下面添加jquery框架文件，本例中添加了jquery-1.8.3.js。
+      再添加base.js，在其中添加本框架所提供的ocUrl()的JS函数，以方便在JS中生成URL，如下代码：
+<pre class="brush: php;">
+/*
+  * Ocara-Javascript新建URL
+  * @param integer 		  url_type URL类型，对应配置文件中的设置
+  * @param string or array controller 控制器名称，如果有module,使用数组new Array(module名, controller名)
+  * @param string 		  action 动作名称
+  * @param array			  param 
+  */
+function ocUrl(url_type, controller, action, param){
+    var m = c = false;
+    var type = typeof controller;
+	
+    if(type == 'object') {
+        m = controller[0];
+        c = controller[1];
+    } else if(type == 'string') {
+       c = controller;
+    }
+	
+    if(url_type == 2 || url_type == 3){
+        var mstr = m ? m + '/' : '';
+        var str = url_type == '3' ? 'index.php/' : '';
+        url = '/' + str + mstr + c + '/' + action;
+    } else {
+        var mstr = m ? &quot;m=&quot; + m + &quot;&amp;&quot; : '';
+        url = &quot;/index.php?&quot; + mstr + &quot;c=&quot; + c +　&quot;&amp;a=&quot; + action;
+    }
+	
+    if(typeof param == 'object') {
+        for(key in param) {
+            var val = param[key];
+            url = addQuery(url_type, key, val, url);
+        }
+    }
+  
+    return url;
+}
+</pre>
+       在JS目录admin/guestbook下面添加index.js，在其中添加deleteRecord()函数，用于删除链接调用AJAX提交删除留言，代码如下：
+<pre class="brush: php;">
+function deleteRecord(delId)
+{
+	if (confirm('确定要删除吗？')) {
+		var url = ocUrl(2, new Array('admin', 'guestbook'), 'delete');
+
+		$.post(
+			url,
+			{id: delId},
+			function(data){
+				if (data.status == 'success') {
+					alert('操作成功！');
+					location.reload();
+				} else {
+					alert('【'+data.data.code+'】' + data.message);
+				}
+				return false;
+			}
+		,'json');
+	}
+}
+</pre>
+        然后，在布局文件admin.php中调用jquery-1.8.3.js和base.js文件，如下：
+<pre class="brush: php;">
+$this-&gt;load(array('jquery-1.8.3.min.js', 'base.js'));
+</pre>        在index动作的模板文件中调用index.js，如下：
+<pre class="brush: php;">
+$this-&gt;load(array('admin/guestbook/index.js'));
+</pre>
+<strong>2、在删除链接添加调用函数</strong>
+      上节中已经添加了删除链接，也添加了函数调用。
+  
+<strong>3、编写AJAX后台代码</strong>
+      在开发者中心添加delete动作，并在其中添加_ajax()方法，在其中编写后台代码，如下：
+<pre class="brush: php;">
+class DeleteAction extends GuestbookController
+{
+	/**
+	 * 初始化
+	 */
+	public function _action(){}
+
+	public function _ajax()
+	{
+		$id = Request::getPost('id');
+		$model = \Model\Guestbook::select($id);
+
+		if (empty($ret)) {
+			$this->ajaxReturn('error', '找不到该记录！', '255');
+		} else {
+			$model->delete();
+			$this->ajaxReturn('success');
+		}
+	}
+}
+</pre>
+</pre>
+</body>
+</html>

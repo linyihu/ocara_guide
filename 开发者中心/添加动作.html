@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>添加动作（Action）</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>添加动作（Action）</h2>
+
+1、进入开发者中心，点击左边的&quot;动作（Action）&quot;菜单。右边会出现新建动作的界面。
+<img src="../style/images/添加动作.png" alt="添加动作Action"/>
+2、填写动作路径和名称、模板等信息后提交    
+
+<h2>添加选项介绍</h2>
+
+<strong>控制器名/动作名</strong>：
+       填写格式有两种：
+             （1）控制器名/动作名（2）模块名/控制器名/动作名
+       是由模块名、控制器名和动作名组成的字符串，中间用顺斜杠"/"分隔。如果没有模块，则填控制器名/动作名。
+       比如，
+              首页home下的index动作，写：/home/index。
+              后台模块admin下的home控制器的index动作，写：/admin/home/index。
+		  
+<strong>是否新建模板</strong>
+       如果打上勾，框架不仅会在actions目录中新建该动作类文件，还会在template中新建该控制器动作的模板文件。
+
+<strong>模板类型</strong>
+       在我们view中，template目录是模板目录，其下面一般默认有一个default目录，另外可能还有其他目录，这些都是模板类型目录。这里的
+模板类型，指的就是这些目录。如果，我们的模板文件是在default模板类型下面，这里就填写default，一般默认就是这个值。
+</pre>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ORM模型</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>ORM模型</h2>
+
+<strong>1、什么是ORM模型</strong>
+     对象关系映射（<a target="_blank" href="http://baike.baidu.com/view/1458.htm">英语</a>：Object Relational Mapping，简称ORM，或O/RM，或O/R mapping），是一种程序技术，用于实现面向对象编程语言里不
+同类型系统的数据之间的转换。
+     <strong>简单点说，</strong>在Ocara中，就是将一个数据表映射成一个类对象，表字段作为对象属性，字段值即该对象属性的值。
+     新建了一个表的ORM模型后，就可以使用对象的create()和update()方法添加和修改表数据的操作。<strong>
+</strong>
+<strong>2、新建表的ORM模型</strong>
+    使用select()查询一条记录，或使用data()方法提供ORM数据，会自动生成ORM模型。
+      （1）直接查询表数据
+<pre class="brush: php;">
+$data = \Model\User::select(1);  //查询主键为1的的记录
+</pre>
+      （2）取$_POST中数据
+             如果表单提交了数据，可以取$_POST的数据。
+             注：框架会自动查表获取字段列表，过滤掉不存在的字段名或字段别名。
+<pre class="brush: php;">$userModel= new \Model\User();
+$userModel-&gt;data();</pre>
+       （3）取指定数组的数据
+             不存在的字段名或字段别名的数据是无法保存的，因为框架不会自动查表获取字段。
+<pre class="brush: php;">$userModel= new \Model\User();
+$data = array(
+     'user_name' =&gt; 'test',
+     'email'  =&gt;   'test@163.com'
+ );
+ $userModel-&gt;data($data);
+</pre>
+<strong>3、使用ORM模型</strong>
+      （1）新建ORM模型后，就可以使用它来保存数据，然后我们通过create()和update()添加和更新数据。
+               如下实例：
+<pre class="brush: php;">
+$userModel= new \Model\User();
+$userModel-&gt;data(); //获取表单POST提交的数据
+$userModel->create_time = time();
+$id = $userModel-&gt;save(); //添加记录
+</pre>
+      （2）修改数据只需修改该model的字段属性。
+               实例如下，修改主键值为1记录的email字段：
+<pre class="brush: php;">
+$userModel= new \Model\User();
+$userModel-&gt;select(1); //获取主键为1的记录数据
+$userModel-&gt;email = 'newEmail@163.com'; //修改email
+$userModel-&gt;save(); //更新记录
+</pre>
+</pre>
+<pre>
+<strong>4、使用关联表的ORM模型</strong>
+      请参考<a href="../数据模型层/关联模型操作.html">数据模型层/关联模型操作</a>。
+
+
+</pre></body>
+</html>

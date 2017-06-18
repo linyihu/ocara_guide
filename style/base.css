@@ -1,0 +1,18 @@
+﻿/* CSS Document */
+html,body,*{font-family:"Microsoft YaHei","微软雅黑","verdana","宋体";font-size:14px;line-height:25px}
+pre{margin:0;}
+h1{font-weight:bold;font-size:24px;display:inline;}
+h2{font-weight:bold;font-size:22px;display:inline}
+
+.bold{font-weight:bold;}
+
+
+table.hint{width:650px;background-color:#ffffeb;margin:8px 20px;border:1px solid #F6E0AF}
+table.hint td{padding:3px 15px;color:#F40;}
+table.hint td h2{color:#663309;font-size:15px}
+
+table{width:800px;background-color:#DDDDDD;margin:0px 28px;}
+td{padding:3px 15px;word-break:break-all; word-wrap:break-word;vertical-align:text-top;}
+tr.head td{font-weight:bold}
+
+strong{font-size:15px;}

@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>缓存使用</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>缓存使用</h2>
+
+<strong>1、缓存介绍</strong>
+      随着大数据的到来，并发业务的普及，缓存不言而喻成为解决性能瓶颈的方案之一，其中，内存缓存Memcache和Redis应用广泛。所以框架支持这类缓存。这里讲到的是存储器缓存。
+默认已支持Memcache和Redis，正如数据库扩展使用一样，本框架对缓存的扩展也轻松自如。
+</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>注：</h2>
+		使用原生缓存类对象，且扩展容易。</td>
+	</tr>
+</table>
+<pre>
+      
+<strong>2、如何使用缓存</strong>
+      缓存的用法类似于数据库，支持多个缓存配置。步骤如下：
+      （1）缓存配置
+               不同的缓存类型可以有不同的配置。但是必须有open和type两个配置选项。
+               如下是框架默认的MemCache和Redis的缓存配置，默认配置default定义了Memcache的配置。代码如下：
+<pre class="brush: php;">
+/*
+ * 缓存配置
+ */
+
+//默认Memcache
+$CONF['CACHE']['default'] = array(
+	'open' 		=> 0, //是否启用
+	'type' 		=> 'memcache',
+	'servers' 	=> array(
+		array('127.0.0.1', 11211)
+	),
+);
+
+//Redis
+$CONF['CACHE']['cache_redis'] = array(
+	'open' 		=> 0, //是否启用
+	'type' 		=> 'redis',
+	'host'		=> '127.0.0.1',
+	'password'	=> ''
+);
+</pre>
+      （2）调用缓存
+               调用缓存很简单，用Cache的factory()方法。比如上述配置的两个缓存，可以如下调用：
+<pre class="brush: php;">
+//调用默认的缓存，Memcache
+$mem = Cache::factory('default');
+
+//调用Redis缓存
+$redis = Cache::factory('cache_redis');
+</pre>
+<strong>3、缓存扩展</strong>
+         如果框架提供的缓存类不满足我们的业务需求，可以保证在安装好缓存扩展或程序之后，新建自定义的缓存类。
+        （1）安装缓存
+                 一般要求缓存扩展都需要PHP支持，而且使用前要安装好相关软件。
+        （2）新建缓存类
+                 在安装缓存后，需要新建缓存类。该缓存类必须继承基类CacheBase和缓存接口Cache。
+                 其中，
+                 1）缓存接口Cache
+                         规定缓存类必须设置$_plugin属性，它保存的是当前缓存类型的PHP缓存扩展对象。
+                         比如Redis的$_plugin属性就是new Redis()的对象，并且必须含有setVar()和getVar()两个方法。
+                         接口代码如下：
+<pre class="brush: php;">
+interface Cache
+{
+	/**
+	 * 析构函数
+	 * @param array $config
+	 * @param bool $required
+	 */
+	public function __construct($config, $required = true);
+
+	/**
+	 * 设置KEY
+	 * @param string $name
+	 * @param boolean $value
+	 * @param integer $exireTime
+	 * @param mixed $args
+	 * @return bool
+	 */
+	public function setVar($name, $value, $exireTime = 0, $args = null);
+
+	/**
+	 * 获取KEY
+	 * @param string $name
+	 */
+	public function getVar($name);
+
+	/**
+	 * 删除KEY
+	 * @param string $name
+	 */
+	public function deleteVar($name);
+}
+</pre>
+                 2）缓存基类CacheBase
+                         定义了默认的方法.
+                         基类代码如下所示：
+<pre class="brush: php;">
+class CacheBase extends Base
+{
+	protected $_slaves = array();
+}
+</pre>
+<pre>
+       （3）缓存类放哪里
+                具本的请参看Memcache和Redis缓存类。都是放在框架目录的system/libs/cache目录中。
+                我们自定义的缓存类可以放在框架目录的extension/service目录中，这样可供多个网站应用使用，或者直接放在当前网
+          站应用目录的service/libs下面。
+	 
+</pre>
+</body>
+</html>

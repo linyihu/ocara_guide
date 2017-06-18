@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>添加控制器（Controller）</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>添加控制器（Controller）</h2>
+
+1、进入开发者中心，点击左边的&quot;控制器（Controller）&quot;菜单。右边会出现新建控制器的界面。
+<img src="../style/images/添加控制器.png" alt="添加控制器"/>
+
+<h2>添加选项介绍</h2>
+
+<strong>控制器类型</strong>
+       有普通控制器、Restful控制等类型。
+       （1）普通控制器，即平常所说的MVC模式控制器。
+       （2）Restful控制器，即符合Restful架构的控制器。
+       注：如果新建的控制器属于某个模块，则会继承该模块的控制器类型，这里设置如果不同便无效。
+<strong>控制器名称</strong>
+       填写格式有两种：
+              (1)控制器名   (2)模块名/控制器名。
+       是由模块名和控制器名组成的字符串，中间用顺斜杠"/"分隔。如果没有模块，则直接填控制器名。
+       比如，
+              不属于任何模块的user控制器，写成：user。
+              属于admin模块的user控制器，写成：/admin/user。
+<strong>是否新建模板</strong>
+       打勾选中时，会自动新建View模板文件。
+<strong>页面类型</strong>
+      如果选中单页面，会只新建一个index动作和它的View模板文件；选中分页面，则会新建index、create、update三个动作和模板文件。
+<strong>模板类型</strong>
+      模板类型，其实就像是我们开源系统中的模板风格。一般默认为default,如果您的网站需要做多个模板风格，可以填上风格名称，框架会自动新建模板目录。
+</pre>
+</body>
+</html>

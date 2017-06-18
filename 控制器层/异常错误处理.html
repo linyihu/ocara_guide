@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>异常错误处理</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>异常错误处理</h2>
+<strong></strong>
+      框架对代码中出现的错误和有意抛出的异常，都进行了自定义处理。
+      
+<strong>一、区分程序错误和异常错误</strong>
+        程序错误与异常错误是不同的，主要区别介绍如下：
+        1、程序错误
+               主要是指PHP所抛出的错误。
+             （1）触发方式
+                      主要有以下两种触发方式：
+                      （a）PHP代码错误
+                               在PHP中，主要有以下3种错误类型。请查看PHP手册的错误处理。
+                             （a1） 注意（Notices）
+                                        是一些比较小而且不严重的错误，通常这类的错误是不提示的，但有时会影响到运行的结果。比如去访问一个未被定义的变量。
+                              （a2）警告（Warnings）
+                                        是一些稍微严重的错误，PHP也会输出错误，但不会导致程序终止运行。比如想要包含include()一个本身不存在的文件。
+                              （a3）致命错误（Fatal errors）
+                                        是一些严重的错误，会导致程序停止运行，PHP也会输出错误。比如你想要初始化一个根本不存在的类对象，或调用一个不存在的函数。
+                      （b）自定义程序错误
+                               主要是通过PHP的<span class="STYLE1">trigger_error(error_message[, error_types])</span>函数有意抛出的如上所述的三种PHP代码错误，参见PHP手册。
+            （2）错误处理方式
+                      （a）自定义错误处理
+                               使用PHP的set_error_handler()函数指定自定义的函数进行处理。
+                               但是，该函数无法处理以下错误类型：E_ERROR、 E_PARSE、 E_CORE_ERROR、 E_CORE_WARNING、 
+                               E_COMPILE_ERROR、 E_COMPILE_WARNING，和在 调用 set_error_handler() 函数所在文件中产生的大多数 E_STRICT。
+                      （b）PHP自动处理
+                               如果没有使用上述函数指定处理，则会按照PHP的处理方式处理。其中致命错误会停止执行代码。三种错误是否显示，取决于PHP
+                               和代码里面的相应设置。
+      2、异常错误
+               其实是开发者有意抛出的错误，一般用于业务逻辑的错误提示。
+               通常是开发者在代码某处认为需要抛出异常错误提示，而不应当再继续执行代码，便使用throw（抛出）语句抛出。然后捕获该异常进行处理。
+               所以异常错误的触发方式只有一种，即throw new Exception()。
+               其中Exception是个类对象，也可以自定义，目前框架已经自定义了\Ocara\Exception类，它已经继承了Exception。所以本框架中触发异常，应使用：
+                        <span class="STYLE1">throw new \Ocara\Exception($message[, $code, Exception $previous])</span>
+               参数与PHP的Exception()一样。
+               而对它抛出的异常错误，处理方式有以下三种：
+                    （a）捕获处理方式
+                             如果外层使用了try（检测）和catch（捕获）的语句结构。try语句会检测到该异常，然后交由catch语句捕获这个异常信息进行处理。
+                    （b）自定义处理方式
+                             如果外层没有使用try和catch语句结构，并且已通过PHP的set_exception_handler() 指定了异常处理的类或函数，会调用该类或函数进行处理。
+                             还可以将错误记录到日志。
+                    （c）PHP自动处理
+                             如果上述方式都没有，则PHP自行抛出&quot;Fatal error: Uncaught exception 'Exception' with messag ... ...&quot;的错误。
+
+<strong>二、如何抛出或触发错误？</strong>
+        综上所述，我们已经知道了，开发时一般有程序错误和异常错误两种。
+        那么，我们在平时代码中，如何抛出这些错误呢？
+        当然，对于程序错误，一般是我们代码问题，PHP自动抛出错误。
+        但是，我们也可以自己有意抛出一个程序错误，这就用到了PHP的trigger_error()函数。
+        所以，我们总结如下：
+        1、抛出程序错误
+                （1）使用PHP的trigger_error()函数
+                如下实例：
+			
+<pre class="brush: php;">
+class IndexAction extends TestController
+{
+	/**
+	 * 初始化函数
+	 */
+	public function _action()
+	{
+		trigger_error('抱歉，程序出错！');
+	}
+}
+</pre>                        页面输出如下（非E_USER_ERROR错误不会显示并终止程序运行）：
+<img src="../style/images/程序警告错误.png" width="813" height="41" />
+
+               （2）使用Error::trigger()
+                        由于trigger_error()的第二个参数默认使用的是E_USER_WARNING错误类型，不会停止程序执行。
+                        所以如果我们想要默认是停止执行程序即错误类型为E_USER_ERROR，则使用<span class="STYLE1">Error::trigger(error[, params, errorType])</span>方法。
+                        如上例改成：
+<pre class="brush: php;">
+class IndexAction extends TestController
+{
+	/**
+	 * 初始化函数
+	 */
+	public function _action()
+	{
+		Error::trigger('抱歉，程序出错！');
+	}
+}
+</pre> 
+                        这样，页面输出如下（E_USER_ERROR错误会显示并终止程序运行）：
+				
+<img src="../style/images/程序错误.png" />
+
+        2、抛出异常错误
+                 有三种，一般请采用第三种框架提供的，因为它已经封装了错误语言、键名和错误码，如下：
+                    （a）使用PHP的throw new Exception()
+                    （b）使用throw new \Ocara\Exception()
+                    （c）使用Error::show()
+                 实例请看下面第四大点。
+                  
+<strong>三、如何处理错误？</strong>
+        综上所述，在我们的开发中，为了用户体验，一般会让这些错误提示用我们自己的页面输出。
+        对于程序错误，要显示出来，
+        所以，对于上述的两种错误，我们可以做以下的自定义处理：
+        1、框架默认处理
+            （1）输出打印错误
+                    对于这两种错误，PHP默认处理方法如下：
+                           （a）程序错误，PHP默认调用ocErrorHandler()处理；
+                           （b）异常错误，PHP默认调用ocExceptionHandler()处理。
+                    一般情况下，基本满足需求，通常会输出Ocara错误页面，如果是Ajax提交方式或者Restful控制器，则返回Json或XML格式。
+                    但是为了代码安全和用户体验，我们应该通过自定义回调自定义错误的输出页面。
+                    其配置选项是config/callback.php中的$CONF['CALLBACK']['error_output']。
+                    实例如下，
+                           假设要自定义回调myerror控制器的output动作来输出错误页面，那么配置如下所示：
+<pre class="brush: php;">
+/*
+ * 错误处理回调
+ */
+$CONF['CALLBACK']['error_output'] = '/myerror/output';
+</pre>
+            （2）设置哪些错误类型需要框架打印输出
+                   对于异常抛出的错误，都会输出打印并停止代码执行。
+                   如果是程序错误，可配置conf/develop.php文件中的$CONF['ERROR_HANDLER']['except_error_list']排除一些不希望用框架输出的错误，而使用PHP原生的方法输出。
+                   实例如下，
+                          如果使用trigger_error()抛出错误：
+
+<pre class="brush: php;">
+header("Content-type: text/html; charset=utf-8");
+trigger_error('抱歉，程序出错！', E_USER_WARNING);
+</pre>
+
+                         则页面会输出错误并且停止代码执行：
+    <img src="../style/images/默认错误处理警告实例.png"/>
+
+                          假设要取消显示E_USER_WARNING错误，则如下配置：
+<pre class="brush: php;">
+/*
+ * 自定义错误处理
+ */
+$CONF['ERROR_HANDLER'] = array(
+	'program_error' => '', //自定义程序错误处理方式
+	'exception_error' => '', //自定义异常错误处理方式
+
+	/*
+	 * 要取消显示的错误列表
+	 * 比如E_WARNING,E_USER_WARNING等
+	 */
+	'except_error_list' => array(
+        E_USER_WARNING
+    ),
+);
+</pre>
+                         此时，使用trigger_error('抱歉，程序出错！', E_USER_WARNING)，则会交给PHP默认方式处理（不停止代码执行），如下截图：
+
+    <img src="../style/images/默认错误处理警告PHP默认显示实例.png"/>
+
+        2、自定义处理
+                      如果框架的默认处理方式无法满足需求，我们还可以配置自定义错误处理函数。
+                      其配置选项是在conf/develop.php文件中的$CONF['ERROR_HANDLER']。
+                      比如，假设定义好了一个错误处理函数“ProgramErrorHandler"和异常错误处理函数“ExceptionErrorHandler”，可如下配置：
+<pre class="brush: php;">
+/*
+ * 自定义错误处理配置
+ */
+$CONF['ERROR_HANDLER'] = array(
+	'program_error' => 'ProgramErrorHandler', //自定义程序错误处理方式
+	'exception_error' => 'ExceptionErrorHandler', //自定义异常错误处理方式
+
+    /*
+	 * 要取消显示的错误列表
+	 * 比如E_WARNING,E_USER_WARNING等
+	 */
+	'except_error_list' => array(
+        E_USER_WARNING
+    ),
+);
+</pre>
+        3、记录错误日志
+                      虽然可以输出错误，但是记录错误日志也是必须的，非常有利于排错。
+                      记录日志要用自定义回调函数、方法或路由。
+                     （1）设置日志保存方式
+                              设置日志的保存方式，要用到自定义回调。具体的回调配置是config/callback.php中的$CONF['CALLBACK']['error_log']。
+                              假设我们要回调ExceptionHandler类的writeLog()方法来处理日志，该方法代码定义如下：
+
+<pre class="brush: php;">
+class ExceptionHandler extends Base
+{
+    function writeLog($errorInfo)
+    {
+    	$path = ocPath('data', 'logs/logTest.txt');
+        ocWrite($path, $errorInfo['errorMessage']);
+    }
+}
+</pre>
+                    然后，在conf/develop.php中配置自定义回调，如下所示：
+
+<pre class="brush: php;">
+$CONF['CALLBACK']['error_log'] = 'ExceptionHandler::writeLog';
+</pre>
+                   （2）触发错误日志
+                             配置完自定义回调以后，触发错误日志的方法说明如下：
+                            （a）对于程序错误，只要配置了自定义回调，无论是哪种错误都会调用它写日志。
+                            （b）对于异常错误，一样的处理方法。抛出错误时，有两种方法：
+                                    （b1）记录日志并且显示错误，使用<span class="STYLE1">Error::show(message[, params])</span>方法。一般会终止程序执行。
+                                    （b2）只记录日志不显示错误，使用<span class="STYLE1">Error::log(message[, params])</span>方法。如果没有配置自定义回调，那它什么都不做。
+                             记录异常错误日志实例如下：
+                             假设缺少商品信息时只记录到日志而不显示出错信息，如下所示：
+
+<pre class="brush: php;">
+$itemInfo = $this->getItemInfo();
+if (empty($itemInfo)) {
+    Error::log('no_item_info'); // 仅记录错误日志
+}
+</pre>
+                             如果还想显示错误信息则使用Error::show()，如下所示：
+
+<pre class="brush: php;">
+$itemInfo = $this->getItemInfo();
+if (empty($itemInfo)) {
+    Error::show('no_item_info'); //记录错误日志并显示错误
+}
+</pre>
+<strong>四、错误提示的语言配置</strong>
+        错误提示的语言配置，一般是在resource/lang及其子目录control或者model中。
+        通常有两种配置格式：
+        （1）错误数组
+                 一般用于错误提示，是由错误码和错误文本组成的数组。比如：array(1201, 'Session路径设置出错。请检测权限或路径!')。
+                 截取一部分代码，如下所示：
+
+<img src="../style/images/错误配置.png" />
+
+                      该错误配置，是在框架的中文简体版语言文件zh_cn.php，其路径如下图：
+
+<img src="../style/images/错误提示路径.png" />
+
+        （2）字符串
+                 一般只是作为语言文本，当然也可以作为错误提示，只是缺少错误码。比如：'Session路径设置出错。请检测权限或路径!'。
+                 作为正常语言文本时，要用<span class="STYLE1">ocLang()</span>函数获取该文本的语言配置。
+                 实例如下，
+                       假设我们在语言目录根文件resource/lang/base.php中做的语言配置，代码如下：
+<pre class="brush: php;">/**
+/**
+ * Ocara base language config
+ * See ocara/system/data/languages/zh_cn.php
+ */
+$LANG = array(
+	'my_application_error' => '我的Web应用错误'
+);
+</pre>
+                      使用时，代码如下：
+
+<pre class="brush: php;">
+class IndexAction extends TestController
+{
+	/**
+	 * 初始化函数
+	 */
+	public function _action()
+	{
+		 Error::show('my_application_error');
+	}
+}
+</pre>
+                     输出结果，如下截图：
+
+<img src="../style/images/字符串错误.png" />
+
+          <strong>实例如下：</strong>
+                 以框架的语言配置文件为例。
+                （1）错误提示
+                         下面是通过Error::show()抛出并显示错误。
+<pre class="brush: php;">
+class IndexAction extends TestController
+{
+	/**
+	 * 初始化函数
+	 */
+	public function _action()
+	{
+		Error::show('fault_filename');
+	}
+}
+</pre> 
+                        如上实例代码中，"fault_filename"其实是Ocara框架本身的错误提示语言配置。
+                        根据它的错误码和错误文本，如果没有配置自定义回调或自定义处理函数的话，会输出如下：
+					
+<img src="../style/images/错误提示.png" />
+
+             （2）正常文本
+                     实际上，字符串格式的语言配置，一般用于正常文本比较多，而非错误提示。此时，要用ocLang()函数获取语言配置。
+                     以上例说明，如果只取该语言配置文本，代码如下：
+
+<pre class="brush: php;">
+class IndexAction extends TestController
+{
+	/**
+	 * 初始化函数
+	 */
+	public function _action()
+	{
+		$errorContent = ocLang('my_application_error');
+		echo $errorContent; //输出“我的Web应用错误”
+	}
+}
+</pre> 					
+</pre>
+</body>
+</html>

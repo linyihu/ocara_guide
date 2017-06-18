@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>添加数据模型（Model）</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>添加数据模型（Model）</h2>
+
+（1）进入开发者中心，点击左边的&quot;控制器（Model）&quot;菜单。右边会出现新建控制器的界面。
+<img src="../style/images/添加数据模型.png"/>
+
+<h2>添加选项介绍</h2>
+
+<strong>数据库服务器名称</strong>
+       必填，即application配置文件中配置的<strong>数据库服务器名</strong>，<font color="red">不是数据库名称</font>。
+       一般默认的是default，这对应于它的数据库连接配置:
+<pre class="brush: php;">/*
+ * 数据库配置
+ */
+$CONF['DATABASE']['default'] = array(
+	'type' 		=> 'mysql', //数据库类型
+	'host' 		=> '', //数据库服务器主机和端口，默认端口可以省略
+	'default' 	=> 'main', //默认数据库名称
+	'username' 	=> '', //数据库用户名
+	'password' 	=> '', //数据库用户密码
+	'charset' 	=> '', //数据库编码，如果是utf8不要写成utf-8
+	'prefix' 	=> '', //表名前缀
+	'keywords'  => '', //SQL关键字
+);
+</pre>
+       $CONF['DATABASE']['default']的default即数据库服务器名。
+<strong>数据库名称</strong>
+       可选，数据库的名称。如果填写default或为空，则表示使用配置中的默认数据库名称，如上述配置代码中的main。
+<strong>数据表名</strong>
+       必填，数据表的名称。
+<strong>主键字段</strong>
+       必填，数据表的主键字段。
+       可以是复合主键，各主键字段使用英文半角状态下的逗号","分隔，比如复合主键：detail_id,line
+
+</pre>
+</body>
+</html>

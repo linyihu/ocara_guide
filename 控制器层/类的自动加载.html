@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>类的自动加载</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h2>类的自动加载</h2>
+
+<strong>1、什么是类的自动加载？</strong>
+       当我们初次使用对象类时，如果该类没有加载，PHP一般会报错。但是PHP也提供了自动加载机制，也就是在找不到对象类时，PHP能自动去我们指定的
+目录中寻找该类，如果存在就自动加载进来，如果找不到才报错。我们一般通过__autload()魔术函数指定自动加载方式，并且如果不想使用该函数，可以通过
+spl_autoload_register()去指定调用哪个自动加载函数或类方法。 
+       如今，PHP有了composer的依赖工具，其中可以实现类的自动加载。
+       所以，本框架安装时可以通过composer安装，如果不通过它安装也可以，本框架自动实现类的自动加载。
+       自动加载，都是通过命名空间来实现的。
+
+<strong>2、自动加载哪个目录？</strong>
+       类的自动加载都是通过命名空间来指定路径的。
+       可以查看框架目录system/data/default.php中的$OC_CONF['AUTOLOAD_MAP']看到自动加载的映射规则。
+       以下以此规则代码说明：
+       （1）不以Ocara\开头的类，都放在当前应用根目录的service/library子目录中。
+<pre class="brush: php;">
+	/*应用程序*/
+	'Controller\\' 							=> OC_ROOT . 'application/controller/', //映射到当前应用根目录下application/controller目录
+	'Model\\' 								=> OC_ROOT . 'application/model/', //映射到当前应用根目录下application/model目录
+	'View\\' 								=> OC_ROOT . 'application/view/', //映射到当前应用根目录下application/view目录
+	'View\Helper\\' 						=> OC_ROOT . 'application/view/helper/', //映射到当前应用根目录下application/view/helper目录
+</pre>
+       （2）以Ocara\开头的类都放在框架目录的system/library的子目录中，如果没有子目录，则加载的是system/library中的类。
+               另外Ocara\Functions开头的类都放在system/functions中。
+               Ocara\Develop开头的类都放在system/modules/library中。
+               Ocara\Service\Functions开头的类都放在system/service/functions中。
+<pre class="brush: php;">
+'Ocara\\' 								=> OC_SYS . 'library/', //映射到ocara/system/library目录
+'Ocara\Controller\\' 					=> OC_LIB . 'Controller/', //映射到ocara/system/library/Controller目录
+'Ocara\Model\\' 						=> OC_LIB . 'Model/', //映射到ocara/system/library/Model目录
+'Ocara\View\\' 							=> OC_LIB . 'View/', //映射到ocara/system/library/View目录
+'Ocara\Cache\\' 						=> OC_LIB . 'Cache/', //映射到ocara/system/library/Cache目录
+'Ocara\Database\\' 						=> OC_LIB . 'Database/', //映射到ocara/system/library/Database目录
+'Ocara\Interfaces\\' 					=> OC_LIB . 'Interfaces/', //映射到ocara/system/library/Interfaces目录
+'Ocara\Feature\\' 						=> OC_LIB . 'Feature/', //映射到ocara/system/library/Feature目录
+'Ocara\Session\\' 						=> OC_LIB . 'Session/', //映射到ocara/system/library/Session目录
+
+'Ocara\Develop\\' 						=> OC_SYS . 'modules/develop/library/', //映射到ocara/system/modules/develop/library目录
+'Ocara\Functions\\'     				=> OC_SYS . 'functions/', //映射到ocara/system/functions目录
+
+/*Ocara框架插件*/
+'Ocara\Service\\' 						=> OC_SYS . 'service/library/', //映射到ocara/system/service/library目录
+'Ocara\Service\Interfaces\\' 			=> OC_SYS . 'service/library/Interfaces/', //映射到ocara/system/service/library/Interfaces目录
+
+'Ocara\service\Functions\\'   			=> OC_SYS . 'service/functions/', //映射到ocara/system/service/functions目录
+</pre>
+       （3）以Ocara\Extension开头的类都放在与system同级的extension目录中
+<pre class="brush: php;">
+/*Ocara框架扩展插件*/
+'Ocara\Extension\Service\\'   			=> OC_EXT . 'service/library/', //映射到ocara/extension/library目录
+'Ocara\Extension\Service/Functions\\'   => OC_EXT . 'service/functions/', //映射到ocara/extension/functions目录
+'Ocara\Extension\Service/Interfaces\\'  => OC_EXT . 'service/library/Interfaces/', //映射到ocara/system/Interfaces目录
+</pre>
+       （4）不符合上面规则的自定义类，都映射到当前应用根目录下service/library中:
+              <img src="../style/images/自定义类路径.png"/>
+
+<strong>4、类和文件的命名规则</strong>
+        类名由类目录的子目录名和文件名组成。目录名和文件名必须首字母大写，以下划线“_”分隔。
+        比如Bbs_User，表示library/Bbs/User.php中定义的Bbs_User类。
+       （1）类文件在类根目录（service/library）下面
+                如果类文件在类根目录下面，则类名只需文件名，大小写要一致。
+                比如在类根目录中新建一个User.php类文件，其中定义了Use类：
+<pre class="brush: php;">class User {
+    //类的代码
+}
+</pre>
+       （2）类文件在类根目录的子目录中
+                如果是在类根目录的子目录中，则要将子目录名与文件名组成类名，以下划线“_”分隔。
+                比如在service/library/Bbs/Test下面新建一个User.php类文件，其中定义的类名如下代码：
+<pre class="brush: php;">class Bbs_Test_User {
+    //类的代码
+}
+</pre>
+
+<pre><strong>3、如何调用类</strong>
+        自动加载的类调用时直接写类名即可，不需要使用include和service函数手动加载类文件。
+        比如上例中，要加载library/Bbs/Test/User.php的类，定义的类名必是Bbs_Test_User，调用如下：
+</pre><pre class="brush: php;"> $user = new Bbs_Test_User();</pre>
+
+<strong>4、第三方程序是否与框架的自动加载类函数冲突？</strong>
+        Ocara框架类的自动加载，不会与其他第三方程序的自动加载冲突，只不过自定义或第三方程序中务必使用<strong>spl_autoload_register()</strong>函数
+注册自动加载类的函数或方法。
+        Ocara会先调用Ocara框架的自动加载函数或方法，找不到时才去调用自定义或第三方程序中的自动加载函数或方法，如果再找不到类，则会抛出错误。
+
+
+</pre>
+</body></html>

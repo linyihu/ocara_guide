@@ -1,0 +1,461 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>表单生成</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>表单的生成</h2>
+
+<strong>一、生成表单</strong>
+1、表单新建（自动验证）
+      在Action类中，一般是在_form()方法中新建表单。
+      这个方法函数是在_action()初始化方法之后执行、表单的自动验证之前执行。然后，才执行_display()和_submit()两个方法。
+      所以，为了表单的正常使用，一般将表单新建放在该方法中执行。
+      当然，其他地方新建也是可以的，但是表单提交后不会自动验证表单，这时需要在新建后手动验证表单，参见下面的第（3）点。
+      具体的新建表单，是使用当前控制器动作的form()方法，格式如下：
+             <span class="STYLE1">form(name)</span>
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。表单名称。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+<pre class="brush: php;">class CreateAction extends ItemController
+{
+    //初始化代码
+	public function _action()
+	{}
+	
+	//新建表单
+    public function _form()
+	{
+		$this->form('form_item_edit') 
+			->init(
+			     ocUrl('/admin/item/edit'), 
+				array(  //表单的其他属性设置
+					'class' => 'form-edit', 
+					'onchange' => 'reurn validateForm(this)'
+				)
+			)
+		    ->model('\Model\Item', 'item');  //指定表单验证规则，item是别名
+	}
+	
+	//这里写页面显示前的逻辑...
+	public function _display()
+	{}
+	
+	//这里写表单提交后的代码...
+	public function _submit()
+	{}
+}
+	</pre>
+2、让表单具有上传文件的功能
+     如果表单中要有上传文件功能，我们都知道除了要加上上传控件，还要在表单中添加相关属性enctype="multipart/form-data" 。
+     您可以在上例中的init()中添加，但其实框架已经提供了更简便的方法，就是执行<span class="STYLE1">upload()</span>方法，它会自动加上该属性。
+     如下实例：
+<pre class="brush: php;">public function _form()
+{
+	$this->form('form_item_edit') 
+		->init(
+			 ocUrl('/admin/item/edit'), 
+			array(  
+				'class' => 'form-edit', 
+				'onchange' => 'reurn validateForm(this)'
+			)
+		)
+		->upload()  //让表单具有上传文件的功能
+		->model('\Model\Item', 'item');
+}</pre>	 
+<pre>
+3、设置表单的字段配置
+      表单的字段配置一般用它的model()方法指定数据模型配置。
+            <span class="STYLE1">model(class[, alias]) </span>
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>class</td>
+		<td>必需。数据模型的类名，需要命名空间格式。如：\Model\Item</td>
+	</tr>
+	<tr>
+		<td>alias</td>
+		<td>可选。别名。当使用表单的lang()或map()方法时，可以使用“别名.字段名”格式</td>
+	</tr>
+</table>
+<pre>
+<pre class="brush: php;">class TestController extends Controller
+{
+	//控制器初始化代码
+	public function _control()
+	{}
+	
+	public function createAction()
+	{
+		//新建表单
+		$this->form('form_item_edit') 
+		->init(
+			 ocUrl('/admin/item/edit'), 
+			array(  
+				'class' => 'form-edit', 
+				'onchange' => 'reurn validateForm(this)'
+			)
+		)
+		->upload()  
+		->model('\Model\Item'); //使用类名指定表单验证规则
+
+	    $this->form('form_item_edit2')
+			->init(
+			     ocUrl('/admin/item/edit'),
+				array(  //表单的其他属性设置
+					'class' => 'form-edit',
+					'onchange' => 'reurn validateForm(this)'
+				)
+			)
+		    ->model('\Model\Item', 'item');  //使用Model对象指定表单验证规则，item是别名
+
+		//如果是POST提交，则进行表单填写校验
+		if (Request::isPost()) {
+	        //手动验证表单
+			$this->form('form_item_edit')->validate();
+			//这里写表单提交后的处理逻辑
+		} else {
+		    //这里写页面显示前的代码
+		}
+	}
+}</pre>
+
+4、表单属性设置
+      上例中可以看出对表单的属性进行设置是用表单的init()方法，格式如下：
+            <span class="STYLE1">init([action, attributes]) </span>
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>action</td>
+		<td>可选。表单的action属性值。 默认为“#”，表示当前URL。</td>
+	</tr>
+	<tr>
+		<td>attributes</td>
+		<td>可选。表单属性关联数组，键名为属性名，键值为属性值。默认地，表单只会添加id或name两个属性。</td>
+	</tr>
+</table>
+<pre>
+
+      实例如下：
+<pre class="brush: php;">$action = ocUrl('/user/login');
+$attributes = array(
+  	 'onsubmit' =&gt; 'return validateLogin()'
+  );
+
+$this-&gt;form('form_edit')-&gt;init($action, $attributes);
+</pre>
+5、设置是否验证表单
+      有时候一个控制器动作页面中显示的表单，要提交到另外的控制器动作，那么两处表单设置的名称要一样。
+      如果另外的控制器动作不想验证这个表单，则可以使用validateForm()来设置，传递参数false。该方法格式如下：
+            <span class="STYLE1">validateForm(validate) </span>
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>validate</td>
+		<td>可选。设置是否验证表单。
+			如果设置为true则验证，为false时为不验证。<br/>
+			如果不设置或者设置为null，则不做任何设置，只是返回是否验证表单，用于判断是否验证表单。</td>
+	</tr>
+</table>
+<pre>
+
+      实例如下：
+<pre class="brush: php;">
+class CreateAction extends ItemController
+{
+    //初始化代码
+	public function _action()
+	{}
+
+	public function _form()
+	{
+		$this->form('form_create')
+			 ->init(ocUrl($this->getRoute()))
+			 ->validateForm(false); //设置不验证该表单
+	}
+
+	public function _display()
+	{
+		//检测是否验证该表单
+		$ifValidateForm = $this->form('form_create')->validateForm();
+		ocPrint($ifValidateForm); //输出false
+	}
+}
+</pre>
+</pre>
+<strong>二、表单的显示</strong>
+      一般不建议大家自己在HTML中直接去写&lt;form&gt;标签，因为这样无法自动生成表单令牌。
+      显示表单要使用表单对象的<strong>begin()</strong>方法，该方法生成&lt;form&gt;标签，如果开启了表单令牌，会在&lt;form&gt;标签后面换行接
+上一个hidden隐藏域，保存了加密的表单令牌。
+      （1）原生PHP模板
+           如果模板使用原生的PHP代码，可以这样开始表单：
+<pre class="brush: php;">&lt;?php echo $form_edit-&gt;begin();?&gt; </pre>
+           或者，如果修改了PHP的short_open_tag为On的话，这样开始：
+<pre class="brush: php;">&lt;?=$form_edit-&gt;begin()?&gt;</pre>
+      （2）模板插件（如smarty）
+           如果您的模板是smarty引擎，假设smarty设置的标签是&lt;{}&gt;，这样开始：
+<pre class="brush: php;">&lt;{$form_edit-&gt;begin()}&gt;</pre>           其他的模板引擎插件类似。
+           表单的结束，可以直接写<strong>“&lt;/form&gt;”</strong>，也可以使用<strong>end()</strong>方法结束，这个无所谓。
+           如下示例：
+<pre class="brush: php;">&lt;?php echo $form_edit-&gt;end();?&gt; </pre> 
+
+<strong>三、表单提交后的处理</strong>
+1、POST方式提交的表单处理
+        表单提交后的处理代码，要在_submit()方法中写。如下示例：
+<pre class="brush: php;">class CreateAction extends ItemController
+{
+    //初始化代码
+	public function _action()
+	{}
+	
+	//这里新建表单
+    public function _form()
+	{
+		$this->form('form_create')
+			 ->init(ocUrl($this->getRoute()))
+	         ->model('\Model\Item', 'item')
+			 ->validateForm(false); //设置不验证该表单
+	}
+	
+	//这里写页面显示前的逻辑...
+	public function _display()
+	{}
+	
+	//表单提交后的处理
+	public function _submit()
+	{
+		$itemModel = $this->model('\Model\Item');
+		$item->data()->save();  //自动获取数据并添加到数据库
+	}
+}
+</pre>
+        对于表单是否提交的判断框加会自动使用Request::isPost()判断，如果要自定义呢？
+        只要在_isSubmit()中做修改判断就行了，需要返回true或false。示例如下：
+<pre class="brush: php;">class CreateAction extends ItemController
+{
+    //初始化代码
+	public function _action()
+	{}
+
+	//这里新建表单
+    public function _form()
+	{}
+
+	//这里写页面显示前的逻辑...
+	public function _display()
+	{}
+
+	//表单提交后的处理
+	public function _submit()
+	{
+		$itemModel = $this->model('\Model\Item');
+		$item->data()->save();
+	}
+
+	public function _isSubmit()
+	{
+		//手动判断表单是否提交
+		return isset($_POST['submit']);
+	}
+}
+</pre>
+2、修改表单提交的方式
+      我们一般提交数据使用POST，有时候可能会用其他的HTTP提交方式，比如说PUT、PATCH等。
+      当然，一般不建议使用GET方式提交表单。这里只是以GET方式为例说明。
+      （1）两种判断方式
+              GET提交的情形比较少，这种方式提交后，后台要做表单是否提交的判断。有以下两种场景：
+              （a）如果控制器动作是个类的话，需要添加它的_isSubmit()方法检测是否是表单提交。
+              （b）如果控制器动作只是所属控制器的一个方法的话，要在其代码中检测。
+      （2）动作类中如何判断
+              控制器动作类中判断表单是否提交的具体实现，分为两步：
+              （a）使用<span class="STYLE1">submitMethod('get')</span>设置表单提交方式为GET方式；
+              （b）设置表示表单提交的条件，比如检测是否用GET方式提交了submit的按钮：isset($_GET('submit'))。
+      （3）怎样获取GET提交的数据
+              那么，怎么获取提交来的数据呢？有两种方法：
+              （a）使用<span class="STYLE1">Request::getGet()</span>
+              （b）使用控制器动作的<span class="STYLE1">getSumit()</span>方法，它不管是POST还是GET提交的都能区分获取。与Request::getGet()参数一样。
+      如下示例：
+<pre class="brush: php;">class CreateAction extends ItemController
+{
+    //初始化代码
+	public function _action()
+	{}
+	
+	//这里新建表单
+    public function _form()
+	{}
+	
+	//这里写页面显示前的逻辑...
+	public function _display()
+	{}
+	
+	//这里写表单提交后的代码...
+	public function _submit()
+	{
+		$itemModel = $this->model('\Model\Item');
+		$item->data($this->getSubmit()) //使用$this->getSubmit()获取数据，使用Request::getGet()也是可以的
+			 ->save();
+    }
+	
+	//是否是表单GET提交的判断
+	public function _isSubmit()
+	{
+	    //设置表单的提交方式是GET
+	    $this->submitMethod('get');
+
+	    //【必须】判断表单是否提交
+	    return isset($GET['submit']);
+	}
+}
+</pre>
+      如果控制器动作只是一个Action方法的话，如下示例：
+<pre class="brush: php;">class ItemController extends Controller
+{
+    //控制器初始化代码
+	public function _control()
+	{}
+
+	//这里新建表单
+    public function CreateAction()
+	{
+		//设置表单的提交方式是GET
+	    $this->submitMethod('get');
+
+	    //【必须】判断表单是否提交
+	    if (isset($GET['submit'])) {
+			$itemModel = $this->model('\Model\Item');
+      		$item->data($this->getSubmit()) //使用$this->getSubmit()获取数据，使用Request::getGet()也是可以的
+				 ->save();
+		} else {
+			//这里写页面显示前的逻辑...
+		}
+	}
+}
+</pre>
+      注意：上面两个例子中，框架自动使用新建Model时生成的字段配置过滤掉不存在的表字段。
+            如果某个表字段没有在字段配置中，需要在resource/conf/fields中相关模型中配置该字段，否则会被过滹掉无法保存。
+            如下是第一个例子动作类的实例的修改：
+<pre class="brush: php;">
+class CreateAction extends ItemController
+{
+    //其他方法... ...
+
+	//这里写表单提交后的代码...
+	public function _submit()
+	{
+		$data = array(
+			'item_name' => $this->getSubmit('item_name'),
+			'category_id' => $this->getSubmit('category_id'),
+			'user_name' => 'u1',
+			//等等... ...
+		);
+
+		$itemModel = $this->model('\Model\Item');
+		$item->data() //使用$this->getSubmit()获取数据，使用Request::getGet()也是可以的
+			 ->save();
+    }
+}
+</pre>
+<strong>四、表单控件的生成和使用</strong>
+      1、使用表单生成控件
+            在Ocara框架中，表单控件的生成有以下三种方式：
+               （1）直接在模板中写控件的HTML代码，这样表单令牌和表单验证都失效，不建议使用。
+               （2）控件生成类是Html，表单令牌和表单验证也失效，不建议使用。
+               （3）使用表单类Form生成，它已集成了Html组件，调的也是该组件的方法函数。所以，建议使用。
+           具体的控件生成方法函数，请参见<a href="表单控件的生成.html">表单控件的生成</a>。
+
+      2、表单控制件的输出
+            （1）使用获取表单的控件元素方法element()
+                   实例如下：
+                   （a）在后台生成控件
+<pre class="brush: php;">class CreateAction extends ItemController
+{
+    //初始化代码
+	public function _action()
+	{}
+
+	//这里新建表单
+    public function _form()
+	{
+		$this->form('form_create')->init(ocUrl($this->getRoute()));
+	}
+
+	public function _display()
+	{
+		$this->form('form_create')->text('userName2');
+	}
+}
+</pre>
+                   （b）在模板中使用表单控件元素
+<pre class="brush: php;">&lt;?=$form_create-&gt;element('userName2')?&gt;</pre>
+            （2）直接在模板中生成控件
+<pre class="brush: php;">&lt;?=$form_create-&gt;text('userName2')?&gt;</pre>
+      3、字段的标签文本
+          使用表单的lang()方法，可以获取该字段的语言配置。如下实例：
+<pre class="brush: php;">&lt;?=$form_create-&gt;lang('userName2')?&gt;</pre>
+          因为表单会使用array_merge()合并所有用model()方法指定模型的字段语言文本。
+          所以如果有重复的冲突，可以用“别名或类名.字段”来获取语言文本，如下实例：
+<pre class="brush: php;">
+	//定义表单时未指定Model的别名时，如$this->form('form_create')->model('\Model\User')
+	&lt;?=$form_create-&gt;lang('\Model\User.userName2')?&gt;
+
+	//定义表单时指定了Model的别名时，如$this->form('form_create')->model('\Model\User', 'user')
+	&lt;?=$form_create-&gt;lang('user.userName2')?&gt;
+</pre>
+      4、动态设置字段别名     使用表单的map()方法，可以动态设置字段的别名。
+<pre class="brush: php;">
+//设置别名映射
+$form_create->map('userName3', 'username');
+</pre>          在模板中获取字段别名时，如下实例：
+<pre class="brush: php;">&lt;?=$form_create-&gt;map('userName3')?&gt;</pre>          如果同上所述的多个Model的重复字段冲突，如下实例：
+<pre class="brush: php;">
+	//定义表单时未指定Model的别名时，如$this->form('form_create')->model('\Model\User')
+	&lt;?=$form_create->map('userName3', 'username')?&gt;
+
+	//定义表单时指定了Model的别名时，如$this->form('form_create')->model('\Model\User', 'user')
+	&lt;?=$form_create->map('userName3', 'username')?&gt;
+</pre>
+
+</pre>
+</body>
+</html>

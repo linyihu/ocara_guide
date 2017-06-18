@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>2.2-添加留言</title>
+<script type="text/javascript" src="../../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+<body><pre><h2>1.1-添加留言</h2>
+       上节已经说到新建控制器，其中自动生成的index动作，我们就作为添加留言的页面。
+
+<strong>1、 生成表单</strong>
+       在indexAction中添加_form()方法，并生成表单：
+<pre class="brush: php;">
+class IndexAction extends GuestbookController
+{
+	/**
+	 * 初始化
+	 */
+	public function _action(){}
+
+	public function _form()
+	{
+		$this->form('form_edit')
+			 ->init(ocUrl('/guestbook/index'));
+	}
+
+	public function _display()
+	{
+		//这里写显示前的处理代码
+	}
+}
+</pre>
+<strong>2、 新建表单HTML</strong> 
+       在模板文件中添加HTML代码，使用$form_edit调用表单对象。
+<pre class="brush: php;">
+&lt;?php echo $form_edit-&gt;begin();?&gt;
+&lt;table width=&quot;798&quot; border=&quot;0&quot;&gt;
+&lt;tr&gt;
+&lt;td height=&quot;42&quot; colspan=&quot;2&quot;&gt;请留言：&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width=&quot;119&quot; height=&quot;46&quot;&gt;您的联系方式：&lt;/td&gt;
+&lt;td width=&quot;669&quot;&gt;&lt;label&gt;
+&lt;?php&#32;echo&#32;$form_edit-&gt;text(telphone);?&gt;
+&lt;/label&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td height=&quot;48&quot;&gt;留言：&lt;/td&gt;
+&lt;td&gt;&lt;label&gt;
+&lt;?php&#32;echo&#32;$form_edit-&gt;textarea('content');?&gt;
+&lt;/label&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td height=&quot;48&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td&gt;&lt;label&gt;
+&lt;input type=&quot;submit&quot; name=&quot;Submit&quot; value=&quot;提交&quot; /&gt;
+&lt;input type=&quot;reset&quot; name=&quot;Submit2&quot; value=&quot;重置&quot; /&gt;
+&lt;/label&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;?php echo $form_edit-&gt;end();?&gt;
+</pre>
+<strong>3、提交保存</strong>
+      在indexAction中添加_submit()方法，保存提交来的数据。代码如下：
+<pre class="brush: php;">
+class IndexAction extends GuestbookController
+{
+    /**
+     * 初始化
+     */
+    public function _action(){}
+
+    public function _form()
+    {
+        $this-&gt;form('form_edit')
+             -&gt;init(ocUrl('/guestbook/index'));
+    }
+
+    public function _display()
+    {
+         //这里写显示前的处理代码
+     }
+
+	//提交保存
+	public function _submit()
+	{
+		$model = $this->model('\Model\Guestbook');
+		$model->data();
+		$model->save();
+		echo  'success';
+	}
+}
+</pre>
+</pre>
+</body>
+</html>

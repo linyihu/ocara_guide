@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>模板助手</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>模板助手（Helper）</h2>
+
+<strong>1、什么是模板助手</strong>
+      模板助手其实就是模板文件要用到的处理特殊功能的常用类或函数，我们称为模板助手。
+      比如，购物网站的商品分类显示，由于显示比较复杂，可能要通过PHP程序动态显示，但是不只一处使用，可以将其新建成一个模板助手到处都可以使用。
+      模板助手有两种类型：
+      （1）对象类助手
+               模板助手是一个类及其方法。
+      （2）函数助手
+              模板助手是一个函数。
+</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>注：</h2>
+		模板助手文件名要与模板助手类名或函数名一样。</td>
+	</tr>
+</table>
+<pre>
+      
+<strong>2、如何新建模板助手</strong>
+      新建模板助手，只要在application/view/helper目录中新建助手文件即可，也可以分目录保存，在调用的时候注意路径，加上该目录名即可。
+所有的模板助手都要定义在\View\Helper的命名空间下。
+
+<h2>应用实例</h2>
+
+      在application/view/default/helper下新建了子目录Item，并在其中新建了ShowCategory.php助手文件。
+
+（1）对象类助手
+      定义ShowCategory类对象助手：
+<pre class="brush: php;">
+namespace View\Helper\Item;
+class ShowCategory extends Base
+{
+     protected $category_id;
+	 
+	 public function __construct($category_id)
+	 {
+	     $this->category_id = $category_id;
+	 }
+     public function getCategoryHtml()
+	 {
+	 	 $html = '';
+		 
+	     //这里写生成代码
+		 //... ...
+		 
+		 //返回HTML
+		 return $html;
+	 }
+}
+</pre>
+      模板中输出实例如下：
+<pre class="brush: php;">
+<div id="categoryList">
+<?php
+$showCategory = new \View\Helper\Item\ShowCategory();
+echo $showCategory->getCategoryHtml();
+?>
+</div>
+</pre>
+（2）函数助手
+      文件中定义ShowCategory函数助手：
+<pre class="brush: php;">function ShowCategory($category_id)
+{
+    $html = '';
+		 
+	 //这里写生成代码
+	 //... ...
+	 
+	 //返回HTML
+	 return $html;
+}
+
+</pre>
+      模板中输出实例如下：
+<pre class="brush: php;">
+<div id="categoryList">
+<?php echo \View\Helper\Item\ShowCategory($categoryId);?>
+</div>
+</pre>
+</pre></body>
+</html>

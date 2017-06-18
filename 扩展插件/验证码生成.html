@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>验证码生成</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>VerifyCode</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       验证码生成插件，可以生成验证码，可以是有色背景或图片背景，还可以画线条</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>颜色背景，图片背景都可以，画线条也可以。</td>
+	</tr>
+</table>
+<p><strong>二、应用实例</strong></p>
+<p>（１）生成验证码</p>
+（a）纯色背景验证码
+<pre class="brush: php;">$vcode = new VerifyCode();
+		
+//画背景
+//黑色，宽130px，高30px
+$vcode->drawBack(130, 30, '#000000'); 
+
+//画线条，指定结束点位置(13, 19)，看起来向下悬挂
+$vcode->drawLine('#ff0330', 2, 15, 13, 19); 
+//画线条，没有指定结点位置，默认水平垂直居中
+$vcode->drawLine('#343245', 0, 13); 
+
+//添加3个字符
+//第2个参数用字符串，则指定字体颜色
+//第3个参数指定左上角位置(0,14)
+$vcode->drawText(3, '#ff00ff', array(0,14)); 
+
+//添加2个字符
+//第2个参数用数组指定格式
+//不指定左上角位置，默认放正中间
+$format = array(
+   'type' 	=> 'number',  //只取数字字符
+   'filter' => '0', 	  //不要0这个字符
+   'size' 	=> 12, 		  //字体12px
+   'color' 	=> '#FF00F0', //颜色#333333
+   'font'	=> 'Verdana', //字体文件名，这里不加扩展名，所以表示Verdana.ttf字体
+);
+
+$vcode->drawText(2, $format); 
+
+//输出验证码
+$vcode->output(); 
+</pre>
+（b）背景图片验证码
+<pre class="brush: php;">$vcode = new VerifyCode();
+		
+//画背景
+//宽130px，高30px
+//背景图片路径为/public/attachments/default/bg_code.jpg
+$path = ocPath('attachments', 'default/bg_code.jpg');
+$vcode->drawBack(130, 30, $path); 
+
+//其他同上
+</pre>
+<p>
+<pre>（２）验证码检测
+　　　表单提交了验证码后，后台检测，如：</pre></p><pre class="brush: php;">$verifyCodeObj = new Validate();
+$code = Request::getPost('verify_code');
+
+if (false == $verifyCodeObj->checkCode($code)) {
+    die('验证码不正确');
+}</pre><p><strong>三、方法函数介绍</strong></p>
+<div class="function">
+<pre><strong>1、drawBack(width, height[, source])</strong>
+  画背景。此方法必须先执行。可以画纯色背景或背景图片。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>width</td>
+		<td>必需。验证码背景宽度。</td>
+	</tr>
+		<tr>
+		<td>height</td>
+		<td>必需。验证码背景高度。</td>
+	</tr>
+		<tr>
+		<td>source</td>
+		<td>可选。背景来源。可以是颜色值或背景图片的路径。默认是黑色（#000000）背景。</td>
+	</tr>
+  </table>  
+<pre>
+
+<strong>2、drawLine(color, startX, startY[, endX, endY])</strong>
+  画线条。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>color</td>
+		<td>必需。线条颜色。</td>
+	</tr>
+	<tr>
+		<td>startX</td>
+		<td>必需。起点横坐标。</td>
+	</tr>
+	<tr>
+		<td>startY</td>
+		<td>必需。起点纵坐标。</td>
+	</tr>
+	<tr>
+		<td>endX</td>
+		<td>可选。结束点横坐标。如果为空，则线条水平居中。</td>
+	</tr>
+	<tr>
+		<td>endY</td>
+		<td>可选。结束点纵坐标。如果为空，则线条垂直居中。<br/>
+		注：如果endX和endY都为空，则线条水平垂直居中。</td>
+	</tr>
+  </table>  
+<pre>
+
+<strong>3、drawText(length[, format, location])</strong>
+  画验证码文字。可以多次使用。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>length</td>
+		<td>必需。背景类型，有color和image两种。</td>
+	</tr>
+		<tr>
+		<td>format</td>
+		<td>可选。文字格式。如果是字符串，则应该是颜色值；如果是数组，参考以下元素说明：<br />
+		    （1）type：指定验证码字符类型，有number、letter或both三种，分别表示数字、字母或两者都有。<br />
+		    （2）filter：指定要忽略的字符，可以是字符串或数组，如'0a'与array(0, 'a')等效。<br />
+		    （3）color：字体颜色值，必须是'#0033DD'类似的6位颜色值。<br />
+		    （4）size：字体大小，单位是像素px。<br />
+		    （5）font：字体文件名，默认为sinhei（黑体）。可以不带扩展名，表示".ttf"类型，一般这种居多。可以是Ocara提供的字体，也可以是是自行下载的放在框架扩展目录ocara/extension/data/fonts下面的字体文件名。
+	</td>
+	</tr>
+	<tr>
+		<td>location</td>
+		<td>可选。文字起点位置。必须是类似于(0, 1)的二个元素值的数组，分别表示起点横坐标和纵坐标的数值。</td>
+	</tr>
+  </table> 
+<pre>
+
+<strong>4、getRandCode(type, length[, filter])</strong>
+  生成由数字和大小写英文字母组成的随机验证码。
+  该函数是静态函数，外部可以随时调用，如下所示：
+<pre class="brush: php;">
+//获取随机验证码，忽略0、小写o和大写O
+$randCode =  VerifyCode::getRandCode('number', 5, array('0', 'o', 'O'));
+//filter参数也可以是字符串
+$randCode =  VerifyCode::getRandCode('number', 5, array('0oO'));
+
+</pre>
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>type</td>
+		<td>必需。字符类型。同上面drawText的format参数中的type一致。即有number、letter和both三种。默认为both。</td>
+	</tr>
+	<tr>
+		<td>length</td>
+		<td>必需。返回的字符长度。</td>
+	</tr>
+	<tr>
+		<td>filter</td>
+		<td>可选。要忽略的字符。同上面drawText的format参数中的filter一致。<br/>一般情况下，0、小写o和大小写O不容易区分，可以在生成时忽略它。可以是字符串或数组。例如，'0oo'和array('0,'o', 'O')等效。</td>
+	</tr>
+  </table>  
+  
+<pre>
+
+<strong>5、getCode()</strong>
+  获取生成的验证码，保存在Session当中。 </pre>
+  
+<pre>
+
+<strong>6、checkCode(code)</strong>
+   检测用户输入的验证码是否正确。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>code</td>
+		<td>必需。传递用户输入的验证码，与session中的验证码进行比对。</td>
+	</tr>
+  </table>  
+<pre>
+
+<strong>7、output()</strong>
+  在页面中输出验证码图片。 </pre>
+    
+
+<pre>
+
+<strong>8、clear()</strong>
+  清除验证码以及session中保存的验证码数据。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>content</td>
+		<td>必需。要添加的字符串文本</td>
+	</tr>
+		<tr>
+		<td>fontInfo</td>
+		<td>必需。字体信息</td>
+	</tr>
+  </table>  
+</div>
+</body>
+</html>

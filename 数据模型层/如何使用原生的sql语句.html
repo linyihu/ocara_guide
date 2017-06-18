@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>使用原生的SQL语句</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {color: #FF0000}
+.STYLE2 {color: #00CC33}
+-->
+</style>
+</head>
+
+<body>
+<pre><h2>原生的SQL语句文本</h2>
+
+     一般地，Ocara在生成的sql时，都会把字段值、条件表达式、排序语句和分组语句进行SQL过滤和引号转义，并且保存的字段值也都会
+自动加上英文单引号。
+     有的时候，我们可能不需要这种自动处理，而是使用原生的sql语句。
+  
+<h2>ocSql()函数</h2>
+
+     调用<strong>ocSql()</strong>函数就可以使用原生的SQL语句。
+     实例如下：  
+    <strong>（1）查询数据时</strong>
+              where()的条件为数组时，数组元素值会进行安全过滤，
+              然而以下情形中，可能不希望进行过滤：
+<pre class="brush: php;">$where = array(
+    'email' =&gt; '123update@163.com'
+);
+$data = array(
+   'sex' =&gt; '0'
+);
+$userModel= new \Model\User();
+$userModel-&gt;update($where, $data, 1);
+</pre>
+              输出的SQL语句为：
+                      UPDATE `user` SET `sex` = '0' WHERE `email` = <span class="STYLE1">'123@163.com'</span>;     
+              可以看出email条件中的update文本被过滤掉了。
+              此时，如果使用了ocSql()就不会进行sql安全过滤：
+                <pre class="brush: php;">
+$where = array(
+   'email' =&gt; ocSql('123update@163.com') 
+);
+$data = array(
+   'sex' =&gt; '0'
+);
+$userModel= new \Model\User();
+$userModel-&gt;update($where, $data, 1);
+                </pre>
+              输出的SQL语句为：
+                     UPDATE `user` SET `sex` = '0' WHERE `email` = <span class="STYLE2">'123update@163.com'</span>; 
+				  
+       <strong>（2）保存数据时</strong>
+                   <pre class="brush: php;">
+$data = array(
+    'user_name' =&gt; 1,
+    'email' =&gt; '123update@163.com', 
+    'create_time' =&gt; 'now()'
+);
+$userModel= new \Model\User();
+$userModel-&gt;create($data);
+                   </pre>
+              会生成如下的SQL语句（调试SQL语句，请将上面的create($data)改成create($data, 1)）：
+                     INSERT INTO `user`(`user_name`,`email`, `create_time`) VALUES('1', <span class="STYLE1">'123@163.com'</span>,<span class="STYLE1"> 'now()'</span>)
+              可以看出字段值都加上了单引号，邮箱中的update文本被过滤掉了。有人会说now()也被加上了引号，会无法保存吧？其实Mysql是可以保存
+              的，但是其他类型的数据库就不一定了。
+              所以，其他类型的数据库如果是这样的SQL就会出错了，怎么办呢？只要对其执行ocSql()函数就可以了，如下所示：
+             <pre class="brush: php;">
+$data = array(
+    'user_name' =&gt; 1,
+    'email' =&gt; ocSql('123update@163.com'), 
+    'create_time' =&gt; ocSql('now()')
+);
+$userModel= new \Model\User();
+$userModel-&gt;create($data);
+             </pre>
+               这样，就会生成以下语句：
+                       INSERT INTO `user`(`user_name`,`email`, `create_time`) VALUES('1', <span class="STYLE2">'123update@163.com'</span>, <span class="STYLE2">now()</span>)
+               这里的now()没有加单引号，而且邮箱中的update文本也没有被过滤掉。
+</pre></body>
+</html>

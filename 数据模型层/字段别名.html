@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>字段别名</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre>
+<h2>什么是字段别名</h2>
+      
+      字段别名，就是为了安全起见，设置的一个或多个字段的虚拟名称，用于表单元素起名和后台保存时自动获取值，以及作为查询条件时自动匹配字段。
+
+<h2>如何指定字段别名</h2>
+
+      只要新建一个model文件配置，其中定义$CONF['MAP']的键值数组的配置就行了，键名为字段别名，键值为字段名。
+      比如，我们在required/model中添加user.php，在其中添加配置：
+<pre class="brush: php;">$CONF['MAP'] = array(
+      'userName' =&gt; 'username',
+      'password_alias' =&gt; 'password'
+);
+</pre>      当然你还可以定义某个字段的多个别名，如下username配置有两个别名：
+<pre class="brush: php;">$CONF['MAP'] = array(
+    'userName' =&gt; 'username',
+    'userName2' =&gt; 'username',
+    'pass' =&gt; 'password'
+);
+</pre>
+
+<h2>应用场景和实例</h2>
+
+<strong>（1）作为数据保存时匹配字段</strong>
+      有很多时候，我们为了数据库安全，不希望他人知道数据表的字段名，所以不想让表单元素的命名与字段名同名。
+      但是这样的话，一般地我们在后台处理时，不得不重新赋值一下，如下面实例，表单有两个字段
+      userName和pass，分别表示用户名和密码，然后表单提交后可以这样添加记录：
+<pre class="brush: php;">
+$userModel= new \Model\User();
+$data = array(
+    'username' =&gt; Request::getPost('userName'),
+    'password' =&gt; Request::getPost('pass')
+);
+
+//添加记录
+$userModel->data($data)-&gt;save();
+</pre>      然而，如果我们指定userName、pass分别是username、password的别名，表单提交后，后台处理数据就方便多了。
+      首先，在conf/model/user.php中指定别名：
+<pre class="brush: php;">$CONF['MAP'] = array(
+    'userName2' => 'username',
+	'pass' => 'password'
+);
+</pre>      然后，添加记录，就不需要如此麻烦了：
+<pre class="brush: php;">
+$userModel= new \Model\User();
+
+//添加记录
+$userModel-&gt;data($data)-&gt;save();
+</pre>      由于系统会自动匹配字段名称与别名，所以直接使用data()，不需要赋值给字段就能保存。
+
+<strong>（2）作为查询条件时匹配字段</strong>
+       字段别名在关联数组中做查询条件时，也能匹配到。如将上例中POST提交的数据作为查询条件；
+<pre class="brush: php;">
+$userModel= new \Model\User();
+
+//查询结果
+$result = $userModel-&gt;where($_POST)-&gt;findFirst();
+</pre>
+
+<strong>（3）表单字段匹配</strong>
+        如果设置了别名，并且关联了表单（使用表单的model()方法）。则表单字段的标签，以及表单字段验证时都会匹到
+</pre></body>
+</html>

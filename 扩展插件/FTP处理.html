@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>FTP处理</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body>
+<pre><h1>Ftp</h1>
+  
+<strong>一、插件介绍</strong>
+       FTP插件，实现了FTP的各种常用操作。
+</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>删除目录时，可以递归删除。 检测目录函数，可以递归新建不存在的目录。</td>
+	</tr>
+</table>
+
+<pre><strong>
+<br />二、方法函数介绍</strong></pre>
+<div class="function">
+<pre><strong>1、connect(ftpserver, username, password[, timeOut])</strong>
+    连接FTP。连接失败会提示出错信息。不返回任何信息。
+    参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>ftpServer</td>
+		<td>必需。服务器地址</td>
+	</tr>
+	<tr>
+		<td>username</td>
+		<td>必需。用户名</td>
+	</tr>
+	<tr>
+		<td>password</td>
+		<td>必需。密码</td>
+	</tr>
+	<tr>
+	  <td>timeOut</td>
+	  <td>可选，超时时间</td>
+    </tr>
+</table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+$ftp = new Ftp();
+ 
+$ftp-&gt;connect('85.134.120.16', 'myhost001', '123456@dlyg');
+
+</pre>
+<pre><strong>2、createDir(dirName, mode)  </strong>
+   新建远程目录。如果成功，则返回新建的目录名，否则返回 false。
+  	参数说明： 
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>dirName</td>
+		<td>必需。目录名称</td>
+	</tr>
+	<tr>
+		<td>mode</td>
+		<td>可选。目录权限</td>
+	</tr>
+</table> 
+   <p>实例如下：</p>
+      <pre class="brush: php;"> echo $ftp-&gt;createDir('test'); //输出/test
+
+</pre>
+      <pre><strong>3、listDir(dirPath)</strong>
+   列出FTP目录内容。
+   参数说明： 
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>可选。远程文件路径</td>
+	</tr>
+</table> 
+ <p>实例如下：</p>
+ <p>在test下面新建一个文件和一个目录，然后列出：</p>
+<pre class="brush: php;"> $ftp-&gt;createDir('test/test2');
+$ftp-&gt;upload(ocPath('data', 'test.txt'), 'test/1.txt');
+$ftp-&gt;upload(ocPath('data', 'test.txt'), 'test/test2/2.txt');
+
+ocPrint($ftp-&gt;listDir('test')); //输出：Array ( [0] =&gt; test/1.txt [1] =&gt; test/test2 )
+
+</pre>
+<pre><strong>4、chDir(path)</strong>
+   改变当前FTP目录。
+  	参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td><strong>path</strong></td>
+		<td>必需。要改变到的远程文件路径</td>
+	</tr>
+</table>  
+<p>实例如下：</p>
+<p> 改变当前目录到test目录：
+</p>
+<pre class="brush: php;"> $ftp-&gt;chDir('test');
+
+ocPrint($ftp-&gt;listDir('test')); //输出：Array ( [0] =&gt; /test/1.php [1] =&gt; /test/test2 )
+
+</pre>
+<pre><strong>5、checkDir(path)</strong>
+    检查并新建不存在FTP目录。
+  	参数说明： 
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>必需。要检查的远程文件路径</td>
+	</tr>
+</table> 
+  <p>实例如下：</p>
+  <pre class="brush: php;">echo $ftp-&gt;checkDir('test/test4'); //输出true 
+
+</pre>
+  <pre><strong>6、delDir(dirName, delRecursive, path)</strong>
+     删除远程目录。
+	 参数说明： 
+</pre>
+  <table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>dirName</td>
+		<td>必需。要删除的目录名称</td>
+	</tr>
+	<tr>
+		<td>recursive</td>
+		<td>可选。是否递归删除，默认为false。</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>可选。远程路径</td>
+	</tr>
+</table> 
+  <p>实例如下：</p>
+  <p> 将上例中的test目录删除，如下： </p>
+  <pre class="brush: php;">  echo $ftp-&gt;delDir('test', true); //输出true，递归删除了test目录
+
+</pre>
+  <pre><strong>7、upload(localFile, remoteFile, resumeGet, mode)</strong>
+    上传远程文件。成功返回true，失败返回false。
+    参数说明：  
+</pre>
+  <table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>localFile</td>
+		<td>必需。要上传的本地文件路径</td>
+	</tr>
+	<tr>
+		<td>remoteFile</td>
+		<td>必需。远程保存路径</td>
+	</tr>
+	<tr>
+		<td>asyn</td>
+		<td>可选。默认为true</td>
+	</tr>
+	<tr>
+	  <td>mode</td>
+	  <td>文件格式类型，设置为&quot;b&quot;表示二进制类型，否则为Ascii码类型</td>
+    </tr>
+	<tr>
+	  <td>location</td>
+	  <td>&nbsp;</td>
+    </tr>
+</table>   
+  <p>实例如下：</p>
+  <p>假设本地required/data/ftp_test.txt存在，如下上传到远程FTP目录的test下面，保存为ftp_upload.txt： </p>
+  <pre class="brush: php;">$ftp-&gt;createDir('test');
+
+$ftp-&gt;upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
+
+</pre>
+    <pre><strong>8、download(remoteFile, localFile, resumeGet, mode)</strong>
+     下载远程文件。成功返回true，失败返回false。
+     参数说明：
+</pre>
+    <table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>remoteFile</td>
+		<td>必需。要远程下载的文件路径</td>
+	</tr>
+	<tr>
+		<td>localFile</td>
+		<td>必需。要保存的本地路径</td>
+	</tr>
+	<tr>
+		<td>asyn</td>
+		<td>同上</td>
+	</tr>
+	<tr>
+	  <td>mode</td>
+	  <td>同上</td>
+	  </tr>
+	<tr>
+	  <td>location</td>
+	  <td>同上</td>
+	  </tr>
+</table> 
+    <p>实例如下：</p>
+    <p>把上面upload()实例中的ftp_upload.txt下载下来保存为/required/data/ftp_download.txt： </p>
+    <pre class="brush: php;">$ftp-&gt;download('test/ftp_upload.txt', ocPath('data', 'ftp_download.txt')); //输出true
+
+</pre>
+     <pre><strong>9、delFile(path)</strong>
+     删除远程文件。成功返回true，失败返回false。
+     参数说明：
+</pre>
+     <table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>必需。远程路径</td>
+	</tr>
+</table> 
+     <p>实例如下：</p>
+     <p>删除上例中的ftp_upload.txt，如下： </p>
+     <pre class="brush: php;">echo $ftp-&gt;delFile('test/ftp_upload.txt'); //输出true
+
+</pre>
+<pre><strong>10、 getPwd()</strong>
+    获取当前所在FTP目录。
+</pre>
+  <p>实例如下：</p>
+<pre class="brush: php;"> echo $ftp-&gt;getPwd(); //输出当前目录，本教程实例是在根目录，输出“/”
+
+</pre>
+<pre><strong>11、getSize(remoteFile)</strong>
+    获取远程文件大小。
+    参数说明： 
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>remoteFile</td>
+		<td>必需。远程文件路径</td>
+	</tr>
+</table> 
+<p>实例如下：</p>
+<pre class="brush: php;">echo $ftp-&gt;getSize('test/ftp_upload.txt'); //结果输出了文件大小的数字 
+</pre>
+
+<pre><strong>12、rename(oldname, newname)</strong>
+     重命名FTP文件。
+     参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>oldName</td>
+		<td>必需。原文件名</td>
+	    <blockquote>&nbsp;	</blockquote>
+	</tr>
+	<tr>
+	  <td>newName</td>
+	  <td>新文件名</td>
+    </tr>
+</table><p>实例如下：</p>
+<pre class="brush: php;">echo $ftp-&gt;rename('test/ftp_upload.txt', 'test/ftp_test.txt'); //结果为true，查看可知道该远程文件重命名成功
+</pre>
+<pre><strong>13、execute(command)</strong>
+     执行命令。
+     参数说明：  
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>command</td>
+		<td>必需。命令</td>
+	</tr>
+</table> 
+</pre>
+<pre><strong>14、close()</strong>
+    关闭FTP连接。
+</pre>
+<p>实例如下：</p>
+<pre class="brush: php;">$ftp = new Ftp();
+$ftp-&gt;connect('61.164.140.166', 'host19469562', '456789linyihu');
+echo $ftp-&gt;getPwd(); //输出“/”
+$ftp-&gt;close();
+echo $ftp-&gt;getPwd(); //错误提示：ftp_pwd(): 32 is not a valid FTP Buffer resource（说明已经关闭，无法再使用FTP服务）
+</pre>
+</div>
+</body>
+</html>
