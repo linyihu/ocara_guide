@@ -14,7 +14,7 @@
 <h2>什么是字段别名</h2>
       
       字段别名，就是为了安全起见，设置的一个或多个字段的虚拟名称，用于表单元素起名和后台保存时自动获取值，以及作为查询条件时自动匹配字段。
-
+      
 <h2>如何指定字段别名</h2>
 
       只要新建一个model文件配置，其中定义$CONF['MAP']的键值数组的配置就行了，键名为字段别名，键值为字段名。
@@ -29,6 +29,51 @@
     'userName2' =&gt; 'username',
     'pass' =&gt; 'password'
 );
+</pre>
+<h2>字段别名有什么效果？</h2>
+
+      在本框架中，字段别名，在添加或更新记录时，可以当作真实字段名用。
+      而在查询时，真实字段会以字段别名输出。
+      也就是说，字段别名可进库，出库也是字段名。但是在组成SQL语句中不需要用别名。
+      （1）保存记录时字段别名当真实字段用
+            比如说，下面我们定义了users表的几个别名。
+<pre class="brush: php;">$CONF['MAP'] = array(
+      'userName' => 'username',
+      'password_alias' => 'password'
+);
+</pre>            那么，我们在添加或更新数据时，可以将别名当真实字段用：
+<pre class="brush: php;">
+$data = array(
+      'userName' => 'Jim',
+      'password_alias' => '123456'
+);
+
+$user = new \Model\Users();
+$user->data($data)->save();
+</pre>
+            这跟以下代码是同样的效果：
+<pre class="brush: php;">
+$data = array(
+      'username' => 'Jim',
+      'password' => '123456'
+);
+
+$user = new \Model\Users();
+$user->data($data)->save();
+</pre>
+      （2）查询记录时真实字段以字段别名输出，条件数组中别名也可以作为条件
+            同上例别名配置。那么查询时，真实字段会以字段别名返回：
+<pre class="brush: php;">
+$user = new \Model\Users();
+$result = $user->where(array('userName' => 'Jim'))
+     ->fields('username')
+     ->fields(array('password'))
+     ->findFirst();
+ocPrint($result);
+</pre>
+            以上代码，用了字段别名userName当条件，而且真实字段输出的是字段别名，打印结果如下：
+<pre class="brush: php;">
+Array ( [userName] => Jim [password_alias] => e10adc3949ba59abbe56e057f20f883e )
 </pre>
 
 <h2>应用场景和实例</h2>
