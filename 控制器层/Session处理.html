@@ -13,10 +13,10 @@
 
 Ocara支持文件、数据库和缓存三种保存方式，也提供了session操作插件。
 
-<strong>（1）文件保存方式</strong>
-    需要关闭数据库保存，并且自定义文件保存路径。
-    比如要保存在cache/my_sessions
-    只要修改配置文件/required/conf/develop.php：
+<strong>1、文件保存方式</strong>
+      需要关闭数据库保存，并且自定义文件保存路径。
+      比如要保存在cache/my_sessions
+    （1）修改配置文件/required/conf/develop.php：
 <pre class="brush: php;">/*
  * session配置
  */
@@ -26,13 +26,47 @@ $CONF['SESSION'] = array(
 	'server'     => '', //服务器名称，因为是文件保存方式，所以这里为空即可
 	'location'	 => 'cache/sessions', //保存session的文件目录名
 );</pre>
-        说明：
+       说明：
             （a）配置项“save_type”为1；
             （b）配置项“location”为session的保存目录，默认是cache/sessions，上级目录规定是required/data。
-<strong>（2）数据库保存方式</strong>
-    需要开启数据库保存，指定保存的数据表名。
-    比如要保存到my_sessions表中，
-    修改配置文件/required/conf/develop.php：
+
+<strong>2、数据库保存方式</strong>
+      （1）新建session数据表
+            添加好数据表，然后在开发者中心添加模型。
+            该数据表应该至少包含3个字段
+                  （a）当前Session会话的ID（别名session_id）
+                  （b）当前Session会话有效期（别名session_expire_time）
+                  （c）当前Session会话的数据（别名session_data）
+            另外，建议增加添加时间create_time和最后修改时间modify_time两个字段，用于查询。
+            比如，以下是Mysql中添加的数据表:
+<pre class="brush: php;">
+
+CREATE TABLE `ocsess` (
+  `id` bigint(22) unsigned NOT NULL AUTO_INCREMENT comment '自增ID',
+  `ocsess_id` char(100) NOT NULL comment '当前Session会话的ID',
+  `ocsess_expire_time` datetime NOT NULL comment '当前Session会话有效期',
+  `ocsess_data` longtext NOT NULL comment '当前Session会话的数据',
+  `create_time` int(11) unsigned NOT NULL comment '添加时间',
+  `modify_time` int(11) unsigned NOT NULL comment '最后修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ocsess_id` (`ocsess_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+</pre>
+      （2）添加session模型
+	在开发者中心添加session模型，然后框架会在resource/conf/model下面新建了该模型的模型配置文件。
+	在模型配置文件中修改$CONF['MAP']，添加别名映射。
+<pre class="brush: php;">
+/**
+ * 字段别名映射
+ */
+$CONF['MAP'] = array(
+    'session_id' => 'ocsess_id',
+    'session_expire_time' => 'ocsess_expire_time',
+    'session_data' => 'ocsess_data',
+);
+</pre>
+      （3）配置session为保存方式
+            修改配置文件/required/conf/develop.php，比如我们新建了\Model\Session模型：
 <pre class="brush: php;">
 /*
  * session配置
@@ -40,18 +74,104 @@ $CONF['SESSION'] = array(
 $CONF['SESSION'] = array(
 	'save_type'	 => 2, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
 	'save_time'	 => 0, //session的最长存活时间（单位为秒）
-	'server'     => 'default', //服务器名称，数据库服务器名称或Redis服务器名
-	'location'	 => 'my_sessions', //保存session的数据表名
-);</pre>
-        说明：
-            （a）配置项“save_type”设为2；
-            （b）配置项“server”，即保存session的数据库服务器名称，这里使用默认为default；
-            （c）配置项“location”为保存session的数据表名，默认为ocsess
+	'server'     => '', //服务器名称，因为location已指定Model，所以这里为空即可
+	'location'	 => '\Model\Session', //Model类
+);</pre>      说明：
+            （a）配置项“save_type”设为2；；
+            （b）配置项“location”为保存session的数据表名，默认为ocsess
+      （4）修改Model
+            通过在开发者中心中添加session模型。然后修改文件内容。
+            添加以下四个方法：
+                  （a）read($sessionId)，主要是读取指定session_id的session数据。
+                  （b）write($data)，主要是写入指定的session数据。
+                  （c）destroy($id)，释放指定的session数据，即删除此行记录。
+                  （d）clear()，清理过期的session记录。
+            以下是当前实例代码：
+<pre class="brush: php;">
+<?php
+namespace Model;
+use Ocara\Model\Database;
 
-<strong>（3）缓存保存方式</strong>
-    需要缓存支持。
-    先要装好Memcache或Redis等缓存后，并在/required/conf/cache.php配置好缓存选项。
-    假设使用$CONF['CACHE']['cache_redis']的话，修改配置文件/required/conf/develop.php：
+class Session extends Database
+{
+	protected $_table = 'ocsess';
+	protected $_primary = 'id';
+
+	/**
+	 * 初始化模型
+	 */
+	protected function _model()
+	{}
+
+	/**
+	 * 读取session
+	 * @param $sessionId
+	 * @return null
+	 */
+	public function read($sessionId)
+	{
+		$where = array('session_id' => $sessionId);
+		$cWhere = array('session_expire_time' => date(ocConfig('DATE_FORMAT.datetime')));
+
+		$result = $this
+			->where($where)
+			->cWhere('>=', $cWhere)
+			->findFirst();
+
+		return $result ? $result['session_data'] : null;
+	}
+
+	/**
+	 * 写入session
+	 * @param $data
+	 */
+	public function write($data)
+	{
+		$where = array(
+			'session_id' => $data['session_id']
+		);
+
+		$sessionInfo = self::findFirst($where);
+		if ($sessionInfo) {
+			$this->where($where)->update($data);
+		} else {
+			$this->create($data);
+		}
+	}
+
+	/**
+	 * 删除session
+	 * @param $id
+	 */
+	public function destroy($sessionId)
+	{
+		$where = array(
+			'session_id' => $sessionId
+		);
+
+		$sessionInfo = self::findFirst($where);
+		if ($sessionInfo) {
+			$this->select($sessionInfo['id'])->delete();
+		}
+	}
+
+	/**
+	 * 清理过期session
+	 */
+	public function gc()
+	{
+		$where = array(
+			'session_expire_time' => date(ocConfig('DATE_FORMAT.datetime'))
+		);
+
+		$this->cWhere('<', $where)->delete();
+	}
+}
+</pre>
+<strong>3、缓存保存方式</strong>
+      需要缓存支持。
+      先要装好Memcache或Redis等缓存，然后在/required/conf/cache.php配置好缓存选项。
+      假设使用$CONF['CACHE']['cache_redis']的话，修改配置文件/required/conf/develop.php：
 <pre class="brush: php;">
 /*
  * session配置
@@ -62,7 +182,7 @@ $CONF['SESSION'] = array(
 	'server'     => 'cache_redis', //服务器名称，数据库服务器名称或Redis服务器名
 	'location'	 => 'sessions', //保存session的缓存前缀，缓存前缀
 );</pre>
-        说明：
+      说明：
             （a）配置项“save_type”设为3；
             （b）配置项“server”，即保存session的缓存服务器名称，这里使用cache_redis，默认为default；
             （c）配置项“location”为保存session的缓存前缀，默认为sessions
@@ -76,6 +196,7 @@ $CONF['SESSION'] = array(
     或者，
 <pre class="brush: php;">$login_info = ocGet('login_info', $_SESSION);</pre>
 <strong>（2）使用插件Session（推荐）</strong>
+     session操作请使用\Ocara\Session，控制器动作中可以直接使用$this->session。该插件的方法函数介绍，请参见<a href="./Session操作.html" title="表单生成">Session操作</a>
      调用代码：
     （a）模块、控制器或动作action的代码中可以使用$this->session调用，如：
 	<pre class="brush: php;">
@@ -86,174 +207,5 @@ $login_info = $this->session->get('login_info');
 $login_info = Session::get('login_info');
 </pre>
 
-<h2>Session插件方法函数介绍</h2>
-
-<div class="function">
-<pre><strong>1、get(name)</strong>
-   获取session值。  
-  参数说明：
- </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-		<tr>
-		<td>name</td>
-		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
-	</tr>
-	</table>  
-  实例如下：
- <pre class="brush: php;">
- $login_info = $this->session->get('login_info'); </pre>
-<pre><strong>2、set(name, value)</strong>
-  设置session值。  
-  参数说明：
- </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-		<tr>
-		<td>name</td>
-		<td>必需。变量名称。如果为键值数组，则将键名作为变量名，键值作为变量值</td>
-	</tr>
-		<tr>
-		<td>value</td>
-		<td>必需。变量值</td>
-	</tr>
-	</table>  
-  实例如下：
-（1）设置is_login为true
-<pre class="brush: php;">
-  $this->session->set('is_login', true); </pre>
-  批量设置is_login为true，设置user_name为user1
-<pre class="brush: php;">
-$this->session->set(array(
-	'is_login' => true,
-	'user_name' => 'user1'
-));
-</pre>
-  <pre><strong>3、delete(name)</strong>
-   删除session变量。  
-  参数说明：
- </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-		<tr>
-		<td>name</td>
-		<td>必需。变量名称。</td>
-	</tr>
-	</table>  
-  实例如下：
- <pre class="brush: php;">
- $this->session->delete('login_info'); </pre>
-<strong>4、getId()</strong>
-  获取session ID。 
-  实例如下：
- <pre class="brush: php;">
- $sessionId = $this->session->getId(); </pre>
- <strong>5、getName()</strong>
-  获取session名称。  
-  实例如下：
- <pre class="brush: php;">
- $sessionName = $this->session->getName();; </pre>
-<strong>6、clear()</strong>
-  清空session。
-  实例如下：
- <pre class="brush: php;">
- $this->session->clear(); </pre>
-<pre><strong>7、exists(name)</strong>
-  检测是否设置了某个session变量。  
-  参数说明：
- </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-		<tr>
-		<td>name</td>
-		<td>必需。变量名称。</td>
-	</tr>
-	</table>  
-  实例如下：
- <pre class="brush: php;">
-if ($this->session->exists('user_name')) {
-	echo true;
-} else {
-	echo false;
-}
-</pre>
-<strong>8、destroy()</strong>
-  释放session。
-  实例如下：
- <pre class="brush: php;">
- $this->session->destroy(); </pre>
-<strong>9、setSaveTime(saveTime)</strong>
-  设置session有效期(单位为秒)。 
-  实例如下：
- <pre class="brush: php;">
- $this->session->setSaveTime(86400); </pre>
-<pre><strong>10、setCookie(saveTime[, path, domain, secure, httponly])</strong>
-  保存session到cookie。参数类似于setcookie()原生函数。  
-  参数说明：
- </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-		<tr>
-		<td>saveTime</td>
-		<td>必需。cookie保存时间。</td>
-	</tr>
-		<tr>
-		<td>path</td>
-		<td>可选。有效目录。</td>
-	</tr>
-		<tr>
-		<td>domain</td>
-		<td>可选。有效域名。</td>
-	</tr>
-		<tr>
-		<td>secure</td>
-		<td>可选。安全参数。</td>
-	</tr>
-    		<tr>
-		<td>httponly</td>
-		<td>可选。安全参数，默认为true。为防注入，建议保持为true。</td>
-	</tr>
-	</table>  
-  实例如下：
- <pre class="brush: php;">
- $login_info = $this->session->setCookie(86400); </pre>
-<strong>11、serialize()</strong>
-  序列化session数组。  
-  实例如下：
- <pre class="brush: php;">
- $sessionString = $this->session->serialize(); </pre>
-<pre><strong>12、unserialize(data)</strong>
-  反序列化session字符串。  
-  参数说明：
- </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-		<tr>
-		<td>data</td>
-		<td>必需。要反序列化的session字符串。</td>
-	</tr>
-	</table>  
-  实例如下：
- <pre class="brush: php;">
- $session = $this->session->unserialize($sessionString); </pre>
-</div>
 </pre>
 </body></html>
