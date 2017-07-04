@@ -42,14 +42,12 @@ $CONF['SESSION'] = array(
 <pre class="brush: php;">
 
 CREATE TABLE `ocsess` (
-  `id` bigint(22) unsigned NOT NULL AUTO_INCREMENT comment '自增ID',
   `ocsess_id` char(100) NOT NULL comment '当前Session会话的ID',
   `ocsess_expire_time` datetime NOT NULL comment '当前Session会话有效期',
   `ocsess_data` longtext NOT NULL comment '当前Session会话的数据',
   `create_time` int(11) unsigned NOT NULL comment '添加时间',
   `modify_time` int(11) unsigned NOT NULL comment '最后修改时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ocsess_id` (`ocsess_id`)
+  PRIMARY KEY (`ocsess_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 </pre>
       （2）添加session模型
@@ -95,7 +93,7 @@ use Ocara\Model\Database;
 class Session extends Database
 {
 	protected $_table = 'ocsess';
-	protected $_primary = 'id';
+	protected $_primary = 'ocsess_id';
 
 	/**
 	 * 初始化模型
@@ -111,11 +109,9 @@ class Session extends Database
 	public function read($sessionId)
 	{
 		$where = array('session_id' => $sessionId);
-		$cWhere = array('session_expire_time' => date(ocConfig('DATE_FORMAT.datetime')));
 
 		$result = $this
 			->where($where)
-			->cWhere('>=', $cWhere)
 			->findFirst();
 
 		return $result ? $result['session_data'] : null;
@@ -131,17 +127,20 @@ class Session extends Database
 			'session_id' => $data['session_id']
 		);
 
-		$sessionInfo = self::findFirst($where);
+		$sessionInfo = $this->findFirst($where);
 		if ($sessionInfo) {
+			$data['modify_time'] = time();
 			$this->where($where)->update($data);
 		} else {
+			$data['create_time'] = time();
+			$data['modify_time'] = time();
 			$this->create($data);
 		}
 	}
 
 	/**
 	 * 删除session
-	 * @param $id
+	 * @param $sessionId
 	 */
 	public function destroy($sessionId)
 	{
@@ -149,7 +148,7 @@ class Session extends Database
 			'session_id' => $sessionId
 		);
 
-		$sessionInfo = self::findFirst($where);
+		$sessionInfo = $this->findFirst($where);
 		if ($sessionInfo) {
 			$this->select($sessionInfo['id'])->delete();
 		}
