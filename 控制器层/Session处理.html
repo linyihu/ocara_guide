@@ -39,8 +39,8 @@ $CONF['SESSION'] = array(
                   （c）当前Session会话的数据（别名session_data）
             另外，建议增加添加时间create_time和最后修改时间modify_time两个字段，用于查询。
             比如，以下是Mysql中添加的数据表:
-<pre class="brush: php;">
 
+<pre class="brush: php;">
 CREATE TABLE `ocsess` (
   `ocsess_id` char(100) NOT NULL comment '当前Session会话的ID',
   `ocsess_expire_time` datetime NOT NULL comment '当前Session会话有效期',
