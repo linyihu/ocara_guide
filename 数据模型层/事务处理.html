@@ -18,46 +18,190 @@
 </style>
 </head>
 
-<body><pre><h2>事务处理</h2>
+<body><pre><h2>事务处理（\Ocara\Transaction）</h2>
+
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>支持跨服务器、跨库事务处理。</td>
+	</tr>
+</table>
 
 <strong>1、事务的使用</strong>
-    事务处理要使用数据库连接对象实例的相关方法。
-    一般用Model或它的数据库对象获取。
-    在本框架中，如果某个类继承了\Ocara\Base，则它的_plugin属性所保存的插件对象的方法可以为它所用。
-    因为模型的数据库对象保存在它的_plugin属性，所以它可以调用这的数据库对象的方法。
-    因此，事务处理的方法都可以通过模型调用，也可以使用它的数据库对象。
-    也就是说$userModel->transCommit()与$userModel->db()->transCommit()等价，前提时$userModel没有重写transCommit()方法。
-    事务处理中，有以下几个方法使用。
+      事务处理要使用事务管理器\Ocara\Transaction，已经加入默认容器<span class="brush: php;">Base::$container</span>。该事务管理器，有以下特点：
+            （1）使用简单
+            （2）可以嵌套使用
+            （3）支持跨服务器和跨库事务处理
+            （4）使用Error::show()抛出错误时，会自动回滚事务
+            （5）ORM模型关联操作是，自动进行事务处理
+
+
       （1）事务开始
-           使用数据库或模型的transBegin()方法。该方法格式如下：
-                  <span class="STYLE1">transBegin()</span>
-           实例：
+            使用Transaction的以下方法进行事务处理，这些方法没有参数，格式如下：
+                  <span class="STYLE1">begin()</span>
+                  <span class="STYLE1">commit()</span>
+                  <span class="STYLE1">rollback()</span>
+            提交实例：
 <pre class="brush: php;">$userModel= new \Model\User();
 
-//实例（1）使用Model的db()方法获取
-$userModel->transBegin();
+//事务开始
+Base::$container-&gt;transaction->begin();
 
-//实例（2）使用Database::factory()获取
-Database::factory()->transBegin();
+    $users = \Model\Users::select(53290);
+    $users->avatar = 'test';
+    $users->save();
+
+//事务提交
+Base::$container-&gt;transaction->commit();
 </pre>
-      （2）事务提交
-           使用数据库或模型的transCommit()方法。该方法格式如下：
-                  <span class="STYLE1">transCommit()</span>
-           实例：
-<pre class="brush: php;">$userModel= new \Model\User();
-$userModel->transBegin();
-$userModel->create();
-$userModel->transCommit();
-</pre>
-       （3）事务回滚
-            使用数据库或模型的transRollback()方法。该方法格式如下：
-                  <span class="STYLE1">transRollback()</span>
-            实例：
-<pre class="brush: php;">$userModel= new \Model\User();
-$userModel->transBegin();
-$userModel->create();
-$userModel->transRollback();
+            回滚实例：
+<pre class="brush: php;">
+$userModel= new \Model\User();
+
+//事务开始
+Base::$container-&gt;transaction->begin();
+
+	$users = new \Model\Users();
+    $users->user_sn = '1236433231322131';
+    $users->userName = '小刚';
+    $result = $users->save();
+    
+    //事务回滚（Transation的$_count置0，Transation的$_list置空）
+    if (!$result) {
+        $this->transaction->rollback();
+    }
+
+    $goods = new \Model\Goods();
+    $goods->goods_name = '小米手机';
+    $goods->price = 1900;
+    $goods->status = 1;
+    $result = $goods->save();
+    
+    //事务回滚（Transation的$_count置0，Transation的$_list置空）
+    if (!$result) {
+        $this->transaction->rollback();
+    }
+
+//事务提交
+Base::$container-&gt;transaction->commit();
 </pre>
 
+            自动回滚实例：
+<pre class="brush: php;">
+$userModel= new \Model\User();
+
+//事务开始
+Base::$container-&gt;transaction->begin();
+
+    $users = new \Model\Users();
+    $users->user_sn = '1236433231322131';
+    $users->userName = '小刚';
+    $result = $users->save();
+    
+    //事务回滚（Transation的$_count置0，Transation的$_list置空）
+    if (!$result) {
+        $this->transaction->rollback();
+    }
+
+    $goods = new \Model\Goods();
+    $goods->goods_name = '小米手机';
+    $goods->price = 1900;
+    $goods->status = 1;
+    $result = $goods->save();
+    Error::show('这里抛出错误！系统自动回滚.');
+
+//事务回滚
+Base::$container-&gt;transaction->commit();
+</pre>
+
+            ORM模型自动使用事务实例：
+<pre class="brush: php;">
+$users = new \Model\Users();
+$users->user_sn = '333';
+$users->userName = '4554';
+$users->user_id = 53295;
+
+$userVerify = \Model\UserVerify::build();
+$userVerify->verify_status = 3;
+$userVerify->verified_desc = 5533;
+
+$users->userVerify = $userVerify;
+
+$result = $users->save(); //如果保存成功会自动commit()
+
+if (!$result) {
+	Error::show('这里显示错误。');
+}
+</pre>
+<strong>2、事务的嵌套使用</strong>
+      嵌套事务中，子级事务成功提交，才会提交上级事务。
+      如果任何一级子级事务代码抛错或者回滚事务，上级所有事务都不会提交。
+      （1）嵌套事务原理
+             事务管理器使用事务计数属性变量$_count进行多级事务管理。
+             只有最后一个commit()才是真正的数据库事务提交，其他的都是事务计数变量的增减而已。
+      （2）跨服务器事务原理
+             事务管理器使用$_list属性变量保存要进行事务处理的服务器连接的第一个使用者（数据库对象）
+             然后使用它来提交事务。因此，支持跨服务器事务处理。
+    
+      使用很简单，直接嵌套使用即可。
+<pre class="brush: php;">
+namespace Controller\Test\Action;
+use Ocara\Request;
+use Ocara\Response;
+use Ocara\Error;
+use Controller\Test\TestController;
+
+class TestAction extends TestController
+{
+    public function testUserCreateRelateUpdateOrCreate()
+    {
+        //一级事务开始（Transation的事务计数变量$_count+1，由0变为1）（没有数据库操作也可以）
+        $this->transaction->begin();
+
+        //二级事务开始（Transation的$_count+1，变为2）
+        $this->transaction->begin();
+
+            $users = \Model\Users::select(53290);
+            $users->avatar = 'test';
+            $users->save();
+
+            //三级事务开始（Transation的$_count+1，变为3）
+            $this->transaction->begin();
+
+                $users = new \Model\Users();
+                $users->user_sn = '1236433231322131';
+                $users->userName = '小刚';
+                $result = $users->save();
+                
+                //事务回滚（Transation的$_count置0，Transation的$_list置空）
+                if (!$result) {
+                    $this->transaction->rollback();
+                }
+
+                $goods = new \Model\Goods();
+                $goods->goods_name = '小米手机';
+                $goods->price = 1900;
+                $goods->status = 1;
+                $result = $goods->save();
+                
+                //事务回滚（Transation的$_count置0，Transation的$_list置空）
+                if (!$result) {
+                    $this->transaction->rollback();
+                }
+
+            //三级事务提交（提交成功后Transation的$_count会-1，为2）
+            $this->transaction->commit();
+
+        //二级事务提交（提交成功后Transation的$_count会-1，为1）
+        $this->transaction->commit();
+
+        //一级事务提交（真正进行数据库提交，提交成功后Transation的$_count置0，$_list置空）
+        $this->transaction->commit();
+    }
+}
+</pre>
+<strong>3、跨服务器事务</strong>
+      对于跨服务器，会按照model的操作顺序在最后一次commit()进行逐个提交。
+      比如上例中，假如Users模型连接的是192.168.1.122，而goods连接的是192.168.1.10。
+      那么，在上述最后一个commit()调用时，会先提交192.168.1.122服务器数据库，再提交192.168.1.10服务器数据库。
 </pre></body>
 </html>
