@@ -77,6 +77,8 @@ $result = $itemModel-&gt;leftJoin('itemCatery') //在resource/conf/model中的it
 
 <strong>  2、查询条件</strong>
       <span class="STYLE1">where(where[, table])</span>
+      <span class="STYLE1">orWhere(where[, table])</span>
+      其中，where()是AND条件，orWhere是OR条件。
       参数说明：
 </pre>
 <table>
@@ -107,16 +109,25 @@ $userInfo = $itemModel-&gt;where($where)
 					  -&gt;findFirst();
 </pre>
       （2）字符串条件（对变量进行SQL安全过滤）
-<pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
+<pre class="brush: php;">$userName = Request::getGet('username');
 
-//查询结果
+//查询
 $itemModel = new \Model\Item();
 $userInfo = $itemModel-&gt;where(&quot;user_name='{$userName}'&quot;)
 					  -&gt;findFirst();
 </pre>
+      （3）OR条件（对变量进行SQL安全过滤）
+<pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
+
+//查询
+$itemModel = new \Model\Item();
+$userInfo = $itemModel->where(1)
+	->orWhere(&quot;user_name='{$userName}'&quot;)
+	-&gt;findFirst();
+</pre>
 
 <strong>  3、复杂查询条件</strong>
-      <span class="STYLE1">cWhere(sign, where[, table])</span>
+      <span class="STYLE1">cWhere(operator, field, value[, alias])</span>
       函数说明：如果条件数组的比较符号不是等于号“=”时，可使用该方法生成复杂查询条件，并且可以多次使用。
       参数说明：
 </pre>
@@ -126,12 +137,16 @@ $userInfo = $itemModel-&gt;where(&quot;user_name='{$userName}'&quot;)
 		<td width="400">描述</td>
 	</tr>
 	<tr>
-		<td>sign</td>
-		<td>必需。条件比较符号。</td>
+		<td>operator</td>
+		<td>必需。AND或OR运算符和比较运算符，两者以英文输入法下的“/”分隔，如“OR/in”，"AND/>="。如果不指定OR或AND，则默认为AND，如"in"相当于"AND/in"</td>
+	</tr>
+    <tr>
+		<td>field</td>
+		<td>必需。字段名。</td>
 	</tr>
 	<tr>
-		<td>where</td>
-		<td>必需。条件数组，键名为字段名或字段别名，键值为比较值。</td>
+		<td>value</td>
+		<td>必需。字段值。</td>
 	</tr>
 	<tr>
 		<td>table</td>
@@ -140,17 +155,71 @@ $userInfo = $itemModel-&gt;where(&quot;user_name='{$userName}'&quot;)
 </table>
 <pre>
       实例如下：
-      （1）查出&quot;1,5,33&quot;字符串列表中ID值的商品
-<pre class="brush: php;">$itemIds = '1,5,33';
+      （1）查出ID大于或等于53的商品
+<pre class="brush: php;">
 $itemModel = new \Model\Item();
-$itemData = $itemModel-&gt;cWhere('in', array('id' =&gt; $itemIds ))
+$itemData = $itemModel->cWhere('>=', 'id', 53)
+					  ->find();
+</pre>
+      （2）查出数组ID值为1,5,33的商品
+<pre class="brush: php;">
+$itemModel = new \Model\Item();
+$itemData = $itemModel-&gt;cWhere('in', 'id', array(1,5,33))
 					  -&gt;find();
 </pre>
-      （2）查出数组array(1,5,33)中ID值的商品
-<pre class="brush: php;">$itemIds = array(1,5,33);
+      （2）查出出ID大于或等于53，或者数组ID值为1,5,33的商品
+<pre class="brush: php;">
 $itemModel = new \Model\Item();
-$itemData = $itemModel-&gt;cWhere('in', array('id' =&gt; $itemIds ))
-					  -&gt;find();
+$itemData = $itemModel->cWhere('>=', 'id', 53)
+		->cWhere('OR/in', 'id', array(1,5,33))
+		->find();
+</pre>
+
+<strong>  4、Between条件</strong>
+      <span class="STYLE1">between(field, value1, value2[, alias])</span>
+      <span class="STYLE1">orBetween(field, value1, value2[, alias])</span>
+      其中，between()是AND条件，orBetween是OR条件。
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>field</td>
+		<td>必需。字段名或别名。</td>
+	</tr>
+    <tr>
+		<td>value1</td>
+		<td>必需。第一个值。</td>
+	</tr>
+    <tr>
+		<td>value2</td>
+		<td>必需。第二个值。</td>
+	</tr>
+	<tr>
+		<td>alias</td>
+		<td>可选。表的别名。</td>
+	</tr>
+</table>
+<pre>
+      实例如下：
+      （1）键值数组条件（系统自动进行安全过滤）
+<pre class="brush: php;">
+//查询结果
+$itemModel = new \Model\Item();
+$userInfo = $itemModel-&gt;between('id', 1, 10)
+					  -&gt;findFirst();
+</pre>
+      （2）OR条件（对变量进行SQL安全过滤）
+<pre class="brush: php;">
+//查询
+$itemModel = new \Model\Item();
+$userInfo = $itemModel->where(1)
+    ->where(array('id' => 29))
+	->orBetween('id', 1, 10)
+	-&gt;findFirst();
 </pre>
 
 <strong>  4、更多条件</strong>
