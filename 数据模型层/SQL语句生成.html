@@ -128,6 +128,8 @@ $userInfo = $itemModel->where(1)
 
 <strong>  3、复杂查询条件</strong>
       <span class="STYLE1">cWhere(operator, field, value[, alias])</span>
+      <span class="STYLE1">cHaving(operator, field, value[, alias])</span>
+      其中的cHaving()是分组条件。
       函数说明：如果条件数组的比较符号不是等于号“=”时，可使用该方法生成复杂查询条件，并且可以多次使用。
       参数说明：
 </pre>
@@ -338,6 +340,8 @@ $staticData = $itemModel-&gt;fields('count(id)	as num')
 
 <strong>  8、分组条件</strong>
       <span class="STYLE1">having(where[, alias])</span>
+      <span class="STYLE1">orHaving(where[, alias])</span>
+      其中having()是AND条件，orHaving()是OR条件。
       参数说明：
 </pre>
 <table>
