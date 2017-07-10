@@ -76,13 +76,13 @@ $result = $itemModel-&gt;leftJoin('itemCatery') //在resource/conf/model中的it
 </pre>
 
 <strong>  2、查询条件</strong>
-      <span class="STYLE1">where(where[, table])</span>
-      <span class="STYLE1">orWhere(where[, table])</span>
+      <span class="STYLE1">where(where[, alias])</span>
+      <span class="STYLE1">orWhere(where[, alias])</span>
       其中，where()是AND条件，orWhere是OR条件。
       参数说明：
 </pre>
 <table>
-	<tr class="head">
+  <tr class="head">
 		<td width="90">名称</td>
 		<td width="400">描述</td>
 	</tr>
@@ -91,8 +91,8 @@ $result = $itemModel-&gt;leftJoin('itemCatery') //在resource/conf/model中的it
 		<td>必需。查询条件，参见<a href="数据查询.html">数据查询</a>中的查询多行记录的condition参数。</td>
 	</tr>
 	<tr>
-		<td>table</td>
-		<td>可选。表名。</td>
+		<td>alias</td>
+		<td>可选。表别名。设置后，会给没有指定别名的字段加上该别名。</td>
 	</tr>
 </table>
 <pre>
@@ -253,23 +253,23 @@ $itemModel-&gt;where(array('id'=&gt;1))
        会在整个Where语句最后加上“ AND IF(status = '0', 0, 1)”的条件。
 
 <strong>  5、字段及选项列表</strong>
-      <span class="STYLE1">fields(string[, table])</span>
+      <span class="STYLE1">fields(fields[, alias])</span>
       函数说明：生成字段列表语句，不会进行引号转义，可以多次使用。如果不指定字段列表，默认为“*”。
       如果要添加字段选项，比如Distinct，就用花括号括起来，如：fields('{distinct}')
       参数说明：
 </pre>
 <table>
-	<tr class="head">
+<tr class="head">
 		<td width="90">名称</td>
 		<td width="400">描述</td>
 	</tr>
 	<tr>
-		<td>string</td>
-		<td>必需。字段列表字符串。</td>
+		<td><pre>fields</pre></td>
+		<td>必需。字段列表字符串或数组。可以是包含一些字段选项，如{distinct}表示去除重复。</td>
 	</tr>
 	<tr>
 		<td>table</td>
-		<td>可选。表名全称（不含前缀）。</td>
+		<td>可选。表别名全称。</td>
 	</tr>
 </table>
 <pre>
@@ -281,8 +281,8 @@ $userData = $userModel->where(array('user_name' =&gt; 'user1'))
 					  ->leftJoin('user_group', 'b', 'a.gid=b.id')
 	 				  ->fields('{distinct}') // 字段选项
 	  				  ->fields(array('a.id', 'a.name')) //使用别名
-	  				  ->fields('id', 'menu_category') //使用表名，框架会自动加上表的别名
-      				  ->fields('user_name, email') //不使用表别名
+	  				  ->fields('id', 'b') //使用表名，框架会自动加上表的别名
+      			  ->fields('user_name, email') //不使用表别名
 					  ->findFirst();
 </pre>
 
@@ -337,7 +337,7 @@ $staticData = $itemModel-&gt;fields('count(id)	as num')
 
 
 <strong>  8、分组条件</strong>
-      <span class="STYLE1">having(where[, table])</span>
+      <span class="STYLE1">having(where[, alias])</span>
       参数说明：
 </pre>
 <table>
@@ -350,8 +350,8 @@ $staticData = $itemModel-&gt;fields('count(id)	as num')
 		<td>必需。查询条件，参见<a href="数据查询.html">数据查询</a>中的查询多行记录的condition参数。</td>
 	</tr>
 	<tr>
-		<td>table</td>
-		<td>可选。表名。</td>
+		<td>alias</td>
+		<td>可选。表别名。</td>
 	</tr>
 </table>
 <pre>
