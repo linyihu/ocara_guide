@@ -92,7 +92,7 @@ $result = $itemModel-&gt;leftJoin('itemCatery') //在resource/conf/model中的it
 	</tr>
 	<tr>
 		<td>alias</td>
-		<td>可选。表别名。设置后，会给没有指定别名的字段加上该别名。</td>
+		<td>可选。表的别名。设置后，会给没有指定别名的字段加上该别名。</td>
 	</tr>
 </table>
 <pre>
@@ -151,8 +151,8 @@ $userInfo = $itemModel->where(1)
 		<td>必需。字段值。</td>
 	</tr>
 	<tr>
-		<td>table</td>
-		<td>可选。表名。</td>
+		<td>alias</td>
+		<td>可选。表的别名。</td>
 	</tr>
 </table>
 <pre>
@@ -270,8 +270,8 @@ $itemModel-&gt;where(array('id'=&gt;1))
 		<td>必需。字段列表字符串或数组。可以是包含一些字段选项，如{distinct}表示去除重复。</td>
 	</tr>
 	<tr>
-		<td>table</td>
-		<td>可选。表别名全称。</td>
+		<td>alias</td>
+		<td>可选。表的别名。</td>
 	</tr>
 </table>
 <pre>
@@ -355,7 +355,7 @@ $staticData = $itemModel-&gt;fields('count(id)	as num')
 	</tr>
 	<tr>
 		<td>alias</td>
-		<td>可选。表别名。</td>
+		<td>可选。表的别名。</td>
 	</tr>
 </table>
 <pre>
