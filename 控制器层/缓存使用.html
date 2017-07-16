@@ -60,13 +60,13 @@ $CONF['CACHE']['cache_redis'] = array(
 );
 </pre>
       （2）调用缓存
-               调用缓存很简单，用Cache的factory()方法。比如上述配置的两个缓存，可以如下调用：
+               调用缓存很简单，用\Ocara\Cache的create()方法。比如上述配置的两个缓存，可以如下调用：
 <pre class="brush: php;">
 //调用默认的缓存，Memcache
-$mem = Cache::factory('default');
+$mem = \Ocara\Cache::create('default');
 
 //调用Redis缓存
-$redis = Cache::factory('cache_redis');
+$redis = \Ocara\Cache::create('cache_redis');
 </pre>
 <strong>3、缓存扩展</strong>
          如果框架提供的缓存类不满足我们的业务需求，可以保证在安装好缓存扩展或程序之后，新建自定义的缓存类。

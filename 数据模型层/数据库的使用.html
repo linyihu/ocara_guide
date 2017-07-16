@@ -28,8 +28,8 @@
 
 <strong>1、数据库的新建</strong>
       数据库都是通过基类Database来实例化新建和获取的，仅在第一次调用时新建。
-      调用的是Database的factory()方法，格式如下:
-              <span class="STYLE1">factory([server])</span>
+      调用的是\Ocara\Database的create()方法，格式如下:
+              <span class="STYLE1">create([server])</span>
       参数说明：
 </pre>
 <table>
@@ -44,7 +44,7 @@
 </table>
 <pre>
       实例如下；
-<pre class="brush: php;">$dbObj = Database::factory('bbs');
+<pre class="brush: php;">$dbObj = \Ocara\Database::create('bbs');
 </pre>
 
 <strong>2、数据库的连接</strong>
