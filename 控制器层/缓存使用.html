@@ -77,7 +77,7 @@ $redis = \Ocara\Cache::create('cache_redis');
                  其中，
                  1）缓存接口Cache
                          规定缓存类必须设置$_plugin属性，它保存的是当前缓存类型的PHP缓存扩展对象。
-                         比如Redis的$_plugin属性就是new Redis()的对象，并且必须含有setVar()和getVar()两个方法。
+                         比如Redis的$_plugin属性就是new Redis()的对象，并且必须含有set()和get()两个方法。
                          接口代码如下：
 <pre class="brush: php;">
 interface Cache
@@ -97,19 +97,19 @@ interface Cache
 	 * @param mixed $args
 	 * @return bool
 	 */
-	public function setVar($name, $value, $exireTime = 0, $args = null);
+	public function set($name, $value, $exireTime = 0, $args = null);
 
 	/**
 	 * 获取KEY
 	 * @param string $name
 	 */
-	public function getVar($name);
+	public function get($name);
 
 	/**
 	 * 删除KEY
 	 * @param string $name
 	 */
-	public function deleteVar($name);
+	public function delete($name);
 }
 </pre>
                  2）缓存基类CacheBase
