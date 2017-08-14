@@ -130,6 +130,7 @@ $container = \Ocara\Container::build();
 </table>
 <pre>
             实例如下：
+            （a）绑定和使用
 </pre>
 <pre class="brush: php;">
 //方法数组
@@ -146,7 +147,7 @@ Base::$container->bind('userChecker', '\User\Checker');
 //用类实现接口
 Base::$container->bind('\Interface\User\Checker', '\User\Checker');
 
-//用新类替换被绑定的类
+//用新类替换被绑定的类（新类须继承旧类，或者与旧类继承同一个父类）
 Base::$container->bind('\User\Checker', '\User\NewChecker');
 </pre>
 <pre>
@@ -164,7 +165,114 @@ Base::$container->userChecker = function(){
 //获取类名
 Base::$container->userChecker = '\User\Checker';
 </pre>
+<pre>
+            （b）传递参数
+                    传递参数可以是在bind()绑定时，或者get()获取时，两者会合并使用。
+</pre>
+<pre class="brush: php;">
+class Computer
+{
+    protected $_mouse;
 
+    public function __construction(\Mouse $mouse, $name, $config = array())
+    {
+        $this->_mouse = $mouse;
+    }
+}
+</pre>
+<pre>
+                    使用时代码如下实例：
+</pre>
+<pre class="brush: php;">
+//绑定时传递前面的参数（注入鼠标对象）
+$container = new \Ocara\Container();
+$mouse = new \Mouse();
+$container->bind('computer', '\Computer', array($mouse));
+
+//获取对象时传递后面的参数（注入键盘对象）
+$keyboardObj = new \Keyboard();
+$name = 'computer1';
+$config = array();
+$computer->get('computer', array($name, $config));
+</pre>
+<pre>
+                    上述实例中，$mouse参数是通过传参传过去的，但是也可以不传而让容器自己自动重新建一个\Mouse类，这称为依赖管理。
+                    但是前提是容器中也指定了该类的实现，而参数数组中该参数使用null即可。如下所示：
+</pre>
+<pre class="brush: php;">
+//绑定鼠标对象
+$container->bind('\Interface\Mouse', '\Mouse');
+
+//绑定时传递前面的参数（注入鼠标对象）
+$container = new \Ocara\Container();
+$container->bind('computer', '\Computer', array(null)); //这里传null
+
+//获取对象
+$keyboardObj = new \Keyboard();
+$name = 'computer1';
+$config = array();
+$computer->get('computer', array($name, $config));
+</pre>
+<pre>
+                    上面定义了\Interface\Mouse接口的实现类为\Mouse，在传参时只要传递null即可，容器会自动创建该\Mouse类传递给Computer的构造函数。
+                    实现自动化依赖管理。
+</pre>
+<pre>
+
+            （c）属性注入
+                     对于第4个参数deps，它是一个属性注入数组，被注入的类必须包含set和get方法，如下所示：
+</pre>
+<pre class="brush: php;">
+class Computer
+{
+    protected $_mouse;
+    protected $_container;
+
+    public function __construction($_container)
+    {
+        $this->_container = $_container;
+    }
+
+    /**
+     * 鼠标
+     */
+    public function setMouse($mouseObj)
+    {
+        $this->_mouse = $mouseObj;
+    }
+
+    public function getMouse()
+    {
+        return $this->_mouse;
+    }
+
+    /**
+     * 键盘
+     */
+    public function setMouse($mouseObj)
+    {
+        $this->_mouse = $mouseObj;
+    }
+
+    public function getMouse()
+    {
+        return $this->_mouse;
+    }
+}
+</pre>
+<pre>
+                     注入代码如下实例：
+</pre>
+<pre class="brush: php;">
+//绑定时属性注入（注入鼠标对象）
+$mouseObj = new \Mouse();
+$container->bind('computer', '\Computer', array($container), array('mouse' => $mouseObj));
+
+//获取对象时属性注入（注入键盘对象）
+$keyboardObj = new \Keyboard();
+$computer->get('computer', array(), array('keyboard' => $keyboardObj));
+
+</pre>
 <pre>
       （2）单例模式绑定
             与动态绑定区别在于：动态绑定的类可以通过容器的create()方法多次新建一个实例，但是单例模式绑定的则不能，只会在第一次使用时自动create()一次。
