@@ -22,7 +22,7 @@ spl_autoload_register()去指定调用哪个自动加载函数或类方法。
 
 <strong>2、自动加载哪个目录？</strong>
        类的自动加载都是通过命名空间来指定路径的。
-       可以查看框架目录system/data/default.php中的$OC_CONF['AUTOLOAD_MAP']看到自动加载的映射规则。
+       可以查看框架目录system/data/default.php中的$OC_CONF['AUTOLOAD_MAP']和$OC_CONF['APP_AUTOLOAD_MAP']看到自动加载的映射规则。
        以下以此规则代码说明：
        （1）不以Ocara\开头的类，都放在当前应用根目录的service/library子目录中。
 <pre class="brush: php;">
@@ -38,22 +38,11 @@ spl_autoload_register()去指定调用哪个自动加载函数或类方法。
                Ocara\Service\Functions开头的类都放在system/service/functions中。
 <pre class="brush: php;">
 'Ocara\\' 								=> OC_SYS . 'library/', //映射到ocara/system/library目录
-'Ocara\Controller\\' 					=> OC_LIB . 'Controller/', //映射到ocara/system/library/Controller目录
-'Ocara\Model\\' 						=> OC_LIB . 'Model/', //映射到ocara/system/library/Model目录
-'Ocara\View\\' 							=> OC_LIB . 'View/', //映射到ocara/system/library/View目录
-'Ocara\Cache\\' 						=> OC_LIB . 'Cache/', //映射到ocara/system/library/Cache目录
-'Ocara\Database\\' 						=> OC_LIB . 'Database/', //映射到ocara/system/library/Database目录
-'Ocara\Interfaces\\' 					=> OC_LIB . 'Interfaces/', //映射到ocara/system/library/Interfaces目录
-'Ocara\Feature\\' 						=> OC_LIB . 'Feature/', //映射到ocara/system/library/Feature目录
-'Ocara\Session\\' 						=> OC_LIB . 'Session/', //映射到ocara/system/library/Session目录
-
 'Ocara\Develop\\' 						=> OC_SYS . 'modules/develop/library/', //映射到ocara/system/modules/develop/library目录
 'Ocara\Functions\\'     				=> OC_SYS . 'functions/', //映射到ocara/system/functions目录
 
 /*Ocara框架插件*/
 'Ocara\Service\\' 						=> OC_SYS . 'service/library/', //映射到ocara/system/service/library目录
-'Ocara\Service\Interfaces\\' 			=> OC_SYS . 'service/library/Interfaces/', //映射到ocara/system/service/library/Interfaces目录
-
 'Ocara\service\Functions\\'   			=> OC_SYS . 'service/functions/', //映射到ocara/system/service/functions目录
 </pre>
        （3）以Ocara\Extension开头的类都放在与system同级的extension目录中
@@ -61,7 +50,6 @@ spl_autoload_register()去指定调用哪个自动加载函数或类方法。
 /*Ocara框架扩展插件*/
 'Ocara\Extension\Service\\'   			=> OC_EXT . 'service/library/', //映射到ocara/extension/library目录
 'Ocara\Extension\Service/Functions\\'   => OC_EXT . 'service/functions/', //映射到ocara/extension/functions目录
-'Ocara\Extension\Service/Interfaces\\'  => OC_EXT . 'service/library/Interfaces/', //映射到ocara/system/Interfaces目录
 </pre>
        （4）不符合上面规则的自定义类，都映射到当前应用根目录下service/library中:
               <img src="../style/images/自定义类路径.png"/>

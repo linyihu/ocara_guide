@@ -41,29 +41,17 @@ $CONF['SESSION'] = array(
             比如，以下是Mysql中添加的数据表:
 
 <pre class="brush: php;">
-CREATE TABLE `ocsess` (
-  `ocsess_id` char(100) NOT NULL comment '当前Session会话的ID',
-  `ocsess_expire_time` datetime NOT NULL comment '当前Session会话有效期',
-  `ocsess_data` longtext NOT NULL comment '当前Session会话的数据',
+CREATE TABLE `sessions` (
+  `id` int(11) unsigned not null comment '自增ID',
+  `session_id` varchar(255) NOT NULL comment '当前Session会话的ID',
+  `session_expire_time` datetime NOT NULL comment '当前Session会话有效期',
+  `session_data` text NOT NULL comment '当前Session会话的数据',
   `create_time` int(11) unsigned NOT NULL comment '添加时间',
   `modify_time` int(11) unsigned NOT NULL comment '最后修改时间',
-  PRIMARY KEY (`ocsess_id`)
+  PRIMARY KEY (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 </pre>
-      （2）添加session模型
-	在开发者中心添加session模型，然后框架会在resource/conf/model下面新建了该模型的模型配置文件。
-	在模型配置文件中修改$CONF['MAP']，添加别名映射。
-<pre class="brush: php;">
-/**
- * 字段别名映射
- */
-$CONF['MAP'] = array(
-    'session_id' => 'ocsess_id',
-    'session_expire_time' => 'ocsess_expire_time',
-    'session_data' => 'ocsess_data',
-);
-</pre>
-      （3）配置session为保存方式
+      （2）配置session为保存方式
             修改配置文件/required/conf/develop.php，比如我们新建了\Model\Session模型：
 <pre class="brush: php;">
 /*
@@ -73,100 +61,14 @@ $CONF['SESSION'] = array(
 	'save_type'	 => 2, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
 	'save_time'	 => 0, //session的最长存活时间（单位为秒）
 	'server'     => '', //服务器名称，因为location已指定Model，所以这里为空即可
-	'location'	 => '\Model\Session', //Model类
+	'location'	 => '\Ocara\Service\Model\Session', //Model类
 );</pre>      说明：
             （a）配置项“save_type”设为2；；
-            （b）配置项“location”为保存session的数据表名，默认为ocsess
-      （4）修改Model
-            通过在开发者中心中添加session模型。然后修改文件内容。
-            添加以下四个方法：
-                  （a）read($sessionId)，主要是读取指定session_id的session数据。
-                  （b）write($data)，主要是写入指定的session数据。
-                  （c）destroy($id)，释放指定的session数据，即删除此行记录。
-                  （d）clear()，清理过期的session记录。
-            以下是当前实例代码：
-<pre class="brush: php;">
-<?php
-namespace Model;
-use Ocara\Model\Database;
+            （b）配置项“location”为session模型类名，默认为\Ocara\Service\Model\Session
+      （3）修改Model
+            上述实例使用的是默认的session处理模型。
+            如果想要修改，可以另外生成一个session模型，要继承接口Ocara\Service\Interfaces\Model。
 
-class Session extends Database
-{
-	protected $_table = 'ocsess';
-	protected $_primary = 'ocsess_id';
-
-	/**
-	 * 初始化模型
-	 */
-	protected function _model()
-	{}
-
-	/**
-	 * 读取session
-	 * @param $sessionId
-	 * @return null
-	 */
-	public function read($sessionId)
-	{
-		$where = array('session_id' => $sessionId);
-
-		$result = $this
-			->where($where)
-			->findFirst();
-
-		return $result ? $result['session_data'] : null;
-	}
-
-	/**
-	 * 写入session
-	 * @param $data
-	 */
-	public function write($data)
-	{
-		$where = array(
-			'session_id' => $data['session_id']
-		);
-
-		$sessionInfo = $this->findFirst($where);
-		if ($sessionInfo) {
-			$data['modify_time'] = time();
-			$this->where($where)->update($data);
-		} else {
-			$data['create_time'] = time();
-			$data['modify_time'] = time();
-			$this->create($data);
-		}
-	}
-
-	/**
-	 * 删除session
-	 * @param $sessionId
-	 */
-	public function destroy($sessionId)
-	{
-		$where = array(
-			'session_id' => $sessionId
-		);
-
-		$sessionInfo = $this->findFirst($where);
-		if ($sessionInfo) {
-			$this->select($sessionInfo['id'])->delete();
-		}
-	}
-
-	/**
-	 * 清理过期session
-	 */
-	public function gc()
-	{
-		$where = array(
-			'session_expire_time' => date(ocConfig('DATE_FORMAT.datetime'))
-		);
-
-		$this->cWhere('<', $where)->delete();
-	}
-}
-</pre>
 <strong>3、缓存保存方式</strong>
       需要缓存支持。
       先要装好Memcache或Redis等缓存，然后在/required/conf/cache.php配置好缓存选项。
@@ -185,7 +87,6 @@ $CONF['SESSION'] = array(
             （a）配置项“save_type”设为3；
             （b）配置项“server”，即保存session的缓存服务器名称，这里使用cache_redis，默认为default；
             （c）配置项“location”为保存session的缓存前缀，默认为sessions
-
 
 <h2>Session操作方式</h2>
 
