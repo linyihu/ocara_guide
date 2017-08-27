@@ -245,7 +245,7 @@ $userModel = new \Model\User();
 $result = $userModel->where($where)
     ->fields($fields)
 	->orderBy($order)
-	->findRow();
+	->getRow();
 </pre>
 （2）选择user_id为1用户的用户名和邮箱
 <pre class="brush: php;">
@@ -256,7 +256,7 @@ $where = array(
 
 //查询结果-只指定字段列表时，第二个参数可以直接使用该字段列表字符串
 $userModel = new \Model\User();
-$result = $userModel-&gt;findRow($where, $fields);
+$result = $userModel-&gt;getRow($where, $fields);
 </pre>
 <strong>4、查询某个字段值</strong>
          使用Model的getValue(()方法可以按条件查询一条记录的某个字段的值：
@@ -362,10 +362,10 @@ $result = $userModel-&gt;innerJoin('threads','b','a.user_id=b.user_id')//相当�
 
 
 <strong>6、合并查询</strong>
-使用union()和unionAll方法可以合并多个查询，只要以某个设置查询的Model作为参数:
+         使用union()和unionAll方法可以合并多个查询，只要主表上面使用该两个方法，传递Model对象为参数，格式如下:
                 <span class="STYLE1">union(model) ｜ unionAll(model)</span>
-         返回当前Model对象，可用于连贯语句。
-         注：可以多次使用，如果去除重复值，最后一次的合并一定要用unionAll()。
+         返回当前主表的Model对象，可用于连贯语句。
+         注：可以多次使用，union()与unionAll()的区别在于，union()去除重复数据。
          参数说明：
 	</pre>
 <table>
