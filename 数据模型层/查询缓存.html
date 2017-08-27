@@ -53,13 +53,13 @@ $where = array(
 $userModel = new \Model\User();
 $result = $userModel->where($where)
 	->cache()
-	->find();
+	->getAll();
 
 //保存到Redis缓存，假设已经配置了Redis的缓存连接
 $userModel = new \Model\User();
 $result = $userModel->where($where)
 	->cache('cache_redis')
-	->find();
+	->getAll();
 </pre>
 <pre>
 <strong>3、自定义缓存的保存和查询方式</strong>

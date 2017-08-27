@@ -59,7 +59,7 @@ class ListAction extends ItemController
 		
 		$result = $itemModel->where($where)
 			->page($pager->info())
-			->find();
+			->getAll();
 		
 		$total = $result['total'];
 		$data = $result['data'];

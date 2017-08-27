@@ -68,19 +68,19 @@ class UpdateAction extends HomeController
 		$userData = $this
                 ->model('\Model\UserInfo') //第一次使用时，会新建该模型类对象
                 ->limit(0, 100)
-                ->find();
+                ->getAll();
 
         //用户表Model使用
         $userData2 = $this
                 ->model('\Model\UserInfo') //第二次使用，不会再新建类
                 ->limit(0, 100)
-                ->find();
+                ->getAll();
 
         //home表Model使用
         $homeData = $this
             ->model() //因为home表模型名与控制名称同名，可以不传递参数建立模型
             ->limit(0, 100)
-            ->find();
+            ->getAll();
 	}
 
     /**

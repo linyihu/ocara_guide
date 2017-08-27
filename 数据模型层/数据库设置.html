@@ -89,7 +89,7 @@ $CONF['DATABASE']['default'] = array(
 $userModel = new \Model\User();
 $userModel->where(array('type' => 2))
 	->master() //规定使用主库查询
-	->find(); 
+	->getAll();
 </pre>
 <strong>4、多数据库或分布式数据库配置</strong>
    （1）直接配置法

@@ -68,7 +68,7 @@ $user = new \Model\Users();
 $result = $user->where(array('userName' => 'Jim'))
      ->fields('username')
      ->fields(array('password'))
-     ->findFirst();
+     ->getRow();
 ocPrint($result);
 </pre>
             以上代码，用了字段别名userName当条件，而且真实字段输出的是字段别名，打印结果如下：
@@ -111,7 +111,7 @@ $userModel-&gt;data($data)-&gt;save();
 $userModel= new \Model\User();
 
 //查询结果
-$result = $userModel-&gt;where($_POST)-&gt;findFirst();
+$result = $userModel-&gt;where($_POST)-&gt;getRow();
 </pre>
 
 <strong>（3）表单字段匹配</strong>

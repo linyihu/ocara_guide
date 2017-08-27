@@ -73,7 +73,7 @@ class IndexAction extends GuestbookController
 		$pageInfo = $pager->getInfo();
 		
 		//²éÑ¯Êý¾Ý
-		$result = $model->page($pageInfo)->find();
+		$result = $model->page($pageInfo)->getAll();
 
 		$data 	= $result['data'];
 		$total 	= $result['total'];

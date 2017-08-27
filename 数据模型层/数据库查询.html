@@ -89,12 +89,12 @@ $result = $detailModel->fields('detail_id, line, price')
 	))
    	->orderBy('create_time DESC')
 	->limit(0, 100)
-	->find();
+	->getAll();
 </pre>
 
 <strong>2、查询多条记录</strong>
-     使用Model的find()方法可以查询多行记录：
-            <span class="STYLE1">find([condition, option, debug])</span>
+     使用Model的getAll()方法可以查询多行记录：
+            <span class="STYLE1">getAll([condition, option, debug])</span>
      注：（1）一般地，没有分页时返回查询数据。
                   返回的是结果集数组，有数组和对象两种格式，默认是数组格式。设置返回类型参见<a href="SQL语句生成.html">SQL语句生成函数setDataType()</a>。
            （2）分页时，返回总数和查询数据。
@@ -137,9 +137,9 @@ $order = 'create_time DESC';
 $limit = '1,10';
 $where = array('status' => 1);
 
-//方式1.使用find()参数
+//方式1.使用getAll()参数
 $userModel = new \Model\User();
-$result = $userModel-&gt;find($where,
+$result = $userModel-&gt;getAll($where,
     array(
         'fields' =&gt; $fields, 
         'order' =&gt; $order, 
@@ -153,7 +153,7 @@ $result = $userModel->where($where)
      ->fields($fields)
 	 ->orderBy($order)
 	 ->limit($limit)
-	 ->find();
+	 ->getAll();
 
 //返回对象元素数组
 $userModel = new \Model\User();
@@ -162,15 +162,15 @@ $result = $userModel->where($where)
 	 ->orderBy($order)
 	 ->limit($limit)
 	 ->setDataType('object') //设置为返回对象类型
-	 ->find();
+	 ->getAll();
 </pre>
 （2）统计不同状态status的男性用户(sex字段值为1)数量，使用where()设置条件
 <pre class="brush: php;">$fields = '`status`, count(user_id) AS number';
 $group = 'status';
 $where = array('sex' => 1);
 
-//方式1.使用find()的参数
-$result = ocMode('user')-&gt;find($where, 
+//方式1.使用getAll()的参数
+$result = ocMode('user')-&gt;getAll($where,
      array(
 	     'fields' =&gt; $fields, 
 	     'group' =&gt; $group
@@ -182,7 +182,7 @@ $userModel = new \Model\User();
 $result = $userModel->where($where)
      ->fields($fields)
 	 ->groupBy($group)
-     ->find();
+     ->getAll();
 
 //返回对象元素类型
 $userModel = new \Model\User();
@@ -190,11 +190,11 @@ $result = $userModel->where($where)
      ->fields($fields)
 	 ->groupBy($group)
 	 ->setDataType() //设置为返回对象类型
-     ->find();
+     ->getAll();
 </pre>
 <strong>3、查询一条记录</strong>
-        使用Model的findFirst()方法可以查询一条记录：
-               <span class="STYLE1">findFirst([condition，option, debug])</span>
+        使用Model的getRow()方法可以查询一条记录：
+               <span class="STYLE1">getRow([condition，option, debug])</span>
         返回一条记录的关联数组或对象，默认为数组，同上主键查询。
         参数说明：
 	</pre>
@@ -231,9 +231,9 @@ $where = array(
     'status' => 1
 );
 
-//方式1.使用findFirst()的参数
+//方式1.使用getRow()的参数
 $userModel = new \Model\User();
-$result = $userModel-&gt;findFirst($where,
+$result = $userModel-&gt;getRow($where,
     array(
 	    'fields' =&gt; $fields, 
 		'order' =&gt; $order
@@ -259,8 +259,8 @@ $userModel = new \Model\User();
 $result = $userModel-&gt;findRow($where, $fields);
 </pre>
 <strong>4、查询某个字段值</strong>
-         使用Model的findValue()方法可以按条件查询一条记录的某个字段的值：
-                <span class="STYLE1">findValue(field, [condition, debug])</span>
+         使用Model的getValue(()方法可以按条件查询一条记录的某个字段的值：
+                <span class="STYLE1">getValue((field, [condition, debug])</span>
          返回字段值，如果没有查到，则返回false。
          注：Limit语句请使用limit()方法。
          参数说明：
@@ -293,13 +293,13 @@ $where = array(
     'user_id' => 1
 );
 
-//方式1.使用findValue()的参数
+//方式1.使用getValue(()的参数
 $userModel = new \Model\User();
-$result = $userModel->limit(1)-&gt;findValue('username', $where);
+$result = $userModel->limit(1)-&gt;getValue(('username', $where);
 
 //方式2.SQL查询的生成方法函数
 $userModel = new \Model\User();
-$result = $userModel->where($where)->limit(1)-&gt;findValue('username');
+$result = $userModel->where($where)->limit(1)-&gt;getValue(('username');
 
 </pre>
 
@@ -357,7 +357,7 @@ $result = $userModel-&gt;innerJoin('threads','b','a.user_id=b.user_id')//相当�
     -&gt;where('a.user_id=1 AND b.status=1') //查询条件
     -&gt;limit('1,100')		//limit语句
     -&gt;orderBy('c.create_time DESC') //排序
-    -&gt;find();
+    -&gt;getAll();
 </pre>
 
 
@@ -398,7 +398,7 @@ $model->fields('uid as user_id, uname as user_name')
 
 $result = $model->union($userModel_1)
 	->unionAll($userModel_1)
-	->find();
+	->getAll();
 
 ocPrint($result);
 </pre>

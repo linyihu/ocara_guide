@@ -166,7 +166,7 @@ $(document).ready(function(){
     protected function _action()
     {
         $item = new \Model\Item();
-        $data = $item->where(array('status' => 1))->find();
+        $data = $item->where(array('status' => 1))->getAll();
         return $data;
     }
 }

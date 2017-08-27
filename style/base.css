@@ -15,4 +15,6 @@ table{width:800px;background-color:#DDDDDD;margin:0px 28px;}
 td{padding:3px 15px;word-break:break-all; word-wrap:break-word;vertical-align:text-top;}
 tr.head td{font-weight:bold}
 
-strong{font-size:15px;}
+strong{
+	font-size:15px;
+}

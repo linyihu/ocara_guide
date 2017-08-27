@@ -117,7 +117,7 @@ class IndexAction extends UserController
 		$userList = $userModel->sharding($shardingData)
                               ->orderBy('create_time DESC')
                               ->limit(0, 100)
-                              ->find();
+                              ->getAll();
 
 		$this->assign(compact('userList');
 	}
