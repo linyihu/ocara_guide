@@ -35,9 +35,9 @@ $(document).ready(function(){
 <strong>2、如何开始单元测试</strong>
       在单元测试时，最主要的问题是如何加载框架，从而在单元测试的代码中能够使用框架。
       加载框架，要用到\Ocara\OcaraInvoke类。
-      （1）要加载框架的system/library/OcaraInvoke.php文件，如下实例:
+      （1）要加载框架的system/core/OcaraInvoke.php文件，如下实例:
 <pre class="brush: php;">/*
-require_once __DIR__ . '/../../vendor/linyihu/ocara/system/library/OcaraInvoke.php';
+require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/OcaraInvoke.php';
 </pre>
 
       （2）要使用OcaraInvoke::init()方法初始化。
@@ -60,7 +60,7 @@ require_once __DIR__ . '/../../vendor/linyihu/ocara/system/library/OcaraInvoke.p
 </table>
       实例如下：
 <pre class="brush: php;">
-require_once __DIR__ . '/../../vendor/linyihu/ocara/system/library/OcaraInvoke.php';
+require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/OcaraInvoke.php';
 OcaraInvoke::init(__DIR__.'/../', __FILE__);
 </pre>
 
@@ -89,7 +89,7 @@ OcaraInvoke::run('home/index', array(), false);
 use Ocara\OcaraInvoke;
 use Ocara\Call;
 
-require_once __DIR__ . '/../../vendor/linyihu/ocara/system/library/OcaraInvoke.php';
+require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/OcaraInvoke.php';
 OcaraInvoke::init(__DIR__.'/../', __FILE__);
 
 
