@@ -96,7 +96,7 @@ $result = $detailModel->fields('detail_id, line, price')
      使用Model的getAll()方法可以查询多行记录：
             <span class="STYLE1">getAll([condition, option, debug])</span>
      注：（1）一般地，没有分页时返回查询数据。
-                  返回的是结果集数组，有数组和对象两种格式，默认是数组格式。设置返回类型参见<a href="SQL语句生成.html">SQL语句生成函数setDataType()</a>。
+                  返回的是结果集数组，每条结果都是一个数组。
            （2）分页时，返回总数和查询数据。
                   如果使用了page()方法进行分页，则返回的数组只有total和data两个元素，total表示查询的总记录数，而data是查询数据，格式同上。
                   page()方法的使用请参见<a href="SQL语句生成.html">SQL语句生成函数page()</a>。
@@ -161,7 +161,6 @@ $result = $userModel->where($where)
      ->fields($fields)
 	 ->orderBy($order)
 	 ->limit($limit)
-	 ->setDataType('object') //设置为返回对象类型
 	 ->getAll();
 </pre>
 （2）统计不同状态status的男性用户(sex字段值为1)数量，使用where()设置条件
@@ -189,7 +188,6 @@ $userModel = new \Model\User();
 $result = $userModel->where($where)
      ->fields($fields)
 	 ->groupBy($group)
-	 ->setDataType() //设置为返回对象类型
      ->getAll();
 </pre>
 <strong>3、查询一条记录</strong>

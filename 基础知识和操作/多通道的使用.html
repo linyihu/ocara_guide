@@ -31,10 +31,10 @@
          通道使用时很简单，直接访问其中的PHP文件即可。比如：http://localhost/pass/test.php。
 
     <strong>3、调用控制器动作</strong>
-        如果要在通道中的PHP文件调用某个控制器动作，可使用OcaraInvoke类。
+        如果要在通道中的PHP文件调用某个控制器动作，可使用Invoke类。
         具体步骤如下：
-           （1）正确加载OcaraInvoke类文件
-           （2）调用<span class="STYLE1">OcaraInvoke::init()</span>初始化框架
+           （1）正确加载Invoke类文件
+           （2）调用<span class="STYLE1">Invoke::init()</span>初始化框架
                  <span class="STYLE1">init(rootPath, fileSelf)</span>
       参数说明：
 </pre>
@@ -53,7 +53,7 @@
     </tr>
 </table>
 <pre>
-           （3）调用<span class="STYLE1">OcaraInvoke::run()</span>方法执行控制器动作
+           （3）调用<span class="STYLE1">Invoke::run()</span>方法执行控制器动作
                   其中，根目录的路径尽量使用<span class="STYLE1">dirname()</span>生成的相对路径，考虑到兼容性。
 
     <strong>4、实例</strong>
@@ -68,14 +68,14 @@
  * Date: 16-4-27
  */
 
-//加载OcaraInvoke文件
-require_once dirname(__DIR__) . '/ocara/system/OcaraInvoke.php';
+//加载Invoke文件
+require_once dirname(__DIR__) . '/ocara/system/core/Invoke.php';
 
 //初始化框架
-Ocara\OcaraInvoke::init(dirname(__DIR__), __FILE__);
+Ocara\Invoke::init(dirname(__DIR__), __FILE__);
 
 //执行控制器动作
-Ocara\OcaraInvoke::run('/user/view', array('id' => 13));
+Ocara\Invoke::run('/user/view', array('id' => 13));
 
 </pre>
                   （b）执行文件

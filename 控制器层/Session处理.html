@@ -24,7 +24,7 @@ $CONF['SESSION'] = array(
 	'save_type'	 => 1, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
 	'save_time'	 => 0, //session的最长存活时间（单位为秒）
 	'server'     => '', //服务器名称，因为是文件保存方式，所以这里为空即可
-	'location'	 => 'cache/sessions', //保存session的文件目录名
+	'location'	 => 'sessions', //保存session的文件目录名
 );</pre>
        说明：
             （a）配置项“save_type”为1；
@@ -81,12 +81,12 @@ $CONF['SESSION'] = array(
 	'save_type'	 => 3, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
 	'save_time'	 => 0, //session的最长存活时间（单位为秒）
 	'server'     => 'cache_redis', //服务器名称，数据库服务器名称或Redis服务器名
-	'location'	 => 'sessions', //保存session的缓存前缀，缓存前缀
+	'location'	 => 'session', //保存session的缓存前缀
 );</pre>
       说明：
             （a）配置项“save_type”设为3；
             （b）配置项“server”，即保存session的缓存服务器名称，这里使用cache_redis，默认为default；
-            （c）配置项“location”为保存session的缓存前缀，默认为sessions
+            （c）配置项“location”为保存session的缓存前缀，默认为session
 
 <h2>Session操作方式</h2>
 
@@ -104,7 +104,7 @@ $login_info = $this->session->get('login_info');
 	</pre>
     （b）静态调用方式
 <pre class="brush: php;">
-$login_info = Session::get('login_info');
+$login_info = $this->session->get('login_info');
 </pre>
 
 </pre>

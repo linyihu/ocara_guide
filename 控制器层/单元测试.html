@@ -34,13 +34,13 @@ $(document).ready(function(){
 
 <strong>2、如何开始单元测试</strong>
       在单元测试时，最主要的问题是如何加载框架，从而在单元测试的代码中能够使用框架。
-      加载框架，要用到\Ocara\OcaraInvoke类。
-      （1）要加载框架的system/core/OcaraInvoke.php文件，如下实例:
+      加载框架，要用到\Ocara\Invoke类。
+      （1）要加载框架的system/core/Invoke.php文件，如下实例:
 <pre class="brush: php;">/*
-require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/OcaraInvoke.php';
+require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/Invoke.php';
 </pre>
 
-      （2）要使用OcaraInvoke::init()方法初始化。
+      （2）要使用Invoke::init()方法初始化。
     <strong>init(rootPath, fileSelf)</strong>
       参数说明：
  </pre>
@@ -60,8 +60,8 @@ require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/OcaraInvoke.php'
 </table>
       实例如下：
 <pre class="brush: php;">
-require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/OcaraInvoke.php';
-OcaraInvoke::init(__DIR__.'/../', __FILE__);
+require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/Invoke.php';
+Invoke::init(__DIR__.'/../', __FILE__);
 </pre>
 
 <pre>
@@ -77,7 +77,7 @@ $users = Call::run('home/getUsers');
             Action无返回值，如下实例：
 </pre>
 <pre class="brush: php;">
-OcaraInvoke::run('home/index', array(), false);
+Invoke::run('home/index', array(), false);
 </pre>
 <pre>
 <strong>3、实例</strong>
@@ -86,11 +86,11 @@ OcaraInvoke::run('home/index', array(), false);
       文件内容如下:
 </pre>
 <pre class="brush: php;">
-use Ocara\OcaraInvoke;
+use Ocara\Invoke;
 use Ocara\Call;
 
-require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/OcaraInvoke.php';
-OcaraInvoke::init(__DIR__.'/../', __FILE__);
+require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/Invoke.php';
+Invoke::init(__DIR__.'/../', __FILE__);
 
 
 class OneTest extends PHPUnit_Framework_TestCase

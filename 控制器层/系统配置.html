@@ -36,7 +36,7 @@
                        （b）item控制器目录中有一个test2.php和edit动作目录
                        （c）edit动作目录有一个test2.php和test子目录
                        （c）test子目录中保存了一个test3.php配置文件
-                假设这些配置文件都配置了$CONF['LOG_PATH']。
+                假设这些配置文件都配置了$CONF['LOG.root']。
                 那么，ItemController控制器中使用该配置时，用到的是item/test2.php中配置的有效。
                 而EditAction动作中用到的是item/edit/test2.php的配置，它覆盖了下上层目录item/test2.php中的同名配置。
                 同时，item/edit/test/test3.php的配置则没有用到。
@@ -91,7 +91,7 @@ $CONF['FORM'] = array(
 </pre>
        2、同一级目录中同一个配置选项只能写在一个地方
               由于同一级目录中配置文件的加载顺序不定，同一级目录下的同一个配置，应该只在同一个文件中出现一次。
-              比如$CONF['LOG_PATH']一般是在conf/develop.php中配置，就不要在其他文件写了（例如conf/application.php），conf的子目录中是可以的，因为不在同一层目录中。
+              比如$CONF['LOG.root']一般是在conf/develop.php中配置，就不要在其他文件写了（例如conf/application.php），conf的子目录中是可以的，因为不在同一层目录中。
 
 <strong>四、如何获取配置</strong>
        获取配置，要使用ocConfig()函数，请参见<a href="../函数智能/系统应用.html">函数智能/系统应用函数</a>中ocConfig函数的使用。

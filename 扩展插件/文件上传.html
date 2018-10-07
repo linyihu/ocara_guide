@@ -29,7 +29,7 @@ $path = 'upload/item/' . $item_id;
 $uploadPath = ocPath('temp', $path);
 
 if ($uploadObj->setSavePath($uploadPath) == false) {
-	Error::show('图片保存目录新建失败!');
+	$this->error->show('图片保存目录新建失败!');
 }
 
 //设置上传文件类型
@@ -43,7 +43,7 @@ if ($result = $uploadObj->upload()) {
    $image = ocGet('image.save_path', $result);
 } else {
    //输出上传错误
-   Error::show($uploadObj->getError(), '返回');
+   $this->error->show($uploadObj->getError(), '返回');
 }
 
 //使用上传文件

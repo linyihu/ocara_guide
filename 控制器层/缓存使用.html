@@ -93,11 +93,9 @@ interface Cache
 	 * 设置KEY
 	 * @param string $name
 	 * @param boolean $value
-	 * @param integer $exireTime
-	 * @param mixed $args
 	 * @return bool
 	 */
-	public function set($name, $value, $exireTime = 0, $args = null);
+	public function set($name, $value);
 
 	/**
 	 * 获取KEY

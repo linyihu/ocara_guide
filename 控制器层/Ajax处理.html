@@ -42,7 +42,7 @@
 </table>
 <pre>
       （2）返回错误结果
-              错误结果，直接用<span class="STYLE1">Error::show()</span>即可，会自动检测是否是Ajax请求并返回Ajax结果。
+              错误结果，直接用<span class="STYLE1">Ocara::services()->error->show()</span>即可，会自动检测是否是Ajax请求并返回Ajax结果。
 
       （3）设置返回的文档格式
               Ajax返回的文档格式，包括Json、XML和html格式。
@@ -85,7 +85,7 @@ class DelAction extends ItemController
        } else {
             //删除失败，返回error状态值。
             //failed_delete是多语言设置的提示消息键名，需要在resource/lang语言目录配置具体内容。
-            Error::show('failed_delete');
+            Ocara::services()->error->show('failed_delete');
        }
     }
 }

@@ -236,7 +236,7 @@ protected function _ajax()
 	$id = Request::getGet('id');
 
 	if (empty($id)) {
-		Error::show('删除失败！');
+		$this->error->show('删除失败！');
 	}
 
 	\Model\Item::select($id)->delete();

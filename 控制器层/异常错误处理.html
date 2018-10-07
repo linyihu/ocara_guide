@@ -217,14 +217,14 @@ $CONF['CALLBACK']['error_log'] = 'ExceptionHandler::writeLog';
                             （a）对于程序错误，只要配置了自定义回调，无论是哪种错误都会调用它写日志。
                             （b）对于异常错误，一样的处理方法。抛出错误时，有两种方法：
                                     （b1）记录日志并且显示错误，使用<span class="STYLE1">Error::show(message[, params])</span>方法。一般会终止程序执行。
-                                    （b2）只记录日志不显示错误，使用<span class="STYLE1">Error::log(message[, params])</span>方法。如果没有配置自定义回调，那它什么都不做。
+                                    （b2）只记录日志不显示错误，使用<span class="STYLE1">Error::writeLog(message[, params])</span>方法。如果没有配置自定义回调，那它什么都不做。
                              记录异常错误日志实例如下：
                              假设缺少商品信息时只记录到日志而不显示出错信息，如下所示：
 
 <pre class="brush: php;">
 $itemInfo = $this->getItemInfo();
 if (empty($itemInfo)) {
-    Error::log('no_item_info'); // 仅记录错误日志
+    Error::writeLog('no_item_info'); // 仅记录错误日志
 }
 </pre>
                              如果还想显示错误信息则使用Error::show()，如下所示：

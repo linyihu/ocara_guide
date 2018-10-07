@@ -476,53 +476,6 @@ $userModel->where(array('type' => 2))
 	->getAll();
 </pre>
 
-<strong>  11、设置返回结果类型</strong>
-      <span class="STYLE1">setDataType(type)</span>
-      参数说明：
-</pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>type</td>
-		<td>必需。设置类型，有array和object两种值，分别表示关联数组和对象类型。</td>
-	</tr>
-</table>
-<pre>
-      函数说明：
-            （1）如果设置的是返回数组元素（默认类型）
-                    每个数组元素都是一条记录的关联数组，每个关联数组的键名是字段名，键值是字段值。
-                    如果没有查到记录，则返回空数组array()。
-            （2）如果设置的是返回对象元素
-                    每个数组元素都是一个Object对象，属性名是字段名，属性值是字段值。
-                    如果没有查到记录，则返回null。
-      实例如下：
-            （1）设置为array类型，并显示
-<pre class="brush: php;">
-$brandModel = new \Model\Brand();
-$brandArray= $brandModel
-	-&gt;fields('id, name')
-	-&gt;setDataType('array')
-	-&gt;getAll();
-
-foreach ($brandArray as $row) {
-   echo &quot;品牌：id为{$row['id']}，名称为：{$row['name']}&quot; . '&lt;br/&gt;';
-}
-</pre>
-            （2）设置为object类型，并显示
-<pre class="brush: php;">
-$brandModel = new \Model\Brand();
-$brandArray= $brandModel-&gt;fields('id, name')
-      -&gt;setDataType('object')
-      -&gt;getAll();
-
-foreach ($brandArray as $row) {
-   echo &quot;品牌：id为{$row-&gt;id}，名称为：{$row-&gt;name}&quot; . '&lt;br/&gt;';
-}
-</pre>
-
 <strong>  12、获取最后一次插入的ID</strong>
       <span class="STYLE1">getInsertId()  </span>
       函数说明：获取最后一次插入的ID。
