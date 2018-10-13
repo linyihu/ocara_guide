@@ -36,17 +36,17 @@ define('OC_EXECUTE_START_TIME', microtime(true));
  * 加载框架或自动加载
  */
 //require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
-require_once dirname(dirname(__DIR__)) . '/ocara/system/core/Ocara.php';
+require_once dirname(dirname(__DIR__)) . '/ocara/system/library/Core/Ocara.php';
 
 /*
  * 运行应用
  */
-Ocara\Ocara::create();
+Ocara\Core\Ocara::create();
 </pre>
               只要指定好上面代码中Ocara框架所在目录OC_PATH即可，这个框架目录一定要写对。
               请保证当前应用目录myapp有可读写权限。
      （3）执行该index.php新建应用目录。
-              在浏览器中打开http://localhost/myapp/index.php。
+              在浏览器中打开http://localhost/index.php。
               如果新建成功，会输出：Application create Success!否则，如果是权限问题，PHP会提示目录没有可写权限。</p>
 </pre>
 </body></html>

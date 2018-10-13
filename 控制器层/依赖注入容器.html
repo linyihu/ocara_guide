@@ -23,15 +23,15 @@
 
 <strong>1、容器的使用</strong>
       （1）默认容器
-            框架开始时便生成了一个默认容器，该容器保存在\Ocara\Base::$container属性中。因此有以下使用方法:
-            （a）任意处可以使用\Ocara\Base::$container来调用默认容器。
+            容器类为\Ocara\Core\Container。
+            框架开始时便生成了一个默认容器，可以通过以下两种方式获取:
+            （a）Container::getDefault()。
                   实例如下：
 <pre class="brush: php;">
-//使用Base::$container
-$container = Base::$container;
+//Container::getDefault()
+$container = Container::getDefault();
 </pre>
-            （b）在继承了\Ocara\Base的类中，可以使用self::$container来调用默认容器。
-                  框架的每个类，都继承了\Ocara\Base，所以控制器动作或Model中，都可以使用self::$container来调用默认容器。
+            （b）使用ocContainer()函数。
                   实例如下：
 <pre class="brush: php;">
 //继承自Base的类中使用
@@ -39,31 +39,27 @@ class test extends \Ocara\Base
 {
     public function output()
     {
-       $response = self::$container->response;
+       $response = ocContainer()->response;
     }
 }
 </pre>
-                  Model中使用默认容器，实例如下：
-<pre class="brush: php;">
-use Ocara\Model\Database as DatabaseModel;
 
-class User extends DatabaseModel
-{
-	/**
-	 * 初始化
-	 */
-	public function _model()
-	{
-        $session = self::$container->session;
-    }
-}
-</pre>
-            （c）控制器动作中使用默认容器
-                  可以使用self::$container，也可以使用“$this->属性名”方式获取绑定类。
-                  实例如下：
+     （2）私有容器
+            控制器动作继承于ServiceProvider类，所以其本身包含自己的私有容器$this->_container。
+            可以使用“$this->属性名”方式获取默认容器中的类对象。
+            如果默认容器和私有容器有同名的类对象，这种调用方式会优先调用私有容器中的对象，如果没有则取默认容器中的。
+            实例如下：
 <pre class="brush: php;">
 class EditAction extends ItemController
 {
+    /**
+     * 注册对象
+     */
+    public function register()
+    {
+       $this->_container->bindSingleTon('response', '\Base\MyResponse'); //私有容器中注册对象
+    }
+
 	/**
 	 * 初始化
 	 */
@@ -75,26 +71,24 @@ class EditAction extends ItemController
 
 	public function _display()
 	{
-        $id = self::$container->request->getGet('id'); //使用self::$container
-        $id = $this->request->getGet('id'); //直接使用$this->request可以获取容器中的request实例
+        $id = $this->request->getGet('id'); //使用默认容器的request对象
     }
 
 	public function _submit()
 	{
-        $data = self::$container->request->getPost();
-        $data = $this>request->getPost();
+        $data = $this->response->setStatusCode(400); //优先使用当前控制器私有容器$this->_container的response对象
     }
 }
 </pre>
       （2）生成新的容器
-            除了使用默认容器，我们还可以新建一个容器，只要新建\Ocara\Container类即可。
+            除了使用默认容器，我们还可以新建一个容器，只要新建\Ocara\Core\Container类即可。
             如下所示：
 <pre class="brush: php;">
 //使用new 关键字新建容器
-$container = new \Ocara\Container();
+$container = new \Ocara\Core\Container();
 
 //使用build()方法新建容器
-$container = \Ocara\Container::build();
+$container = \Ocara\Core\Container::build();
 </pre>
 
 <strong>2、类或接口的绑定</strong>
@@ -185,7 +179,7 @@ class Computer
 </pre>
 <pre class="brush: php;">
 //绑定时传递前面的参数（注入鼠标对象）
-$container = new \Ocara\Container();
+$container = new \Ocara\Core\Container();
 $mouse = new \Mouse();
 $container->bind('computer', '\Computer', array($mouse));
 
@@ -204,7 +198,7 @@ $computer->get('computer', array($name, $config));
 $container->bind('\Interface\Mouse', '\Mouse');
 
 //绑定时传递前面的参数（注入鼠标对象）
-$container = new \Ocara\Container();
+$container = new \Ocara\Core\Container();
 $container->bind('computer', '\Computer', array(null)); //这里传null
 
 //获取对象
@@ -309,7 +303,7 @@ $computer->get('computer', array(), array('keyboard' => $keyboardObj));
             实例如下：
 </pre>
 <pre class="brush: php;">
-$userChecker = Base::$container->get('userChecker');
+$userChecker = ocContainer()->get('userChecker');
 </pre>
 <pre>
       （2）使用未定义的属性
@@ -317,7 +311,7 @@ $userChecker = Base::$container->get('userChecker');
             上述实例等同于：
 </pre>
 <pre class="brush: php;">
-$userChecker = Base::$container->userChecker;
+$userChecker = ocContainer()->userChecker;
 </pre>
 
 </pre>

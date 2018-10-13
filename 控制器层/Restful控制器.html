@@ -93,18 +93,30 @@ $OC_CONF['CONTROLLERS']['rest']['success_code_map'] => array(
                 （3）message，处理结果描述。
                 （4）body，处理后的结果数据。
 
-        formatAjaxResult()代码格式，应该如下：
+        假设要设置item控制器的返回数据格式，那么formatAjaxResult()代码格式，应该如下：
 <pre class="brush: php;">
-if ($result['status'] == 'success') {
-    //这里修改请求成功时返回的数据格式
+namespace modules\index\item;
 
-    //返回result的body值
-    return $result['body'];
-} else {
-    //这里修改请求失败时返回的数据格式
+use modules\index\Module;
+use dal\models\main\Item;
 
-    //返回全部值
-    return $result;
+class Controller extends Module
+{
+    public function formatAjaxResult()
+    {
+        if ($result['status'] == 'success') {
+            //这里修改请求成功时返回的数据格式
+
+            //返回result的body值
+            return $result['body'];
+        } else {
+            //这里修改请求失败时返回的数据格式
+
+            //返回全部值
+            return $result;
+        }
+    }
+
 }
 </pre>
 

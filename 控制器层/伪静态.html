@@ -12,10 +12,41 @@
 <body>
 <pre><h2>伪静态</h2>
 
-<strong>1、伪静态自动生成</strong>
-    Ocara框架的Apache服务器伪静态文件.htaccess是自动生成的，不需要开发者自己写。前提是伪静态功能是开启的。
+<strong>1、Apache伪静态自动生成</strong>
+    （1）伪静态文件.htaccess是自动生成的。前提是伪静态功能是开启的。
 
-<strong>2、丢失伪静态文件时解决方案</strong>
-    如果伪静态文件.htaccess丢失或需要重置，只要在本地运行一下网站就可以自动重新生成，前提是PHP的伪静态是开启的。
+    （2）丢失伪静态文件时解决方案
+             如果伪静态文件.htaccess丢失或需要重置，只要在本地运行一下网站就可以自动重新生成，前提是PHP的伪静态是开启的。
+
+<strong>3、Nginx伪静态</strong>
+参考如下：
+
+<pre class="brush: php;">
+server {
+    listen       80;
+    server_name  myapp.lc ;
+    root   "D:\wwwroot\myapp\public";
+
+    location / {
+        index index.php;
+        try_files $uri $uri/ @defaults;
+    }
+
+    location @defaults {
+           rewrite ^/(.*)$ /index.php?$1;
+    }
+
+    location ~ \.php(.*)$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_split_path_info  ^((?U).+\.php)(/?.+)$;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_param  PATH_INFO  $fastcgi_path_info;
+        fastcgi_param  PATH_TRANSLATED  $document_root$fastcgi_path_info;
+        include        fastcgi_params;
+    }
+}
+</pre>
+
 
 </pre></body></html>

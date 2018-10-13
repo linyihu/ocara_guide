@@ -23,7 +23,6 @@ Ocara支持文件、数据库和缓存三种保存方式，也提供了session�
 $CONF['SESSION'] = array(
 	'save_type'	 => 1, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
 	'save_time'	 => 0, //session的最长存活时间（单位为秒）
-	'server'     => '', //服务器名称，因为是文件保存方式，所以这里为空即可
 	'location'	 => 'sessions', //保存session的文件目录名
 );</pre>
        说明：
@@ -60,7 +59,6 @@ CREATE TABLE `sessions` (
 $CONF['SESSION'] = array(
 	'save_type'	 => 2, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
 	'save_time'	 => 0, //session的最长存活时间（单位为秒）
-	'server'     => '', //服务器名称，因为location已指定Model，所以这里为空即可
 	'location'	 => '\Ocara\Service\Model\Session', //Model类
 );</pre>      说明：
             （a）配置项“save_type”设为2；；
@@ -96,15 +94,17 @@ $CONF['SESSION'] = array(
     或者，
 <pre class="brush: php;">$login_info = ocGet('login_info', $_SESSION);</pre>
 <strong>（2）使用插件Session（推荐）</strong>
-     session操作请使用\Ocara\Session，控制器动作中可以直接使用$this->session。该插件的方法函数介绍，请参见<a href="./Session操作.html" title="表单生成">Session操作</a>
+     session操作请使用\Ocara\Core\Session，控制器动作中可以直接使用$this->session。该插件的方法函数介绍，请参见<a href="./Session操作.html" title="表单生成">Session操作</a>
      调用代码：
-    （a）模块、控制器或动作action的代码中可以使用$this->session调用，如：
+    （a）控制器中使用$this->session调用
 	<pre class="brush: php;">
-$login_info = $this->session->get('login_info'); 
-	</pre>
-    （b）静态调用方式
-<pre class="brush: php;">
+//在控制器中使用$this->session
 $login_info = $this->session->get('login_info');
+	</pre>
+    （b）非控制器中使用ocService()->session调用
+<pre class="brush: php;">
+//在非控制器中使用ocService()->session
+$login_info = ocService()->session->get('login_info');
 </pre>
 
 </pre>

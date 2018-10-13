@@ -86,18 +86,17 @@ Invoke::run('home/index', array(), false);
       文件内容如下:
 </pre>
 <pre class="brush: php;">
-use Ocara\Invoke;
-use Ocara\Call;
+use PHPUnit\Framework\TestCase;
+use Ocara\Core\Invoke;
 
-require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/Invoke.php';
+require_once __DIR__ . '/../vendor/linyihu/ocara/system/library/Core/Invoke.php';
 Invoke::init(__DIR__.'/../', __FILE__);
 
-
-class OneTest extends PHPUnit_Framework_TestCase
+class OneTest extends TestCase
 {
     public function testA()
     {
-        $result = Call::run('User/view', array('user_id' => 1));
+        $result = Invoke::run('User/view', array('user_id' => 1));
         ocPrint($result);
     }
 }
@@ -106,11 +105,12 @@ class OneTest extends PHPUnit_Framework_TestCase
       然后，新建home控制器的index动作。
 </pre>
 <pre class="brush: php;">
-namespace Controller\User\Action;
-use Controller\User\UserController;
-use Model\Users;
+namespace modules\index\User;
 
-class ViewAction extends UserController
+use modules\index\user\Controller;
+use dal\models\main\Users;
+
+class ViewAction extends Controller
 {
     /**
      * 初始化

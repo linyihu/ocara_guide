@@ -24,7 +24,7 @@
      一般用于引入第三方程序，比如论坛系统或支付系统等。
 
     <strong>1、通道目录</strong>
-         通道目录，是当前Web应用中的pass目录。
+         通道目录，是当前Web应用中public/pass目录。
          该目录需要手动在Web根目录新建。
 
     <strong>2、通道文件的执行</strong>
@@ -45,7 +45,7 @@
     </tr>
     <tr>
         <td>rootPath</td>
-        <td>必填。当前Web应用的根目录。</td>
+        <td>必填。当前Web应用目录。即public的上层目录。</td>
     </tr>
     <tr>
         <td>fileSelf</td>
@@ -69,10 +69,10 @@
  */
 
 //加载Invoke文件
-require_once dirname(__DIR__) . '/ocara/system/core/Invoke.php';
+require_once dirname(__DIR__) . '/ocara/system/library/Core/Invoke.php';
 
 //初始化框架
-Ocara\Invoke::init(dirname(__DIR__), __FILE__);
+Ocara\Invoke::init(dirname(dirname(__DIR__)), __FILE__);
 
 //执行控制器动作
 Ocara\Invoke::run('/user/view', array('id' => 13));

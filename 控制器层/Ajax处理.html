@@ -63,7 +63,11 @@ class DelAction extends ItemController
 <strong>2、Ajax提交的php代码写在哪里？</strong>
        Ajax后台的代码，直接写在Action类中的<span class="STYLE1">_ajax()</span>方法函数中写就行了：
 <pre class="brush: php;">
-class DelAction extends ItemController
+namespace modules\index\guestbook;
+
+use modules\index\item\Controller;
+
+class DelAction extends Controller
 {
 
    protected function _action()
@@ -74,10 +78,10 @@ class DelAction extends ItemController
    protected function _ajax()
    {
        //获取item_id
-       $item_id = Request::getGet('item_id');
+       $item_id = $this->request->getGet('item_id');
 
        if ($item_id){
-            $model = \Model\Item::select($item_id);
+            $model = Item::select($item_id);
             if ($model->delete()) {
                 //删除成功，返回success状态值
                 $this->ajaxReturn();
@@ -85,7 +89,7 @@ class DelAction extends ItemController
        } else {
             //删除失败，返回error状态值。
             //failed_delete是多语言设置的提示消息键名，需要在resource/lang语言目录配置具体内容。
-            Ocara::services()->error->show('failed_delete');
+            $this->error->show('failed_delete');
        }
     }
 }
