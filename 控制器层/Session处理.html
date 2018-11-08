@@ -21,13 +21,15 @@ Ocara支持文件、数据库和缓存三种保存方式，也提供了session�
  * session配置
  */
 $CONF['SESSION'] = array(
-	'save_type'	 => 1, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
-	'save_time'	 => 0, //session的最长存活时间（单位为秒）
-	'location'	 => 'sessions', //保存session的文件目录名
+    'handler' => 'Ocara\Sessions\SessionFile',
+    'options' => array(
+        'save_time'	 => 0, //session的最长存活时间（单位为秒）
+        'location'	 => 'sessions', //保存位置，文件目录名、数据库表名或缓存前缀
+    ),
 );</pre>
        说明：
-            （a）配置项“save_type”为1；
-            （b）配置项“location”为session的保存目录，默认是cache/sessions，上级目录规定是required/data。
+            （a）选项“save_type”为1；
+            （b）选项“location”为session的保存目录，默认是cache/sessions，上级目录规定是required/data。
 
 <strong>2、数据库保存方式</strong>
       （1）新建session数据表
@@ -57,12 +59,14 @@ CREATE TABLE `sessions` (
  * session配置
  */
 $CONF['SESSION'] = array(
-	'save_type'	 => 2, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
-	'save_time'	 => 0, //session的最长存活时间（单位为秒）
-	'location'	 => '\Ocara\Service\Model\Session', //Model类
+    'handler' => 'Ocara\Sessions\SessionDB',
+    'options' => array(
+        'save_time'	 => 0, //session的最长存活时间（单位为秒）
+        'location'	 => '\Ocara\Service\Model\Session', //保存处理类，默认为Session Model类
+    ),
 );</pre>      说明：
-            （a）配置项“save_type”设为2；；
-            （b）配置项“location”为session模型类名，默认为\Ocara\Service\Model\Session
+            （a）选项“save_time”为session的最长存活时间（单位为秒）；
+            （b）选项“location”为session模型类名，默认为\Ocara\Service\Model\Session
       （3）修改Model
             上述实例使用的是默认的session处理模型。
             如果想要修改，可以另外生成一个session模型，要继承接口Ocara\Service\Interfaces\Model。
@@ -76,15 +80,17 @@ $CONF['SESSION'] = array(
  * session配置
  */
 $CONF['SESSION'] = array(
-	'save_type'	 => 3, //session保存方式，1为自定义文件类型，2为数据库类型，3为缓存类型
-	'save_time'	 => 0, //session的最长存活时间（单位为秒）
-	'server'     => 'cache_redis', //服务器名称，数据库服务器名称或Redis服务器名
-	'location'	 => 'session', //保存session的缓存前缀
+    'handler' => 'Ocara\Sessions\SessionCache',
+    'options' => array(
+        'save_time'	 => 0, //session的最长存活时间（单位为秒）
+        'server'     => 'cache_redis', //服务器名称，数据库服务器名称或Redis服务器名
+        'location'	 => 'session:', //保存session的缓存前缀
+    ),
 );</pre>
       说明：
-            （a）配置项“save_type”设为3；
-            （b）配置项“server”，即保存session的缓存服务器名称，这里使用cache_redis，默认为default；
-            （c）配置项“location”为保存session的缓存前缀，默认为session
+            （a）选项“save_time”为session的最长存活时间（单位为秒）；
+            （b）选项“server”，即保存session的缓存服务器名称，这里使用cache_redis，默认为default；
+            （c）选项“location”为保存session的缓存前缀，默认为session，框架会自动加上下划线。
 
 <h2>Session操作方式</h2>
 

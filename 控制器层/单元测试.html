@@ -41,36 +41,22 @@ require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/Invoke.php';
 </pre>
 
       （2）要使用Invoke::init()方法初始化。
-    <strong>init(rootPath, fileSelf)</strong>
-      参数说明：
- </pre>
-<table>
-    <tr class="head">
-        <td width="90">名称</td>
-        <td width="400">描述</td>
-    </tr>
-    <tr>
-        <td>rootPath</td>
-        <td>必需。指定当前web应用。</td>
-    </tr>
-    <tr>
-    <td>fileSelf</td>
-    <td>必需。指定当前单元测试文件，一般只要使用__FILE__即可。</td>
-</tr>
-</table>
       实例如下：
 <pre class="brush: php;">
 require_once __DIR__ . '/../../vendor/linyihu/ocara/system/core/Invoke.php';
-Invoke::init(__DIR__.'/../', __FILE__);
+
+define('OC_ROOT', dirname(__DIR__) . '/');
+$invoke = (new Invoke());
+$invoke->init();
 </pre>
 
 <pre>
-      （3）在单元测试代码中可以使用框架
-            除了使用框架中的相关类和函数，可以使用Call::run()来执行某一个控制器动作。
+      （3）在单元测试代码中可以调用控制器或类
+            除了使用框架中的相关类和函数，可以使用Invoke::run()来执行某一个控制器动作。
             Action有返回值，如下实例：
 </pre>
 <pre class="brush: php;">
-$users = Call::run('home/getUsers');
+$users = Invoke::run('home/getUsers');
 </pre>
 
 <pre>
@@ -81,23 +67,27 @@ Invoke::run('home/index', array(), false);
 </pre>
 <pre>
 <strong>3、实例</strong>
-      假设已经安装了PHPUnit，在我们的应用根目录中新建tests目录，里面添加一个OneTest.文件，截图如下：
+      假设已经安装了PHPUnit，在我们的应用根目录中新建tests目录，里面添加一个TestFirst.文件，截图如下：
             <img src="../style/images/单元测试目录.png" alt="单元测试目录"/>
       文件内容如下:
 </pre>
 <pre class="brush: php;">
 use PHPUnit\Framework\TestCase;
+
 use Ocara\Core\Invoke;
+use dal\models\Users;
 
-require_once __DIR__ . '/../vendor/linyihu/ocara/system/library/Core/Invoke.php';
-Invoke::init(__DIR__.'/../', __FILE__);
-
-class OneTest extends TestCase
+class TestFirst extends TestCase
 {
-    public function testA()
-    {
-        $result = Invoke::run('User/view', array('user_id' => 1));
-        ocPrint($result);
+    public function testOne(){
+        Invoke::run('home/index');
+        print_r(333);die;
+        die;
+    }
+
+    public function testUser(){
+        $user = new Users();
+        print_r($user->findRow(1));
     }
 }
 </pre>
@@ -105,29 +95,40 @@ class OneTest extends TestCase
       然后，新建home控制器的index动作。
 </pre>
 <pre class="brush: php;">
-namespace modules\index\User;
+namespace app\modules\index\controllers\home;
 
-use modules\index\user\Controller;
-use dal\models\main\Users;
+use app\modules\index\controllers\home\Controller;
+use app\dal\models\main\User;
 
-class ViewAction extends Controller
+class IndexAction extends Controller
 {
-    /**
-     * 初始化
-     */
-    public function _action()
-    {
-        $user_id = $this->request->getGet('user_id');
-        $users = Users::select(1, 'user_id');
-
-        return $users->getData();
-    }
+	/**
+	 * 初始化
+	 */
+	public function _action()
+	{
+		$user = User::select(1);
+		$user->username = 'ddd3355';
+        $user->save();
+		ocPrint($user->toArray());
+	}
 }
 </pre>
 <pre>
       最后，使用编辑器（这里假设使用的是phpstorm）来运行该testA()方法.
-      将鼠标指针放到testA()方法中，并且右击选择“Run OneTest.testA”运行，就可以看到该单元测试运行结果，打印出user_id为1的记录数据。
+      将鼠标指针放到testA()方法中，并且右击选择“Run TestFirst.testA”运行，就可以看到该单元测试运行结果，打印出user_id为1的记录数据。
             <img src="../style/images/单元测试结果.png" alt="单元测试结果"/>
+
+
+
+      友情提醒： 您也可以将加载框架的代码写在一个bootstrap.php文件中，如下所示：
+<pre>
+            <img src="../style/images/单元测试目录2.png" alt="单元测试目录2"/>
+</pre>
+      然后在设置单元测试时选择启动文件为该文件就可以直接用单元测试了，不需要每个文件都写上加载代码：
+<pre>
+            <img src="../style/images/单元测试设置.png" alt="单元测试设置"/>
+</pre>
 </pre>
 </pre>
 </body></html>

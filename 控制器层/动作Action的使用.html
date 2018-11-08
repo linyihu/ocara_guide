@@ -149,7 +149,7 @@ class IndexAction extends HomeController
 <pre class="brush: php;">
 	protected function _action()
 	{
-		$this->model = $this->model('\Model\Item');
+		$this->model = $this->model();
 	}
 </pre>
      <strong>（2）_form()</strong>
@@ -178,14 +178,14 @@ class IndexAction extends HomeController
 <pre class="brush: php;">
 	protected function _display()
 	{
-		$id = Request::getGet('id');
+		$id = $this->request->getGet('id');
 		
 		if (empty($id)) {
 			die('参数非法！');
 		}
 		
 		//获取商品信息
-		$data = \Model\Item::select($id)->getData();
+		$data = Item::select($id)->getData();
 		$this->assign(compact('data'));
 	}
 </pre>
@@ -204,7 +204,7 @@ class IndexAction extends HomeController
 		}
 		
 		//获取POST数据，新建ORM模型
-		$model = $this->model('\Model\Item');
+		$model = $this->model();
 		$model->data();
 		
 		//设置最后修改时间为当前时间
@@ -224,7 +224,7 @@ class IndexAction extends HomeController
 	protected function _isSubmit()
 	{
 	    //重写表单是否提交的判断
-		return Request::isPost() && array_key_exists('submit_button_name', $_POST);
+		return $this->request->isPost() && array_key_exists('submit_button_name', $_POST);
 	}
 </pre>
      <strong>（6）_ajax()</strong>
@@ -233,14 +233,14 @@ class IndexAction extends HomeController
 <pre class="brush: php;">
 protected function _ajax()
 {
-	$id = Request::getGet('id');
+	$id = $this->request->getGet('id');
 
 	if (empty($id)) {
 		$this->error->show('删除失败！');
 	}
 
-	\Model\Item::select($id)->delete();
-	$this->ajaxReturn('success', '删除成功！');
+	$result = Item::select($id)->delete();
+	$this->ajaxReturn($result, '删除成功！');
 }
 </pre>
      <strong>（7）_after()</strong>
