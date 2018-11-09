@@ -27,14 +27,14 @@
 HTTP响应使用的是\Ocara\Response类。
 
 <strong>1、响应类的使用</strong>
-框架的全局容器Base::$container已经设置了Response的实例化，它是单例模式的。
+框架的默认全局服务提供器ocService()已经生成了Response的实例化，它是单例模式的。
     可以有以下方法使用该Response对象：
     （1）任意处可以使用ocService()->response获取
-    （3）在控制器动作中可以使用$this->response获取
+    （2）在控制器动作中可以使用$this->response获取
     实例如下：
 <pre class="brush: php;">
 
-class EditAction extends ItemController
+class EditAction extends Controller
 {
 	/**
 	 * 初始化
@@ -48,12 +48,12 @@ class EditAction extends ItemController
 	public function _display()
 	{
         //设置返回状态码
-        \Ocara\Base::$container->response->setStatusCode(200);
+        ocService()->response->setStatusCode(200);
 
         //设置缓存
-        self::$container->response->setOption('Cache-control', 'private, must-revalidate');
+        ocService()->response->setOption('Cache-control', 'private, must-revalidate');
 
-        //发送头信息
+        //发送头信息（使用$this->request）
         $this->response->sendHeaders();
     }
 
@@ -90,10 +90,10 @@ class EditAction extends ItemController
         实例如下：
 <pre class="brush: php;">
 //字符串
-Base::$container->response->setHeader('Cache-control: private, must-revalidate');
+ocService()->response->setHeader('Cache-control: private, must-revalidate');
 
 //数组
-Base::$container->response->setHeader(array('Cache-control: private, must-revalidate'));
+ocService()->response->setHeader(array('Cache-control: private, must-revalidate'));
 
 </pre>
 </pre>
@@ -120,10 +120,10 @@ Base::$container->response->setHeader(array('Cache-control: private, must-revali
         实例如下：
 <pre class="brush: php;">
 //设置缓存控制
-Base::$container->response->setOption('Cache-control', 'private, must-revalidate');
+ocService()->response->setOption('Cache-control', 'private, must-revalidate');
 
 //获取缓存控制值
-$cacheControl = Base::$container->response->getOption('Cache-control');
+$cacheControl = ocService()->response->getOption('Cache-control');
 </pre>
 </pre>
 <pre>
@@ -145,7 +145,7 @@ $cacheControl = Base::$container->response->getOption('Cache-control');
 <pre>
                 实例如下：
 <pre class="brush: php;">
-Base::$container->response->setStatusCode('200');
+ocService()->response->setStatusCode('200');
 </pre>
 
         （4）setContentType(code)
@@ -166,7 +166,7 @@ Base::$container->response->setStatusCode('200');
 <pre>
                 实例如下：
 <pre class="brush: php;">
-Base::$container->response->setContentType('text/html');
+ocService()->response->setContentType('text/html');
 </pre>
 
         （5）setCharset(charset)
@@ -187,7 +187,7 @@ Base::$container->response->setContentType('text/html');
 <pre>
                 实例如下：
 <pre class="brush: php;">
-Base::$container->response->setCharset('utf-8');
+ocService()->response->setCharset('utf-8');
 </pre>
 
 <strong>3、获取头信息选项</strong>
@@ -209,10 +209,10 @@ Base::$container->response->setCharset('utf-8');
         实例如下：
 <pre class="brush: php;">
 //设置选项
-Base::$container->response->setOption('Cache-control', 'private, must-revalidate');
+ocService()->response->setOption('Cache-control', 'private, must-revalidate');
 
 //获取选项值
-echo Base::$container->response->getOption('Cache-control');
+echo ocService()->response->getOption('Cache-control');
 
 </pre>
 
@@ -235,10 +235,10 @@ echo Base::$container->response->getOption('Cache-control');
         实例如下：
 <pre class="brush: php;">
 //设置缓存
-Base::$container->response->setOption('Cache-control', 'private, must-revalidate');
+ocService()->response->setOption('Cache-control', 'private, must-revalidate');
 
 //发送头信息
-Base::$container->response->sendHeaders();
+ocService()->response->sendHeaders();
 
 //输出文本
 echo 'test';

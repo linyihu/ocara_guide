@@ -12,68 +12,41 @@
 <body>
 <pre><h2>类的自动加载</h2>
 
-<strong>1、什么是类的自动加载？</strong>
-       当我们初次使用对象类时，如果该类没有加载，PHP一般会报错。但是PHP也提供了自动加载机制，也就是在找不到对象类时，PHP能自动去我们指定的
-目录中寻找该类，如果存在就自动加载进来，如果找不到才报错。我们一般通过__autload()魔术函数指定自动加载方式，并且如果不想使用该函数，可以通过
-spl_autoload_register()去指定调用哪个自动加载函数或类方法。 
-       如今，PHP有了composer的依赖工具，其中可以实现类的自动加载。
-       所以，本框架安装时可以通过composer安装，如果不通过它安装也可以，本框架自动实现类的自动加载。
-       自动加载，都是通过命名空间来实现的。遵循PRS-4命名规范。
+<strong>1、类的自动加载介绍</strong>
+       PHP类的自动加载，一般可以使用__autload()魔术函数来自定义。如果要指定回调函数来实现，可以用spl_autoload_register()指定。
+       composer可以实现一些开源组件的自动加载。
+       本框架可以使用composer安装和加载，如果不用它，框架会使用自己的自动加载机制。
+       注：框架的自动加载机制遵循PRS-4命名规范。
+              （1）类的文件名要与类名要一致。
+              （2）类的目录路径和命名空间大小写要一致。
 
 <strong>2、自动加载哪个目录？</strong>
        类的自动加载都是通过命名空间来指定路径的。
-       可以查看框架目录system/data/default.php中的$OC_CONF['AUTOLOAD_MAP']和$OC_CONF['APP_AUTOLOAD_MAP']看到自动加载的映射规则。
-       以下以此规则代码说明：
-       （1）不以Ocara\开头的类，都放在当前应用根目录的service/library子目录中。
-<pre class="brush: php;">
-	/*应用程序*/
-	'Controller\\' 							=> OC_ROOT . 'application/controller/', //映射到当前应用根目录下application/controller目录
-	'Model\\' 								=> OC_ROOT . 'application/model/', //映射到当前应用根目录下application/model目录
-	'View\\' 								=> OC_ROOT . 'application/view/', //映射到当前应用根目录下application/view目录
-	'View\Helper\\' 						=> OC_ROOT . 'application/view/helper/', //映射到当前应用根目录下application/view/helper目录
-</pre>
-       （2）以Ocara\开头的类都放在框架目录的system/library的子目录中，如果没有子目录，则加载的是system/library中的类。
-               另外Ocara\Functions开头的类都放在system/functions中。
-               Ocara\Develop开头的类都放在system/modules/library中。
-               Ocara\Service\Functions开头的类都放在system/service/functions中。
-<pre class="brush: php;">
-'Ocara\\' 								=> OC_SYS . 'core/', //映射到ocara/system/core目录
-'Ocara\Develop\\' 						=> OC_SYS . 'modules/develop/library/', //映射到ocara/system/modules/develop/library目录
-'Ocara\Functions\\'     				=> OC_SYS . 'functions/', //映射到ocara/system/functions目录
+       框架中system/data/default.php文件定义了AUTOLOAD_MAP和APP_AUTOLOAD_MAP两个自动加载配置。
+       其中APP_AUTOLOAD_MAP定义了应用程序的加载规则：
 
-/*Ocara框架插件*/
-'Ocara\Service\\' 						=> OC_SYS . 'service/library/', //映射到ocara/system/service/library目录
-'Ocara\service\Functions\\'   			=> OC_SYS . 'service/functions/', //映射到ocara/system/service/functions目录
-</pre>
-       （3）以Ocara\Extension开头的类都放在与system同级的extension目录中
+       （1）app开头的命名空间定义了application目录下的类（目录名和命名空间名必须小写）
+               参看如下框架的配置源代码：
 <pre class="brush: php;">
-/*Ocara框架扩展插件*/
-'Ocara\Extension\Service\\'   			=> OC_EXT . 'service/library/', //映射到ocara/extension/library目录
-'Ocara\Extension\Service/Functions\\'   => OC_EXT . 'service/functions/', //映射到ocara/extension/functions目录
+/*
+ * 应用自动加载映射
+ */
+$OC_CONF['APP_AUTOLOAD_MAP'] = array(
+    'app\console\\' 							=> OC_ROOT . 'application/console/',
+    'app\modules\\' 							=> OC_ROOT . 'application/modules/',
+    'app\view\\' 								=> OC_ROOT . 'application/view/',
+    'app\dal\\' 							    => OC_ROOT . 'application/dal/',
+);
 </pre>
-       （4）不符合上面规则的自定义类，都映射到当前应用根目录下service/library中:
+       （2）不是以app开头的命名空间定义了library目录下的类（目录名和命名空间名必须大写）
               <img src="../style/images/自定义类路径.png"/>
+                  上图中Base\CommonController加载的就是library/Base/CommonController.php文件中定义的类。
 
-<strong>3、类和文件的命名规则</strong>
-        自定主的类一般放在应用根目录的service/library下面。
-        其下面子目录，首字母要大写，类名要与文件名一样。
-        比如Bbs_User，表示library/BBS/UserChecker.php中定义的UserChecker类。
-        类文件定义如下实例：
-<pre class="brush: php;">
-namespace BBS;
-use Ocara\Base;
+       （3）第三方程序或者自定义的加载机制
+              一些第三方程序或者我们自己都可通过spl_autoload_register()来指定自己的加载机制。符合这些规则的类受其定义，不会从library目录加载。
 
-class User extends Base
-{
-    //类的代码
-}
-</pre>
-
-<strong>4、第三方程序是否与框架的自动加载类函数冲突？</strong>
-        Ocara框架类的自动加载，不会与其他第三方程序的自动加载冲突，只不过自定义或第三方程序中务必使用<strong>spl_autoload_register()</strong>函数
-注册自动加载类的函数或方法。
-        Ocara会先使用自己的自动加载函数或方法，找不到时才去调用自定义或第三方程序中的自动加载函数或方法，如果再找不到类，则会抛出错误。
-
+<strong>3、第三方程序是否与框架的自动加载类函数冲突？</strong>
+        本框架的自动加载，理论上不会与其他第三方程序的自动加载冲突。因为框架如果检测类不存在，会自动遍历所有其他注册的类自动加载函数。
 
 </pre>
 </body></html>
