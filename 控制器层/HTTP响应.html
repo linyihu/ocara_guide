@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>请求和响应处理</title>
+<title>HTTP响应</title>
 <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
 <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
@@ -21,157 +21,16 @@
         }
         -->
     </style>
-</head><body><pre><h2>HTTP请求</h2>
-
-HTTP请求使用的是\Ocara\Request类。
-
-<strong>1、请求类的使用</strong>
-框架的全局容器Base::$container已经设置了Request的实例化。所以可以有以下方法使用该request对象：
-    （1）任意处可以使用Ocara\Base::$container->request获取该全局性Request对象。
-    （2）任意继承了\Ocara\Base的类都可以使用self::$container->request来获取该request对象。
-    （3）在控制器动作中可以使用$this->request获取该全局性request对象。
-    （4）任意处可以使用Request或Request::getInstance()调用静态类方法。
-    实例如下：
-<pre class="brush: php;">
-class EditAction extends ItemController
-{
-	/**
-	 * 初始化
-	 */
-	public function _action()
-	{}
-
-	public function _form()
-	{}
-
-	public function _display()
-	{
-        //使用Request静态方法
-        echo \Ocara\Request::isGet();
-
-        //使用容器的Request实例
-        echo \Ocara\Base::$container->request->isGet();
-        $get = self::$container->request->getGet();
-
-        //获取GET参数id
-        $id = $this->request->getGet('id');
-
-        //获取所有的GET数据
-        $postData = $this->request->getGet();
-    }
-
-	//提交后保存
-	public function _submit()
-	{
-        //获取id参数
-        $id = $this->request->getPost('id');
-
-        //获取所有的POST数据
-        $postData = $this->request->getPost();
-    }
-}
-
-</pre>
-
-<strong>2、请求类型判断</strong>
-    Request请求中提供了一些常见HTTP请求类型的判断方法，如下所示：
-    （1）Request::isGet()  - 是否是GET请求
-    （2）Request::isPost() - 是否是POST请求
-    （3）Request::isPut() - 是否是PUT请求
-    （4）Request::isPatch() - 是否是PATCH请求
-    （5）Request::isDelete() - 是否是DELETE请求
-    （6）Request::isHead() - 是否是HEAD请求
-    （7）Request::isOptions() - 是否是OPTIONS请求
-    （8）Request::isTrace() - 是否是TRACE请求
-    （9）Request::isConnect() - 是否是CONNECT请求
-
-    另外，也提供了是否是AJAX请求的判断，如下：
-    （1）Request::isAjax() - 是否是AJAX请求
-
-<strong>3、获取请求数据</strong>
-        获取请求数据，Request提供了getGet()、getPost()和getCookie()分别获取$_GET、$_POST和$_COOKIE数据。
-        请注意，这些方法都做了<span class="STYLE2">JS等安全过滤</span>，如果要获取原生的值需要使用$_GET数组，或者使用<span class="STYLE1">ocGet()</span>函数。
-        如下实例：
-<pre>
-<pre class="brush: php;">
-//获取GET参数id的值（使用$_GET）
-$id = isset($_GET['id']) ? $_GET['id'] : 0;
-
-//获取GET参数id的值（使用ocGet函数）
-$id = ocGet('id', $_GET, 0);
-</pre>
-        获取POST和COOKIE数据类似。
-</pre>
-<pre>
-        如果允许JS内容过滤的话，可以使用以下方法获取：
-        （1）<span class="STYLE1">Request::getGet([name, default])</span>
-                获取GET提交的数据。两个参数都不指定时，获取所有的GET参数数据。
-                参数说明：
- </pre>
-<table>
-    <tr class="head">
-        <td width="90">名称</td>
-        <td width="400">描述</td>
-    </tr>
-    <tr>
-        <td>name</td>
-        <td>可选。参数名称。</td>
-    </tr>
-    <tr>
-        <td>default</td>
-        <td>可选。默认值，如果找不到时会返回此值。</td>
-    </tr>
-</table>
-<pre>
-        实例如下：
-<pre class="brush: php;">
-//获取GET参数id的值
-$id = Request::getGet('id', 0);
-
-//获取所有的GET数据
-$postData = Request::getGet();
-</pre>
-</pre>
-<pre>
-        （2）<span class="STYLE1">Request::getPost([name, default])</span>
-                获取POST提交的数据。两个参数都不指定时，获取所有的GET参数数据。
-                参数说明：
-</pre>
-
-<table>
-    <tr class="head">
-        <td width="90">名称</td>
-        <td width="400">描述</td>
-    </tr>
-    <tr>
-        <td>name</td>
-        <td>可选。参数名称。</td>
-    </tr>
-    <tr>
-        <td>default</td>
-        <td>可选。默认值，如果找不到时会返回此值。</td>
-    </tr>
-</table>
-<pre>
-                实例如下：
-<pre class="brush: php;">
-//获取POST参数id的值
-$id = Request::getPost('id', 0);
-
-//获取所有的POST数据
-$postData = Request::getPost();
-</pre>
-</pre>
-<pre>
+</head><body><pre>
 <h2>HTTP响应</h2>
 
 HTTP响应使用的是\Ocara\Response类。
 
 <strong>1、响应类的使用</strong>
-框架的全局容器Base::$container已经设置了Response的实例化，它是单例模式的。可以有以下方法使用该Response对象：
-    （1）任意处可以使用Ocara\Base::$container->response获取该全局性Response对象。
-    （2）任意继承了\Ocara\Base的类都可以使用self::$container->response来获取该Response对象。
-    （3）在控制器动作中可以使用$this->response获取该全局性Response对象。
+框架的全局容器Base::$container已经设置了Response的实例化，它是单例模式的。
+    可以有以下方法使用该Response对象：
+    （1）任意处可以使用ocService()->response获取
+    （3）在控制器动作中可以使用$this->response获取
     实例如下：
 <pre class="brush: php;">
 
