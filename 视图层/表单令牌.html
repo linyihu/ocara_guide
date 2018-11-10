@@ -22,54 +22,52 @@
 
 <strong>1、什么是表单令牌</strong>
       为了防止XSS攻击，或者防止表单重复提交造成重复数据添加或更新，所以为每个表单设置一个唯一的ID标识，即<strong>表单令牌</strong>.
-      表单令牌有存活期限制。
-      当表单提交后后台处理成功，会结束存活期。这样，如果用户在提交后的页面任意刷新或返回上一页进行再次提交，都会提示表单不存在，防止重复提交问题。
-      如果表单令牌不对，会提示表单来源非法，防止XSS攻击。
-      但当后台处理失败，不会结束存活期，可以重新返回提交。
+      表单令牌有存活期。
+      当表单提交后，若后台处理成功，就结束存活期，此时如果点击浏览器返回上一页进行再次提交，会提示表单来源非法，防止重复提交和XSS攻击。
+      若后台处理失败，不会结束存活期，可以重新返回提交。
 
 <strong>2、表单令牌的保存</strong>
-      表单令牌是加密的，保存在session当中，并且在&lt;form&gt;标签后面有一个隐藏域，用来存放该表单令牌。
+      表单令牌是加密的，服务端保存在session当中，并且浏览器在&lt;form&gt;标签后面有一个隐藏域，将其再保存在客户端。
       如下截图中蓝底的input标签：
           <img src="../style/images/form_token.png" />
 
 <strong>3、表单令牌验证</strong>
-      表单提交之后，框架会首先检测该表单令牌是否存在，如果不存在会提示表单不存在或已过期。如下截图：
+      表单提交之后，框架会首先检测该提交的表单令牌码是否存在，如果不存在会提示表单不存在或已过期。如下截图：
             <img src="../style/images/表单不存在.png" />
-      然后，会将表单令牌与session中保存的对应令牌进行比较，如果不一致，则会提示表单来源非法。如下截图所示：
+      然后，会将表单令牌与session中保存的对应令牌码进行比较，如果不一致，则会提示表单来源非法。如下截图所示：
             <img src="../style/images/form_expired.png" />
 
-<strong>4、如何使用表单令牌</strong>
+<strong>4、如何修改表单令牌</strong>
       （1）自定义表单令牌隐藏域名称
                表单令牌隐藏域名称默认为_oc_temp_ocform_token，其中的“_oc_”是自动加上的。
-               默认设置是在required/conf/develop.php文件的$CONF['FORM']['token_tag']。
+               默认设置是在develop.php文件FORM的token_tag配置选项。
                如下所示：
-<pre class="brush: php;">/*
+<pre class="brush: php;">
 /*
  * 表单配置
  */
-$CONF['FORM'] = array(
-	'token_tag' => 'temp_ocform_token',	//表单令牌隐藏域名称
-	'use_field' => 0, //使用数据表字段，表单中默认使用表字段描述
-);
+'FORM' => array(
+    'token_tag' 		  => 'temp_ocform_token', //表单令牌隐藏域名称
+    'check_repeat_submit' => 1, // 表单重复提交检查
+),
 </pre>               注：配置时不需要加上“_oc_”前缀，框架会自动加上。
+
       （2）自定义表单令牌的加密算法
                框架对表单令牌的加密一般是md5()函数加密的，其中必须包括<span class="STYLE1">当前路由和随机数</span>，否则会出现验证问题。
-               如果框架的加密算法不满足需求，可以自定义自己的加密算法，使用自定义回调即可。
-               默认设置是在required/conf/callback.php文件的$CONF['CALLBACK']['form']['generate_token']。
-               比如假设使用iform控制器的gentoken动作来生成表单令牌，则配置如下：
-<pre class="brush: php;">/*
+               如果要自定义加密算法，要在resource.php配置文件中配置回调函数。
+               默认选项是如下generate_token：
+<pre class="brush: php;">
 /*
- * 表单使用回调
+ * 表单使用
  */
-$CONF['CALLBACK']['form'] = array(
-	'check_error'    => '', //表单检测失败时的回调
-	'generate_token' => '/iform/gentoken', //表单令牌加密算法的回调
-);
-</pre>               注：配置时不需要加上“_oc_”前缀，框架会自动加上。
+'form' => array(
+    'generate_token' => array('MyForm', 'genToken'), //表单令牌加密处理
+),
+</pre>
 
       （3） 如何手动控制表单令牌的过期?
                 框架默认是在action类的_submit()方法执行以后，删除当前表单令牌，让表单令牌过期。
-                如果想在此之前手动过期，就使用控制器动作的<span class="STYLE1">formToken</span>来清除表单令牌，该方法返回表单令牌类对象，使用它的<span class="STYLE1">clear()</span>清除即可。
+                如果想在此之前手动过期，就使用<span class="STYLE1">formManager</span>表单令牌对象的<span class="STYLE1">clear()</span>清除即可。
                 代码实例如下：
 <pre class="brush: php;">
 class AddAction extends ItemController
@@ -82,7 +80,7 @@ class AddAction extends ItemController
         $this->model()->data()->save();
 
         //手动清除表单令牌
-        $this-&gt;formToken->clearToken();
+        $this-&gt;formManager->clearToken();
 
         //停止代码前最好加上这句，如果使用setAfter()方法设置过了执行后续程序的话
         $this->after();
@@ -93,7 +91,7 @@ class AddAction extends ItemController
 }
 </pre>
      （4）如何取消表单令牌验证？（仅用于开发测试）
-             如果想取消表单令牌是否合法的验证，只要使用在新建表单的时候使用<span class="STYLE1">validateToken()</span>方法即可，传递参数false。
+             如果想取消表单令牌是否合法的验证，只要在生成表单时使用<span class="STYLE1">validateToken(false)</span>方法即可。
              注：表单令牌验证是防止XSS攻击，所以只建议在代码开发测试时取消。
              如下实例：
 <pre class="brush: php;">
@@ -114,30 +112,25 @@ class AddAction extends ItemController
 
 <strong>5、跨页表单</strong>
       表单令牌标识Key一般都是“控制器动作路由+表单+随机数”组成的，默认的控制器动作为当前Action。
-      如果其中的控制器路由字符串不同，具体表现为表单提交前后的控制器动作不同，就会导致提交前后的表单令牌不一致，从而出现过期错误。
-      这种情况的表单称为跨页表单，它的表单生成方法，参见<a href="./跨页表单生成.html">跨页表单生成</a>一节。
+      所以如果旧的表单令牌中的路由与当前路由不一致，就会导致提交前后的表单令牌不一致而报错。
+      这种情况的表单称为跨页表单，解决方法参见<a href="./跨页表单生成.html">跨页表单生成</a>一节。
 
-<strong>6、自定义表单非法或过期的错误页面</strong>
-      上述截图的表单非法提示页面，是框架默认的，然而直接显示Ocara提示，对我们的代码也没有安全保障，也不友好。
-      所以我们可以自定义错误提示的页面。具体步骤如下：
+<strong>6、自定义非法表单的错误输出</strong>
+      上面表单不存在或非法来源的截图是框架默认的。
+      如果要自定义错误提示的页面。具体步骤如下：
      （1）新建错误页面
               其实就是新建一个Action去显示。
-     （2）配置自定义回调
-              新建好了错误提示的页面后，然后配置自定义回调。
-              配置选项resourcde/conf/callback.php中的$CONF['CALLBACK']['form']['check_error']。
-              该配置是用来设置是否验证表单，包括表单令牌验证和字段格式验证两种验证出错时的回调，所以请慎重设置。
+     （2）配置回调事件
+              配置选项是event.php中form的check_error选项。
               如下所示实例：
 <pre class="brush: php;">
 /*
- * 表单使用回调
+ * 表单使用事件
  */
-$CONF['CALLBACK']['form'] = array(
-	'check_error'    => '/iform/invalid', //表单检测失败时的回调
-	'generate_token' => '', //表单令牌加密算法的回调
-);
+'form' => array(
+    'check_error'    => array('MyForm', 'checkError'), //表单检测失败时的事件
+),
 </pre>
-              注：如果只是在某个模块、控制器或动作中使用这种错误提示页面，则在resource/conf/control下中配置。
-
 </pre>
 </body>
 </html>

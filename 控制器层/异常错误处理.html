@@ -48,26 +48,18 @@
                                和代码里面的相应设置。
       2、异常错误
                其实是开发者有意抛出的错误，一般用于业务逻辑的错误提示。
-               通常是开发者在代码某处认为需要抛出异常错误提示，而不应当再继续执行代码，便使用throw（抛出）语句抛出。然后捕获该异常进行处理。
-               所以异常错误的触发方式只有一种，即throw new Exception()。
-               其中Exception是个类对象，也可以自定义，目前框架已经自定义了\Ocara\Exception类，它已经继承了Exception。所以本框架中触发异常，应使用：
-                        <span class="STYLE1">throw new \Ocara\Exception($message[, $code, Exception $previous])</span>
-               参数与PHP的Exception()一样。
-               而对它抛出的异常错误，处理方式有以下三种：
+               所以异常错误的触发方式是throw new Exception()，抛出后不再执行代码。
+               目前框架已经自定义了\Ocara\Core\Exception类，它已经继承了Exception。
+                        <span class="STYLE1">throw new Exception($message[, $code, Exception $previous])</span>
+               对它抛出的异常错误，处理方式有以下三种：
                     （a）捕获处理方式
-                             如果外层使用了try（检测）和catch（捕获）的语句结构。try语句会检测到该异常，然后交由catch语句捕获这个异常信息进行处理。
+                             外层可以使用了try（检测）和catch（捕获）的语句结构捕获异常进行处理。
                     （b）自定义处理方式
-                             如果外层没有使用try和catch语句结构，并且已通过PHP的set_exception_handler() 指定了异常处理的类或函数，会调用该类或函数进行处理。
-                             还可以将错误记录到日志。
+                             通过set_exception_handler() 指定了异常处理的类或函数，会调用该类或函数进行处理。
                     （c）PHP自动处理
                              如果上述方式都没有，则PHP自行抛出&quot;Fatal error: Uncaught exception 'Exception' with messag ... ...&quot;的错误。
 
-<strong>二、如何抛出或触发错误？</strong>
-        综上所述，我们已经知道了，开发时一般有程序错误和异常错误两种。
-        那么，我们在平时代码中，如何抛出这些错误呢？
-        当然，对于程序错误，一般是我们代码问题，PHP自动抛出错误。
-        但是，我们也可以自己有意抛出一个程序错误，这就用到了PHP的trigger_error()函数。
-        所以，我们总结如下：
+<strong>二、如何自己抛出错误？</strong>
         1、抛出程序错误
                 （1）使用PHP的trigger_error()函数
                 如下实例：
@@ -86,9 +78,8 @@ class IndexAction extends TestController
 </pre>                        页面输出如下（非E_USER_ERROR错误不会显示并终止程序运行）：
 <img src="../style/images/程序警告错误.png" width="813" height="41" />
 
-               （2）使用Error::trigger()
-                        由于trigger_error()的第二个参数默认使用的是E_USER_WARNING错误类型，不会停止程序执行。
-                        所以如果我们想要默认是停止执行程序即错误类型为E_USER_ERROR，则使用<span class="STYLE1">Error::trigger(error[, params, errorType])</span>方法。
+               （2）使用Ocara\Core\Error的<span class="STYLE1">trigger(error[, params, errorType])</span>函数
+                        默认的错误类型是E_USER_ERROR。
                         如上例改成：
 <pre class="brush: php;">
 class IndexAction extends TestController
@@ -109,39 +100,35 @@ class IndexAction extends TestController
         2、抛出异常错误
                  有三种，一般请采用第三种框架提供的，因为它已经封装了错误语言、键名和错误码，如下：
                     （a）使用PHP的throw new Exception()
-                    （b）使用throw new \Ocara\Exception()
-                    （c）使用Error::show()
+                    （b）使用throw new Ocara\Core\Exception()
+                    （c）使用Ocara\Core\Error的show()
                  实例请看下面第四大点。
                   
 <strong>三、如何处理错误？</strong>
-        综上所述，在我们的开发中，为了用户体验，一般会让这些错误提示用我们自己的页面输出。
-        对于程序错误，要显示出来，
-        所以，对于上述的两种错误，我们可以做以下的自定义处理：
-        1、框架默认处理
+        默认情况下，抛出错误时PHP会报错，但是用户体验不好。因此我们要自定义错误处理方式。
+        对于上述的两种错误，我们可以做以下的自定义处理：
+        1、框架默认处理方式
             （1）输出打印错误
-                    对于这两种错误，PHP默认处理方法如下：
-                           （a）程序错误，PHP默认调用ocErrorHandler()处理；
-                           （b）异常错误，PHP默认调用ocExceptionHandler()处理。
-                    一般情况下，基本满足需求，通常会输出Ocara错误页面，如果是Ajax提交方式或者Restful控制器，则返回Json或XML格式。
-                    但是为了代码安全和用户体验，我们应该通过自定义回调自定义错误的输出页面。
-                    其配置选项是config/callback.php中的$CONF['CALLBACK']['error_output']。
-                    实例如下，
-                           假设要自定义回调myerror控制器的output动作来输出错误页面，那么配置如下所示：
+                           框架有自己的错误显示页面。如果不满足需求，可以通过事件指定输出页面。
+                           假设要使用myerror类的output方法来显示错误，要在develop.php配置文件中修改配置如下：
 <pre class="brush: php;">
 /*
- * 错误处理回调
+ * 错误输出事件
  */
-$CONF['CALLBACK']['error_output'] = '/myerror/output';
+'error' => array(
+    'output'      => array('myerror', 'output'), // 输出错误日志
+    'write_log'   => '', // 记录错误日志
+),
 </pre>
-            （2）设置哪些错误类型需要框架打印输出
-                   对于异常抛出的错误，都会输出打印并停止代码执行。
-                   如果是程序错误，可配置conf/develop.php文件中的$CONF['ERROR_HANDLER']['except_error_list']排除一些不希望用框架输出的错误，而使用PHP原生的方法输出。
+            （2）设置哪些错误类型要输出
+                   异常抛出的错误都会输出错误。
+                   但是程序错误需要配置develop.php文件中ERROR_HANDLER的except_error_list选项排除一些不想让框架输出的错误，而使用PHP原生的方法输出。
                    实例如下，
                           如果使用trigger_error()抛出错误：
 
 <pre class="brush: php;">
 header("Content-type: text/html; charset=utf-8");
-trigger_error('抱歉，程序出错！', E_USER_WARNING);
+trigger_error('抱歉，程序出错！', array(), E_USER_WARNING);
 </pre>
 
                          则页面会输出错误并且停止代码执行：
@@ -152,45 +139,16 @@ trigger_error('抱歉，程序出错！', E_USER_WARNING);
 /*
  * 自定义错误处理
  */
-$CONF['ERROR_HANDLER'] = array(
-	'program_error' => '', //自定义程序错误处理方式
-	'exception_error' => '', //自定义异常错误处理方式
-
-	/*
-	 * 要取消显示的错误列表
-	 * 比如E_WARNING,E_USER_WARNING等
-	 */
-	'except_error_list' => array(
+'ERROR_HANDLER' => array(
+    'except_error_list' => array(
         E_USER_WARNING
     ),
-);
+)
 </pre>
-                         此时，使用trigger_error('抱歉，程序出错！', E_USER_WARNING)，则会交给PHP默认方式处理（不停止代码执行），如下截图：
+                         此时，错误会交由PHP默认方式处理（不停止代码执行），如下截图：
 
     <img src="../style/images/默认错误处理警告PHP默认显示实例.png"/>
-
-        2、自定义处理
-                      如果框架的默认处理方式无法满足需求，我们还可以配置自定义错误处理函数。
-                      其配置选项是在conf/develop.php文件中的$CONF['ERROR_HANDLER']。
-                      比如，假设定义好了一个错误处理函数“ProgramErrorHandler"和异常错误处理函数“ExceptionErrorHandler”，可如下配置：
-<pre class="brush: php;">
-/*
- * 自定义错误处理配置
- */
-$CONF['ERROR_HANDLER'] = array(
-	'program_error' => 'ProgramErrorHandler', //自定义程序错误处理方式
-	'exception_error' => 'ExceptionErrorHandler', //自定义异常错误处理方式
-
-    /*
-	 * 要取消显示的错误列表
-	 * 比如E_WARNING,E_USER_WARNING等
-	 */
-	'except_error_list' => array(
-        E_USER_WARNING
-    ),
-);
-</pre>
-        3、记录错误日志
+        2、记录错误日志
                       虽然可以输出错误，但是记录错误日志也是必须的，非常有利于排错。
                       记录日志要用自定义回调函数、方法或路由。
                      （1）设置日志保存方式
