@@ -40,7 +40,7 @@ $OC_CONF['APP_AUTOLOAD_MAP'] = array(
 </pre>
        （2）不是以app开头的命名空间定义了library目录下的类（目录名和命名空间名必须大写）
               <img src="../style/images/自定义类路径.png"/>
-                  上图中Base\CommonController加载的就是library/Base/CommonController.php文件中定义的类。
+                  上图中Base\CommonModule加载的就是library/Base/CommonModule.php文件中定义的类。
 
        （3）第三方程序或者自定义的加载机制
               一些第三方程序或者我们自己都可通过spl_autoload_register()来指定自己的加载机制。符合这些规则的类受其定义，不会从library目录加载。

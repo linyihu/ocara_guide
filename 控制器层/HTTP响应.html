@@ -48,10 +48,10 @@ class EditAction extends Controller
 	public function _display()
 	{
         //设置返回状态码
-        ocService()->response->setStatusCode(200);
+        $this->response->setStatusCode(200);
 
         //设置缓存
-        ocService()->response->setOption('Cache-control', 'private, must-revalidate');
+        $this->response->setOption('Cache-control', 'private, must-revalidate');
 
         //发送头信息（使用$this->request）
         $this->response->sendHeaders();

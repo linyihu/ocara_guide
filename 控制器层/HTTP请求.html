@@ -55,7 +55,7 @@ class EditAction extends Controller
         $id = $this->request->getGet('id');
 
         //获取所有的GET数据
-        $postData = ocService()->getGet();
+        $postData = $this->request->getGet();
     }
 
 	//提交后保存
