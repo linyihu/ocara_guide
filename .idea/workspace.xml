@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9af443e-855c-4151-81f5-e33243d6efbc" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/style/images/自定义类路径.png" beforeDir="false" afterPath="$PROJECT_DIR$/style/images/自定义类路径.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/控制器层/HTTP响应.html" beforeDir="false" afterPath="$PROJECT_DIR$/控制器层/HTTP响应.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/控制器层/HTTP请求.html" beforeDir="false" afterPath="$PROJECT_DIR$/控制器层/HTTP请求.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/控制器层/类的自动加载.html" beforeDir="false" afterPath="$PROJECT_DIR$/控制器层/类的自动加载.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/控制器层/Restful控制器.html" beforeDir="false" afterPath="$PROJECT_DIR$/控制器层/Rest控制器.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/控制器层/分页的使用.html" beforeDir="false" afterPath="$PROJECT_DIR$/控制器层/分页的使用.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/控制器层/虚拟全局变量.html" beforeDir="false" afterPath="$PROJECT_DIR$/控制器层/虚拟全局变量.html" afterDir="false" />
     </list>
     <ignored path="ocara_guide.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,7 +28,7 @@
     <session id="-509931738">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.1" value="4" />
           <entry key="project.open.time.88" value="1" />
           <entry key="project.opened" value="5" />
@@ -34,22 +36,22 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="html" value="29" />
+          <entry key="html" value="34" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="29" />
+          <entry key="HTML" value="34" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="4806" />
+          <entry key="html" value="5064" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="4806" />
+          <entry key="HTML" value="5064" />
         </counts>
       </usages-collector>
     </session>
@@ -59,11 +61,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/控制器层/类的自动加载.html">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/控制器层/分页的使用.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="43" lean-forward="true" selection-start-line="43" selection-end-line="43" />
+            <state relative-caret-position="844">
+              <caret line="89" column="6" lean-forward="true" selection-start-line="89" selection-start-column="6" selection-end-line="89" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/控制器层/虚拟全局变量.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="293">
+              <caret line="20" column="31" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -74,6 +85,7 @@
     <findStrings>
       <find>exists</find>
       <find>Base::$container</find>
+      <find>如果要修改RESTFUL路由</find>
     </findStrings>
     <replaceStrings>
       <replace>ocService()</replace>
@@ -86,7 +98,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/实例/实例2-留言本/2.3-后台管理留言.html" />
-        <option value="$PROJECT_DIR$/控制器层/分页的使用.html" />
         <option value="$PROJECT_DIR$/控制器层/模块的使用.html" />
         <option value="$PROJECT_DIR$/控制器层/静态生成.html" />
         <option value="$PROJECT_DIR$/数据模型层/SQL语句生成.html" />
@@ -95,7 +106,6 @@
         <option value="$PROJECT_DIR$/基础知识和操作/多通道的使用.html" />
         <option value="$PROJECT_DIR$/基础知识和操作/新建应用.html" />
         <option value="$PROJECT_DIR$/控制器层/Ajax处理.html" />
-        <option value="$PROJECT_DIR$/控制器层/Restful控制器.html" />
         <option value="$PROJECT_DIR$/控制器层/Session操作.html" />
         <option value="$PROJECT_DIR$/控制器层/伪静态.html" />
         <option value="$PROJECT_DIR$/控制器层/依赖注入容器.html" />
@@ -106,9 +116,13 @@
         <option value="$PROJECT_DIR$/控制器层/系统配置.html" />
         <option value="$PROJECT_DIR$/控制器层/缓存使用.html" />
         <option value="$PROJECT_DIR$/控制器层/请求和响应.html" />
+        <option value="$PROJECT_DIR$/控制器层/类的自动加载.html" />
         <option value="$PROJECT_DIR$/控制器层/HTTP响应.html" />
         <option value="$PROJECT_DIR$/控制器层/HTTP请求.html" />
-        <option value="$PROJECT_DIR$/控制器层/类的自动加载.html" />
+        <option value="$PROJECT_DIR$/控制器层/Restful控制器.html" />
+        <option value="$PROJECT_DIR$/控制器层/Rest控制器.html" />
+        <option value="$PROJECT_DIR$/控制器层/分页的使用.html" />
+        <option value="$PROJECT_DIR$/控制器层/虚拟全局变量.html" />
       </list>
     </option>
   </component>
@@ -122,7 +136,7 @@
     <servers />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="237" />
     <option name="width" value="1692" />
     <option name="height" value="1026" />
@@ -203,12 +217,12 @@
       <workItem from="1541515542335" duration="3256000" />
       <workItem from="1541686899908" duration="10750000" />
       <workItem from="1541776194910" duration="8668000" />
-      <workItem from="1541822522055" duration="747000" />
+      <workItem from="1541822522055" duration="3471000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27148000" />
+    <option name="totallyTimeSpent" value="29872000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -334,13 +348,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/控制器层/分页的使用.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="61" column="20" selection-start-line="61" selection-start-column="20" selection-end-line="61" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/数据模型层/数据库设置.html">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -387,13 +394,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="483">
           <caret line="92" column="8" lean-forward="true" selection-start-line="92" selection-start-column="8" selection-end-line="92" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/控制器层/Restful控制器.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="95" column="30" selection-start-line="95" selection-start-column="30" selection-end-line="95" selection-end-column="30" />
         </state>
       </provider>
     </entry>
@@ -460,24 +460,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/控制器层/HTTP请求.html">
+    <entry file="file://$PROJECT_DIR$/控制器层/类的自动加载.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-760">
-          <caret line="59" lean-forward="true" selection-start-line="59" selection-end-line="59" />
+        <state relative-caret-position="798">
+          <caret line="42" column="80" lean-forward="true" selection-start-line="42" selection-start-column="80" selection-end-line="42" selection-end-column="80" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/控制器层/HTTP响应.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="539">
-          <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
+        <state relative-caret-position="551">
+          <caret line="29" column="25" lean-forward="true" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/控制器层/类的自动加载.html">
+    <entry file="file://$PROJECT_DIR$/控制器层/HTTP请求.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="43" lean-forward="true" selection-start-line="43" selection-end-line="43" />
+        <state relative-caret-position="-1064">
+          <caret line="35" column="10" lean-forward="true" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/控制器层/Rest控制器.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/控制器层/分页的使用.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="844">
+          <caret line="89" column="6" lean-forward="true" selection-start-line="89" selection-start-column="6" selection-end-line="89" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/控制器层/虚拟全局变量.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="20" column="31" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="31" />
         </state>
       </provider>
     </entry>

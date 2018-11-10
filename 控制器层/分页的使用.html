@@ -13,18 +13,18 @@
 <h2>分页的使用</h2>
 
 <strong>1、分页配置</strong>
-      框架默认的分页类是Pager，如果要使用自己的分页插件，可以将分页配置选项class_name配置成该分页类的名称。
+      框架默认的分页类是Ocara\Service\Pager。
       目前，分页配置有4个选项，如下所示：
 <pre class="brush: php;">
 /*
  * 分页配置
  */
-$CONF['PAGE'] = array(
-	'class_name' 	=> '', 		  //分页类名称，默认是Pager
-	'page_param' 	=> 'page',	  //URL查询字符串中分页参数名称
-	'per_page'	 	=> 10,		  //每页显示多少条记录
-	'per_show'   	=> 10		  //一次显示多少页
-);
+'PAGE' => array(
+    'class_name' => '', //分页类名称，默认是Ocara\Service\Pager
+    'page_param' => 'page', //URL查询字符串中分页参数名称
+    'per_page'	 => 10, //每页显示多少条记录
+    'per_show'   => 10, //一次显示多少页
+),
 </pre>
 <strong>2、默认分页插件的使用</strong>
       如果没有配置分页类名，则框架会使用Pager类。该分页插件的方法介绍，可以参见<a href="../扩展插件/分页.html">扩展插件/分页</a>。
@@ -43,22 +43,25 @@ $CONF['PAGE'] = array(
 	  		  
       具体实例如下：
 <pre class="brush: php;">
-class ListAction extends ItemController
+namespace app\modules\index\item;
+use app\dal\models\Item;
+
+class ListAction extends Controller
 {
      public function _action()
 	 {
 	    //获取分页对象  
-		$pager = $this->pager();
+		$pager = $this->pager;
         
         //设置分页参数
 		$pager->config('page', 10, 10);
 		
 		//进行数据库分页查询
-		$itemModel = $this->model('\Model\Item');
+		$itemModel = new Item();
 		$where = array('category_id' => 2);
 		
 		$result = $itemModel->where($where)
-			->page($pager->info())
+			->page($pager->getInfo())
 			->getAll();
 		
 		$total = $result['total'];
@@ -81,10 +84,8 @@ class ListAction extends ItemController
 </pre>	   
 
 <strong>3、自定义分页插件</strong>
-      如果要使用自己的分页插件，上述也讲到了，只要配置好class_name选项即可。
-      分页类中可以使用上述配置，也可以自己新建配置选项。
-      但是请注意，数据库查询时要通过Model的page()方法传递分页信息，并且使用该方法后，数据查询结果返回的不再是记录结果数
-      组,而是多返回了个记录总数，即包含了total和data两个数组元素，其中data才是记录结果数组。
+      如果要使用自己的分页插件，只要配置好class_name等选项。
+      请注意，通过模型的page()方法进行分页的数据查询结果会包含total和data两个元素，其中data才是记录结果数组。
 
 </pre>
 </body>
