@@ -13,36 +13,37 @@
 <body><pre><h2>模板引擎</h2>
 
 <strong>1、模板引擎</strong> 
-      一般地，模板的输出，也就是HTML中嵌套PHP代码，简单一点是直接使用原生的PHP代码嵌套。自从出现了模板引擎，这项工作变得更加方便易用。
-纵观当今模板引擎，用得最多的数smarty模板引擎，因此本框架已经集成了smarty模板，只要配置一下即可。而重要的是，提供了模板引擎扩展。
+      一般地，模板文件直接使用原生的HTML嵌套PHP代码。自从出现了模板引擎，这项工作变得更加方便易用。
+      本框架已经集成了smarty模板，只要配置一下即可。而且还提供了模板引擎扩展。
 
 <strong>2、配置smarty模板</strong>
 （1）开启smarty
-<pre class="brush: php;">/*
-* 模板配置
-*/
-$CONF['TEMPLATE'] = array(
-    'file_type'         =&gt; 'php',		//模板文件名
-    'engine'			=&gt; '\Ocara\Service\Smarty',	    //模板引擎
-    'default'			=&gt; 'default',	//默认模板名称
-    'default_layout'	=&gt; 'layout',	    //默认的layout名称
-);
+<pre class="brush: php;">
+/*
+ * 模板配置
+ */
+'TEMPLATE' => array(
+    'file_type'		 => 'php', //模板文件名
+    'engine'		 => 'Ocara\Service\Smarty', //模板引擎（如果使用默认的Smarty模板引擎，填Ocara\Service\Smarty）
+    'default'		 => 'default', //默认模板名称
+    'default_layout' => 'layout', //默认的layout名称
+),
 </pre>      将其中的engine设置为smarty就可以开启smarty，将extension_name设置为模板文件要使用的文件扩展名，如html或者htm等等。 
   
 （2）配置smarty
-<pre class="brush: php;">/*  
-  * smarty配置
-  * 可自由选择是否使用smarty模板
-  */
-$CONF['SMARTY'] = array(
-    'use_cache'		=&gt; 0,        //是否使用缓存
-    'left_sign'		=&gt; '&lt;{',	//模板中左标记
-    'right_sign'	=&gt; '}&gt;'   //模板中右标记
-);
+<pre class="brush: php;">
+/*
+ * Smarty模板配置
+ * 可自由选择是否使用smarty模板
+ */
+'SMARTY' => array(
+    'use_cache'	 => 0, //是否使用缓存
+    'left_sign'	 => '<{', //模板中左标记
+    'right_sign' => '}>', //模板中右标记
+),
 </pre>
 <strong>3、使用其他的模板引擎</strong>
-      如果本框架提供了您要使用的模板引擎的话，您可以直接按照上面的配置方法配置即可。
-      但是如果您想要的模板引擎Ocara没有提供支持，没事，您可以很轻松的实现。点击进入：<a href="模板引擎扩展.html">模板引擎扩展</a>。
+      如果您想要的模板引擎Ocara没有提供支持，您可以很轻松的实现。点击进入：<a href="模板引擎扩展.html">模板引擎扩展</a>。
 
 </pre>
 </body>

@@ -154,10 +154,10 @@
       实例如下：
 <pre class="brush: php;">$action = ocUrl('/user/login');
 $attributes = array(
-  	 'onsubmit' =&gt; 'return validateLogin()'
+  	 'onsubmit' => 'return validateLogin()'
   );
 
-$this-&gt;form('form_edit')-&gt;init($action, $attributes);
+$this->form('form_edit')->init($action, $attributes);
 </pre>
 
 4、让表单具有上传文件的功能
@@ -228,15 +228,15 @@ class CreateAction extends Controller
 上一个hidden隐藏域，保存了加密的表单令牌。
       （1）原生PHP模板
            如果模板使用原生的PHP代码，可以这样开始表单：
-<pre class="brush: php;">&lt;?php echo $form_edit-&gt;begin();?&gt; </pre>
+<pre class="brush: php;">&lt;?php echo $form_edit->begin();?&gt; </pre>
            或者，如果修改了PHP的short_open_tag为On的话，这样开始：
-<pre class="brush: php;">&lt;?=$form_edit-&gt;begin()?&gt;</pre>
+<pre class="brush: php;">&lt;?=$form_edit->begin()?&gt;</pre>
       （2）模板插件（如smarty）
            如果您的模板是smarty引擎，假设smarty设置的标签是&lt;{}&gt;，这样开始：
-<pre class="brush: php;">&lt;{$form_edit-&gt;begin()}&gt;</pre>           其他的模板引擎插件类似。
+<pre class="brush: php;">&lt;{$form_edit->begin()}&gt;</pre>           其他的模板引擎插件类似。
            表单的结束，可以直接写<strong>“&lt;/form&gt;”</strong>，也可以使用<span class="STYLE1">end()</span>方法结束，这个无所谓。
            如下示例：
-<pre class="brush: php;">&lt;?php echo $form_edit-&gt;end();?&gt; </pre> 
+<pre class="brush: php;">&lt;?php echo $form_edit->end();?&gt; </pre>
 
 <strong>三、表单提交后的处理</strong>
 1、POST方式提交的表单处理
@@ -403,23 +403,23 @@ class CreateAction extends Controller
 }
 </pre>
                    （b）在模板中使用表单控件元素
-<pre class="brush: php;">&lt;?=$form_create-&gt;element('userName2')?&gt;</pre>
+<pre class="brush: php;">&lt;?=$form_create->element('userName2')?&gt;</pre>
             （2）直接在模板中显示控件
-<pre class="brush: php;">&lt;?=$form_create-&gt;text('userName2')?&gt;</pre>
+<pre class="brush: php;">&lt;?=$form_create->text('userName2')?&gt;</pre>
       3、字段文本的显示
           （1）单表字段显示
           使用表单的lang()方法，可以获取该字段的语言配置。如下实例：
-<pre class="brush: php;">&lt;?=$form_create-&gt;lang('userName2')?&gt;</pre>
+<pre class="brush: php;">&lt;?=$form_create->lang('userName2')?&gt;</pre>
           （2）多表字段显示
           表单可以多次使用model()方法指定多个模型的字段。框架会使用array_merge()合并所有的字段文本。
           所以如果有重复的冲突，可以用“别名或类名.字段”来获取语言文本，如下实例：
 
 <pre class="brush: php;">
 	//$this->form('form_create')->model('app\dal\models\User')未指定Model的别名
-	&lt;?=$form_create-&gt;lang('app\dal\models\User.userName2')?&gt;
+	&lt;?=$form_create->lang('app\dal\models\User.userName2')?&gt;
 
 	//$this->form('form_create')->model('app\dal\models\User', 'user')指定了Model的别名
-	&lt;?=$form_create-&gt;lang('user.userName2')?&gt;
+	&lt;?=$form_create->lang('user.userName2')?&gt;
 </pre>
       4、动态设置字段别名
           使用表单的map()方法，可以动态设置字段的别名。
@@ -428,7 +428,7 @@ class CreateAction extends Controller
 $form_create->map('userName3', 'username');
 </pre>
           在模板中获取字段别名时，如下实例：
-<pre class="brush: php;">&lt;?=$form_create-&gt;map('userName3')?&gt;</pre>
+<pre class="brush: php;">&lt;?=$form_create->map('userName3')?&gt;</pre>
           如果同上所述的多个Model的重复字段冲突，如下实例：
 <pre class="brush: php;">
 	//$this->form('form_create')->model('app\dal\models\User')未指定Model的别名

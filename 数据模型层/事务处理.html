@@ -18,7 +18,7 @@
 </style>
 </head>
 
-<body><pre><h2>事务处理（\Ocara\Transaction）</h2>
+<body><pre><h2>事务处理（\Ocara\Core\Transaction）</h2>
 
 <table class="hint">
 	<tr class="head">
@@ -26,41 +26,48 @@
 	</tr>
 </table>
 
-<strong>1、事务的使用</strong>
-      事务处理要使用事务管理器\Ocara\Transaction，已经加入默认容器<span class="brush: php;">Base::$container</span>。该事务管理器，有以下特点：
+<strong>1、事务池介绍</strong>
+      事务处理要使用事务池管理器\Ocara\Core\Transaction。该事务管理器，有以下特点：
             （1）使用简单
             （2）可以嵌套使用
             （3）支持跨服务器和跨库事务处理
-            （4）使用Error::show()抛出错误时，会自动回滚事务
-            （5）ORM模型关联操作是，自动进行事务处理
+            （4）抛出异常错误时，会自动回滚所有的事务
+            （5）ORM模型关联操作是自动进行事务处理
 
+<strong>2、事务池原理</strong>
+      （1）调用事务池的begin()，将计数器+1。
+      （2）新建模型对象，设置保存的字段数据，然后调用create()或update()或delete()，否则，要调用<span class="STYLE1">pushTransaction()</span>推入事务池，才能保持正常顺序。
+      （3）如果有异常错误，在异常错误输出前，系统会调用事务池的rollback()将所有的事务连接按顺序全部执行一遍rollback()进行回滚。
+      （4）如果没有异常错误，调用事务池的commit()方法，系统会将事务池的计数器减1。如果计数器变成0，会将所有的数据库连接按顺序都执行一遍commit()。
 
+<strong>3、单事务执行步骤</strong>
       （1）事务开始
             使用Transaction的以下方法进行事务处理，这些方法没有参数，格式如下：
                   <span class="STYLE1">begin()</span>
                   <span class="STYLE1">commit()</span>
                   <span class="STYLE1">rollback()</span>
+
             提交实例：
-<pre class="brush: php;">$userModel= new \Model\User();
+<pre class="brush: php;">$userModel= new \app\dal\models\User();
 
 //事务开始
-Base::$container-&gt;transaction->begin();
+Base::$container->transaction->begin();
 
-    $users = \Model\Users::select(53290);
+    $users = \app\dal\models\User::select(53290);
     $users->avatar = 'test';
     $users->save();
 
 //事务提交
-Base::$container-&gt;transaction->commit();
+Base::$container->transaction->commit();
 </pre>
             回滚实例：
 <pre class="brush: php;">
-$userModel= new \Model\User();
+$userModel= new \app\dal\models\User();
 
 //事务开始
-Base::$container-&gt;transaction->begin();
+Base::$container->transaction->begin();
 
-	$users = new \Model\Users();
+	$users = new \app\dal\models\User();
     $users->user_sn = '1236433231322131';
     $users->userName = '小刚';
     $result = $users->save();
@@ -70,7 +77,7 @@ Base::$container-&gt;transaction->begin();
         $this->transaction->rollback();
     }
 
-    $goods = new \Model\Goods();
+    $goods = new \app\dal\models\Goods();
     $goods->goods_name = '小米手机';
     $goods->price = 1900;
     $goods->status = 1;
@@ -82,17 +89,17 @@ Base::$container-&gt;transaction->begin();
     }
 
 //事务提交
-Base::$container-&gt;transaction->commit();
+Base::$container->transaction->commit();
 </pre>
 
             自动回滚实例：
 <pre class="brush: php;">
-$userModel= new \Model\User();
+$userModel= new \app\dal\models\User();
 
 //事务开始
-Base::$container-&gt;transaction->begin();
+Base::$container->transaction->begin();
 
-    $users = new \Model\Users();
+    $users = new \app\dal\models\User();
     $users->user_sn = '1236433231322131';
     $users->userName = '小刚';
     $result = $users->save();
@@ -102,25 +109,25 @@ Base::$container-&gt;transaction->begin();
         $this->transaction->rollback();
     }
 
-    $goods = new \Model\Goods();
+    $goods = new \app\dal\models\Goods();
     $goods->goods_name = '小米手机';
     $goods->price = 1900;
     $goods->status = 1;
     $result = $goods->save();
-    Error::show('这里抛出错误！系统自动回滚.');
+    ocService()->error->show('这里抛出错误！系统自动回滚.');
 
 //事务回滚
-Base::$container-&gt;transaction->commit();
+Base::$container->transaction->commit();
 </pre>
 
             ORM模型自动使用事务实例：
 <pre class="brush: php;">
-$users = new \Model\Users();
+$users = new \app\dal\models\User();
 $users->user_sn = '333';
 $users->userName = '4554';
 $users->user_id = 53295;
 
-$userVerify = \Model\UserVerify::build();
+$userVerify = \app\dal\models\UserVerify::build();
 $userVerify->verify_status = 3;
 $userVerify->verified_desc = 5533;
 
@@ -129,30 +136,26 @@ $users->userVerify = $userVerify;
 $result = $users->save(); //如果保存成功会自动commit()
 
 if (!$result) {
-	Error::show('这里显示错误。');
+	ocService()->error->show('这里显示错误。');
 }
 </pre>
-<strong>2、事务的嵌套使用</strong>
+<strong>2、多事务嵌套</strong>
       嵌套事务中，子级事务成功提交，才会提交上级事务。
       如果任何一级子级事务代码抛错或者回滚事务，上级所有事务都不会提交。
       （1）嵌套事务原理
              事务管理器使用事务计数属性变量$_count进行多级事务管理。
-             只有最后一个commit()才是真正的数据库事务提交，其他的都是事务计数变量的增减而已。
+             只有$_count为0时也就是最后一个commit()才是真正的数据库事务提交，其他的都是事务计数变量的增减而已。
       （2）跨服务器事务原理
              事务管理器使用$_list属性变量保存要进行事务处理的服务器连接的第一个使用者（数据库对象）
              然后使用它来提交事务。因此，支持跨服务器事务处理。
     
       使用很简单，直接嵌套使用即可。
 <pre class="brush: php;">
-namespace Controller\Test\Action;
-use Ocara\Request;
-use Ocara\Response;
-use Ocara\Error;
-use Controller\Test\TestController;
+namespace app\modules\index\controllers\home;
 
-class TestAction extends TestController
+class TestAction extends Controller
 {
-    public function testUserCreateRelateUpdateOrCreate()
+    public function _action()
     {
         //一级事务开始（Transation的事务计数变量$_count+1，由0变为1）（没有数据库操作也可以）
         $this->transaction->begin();
@@ -160,31 +163,32 @@ class TestAction extends TestController
         //二级事务开始（Transation的$_count+1，变为2）
         $this->transaction->begin();
 
-            $users = \Model\Users::select(53290);
+            $users = \app\dal\models\User::select(53290);
             $users->avatar = 'test';
             $users->save();
 
             //三级事务开始（Transation的$_count+1，变为3）
             $this->transaction->begin();
 
-                $users = new \Model\Users();
+                $users = new \app\dal\models\User();
                 $users->user_sn = '1236433231322131';
                 $users->userName = '小刚';
+                $users->pushTransaction();  //手动提前推入事务池
+
+                $goods = new \app\dal\models\Goods();
+                $goods->goods_name = '小米手机';
+                $goods->price = 1900;
+                $goods->status = 1;
+                $goodResult = $goods->save();
+
                 $result = $users->save();
-                
                 //事务回滚（Transation的$_count置0，Transation的$_list置空）
                 if (!$result) {
                     $this->transaction->rollback();
                 }
 
-                $goods = new \Model\Goods();
-                $goods->goods_name = '小米手机';
-                $goods->price = 1900;
-                $goods->status = 1;
-                $result = $goods->save();
-                
                 //事务回滚（Transation的$_count置0，Transation的$_list置空）
-                if (!$result) {
+                if (!$goodResult) {
                     $this->transaction->rollback();
                 }
 

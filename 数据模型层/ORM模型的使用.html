@@ -16,44 +16,67 @@
      对象关系映射（<a target="_blank" href="http://baike.baidu.com/view/1458.htm">英语</a>：Object Relational Mapping，简称ORM，或O/RM，或O/R mapping），是一种程序技术，用于实现面向对象编程语言里不
 同类型系统的数据之间的转换。
      <strong>简单点说，</strong>在Ocara中，就是将一个数据表映射成一个类对象，表字段作为对象属性，字段值即该对象属性的值。
-     新建了一个表的ORM模型后，就可以使用对象的create()和update()方法添加和修改表数据的操作。<strong>
+     新建了一个表的ORM模型后，就可以使用对象的create()和update()方法添加和修改表数据的操作。一个对象实例就是表的一行记录。<strong>
 </strong>
 <strong>2、新建表的ORM模型</strong>
-    使用select()查询一条记录，或使用data()方法提供ORM数据，会自动生成ORM模型。
+    使用select()查询一条记录，或使用data()方法提供ORM数据，会自动生成ORM模型，并且<strong>会自动过滤掉不存在的字段名或字段别名</strong>。
       （1）直接查询表数据
 <pre class="brush: php;">
-$data = \Model\User::select(1);  //查询主键为1的的记录
+$data = \app\dal\models\User::select(1);  //查询主键为1的的记录
 </pre>
-      （2）取$_POST中数据
-             如果表单提交了数据，可以取$_POST的数据。
-             注：框架会自动查表获取字段列表，过滤掉不存在的字段名或字段别名。
-<pre class="brush: php;">$userModel= new \Model\User();
-$userModel-&gt;data();</pre>
+      （2）取POST数据
+             使用data()方法不传参数，框架会自动查表获取POST数据。
+<pre class="brush: php;">$userModel= new \app\dal\models\User();
+$userModel->data();</pre>
        （3）取指定数组的数据
-             不存在的字段名或字段别名的数据是无法保存的，因为框架不会自动查表获取字段。
-<pre class="brush: php;">$userModel= new \Model\User();
+<pre class="brush: php;">$userModel= new \app\dal\models\User();
 $data = array(
-     'user_name' =&gt; 'test',
-     'email'  =&gt;   'test@163.com'
+     'user_name' => 'test',
+     'email'  =>   'test@163.com'
  );
- $userModel-&gt;data($data);
+ $userModel->data($data);
 </pre>
 <strong>3、使用ORM模型</strong>
-      （1）新建ORM模型后，就可以使用它来保存数据，然后我们通过create()和update()添加和更新数据。
+      （1）添加记录
                如下实例：
 <pre class="brush: php;">
-$userModel= new \Model\User();
-$userModel-&gt;data(); //获取表单POST提交的数据
+$userModel= new \app\dal\models\User();
+$userModel->data(); //获取表单POST提交的数据
 $userModel->create_time = time();
-$id = $userModel-&gt;save(); //添加记录
+
+$extraData = array(
+    'email' => 'newEmail@163.com',
+);
+
+$id = $userModel->save($extraData); //添加记录，会合并属性设置和$extraData的数据
 </pre>
-      （2）修改数据只需修改该model的字段属性。
+      （2）修改数据
                实例如下，修改主键值为1记录的email字段：
 <pre class="brush: php;">
-$userModel= new \Model\User();
-$userModel-&gt;select(1); //获取主键为1的记录数据
-$userModel-&gt;email = 'newEmail@163.com'; //修改email
-$userModel-&gt;save(); //更新记录
+$userModel= new \app\dal\models\User();
+$userModel->select(1); //获取主键为1的记录数据
+$userModel->email = 'newEmail@163.com'; //修改email
+
+$extraData = array(
+    'create_time' => time(),
+);
+
+$userModel->save($extraData); //更新记录，会合并属性设置和$extraData的数据
+</pre>
+          （3）修改数据（自动获取POST数据）
+               实例如下，修改主键值为1记录的email字段：
+<pre class="brush: php;">
+$userModel= new \app\dal\models\User();
+$userModel->select(1); //获取主键为1的记录数据
+
+$userModel->data(); //自动获取POST数据
+
+$userModel->email = 'newEmail@163.com'; //修改email
+$extraData = array(
+    'create_time' => time(),
+);
+
+$userModel->save($extraData); //更新记录，会合并属性设置和$extraData的数据
 </pre>
 </pre>
 <pre>

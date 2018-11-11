@@ -19,22 +19,31 @@
 
       只要新建一个model文件配置，其中定义$CONF['MAP']的键值数组的配置就行了，键名为字段别名，键值为字段名。
       比如，我们在required/model中添加user.php，在其中添加配置：
-<pre class="brush: php;">$CONF['MAP'] = array(
-      'userName' =&gt; 'username',
-      'password_alias' =&gt; 'password'
-);
+<pre class="brush: php;">
+/**
+ * 字段别名映射
+ */
+'MAP' => array(
+    'userName' => 'user_name',
+    'password_alias' => 'password',
+),
 </pre>      当然你还可以定义某个字段的多个别名，如下username配置有两个别名：
-<pre class="brush: php;">$CONF['MAP'] = array(
-    'userName' =&gt; 'username',
-    'userName2' =&gt; 'username',
-    'pass' =&gt; 'password'
-);
+<pre class="brush: php;">
+/**
+ * 字段别名映射
+ */
+'MAP' => array(
+    'userName' => 'user_name',
+    'userName2' => 'user_name',
+    'password_alias' => 'password',
+),
 </pre>
-<h2>字段别名有什么效果？</h2>
+<h2>字段别名有什么用处？</h2>
 
-      在本框架中，字段别名，在添加或更新记录时，可以当作真实字段名用。
-      而在查询时，真实字段会以字段别名输出。
-      也就是说，字段别名可进库，出库也是字段名。但是在组成SQL语句中不需要用别名。
+      （1）在保存记录时，可以当作真实字段名用（输入时当成字段名使用）。
+      （2）在查询时，真实字段会以字段别名输出（输出时返回字段别名），而且查询时字段列表不需要使用别名。
+
+      实例如下：
       （1）保存记录时字段别名当真实字段用
             比如说，下面我们定义了users表的几个别名。
 <pre class="brush: php;">$CONF['MAP'] = array(
@@ -48,7 +57,7 @@ $data = array(
       'password_alias' => '123456'
 );
 
-$user = new \Model\Users();
+$user = new \app\dal\models\Users();
 $user->data($data)->save();
 </pre>
             这跟以下代码是同样的效果：
@@ -58,13 +67,13 @@ $data = array(
       'password' => '123456'
 );
 
-$user = new \Model\Users();
+$user = new \app\dal\models\Users();
 $user->data($data)->save();
 </pre>
       （2）查询记录时真实字段以字段别名输出，条件数组中别名也可以作为条件
             同上例别名配置。那么查询时，真实字段会以字段别名返回：
 <pre class="brush: php;">
-$user = new \Model\Users();
+$user = new \app\dal\models\Users();
 $result = $user->where(array('userName' => 'Jim'))
      ->fields('username')
      ->fields(array('password'))
@@ -78,20 +87,18 @@ Array ( [userName] => Jim [password_alias] => e10adc3949ba59abbe56e057f20f883e )
 
 <h2>应用场景和实例</h2>
 
-<strong>（1）作为数据保存时匹配字段</strong>
-      有很多时候，我们为了数据库安全，不希望他人知道数据表的字段名，所以不想让表单元素的命名与字段名同名。
-      但是这样的话，一般地我们在后台处理时，不得不重新赋值一下，如下面实例，表单有两个字段
-      userName和pass，分别表示用户名和密码，然后表单提交后可以这样添加记录：
+<strong>（1）数据保存时匹配字段</strong>
+      传统地，如果表单提交的字段与表字段不同名时，我们需要这样处理：
 <pre class="brush: php;">
-$userModel= new \Model\User();
 $data = array(
-    'username' =&gt; Request::getPost('userName'),
-    'password' =&gt; Request::getPost('pass')
+    'username' => ocService()->request->getPost('userName'),
+    'password' => ocService()->request->getPost('pass')
 );
 
 //添加记录
-$userModel->data($data)-&gt;save();
-</pre>      然而，如果我们指定userName、pass分别是username、password的别名，表单提交后，后台处理数据就方便多了。
+$userModel->data($data)->save();
+</pre>
+      如果使用了字段别名就简单了：
       首先，在conf/model/user.php中指定别名：
 <pre class="brush: php;">$CONF['MAP'] = array(
     'userName2' => 'username',
@@ -99,22 +106,18 @@ $userModel->data($data)-&gt;save();
 );
 </pre>      然后，添加记录，就不需要如此麻烦了：
 <pre class="brush: php;">
-$userModel= new \Model\User();
-
 //添加记录
-$userModel-&gt;data($data)-&gt;save();
+$userModel->data($data)->save();
 </pre>      由于系统会自动匹配字段名称与别名，所以直接使用data()，不需要赋值给字段就能保存。
 
-<strong>（2）作为查询条件时匹配字段</strong>
+<strong>（2）查询时匹配条件字段</strong>
        字段别名在关联数组中做查询条件时，也能匹配到。如将上例中POST提交的数据作为查询条件；
 <pre class="brush: php;">
-$userModel= new \Model\User();
-
 //查询结果
-$result = $userModel-&gt;where($_POST)-&gt;getRow();
+$result = $userModel->where($_POST)->getRow();
 </pre>
 
-<strong>（3）表单字段匹配</strong>
+<strong>（3）生成表单时匹配字段文本</strong>
         如果设置了别名，并且关联了表单（使用表单的model()方法）。则表单字段的标签，以及表单字段验证时都会匹到
 </pre></body>
 </html>

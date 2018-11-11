@@ -29,7 +29,7 @@
      */
     public function _module()
     {
-        $this-&gt;setLayout('admin');
+        $this->setLayout('admin');
     }
 }
 </pre>
@@ -94,10 +94,10 @@ class IndexAction extends GuestbookController
       代码如下：
 <pre class="brush: php;">
 &lt;div class=&quot;search&quot;&gt;
-&lt;?php echo $form_search-&gt;begin();?&gt;联系电话：
+&lt;?php echo $form_search->begin();?&gt;联系电话：
 &lt;input type=&quot;text&quot; name=&quot;telphone&quot; /&gt;&amp;nbsp;
 &lt;input type=&quot;submit&quot; name=&quot;Submit&quot; value=&quot;搜索&quot; /&gt;
-&lt;?php echo $form_search-&gt;end();?&gt;
+&lt;?php echo $form_search->end();?&gt;
 &lt;/div&gt;
 &lt;table width=&quot;100%&quot; border=&quot;0&quot;&gt;
 &lt;tr&gt;
@@ -111,11 +111,11 @@ class IndexAction extends GuestbookController
 &lt;td&gt;&lt;?=$row['id']?&gt;&lt;/td&gt;
 &lt;td&gt;&lt;?=$row['telphone']?&gt;&lt;/td&gt;
 &lt;td&gt;&lt;?=$row['content']?&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href=&quot;&lt;?=ocUrl('/admin/guestbook/index', array('id' =&gt; $row['id']))?&gt;&quot;&gt;删除&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href=&quot;&lt;?=ocUrl('/admin/guestbook/index', array('id' => $row['id']))?&gt;&quot;&gt;删除&lt;/a&gt;&lt;/td&gt;
 &lt;?php } ?&gt;
 &lt;/tr&gt; 
 &lt;tr&gt;
-&lt;td colspan=&quot;4&quot; align=&quot;right&quot;&gt;&lt;?php echo $pager-&gt;html;?&gt;&lt;/td&gt;
+&lt;td colspan=&quot;4&quot; align=&quot;right&quot;&gt;&lt;?php echo $pager->html;?&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
 </pre>

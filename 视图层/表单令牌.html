@@ -80,7 +80,7 @@ class AddAction extends ItemController
         $this->model()->data()->save();
 
         //手动清除表单令牌
-        $this-&gt;formManager->clearToken();
+        $this->formManager->clearToken();
 
         //停止代码前最好加上这句，如果使用setAfter()方法设置过了执行后续程序的话
         $this->after();

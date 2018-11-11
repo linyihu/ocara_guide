@@ -34,7 +34,7 @@
 	</tr>
 	<tr>
 		<td>server</td>
-		<td>可选。服务器名称。</td>
+		<td>可选。缓存服务器的名称。默认是main。</td>
 	</tr>
 	<tr>
 		<td>required</td>
@@ -50,24 +50,23 @@ $where = array(
 );
 
 //保存到默认缓存，假设默认是Memcache缓存连接
-$userModel = new \Model\User();
+$userModel = new \app\dal\models\User();
 $result = $userModel->where($where)
 	->cache()
 	->getAll();
 
 //保存到Redis缓存，假设已经配置了Redis的缓存连接
-$userModel = new \Model\User();
+$userModel = new \app\dal\models\User();
 $result = $userModel->where($where)
 	->cache('cache_redis')
 	->getAll();
 </pre>
 <pre>
 <strong>3、自定义缓存的保存和查询方式</strong>
-         Model的cache()可以进行缓存保存和查询，是以md5加密SQL为键名，以json_encode()函数转为Json格式保存的。
-         如果我们不满意这种保存方法，则可以使用自定义回调。
-         该自定义回调的配置选项是conf/callback.php中的$CONF['CALLBACK']['model']['query']['get_cache_data']。
-         比如，我们想让其保存时使用QueryCache类的save()方法进行回调，而查询时使用querycache控制器的find动作进行回调。
-         保存时的回调方法代码为：
+         Model的cache()保存数据时是以md5加密SQL为键名的，键值是以json_encode()函数加密。
+         如果要修改加密算法，可以使用事件回调。要在配置文件event.php中修改model选项。
+         比如，保存用QueryCache类的save()方法，而查询时使用find方法。
+         首先，保存时的回调方法代码为：
 <pre class="brush: php;">
 class QueryCache extends Base
 {
@@ -76,7 +75,7 @@ class QueryCache extends Base
 		$value = serialize($ret);
 		$key   = md5($sql . '123');
 		
-		$cacheObj->setVar($key, $value);	
+		$cacheObj->set($key, $value);
 	}
 }
 </pre>
@@ -90,7 +89,7 @@ class FindAction extends QuerycacheController
 	public function _action($cacheObj, $sql, $required)
 	{
 		$key   = md5($sql . '123');
-		$value = $cacheObj->getVar($key);
+		$value = $cacheObj->get($key);
 		$ret   = unserialize($value);
 		
 		//查询要返回查询数组，所以反序列化
@@ -98,17 +97,18 @@ class FindAction extends QuerycacheController
 	}
 }
 </pre>
-         然后，在conf/callback.php进行回调配置：
+         然后，在event.php进行回调配置：
 <pre class="brush: php;">
 /*
- * 数据模型Model相关回调
+ * 数据模型Model相关事件
  */
-$CONF['CALLBACK']['model'] = array(
-	'query' => array( //Model查询缓存回调
-		'save_cache_data' => '/querycache/find', //保存为缓存数据
-		'get_cache_data' => 'QueryCache::save', //获取缓存数据
+'model' => array(
+	//Model查询缓存的事件
+	'query' => array(
+		'save_cache_data' => array('QueryCache', 'save'), //保存为缓存数据的事件
+		'get_cache_data' => array('QueryCache', 'find'),  //获取缓存数据的事件
 	)
-);
+),
 </pre>
 <pre>
 </pre>

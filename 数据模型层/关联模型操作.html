@@ -20,17 +20,17 @@
 /**
  * 表关联
  */
-$CONF['JOIN'] = array(
+'JOIN' => array(
     'userVerify' => array(
-        'one', '\Model\UserVerify', 'user_id', array('verify_status' => 2)
+        'hasOne', '\app\dal\models\UserVerify', 'user_id', array('verify_status' => 2)
     ),
-);
+),
 </pre>
       详细说明：
             （1）关联配置的键名userVerify为关联名，在使用时用于代替类名。
             （2）配置数组中有4个参数，分别介绍如下：
-                  （a）manyOne，是关系类型，一般包括一对一（one）、一对多（oneMany）、多对一（manyOne）和多对多（many）。
-                  （b）\Model\UserVerify，是模型类名。必需是命名空间，并且第一位必须是带根命名空间“\”。
+                  （a）hasOne，是关系类型，一般包括一对一（hasOne）、一对多（hasMany）、多对一（belongsTo）。
+                  （b）\app\dal\models\UserVerify，是模型类名。必需是命名空间，并且第一位必须是带根命名空间“\”。
                   （c）user_id, 是关联字段。如果关联的两个表都是同一个字段，可以写成一个字段。如果是两个字段，只要用英文逗号分开，比如：'user_id, uid'。
                   （d）array('verify_status' => 2)，是附加的关联条件数组。
                           这里是verify_status操作，如果是其他操作符，则将值设为数组，比如in条件：array('verify_status' =>array('in', array(1, 3)))
@@ -41,7 +41,7 @@ $CONF['JOIN'] = array(
             如下实例：
 <pre class="brush: php;">
 //查询user表
-$user = \Model\User::select(1);
+$user = \app\dal\models\User::select(1);
 
 //使用userVerify关联表的字段
 $verifyStatus = $user->userVerify->verify_status;
@@ -49,15 +49,15 @@ $verifyStatus = $user->userVerify->verify_status;
 echo $verifyStatus;
 </pre>
             对于不同的关系类型，关联属性返回值也不同，如下详细说明：
-            （1）一对一（one）和多对一（manyOne）
+            （1）一对一（hasOne）和多对一（belongsTo）
                     关联属性返回的是该关联表的数据模型类，如上述实例。
-            （2）一对多（oneMany）和多对多（many）
+            （2）一对多（hasMany）
                     关联属性返回的是一个PHP迭代器，可以使用foreach进行遍历。
                     每个元素就是一个该关联表的数据模型类，表示某一条关联记录。
                     如下实例：
 <pre class="brush: php;">
 //查询user表
-$users = \Model\User::select(11);
+$users = \app\dal\models\User::select(11);
 
 //遍历关联模型
 foreach ($users->userVerify as $row) {
@@ -66,23 +66,23 @@ foreach ($users->userVerify as $row) {
 </pre>
 <pre>
 <strong>3、保存关联模型数据</strong>
-            在保存主表的数据时，可以使用关联模型保存关联表的数据，框架会自动使用事务处理。
+            在保存主表的数据时，可以使用关联模型的ORM设置数据，框架会自动使用事务一起保存。
             （1）添加数据
                     在添加主表的数据时，可以添加关联模型数据。
                     对于不同的关系类型，关联属性也要设置不同的值类型，如下详细说明：
-                    （a）一对一（one）和多对一（manyOne）
-                            关联属性要设置为要添加的关联表模型类，表示一条记录。
+                    （a）一对一（hasOne）和多对一（belongsTo）
+                            关联属性要设置关联模型类对象，表示一条记录。
                             如下实例：
 <pre class="brush: php;">
 //新建主表模型
-$user= new \Model\User();
+$user= new \app\dal\models\User();
 
 //设置当前user表的字段值
 $user->user_name = 'user1'; //获取主键为1的记录数据
-$user-&gt;email = 'newEmail@163.com'; //修改email
+$user->email = 'newEmail@163.com'; //修改email
 
 //设置user_verify表的字段数据
-$user->userVerify = new \Model\UserVefiy();
+$user->userVerify = new \app\dal\models\UserVefiy();
 $user->userVerify->verify_status = 1;
 $user->userVerify->create_time = time();
 
@@ -90,22 +90,22 @@ $user->userVerify->create_time = time();
  * 一起保存到数据库
  * user和userVerify会自动保存，userVerify的user_id自动保存为user表的user_id
  */
-$user-&gt;save(); //保存记录
+$user->save(); //保存记录
 </pre>
-                    （b）一对多（oneMany）和多对多（many）
-                            关联属性要设置为要添加的多条该关联表模型类的数组，表示多条记录。
-                            另外，如果当前只保存一条记录，关联属性也可以只是一个数据表模型类。
-                            假设配置了一个user_money表的oneMany关系，如下配置代码：
+                    （b）一对多（hasMany）
+                            关联属性要设置为关联模型对象数组，表示多条记录。
+                            另外，如果当前只保存一条记录，关联属性也可以不用数组，直接用关联模型对象。
+                            假设配置了一个user_money表的hasMany关系，如下配置代码：
 <pre class="brush: php;">
 /**
  * 表关联
  */
 $CONF['JOIN'] = array(
     'userVerify' => array(
-        'one', '\Model\UserVerify', 'user_id', array('verify_status' => 2)
+        'hasOne', '\app\dal\models\UserVerify', 'user_id', array('verify_status' => 2)
     ),
     'userMoney' => array(
-        'oneMany', '\Model\UserMoney', 'user_id'
+        'hasMany', '\app\dal\models\UserMoney', 'user_id'
     ),
 );
 </pre>
@@ -113,22 +113,22 @@ $CONF['JOIN'] = array(
 
 <pre class="brush: php;">
 //新建主表模型
-$user= new \Model\User();
+$user= new \app\dal\models\User();
 
 //设置当前user表的字段值
 $user->user_name = 'user1'; //获取主键为1的记录数据
-$user-&gt;email = 'newEmail@163.com'; //修改email
+$user->email = 'newEmail@163.com'; //修改email
 
-//设置user_money表的字段数据
+//设置user_money表数据
 $userMoney = array();
 
-$moneyRow = new \Model\UserVefiy();
+$moneyRow = new \app\dal\models\UserVerify();
 $moneyRow->type = 1;
 $moneyRow->money = 100;
 $moneyRow->create_time = time();
 $userMoney[] = $moneyRow;
 
-$moneyRow2 = new \Model\UserVefiy();
+$moneyRow2 = new \app\dal\models\UserVerify();
 $moneyRow2->type = 2;
 $moneyRow2->money = -100;
 $moneyRow2->create_time = time();
@@ -141,20 +141,46 @@ $user->userMoney = $userMoney;
  * 一起保存到数据库
  * user和userMoney会自动保存，userVerify的user_id自动保存为user表的user_id
  */
-$user-&gt;save(); //保存记录
+$user->save(); //保存记录
+
+</pre>
+    如果只保存一行关联模型记录，则可以不用数组：
+<pre class="brush: php;">
+//新建主表模型
+$user= new \app\dal\models\User();
+
+//设置当前user表的字段值
+$user->user_name = 'user1'; //获取主键为1的记录数据
+$user->email = 'newEmail@163.com'; //修改email
+
+//设置user_money表数据
+$moneyRow = new \app\dal\models\UserVerify();
+$moneyRow->type = 1;
+$moneyRow->money = 100;
+$moneyRow->create_time = time();
+$userMoney[] = $moneyRow;
+
+//绑定到user模型
+$user->userMoney = $moneyRow;
+
+/**
+ * 一起保存到数据库
+ * user和userMoney会自动保存，userVerify的user_id自动保存为user表的user_id
+ */
+$user->save(); //保存记录
 
 </pre>
             （2）更新数据
                     更新主表数据时，可以参照上面的第2点，直接使用关联属性。
-                    （a）一对一（one）和多对一（manyOne）
+                    （a）一对一（hasOne）和多对一（belongsTo）
                             更新时，直接使用关联属性。
 <pre class="brush: php;">
 //选择主表记录
-$user = \Model\User::select(1);
+$user = \app\dal\models\User::select(1);
 
 //修改当前user表的字段值
 $user->user_name = 'user1'; //获取主键为1的记录数据
-$user-&gt;email = 'newEmail@163.com'; //修改email
+$user->email = 'newEmail@163.com'; //修改email
 
 //修改user_verify表的字段数据
 $user->userVerify->verify_status = 1;
@@ -163,17 +189,17 @@ $user->userVerify->create_time = time();
 /**
  * 一起保存到数据库
  */
-$user-&gt;save(); //保存记录
+$user->save(); //保存记录
 </pre>
                     另外，如果关联表数据没有添加过，则还是要新建一个关联模型。如下实例：
 
 <pre class="brush: php;">
 //选择主表记录
-$user = \Model\User::select(1);
+$user = \app\dal\models\User::select(1);
 
 //修改当前user表的字段值
 $user->user_name = 'user1'; //获取主键为1的记录数据
-$user-&gt;email = 'newEmail@163.com'; //修改email
+$user->email = 'newEmail@163.com'; //修改email
 
 //修改user_verify表的字段数据
 $userVerify = new \Model\userVerify();
@@ -187,16 +213,16 @@ $user->userVerify = $userVerify;
  * 一起保存到数据库
  * user和userVerify会自动保存，userVerify的user_id自动保存为user表的user_id
  */
-$user-&gt;save(); //保存记录
+$user->save(); //保存记录
 </pre>
-                    （b）一对多（oneMany）和多对多（many）
+                    （b）一对多（hasMany）
                             更新时，要遍历关联属性，因为它是一个迭代器。
 <pre class="brush: php;">
-$user = \Model\User::select(1);
+$user = \app\dal\models\User::select(1);
 
 //主表字段设置
 $user->user_name = 'user1'; //获取主键为1的记录数据
-$user-&gt;email = 'newEmail@163.com'; //修改email
+$user->email = 'newEmail@163.com'; //修改email
 
 //关联表遍历设置
 foreach ($user->userMoney as $row) {
@@ -206,29 +232,29 @@ foreach ($user->userMoney as $row) {
 /**
  * 一起保存到数据库
  */
-$user-&gt;save(); //保存记录
+$user->save(); //保存记录
 </pre>
-                            另外，如果关联表数据没有添加过，则还是要使用上述添加数据的方式，关联属性要设置为多条关联表模型类的数组。
+                            另外，如果关联表数据没有添加过，也需要添加数据。
                             同上第（2）(b）点实例配置，如下更新数据实例：
 
 <pre class="brush: php;">
 //选择主表记录
-$user = \Model\User::select(1);
+$user = \app\dal\models\User::select(1);
 
 //主表字段设置
 $user->user_name = 'user1'; //获取主键为1的记录数据
-$user-&gt;email = 'newEmail@163.com'; //修改email
+$user->email = 'newEmail@163.com'; //修改email
 
 //设置关联表user_money表的字段数据
 $userMoney = array();
 
-$moneyRow = new \Model\UserVefiy();
+$moneyRow = new \app\dal\models\UserVefiy();
 $moneyRow->type = 1;
 $moneyRow->money = 100;
 $moneyRow->create_time = time();
 $userMoney[] = $moneyRow;
 
-$moneyRow2 = new \Model\UserVefiy();
+$moneyRow2 = new \app\dal\models\UserVefiy();
 $moneyRow2->type = 2;
 $moneyRow2->money = -100;
 $moneyRow2->create_time = time();
@@ -241,7 +267,7 @@ $user->userMoney = $userMoney;
  * 一起保存到数据库
  * user和userMoney会自动保存，userVerify的user_id自动保存为user表的user_id
  */
-$user-&gt;save(); //保存记录
+$user->save(); //保存记录
 </pre>
 
 </pre>

@@ -55,24 +55,24 @@
 <pre class="brush: php;">
 //数据表模型类联接查询
 $itemModel = new \Model\Item();
-$result = $itemModel-&gt;leftJoin('\Model\Category', 'b', 'a.category_id=b.id')
-      				-&gt;fields('a.item_id,a.name,a.category_id')
+$result = $itemModel->leftJoin('\Model\Category', 'b', 'a.category_id=b.id')
+      				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('b.name as category_name')
-      				-&gt;getAll();
+      				->getAll();
 
 //关联配置联接查询（使用别名）
 $itemModel = new \Model\Item();
-$result = $itemModel-&gt;leftJoin('itemCatery', 'b') //在resource/conf/model中的item.php配置
-      				-&gt;fields('a.item_id,a.name,a.category_id')
+$result = $itemModel->leftJoin('itemCatery', 'b') //在resource/conf/model中的item.php配置
+      				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('b.name as category_name')
-      				-&gt;getAll();
+      				->getAll();
 
 //关联配置联接查询（不使用别名）
 $itemModel = new \Model\Item();
-$result = $itemModel-&gt;leftJoin('itemCatery') //在resource/conf/model中的item.php配置
-      				-&gt;fields('a.item_id,a.name,a.category_id')
+$result = $itemModel->leftJoin('itemCatery') //在resource/conf/model中的item.php配置
+      				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('itemCatery.name as category_name')
-      				-&gt;getAll();
+      				->getAll();
 </pre>
 
 <strong>  2、查询条件</strong>
@@ -105,16 +105,16 @@ $where = array(
 
 //查询结果
 $itemModel = new \Model\Item();
-$userInfo = $itemModel-&gt;where($where)
-					  -&gt;getRow();
+$userInfo = $itemModel->where($where)
+					  ->getRow();
 </pre>
       （2）字符串条件（对变量进行SQL安全过滤）
 <pre class="brush: php;">$userName = Request::getGet('username');
 
 //查询
 $itemModel = new \Model\Item();
-$userInfo = $itemModel-&gt;where(&quot;user_name='{$userName}'&quot;)
-					  -&gt;getRow();
+$userInfo = $itemModel->where(&quot;user_name='{$userName}'&quot;)
+					  ->getRow();
 </pre>
       （3）OR条件（对变量进行SQL安全过滤）
 <pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
@@ -123,7 +123,7 @@ $userInfo = $itemModel-&gt;where(&quot;user_name='{$userName}'&quot;)
 $itemModel = new \Model\Item();
 $userInfo = $itemModel->where(1)
 	->orWhere(&quot;user_name='{$userName}'&quot;)
-	-&gt;getRow();
+	->getRow();
 </pre>
 
 <strong>  3、复杂查询条件</strong>
@@ -166,8 +166,8 @@ $itemData = $itemModel->cWhere('>=', 'id', 53)
       （2）查出数组ID值为1,5,33的商品
 <pre class="brush: php;">
 $itemModel = new \Model\Item();
-$itemData = $itemModel-&gt;cWhere('in', 'id', array(1,5,33))
-					  -&gt;getAll();
+$itemData = $itemModel->cWhere('in', 'id', array(1,5,33))
+					  ->getAll();
 </pre>
       （2）查出出ID大于或等于53，或者数组ID值为1,5,33的商品
 <pre class="brush: php;">
@@ -211,8 +211,8 @@ $itemData = $itemModel->cWhere('>=', 'id', 53)
 <pre class="brush: php;">
 //查询结果
 $itemModel = new \Model\Item();
-$userInfo = $itemModel-&gt;between('id', 1, 10)
-					  -&gt;getRow();
+$userInfo = $itemModel->between('id', 1, 10)
+					  ->getRow();
 </pre>
       （2）OR条件（对变量进行SQL安全过滤）
 <pre class="brush: php;">
@@ -221,7 +221,7 @@ $itemModel = new \Model\Item();
 $userInfo = $itemModel->where(1)
     ->where(array('id' => 29))
 	->orBetween('id', 1, 10)
-	-&gt;getRow();
+	->getRow();
 </pre>
 
 <strong>  4、更多条件</strong>
@@ -248,9 +248,9 @@ $userInfo = $itemModel->where(1)
              查出ID为1的商品，如果商品的状态为0则不查询，可以使用status &lt;&gt; '0'，也可以使用IF(status = '0', 0, 1)条件，以下是第二种条件方案：
 <pre class="brush: php;">
 $itemModel = new \Model\Item();
-$itemModel-&gt;where(array('id'=&gt;1))
-		  -&gt;mWhere(&quot;IF(status = '0', 0, 1)&quot;, 'AND')
-	 	  -&gt;getRow();
+$itemModel->where(array('id'=>1))
+		  ->mWhere(&quot;IF(status = '0', 0, 1)&quot;, 'AND')
+	 	  ->getRow();
 </pre>
        会在整个Where语句最后加上“ AND IF(status = '0', 0, 1)”的条件。
 
@@ -279,7 +279,7 @@ $itemModel-&gt;where(array('id'=&gt;1))
             查出用户user1的用户和邮箱信息。
 <pre class="brush: php;">
 $userModel = new \Model\User();
-$userData = $userModel->where(array('user_name' =&gt; 'user1'))
+$userData = $userModel->where(array('user_name' => 'user1'))
 					  ->leftJoin('user_group', 'b', 'a.gid=b.id')
 	 				  ->fields('{distinct}') // 字段选项
 	  				  ->fields(array('a.id', 'a.name')) //使用别名
@@ -308,9 +308,9 @@ $userData = $userModel->where(array('user_name' =&gt; 'user1'))
             查出分类ID的商品，按照添加时间降序排序：
 <pre class="brush: php;">
 $itemModel = new \Model\Item();
-$itemData = $itemModel-&gt;where(array('category_id' =&gt; $category_id))
-					  -&gt;orderBy('create_time DESC')
-					  -&gt;getAll();
+$itemData = $itemModel->where(array('category_id' => $category_id))
+					  ->orderBy('create_time DESC')
+					  ->getAll();
 </pre>
 <strong>  7、分组</strong>
       <span class="STYLE1">groupBy(group)</span>
@@ -332,9 +332,9 @@ $itemData = $itemModel-&gt;where(array('category_id' =&gt; $category_id))
             统计商品分类的商品数：
 <pre class="brush: php;">
 $itemModel = new \Model\Item();
-$staticData = $itemModel-&gt;fields('count(id)	as num')
-						-&gt;groupBy('category_id')
-						-&gt;getAll();
+$staticData = $itemModel->fields('count(id)	as num')
+						->groupBy('category_id')
+						->getAll();
 </pre>
 
 
@@ -368,16 +368,16 @@ $where = array(
 
 //查询结果
 $itemModel = new \Model\Item();
-$userInfo = $itemModel-&gt;where($where)
-					  -&gt;getRow();
+$userInfo = $itemModel->where($where)
+					  ->getRow();
 </pre>
       （2）字符串条件（对变量进行SQL安全过滤）
 <pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
 
 //查询结果
 $itemModel = new \Model\Item();
-$userInfo = $itemModel-&gt;where(&quot;user_name='{$userName}'&quot;)
-					  -&gt;getRow();
+$userInfo = $itemModel->where(&quot;user_name='{$userName}'&quot;)
+					  ->getRow();
 </pre>
 
 <strong>  8、分页</strong>

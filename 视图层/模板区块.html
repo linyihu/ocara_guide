@@ -21,16 +21,16 @@
 <body><pre><h2>模板区块（Part）</h2>
 
 <strong>1、什么是模板区块</strong>
-      模板区块就是多个模板文件公用的代码块。
+      模板区块就是多个模板文件复用的代码块。
 </pre>
 
 <pre>
       
 <strong>2、如何新建模板区块</strong>
-      新建模板区块，只要在application/view/part目录中新建区块文件即可，也可以分目录保存，在调用的时候注意路径即可。
+      新建模板区块，只要模板目录中part目录新建区块文件即可，也可以分目录保存，在调用的时候注意路径即可。
 
 <strong>3、如何调用模板区块</strong>
-      调用模板区块，使用模板类View的showPart()方法，该方法返回区块运行结果。
+      调用模板区块，要使用视图的showPart()方法。
       格式如下：
             <span class="STYLE1">showPart(path[, template])</span>
       参数说明：
@@ -42,7 +42,7 @@
 	</tr>
 	<tr> 
 		<td>path</td>
-		<td>必需。相对于application/view/part的路径。</td>
+		<td>必需。文件路径。是part目录下的相对路径。</td>
 	</tr>
 	<tr>
 		<td>template</td>

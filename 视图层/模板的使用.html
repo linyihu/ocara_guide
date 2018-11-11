@@ -28,12 +28,13 @@
 （1）模板目录
          模板文件是视图层View的实现，放在每个模块目录的view/风格名/template目录中。
 （2）模板风格的多样化
-         在很多的开源或商业PHP系统中，一般会提供多种网站模板风格，如discuz、phpcms等。本框架也提供了。
-         在template目录中，默认有个默认模板风格目录default。
-         添加新的模板风格可在template下面新建模板目录，然后其中的文件可有选择性的复制default下的，如果某个模板文件没有复制过来，框架会使用default模板的。
-         如何在程序中动态切换默认风格呢？比如切换成orange风格，可以如下代码切换：
-<pre class="brush: php;">Ocara::setConfig('TEMPLATE.default', 'orange');</pre>         这样，在显示模板时框架会先调用orange风格目录中的模板文件，如果该文件不存在时才会调用默认风格目录default中的模板文件。
-         如果当前控制器目录要切换风格，只需使用setTemplate()方法，格式如下：
+         在很多的开源或商业PHP系统中，一般会提供多种网站模板风格，如discuz、phpcms等。
+         本框架也提供了模板格。在template目录中，默认有个默认模板风格目录default。
+         添加新的模板风格可在template下面新建模板目录，然后有选择性的复制default下的文件，如果某个文件没有复制过来，框架会使用default目录中的。
+         如何在程序中动态切换默认风格呢？
+         比如全局都切换成orange风格，可以如下代码切换：
+<pre class="brush: php;">Ocara::setConfig('TEMPLATE.default', 'orange');</pre>
+         如果当前模块或控制器目录要切换风格，只需使用setTemplate()方法，格式如下：
                 <span class="STYLE1">setTemplate(dir)</span>
 <table>
 <tr class="head">
@@ -42,12 +43,12 @@
 	</tr>
 	<tr>
 		<td>dir</td>
-		<td>必需。模板目录。</td>
+		<td>必需。模板风格目录。</td>
 	</tr>
 </table>
          实例如下：
 <pre class="brush: php;">
-class ListAction extends UserController
+class ListAction extends Controller
 {
      protected function _action()
      {
@@ -64,9 +65,9 @@ class ListAction extends UserController
          不与控制器动作同名的模板文件，直接手动新建即可。
 
 <strong>4、模板如何打印输出 </strong>
-      通常，控制器动作默认使用与其同名的模板文件，如果文件存在，Ocara会通过display()方法自动将其打印输出。
-      如果我们只是想输出不同名的模板文件，则使用控制器动作的display()方法切换即可，格式如下：
-            <span class="STYLE1">display([file, vars])</span>  
+      通常，控制器动作默认使用与其同名的模板文件，如果文件存在自动将其打印输出。
+      如果我们只是想输出不同名的模板文件，则使用控制器动作的render()方法切换即可，格式如下：
+            <span class="STYLE1">render([file, vars])</span>
       参数说明：
 </pre>
 <table>
@@ -90,22 +91,22 @@ class ListAction extends UserController
 <pre>
       实例如下：
       （1）输出当前动作目录下的test.php模板
-<pre class="brush: php;">$this-&gt;display('test'); </pre>
+<pre class="brush: php;">$this->render('test'); </pre>
       （2）输出当前动作目录下的test目录的test1.php模板
-<pre class="brush: php;">$this-&gt;display('test/test1.php'); </pre>
+<pre class="brush: php;">$this->render('test/test1.php'); </pre>
       （3）输出admin模块item控制器create动作模板目录下的test3模板文件
-<pre class="brush: php;">$this-&gt;display('/admin/item/create/test3'); </pre>
+<pre class="brush: php;">$this->render('/admin/item/create/test3'); </pre>
 
 <strong>5、模板中如何调用View的函数</strong>
 （1）使用PHP原生输出模板时
-      直接使用$this调用View的方法即可。
+      直接使用$this调用即可。
       比如，我们要加载模板片段head.php，假设用的是default默认风格，则该文件是view/templdate/default/part/head.php。
       调用方法如下所示：
-<pre class="brush: php;">&lt;div&gt;&lt;?php $this-&gt;showPart('head');?&gt;&lt;/div&gt;</pre>
+<pre class="brush: php;">&lt;div&gt;&lt;?php $this->showPart('head');?&gt;&lt;/div&gt;</pre>
 （2）使用模板引擎时
-      要使用模板变量$View调用View的方法。
+      要使用模板变量$View调用。
       比如我们使用smarty模板引擎时，则调用如下：
-<pre class="brush: php;">&lt;div&gt;&lt;{$View-&gt;showPart('head')}&gt;&lt;/div&gt;</pre>
+<pre class="brush: php;">&lt;div&gt;&lt;{$View->showPart('head')}&gt;&lt;/div&gt;</pre>
 
 <strong>6、模板文件的嵌套</strong>
       有时候在某个模板文件中，我们要嵌套使用别的模板文件，要使用View的showTpl()方法，格式如下：
@@ -126,8 +127,8 @@ class ListAction extends UserController
       <strong>实例如下：</strong>
          比如要调用user控制器的login动作模板。
          PHP原生模板调用：
-<pre class="brush: php;">$this-&gt;showTpl('/user/login');</pre>         smarty模板调用：
-<pre class="brush: php;">&lt;{$View-&gt;showTpl('/user/login')}&gt;</pre>
+<pre class="brush: php;">$this->showTpl('/user/login');</pre>         smarty模板调用：
+<pre class="brush: php;">&lt;{$View->showTpl('/user/login')}&gt;</pre>
 </pre>
 </body>
 </html>

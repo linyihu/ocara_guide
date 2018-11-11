@@ -31,13 +31,13 @@
               where()的条件为数组时，数组元素值会进行安全过滤，
               然而以下情形中，可能不希望进行过滤：
 <pre class="brush: php;">$where = array(
-    'email' =&gt; '123update@163.com'
+    'email' => '123update@163.com'
 );
 $data = array(
-   'sex' =&gt; '0'
+   'sex' => '0'
 );
-$userModel= new \Model\User();
-$userModel-&gt;update($where, $data, 1);
+$userModel= new \app\dal\models\User();
+$userModel->where($where)->update($data, 2);
 </pre>
               输出的SQL语句为：
                       UPDATE `user` SET `sex` = '0' WHERE `email` = <span class="STYLE1">'123@163.com'</span>;     
@@ -45,13 +45,13 @@ $userModel-&gt;update($where, $data, 1);
               此时，如果使用了ocSql()就不会进行sql安全过滤：
                 <pre class="brush: php;">
 $where = array(
-   'email' =&gt; ocSql('123update@163.com') 
+   'email' => ocSql('123update@163.com')
 );
 $data = array(
-   'sex' =&gt; '0'
+   'sex' => '0'
 );
-$userModel= new \Model\User();
-$userModel-&gt;update($where, $data, 1);
+$userModel= new \app\dal\models\User();
+$userModel->where($where)->update($data, 2);
                 </pre>
               输出的SQL语句为：
                      UPDATE `user` SET `sex` = '0' WHERE `email` = <span class="STYLE2">'123update@163.com'</span>; 
@@ -59,12 +59,12 @@ $userModel-&gt;update($where, $data, 1);
        <strong>（2）保存数据时</strong>
                    <pre class="brush: php;">
 $data = array(
-    'user_name' =&gt; 1,
-    'email' =&gt; '123update@163.com', 
-    'create_time' =&gt; 'now()'
+    'user_name' => 1,
+    'email' => '123update@163.com', 
+    'create_time' => 'now()'
 );
-$userModel= new \Model\User();
-$userModel-&gt;create($data);
+$userModel= new \app\dal\models\User();
+$userModel->create($data);
                    </pre>
               会生成如下的SQL语句（调试SQL语句，请将上面的create($data)改成create($data, 1)）：
                      INSERT INTO `user`(`user_name`,`email`, `create_time`) VALUES('1', <span class="STYLE1">'123@163.com'</span>,<span class="STYLE1"> 'now()'</span>)
@@ -73,12 +73,12 @@ $userModel-&gt;create($data);
               所以，其他类型的数据库如果是这样的SQL就会出错了，怎么办呢？只要对其执行ocSql()函数就可以了，如下所示：
              <pre class="brush: php;">
 $data = array(
-    'user_name' =&gt; 1,
-    'email' =&gt; ocSql('123update@163.com'), 
-    'create_time' =&gt; ocSql('now()')
+    'user_name' => 1,
+    'email' => ocSql('123update@163.com'), 
+    'create_time' => ocSql('now()')
 );
-$userModel= new \Model\User();
-$userModel-&gt;create($data);
+$userModel= new \app\dal\models\User();
+$userModel->create($data);
              </pre>
                这样，就会生成以下语句：
                        INSERT INTO `user`(`user_name`,`email`, `create_time`) VALUES('1', <span class="STYLE2">'123update@163.com'</span>, <span class="STYLE2">now()</span>)

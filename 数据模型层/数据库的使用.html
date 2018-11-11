@@ -28,7 +28,7 @@
 
 <strong>1、数据库的新建</strong>
       数据库都是通过基类Database来实例化新建和获取的，仅在第一次调用时新建。
-      调用的是\Ocara\Database的create()方法，格式如下:
+      调用的是\Ocara\Core\DatabaseFactory的create()方法，格式如下:
               <span class="STYLE1">create([server])</span>
       参数说明：
 </pre>
@@ -44,14 +44,14 @@
 </table>
 <pre>
       实例如下；
-<pre class="brush: php;">$dbObj = \Ocara\Database::create('bbs');
+<pre class="brush: php;">$dbObj = \Ocara\Core\DatabaseFactory::create('bbs');
 </pre>
 
 <strong>2、数据库的连接</strong>
       新建数据模型Model时，不会立即连接数据库。在查询或操作时才会自动建立连接，而且一个进程中只连接一次。
       如果新建了Model后，想立即连接数据库，可以使用Model的connect()方法手动连接。
       实例如下；
-<pre class="brush: php;">$userModel= new \Model\User();
+<pre class="brush: php;">$userModel= new \app\dal\models\User();
 $userModel->connect();
 </pre>
 

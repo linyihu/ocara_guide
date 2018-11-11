@@ -23,33 +23,35 @@
       框架本身集成了Smarty模板引擎，如果想使用自己的模板引警，需要安装好模板，然后新建模板引擎扩展类，再配置模板引擎以使用。
 	  
 <strong>1、新建模板引擎扩展</strong>
-      新建模板引擎扩展类，要继承服务基类ServiceBase和模板接口Template。
+      新建模板引擎扩展类，要继承服务基类Ocara\Core\ServiceBase和模板接口Ocara\Service\Interfaces\Template。
       新的模板引擎类中必须有以下2个方法：
-             （1）setVar
-             （2）getVar
+             （1）set
+             （2）get
       还可以有以下方法：
              （1）registerObject
              （2）registerPlugin
-      框架的Smarty模板类是Smarty，可以看看其代码，文件在框架目录ocara/system/service/library/Smarty.php。
+      框架默认的Smarty模板类是Ocara\Service\Smarty，可以看看其代码，文件在框架目录ocara\system\library\Service\Smarty.php。
       
 <strong>2、模板引擎要使用的配置</strong>
       不同的模板可以有不同的配置，这些配置都在模板引擎类中使用。如下是Smarty模板引擎的配置：
 <pre class="brush: php;">
+
 /*
- * smarty配置
+ * Smarty模板配置
  * 可自由选择是否使用smarty模板
  */
-$CONF['SMARTY'] = array(
-	'use_cache'		=> 1, 		//是否使用缓存
-	'left_sign'		=> '<{',	//模板中左标记
-	'right_sign'	=> '}>'		//模板中右标记
-);
+'SMARTY' => array(
+    'use_cache'	 => 0, //是否使用缓存
+    'left_sign'	 => '<{', //模板中左标记
+    'right_sign' => '}>', //模板中右标记
+),
+
 </pre>
 
 <strong>3、如何开启模板引警</strong>
-      使用新的模板引擎，要配置conf/develop.php中的“TEMPLATE”选项的engine和file_type选。
+      使用新的模板引擎，要配置develop.php中的“TEMPLATE”选项的engine和file_type选。
       其中，
-            engine是模板引擎类名，如果是框架的Smarty，要配置成Smarty；
+            engine是模板引擎类名，如果是框架的Smarty，要配置成Ocara\Service\Smarty；
             file_type是模板文件扩展名。
       若使用框架集成的Smarty模板，配置如下：
 <pre class="brush: php;">

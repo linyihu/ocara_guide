@@ -79,10 +79,10 @@ function deleteRecord(delId)
 </pre>
         然后，在布局文件admin.php中调用jquery-1.8.3.js和base.js文件，如下：
 <pre class="brush: php;">
-$this-&gt;load(array('jquery-1.8.3.min.js', 'base.js'));
+$this->load(array('jquery-1.8.3.min.js', 'base.js'));
 </pre>        在index动作的模板文件中调用index.js，如下：
 <pre class="brush: php;">
-$this-&gt;load(array('admin/guestbook/index.js'));
+$this->load(array('admin/guestbook/index.js'));
 </pre>
 <strong>2、在删除链接添加调用函数</strong>
       上节中已经添加了删除链接，也添加了函数调用。

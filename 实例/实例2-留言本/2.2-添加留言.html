@@ -37,7 +37,7 @@ class IndexAction extends GuestbookController
 <strong>2、 新建表单HTML</strong> 
        在模板文件中添加HTML代码，使用$form_edit调用表单对象。
 <pre class="brush: php;">
-&lt;?php echo $form_edit-&gt;begin();?&gt;
+&lt;?php echo $form_edit->begin();?&gt;
 &lt;table width=&quot;798&quot; border=&quot;0&quot;&gt;
 &lt;tr&gt;
 &lt;td height=&quot;42&quot; colspan=&quot;2&quot;&gt;请留言：&lt;/td&gt;
@@ -45,13 +45,13 @@ class IndexAction extends GuestbookController
 &lt;tr&gt;
 &lt;td width=&quot;119&quot; height=&quot;46&quot;&gt;您的联系方式：&lt;/td&gt;
 &lt;td width=&quot;669&quot;&gt;&lt;label&gt;
-&lt;?php&#32;echo&#32;$form_edit-&gt;text(telphone);?&gt;
+&lt;?php&#32;echo&#32;$form_edit->text(telphone);?&gt;
 &lt;/label&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td height=&quot;48&quot;&gt;留言：&lt;/td&gt;
 &lt;td&gt;&lt;label&gt;
-&lt;?php&#32;echo&#32;$form_edit-&gt;textarea('content');?&gt;
+&lt;?php&#32;echo&#32;$form_edit->textarea('content');?&gt;
 &lt;/label&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
@@ -62,7 +62,7 @@ class IndexAction extends GuestbookController
 &lt;/label&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
-&lt;?php echo $form_edit-&gt;end();?&gt;
+&lt;?php echo $form_edit->end();?&gt;
 </pre>
 <strong>3、提交保存</strong>
       在indexAction中添加_submit()方法，保存提交来的数据。代码如下：
@@ -76,8 +76,8 @@ class IndexAction extends GuestbookController
 
     public function _form()
     {
-        $this-&gt;form('form_edit')
-             -&gt;init(ocUrl('/guestbook/index'));
+        $this->form('form_edit')
+             ->init(ocUrl('/guestbook/index'));
     }
 
     public function _display()

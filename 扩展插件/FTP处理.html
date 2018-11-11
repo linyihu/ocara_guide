@@ -56,7 +56,7 @@
  <pre class="brush: php;">
 $ftp = new Ftp();
  
-$ftp-&gt;connect('85.134.120.16', 'myhost001', '123456@dlyg');
+$ftp->connect('85.134.120.16', 'myhost001', '123456@dlyg');
 
 </pre>
 <pre><strong>2、createDir(dirName, mode)  </strong>
@@ -78,7 +78,7 @@ $ftp-&gt;connect('85.134.120.16', 'myhost001', '123456@dlyg');
 	</tr>
 </table> 
    <p>实例如下：</p>
-      <pre class="brush: php;"> echo $ftp-&gt;createDir('test'); //输出/test
+      <pre class="brush: php;"> echo $ftp->createDir('test'); //输出/test
 
 </pre>
       <pre><strong>3、listDir(dirPath)</strong>
@@ -97,11 +97,11 @@ $ftp-&gt;connect('85.134.120.16', 'myhost001', '123456@dlyg');
 </table> 
  <p>实例如下：</p>
  <p>在test下面新建一个文件和一个目录，然后列出：</p>
-<pre class="brush: php;"> $ftp-&gt;createDir('test/test2');
-$ftp-&gt;upload(ocPath('data', 'test.txt'), 'test/1.txt');
-$ftp-&gt;upload(ocPath('data', 'test.txt'), 'test/test2/2.txt');
+<pre class="brush: php;"> $ftp->createDir('test/test2');
+$ftp->upload(ocPath('data', 'test.txt'), 'test/1.txt');
+$ftp->upload(ocPath('data', 'test.txt'), 'test/test2/2.txt');
 
-ocPrint($ftp-&gt;listDir('test')); //输出：Array ( [0] =&gt; test/1.txt [1] =&gt; test/test2 )
+ocPrint($ftp->listDir('test')); //输出：Array ( [0] => test/1.txt [1] => test/test2 )
 
 </pre>
 <pre><strong>4、chDir(path)</strong>
@@ -121,9 +121,9 @@ ocPrint($ftp-&gt;listDir('test')); //输出：Array ( [0] =&gt; test/1.txt [1] =
 <p>实例如下：</p>
 <p> 改变当前目录到test目录：
 </p>
-<pre class="brush: php;"> $ftp-&gt;chDir('test');
+<pre class="brush: php;"> $ftp->chDir('test');
 
-ocPrint($ftp-&gt;listDir('test')); //输出：Array ( [0] =&gt; /test/1.php [1] =&gt; /test/test2 )
+ocPrint($ftp->listDir('test')); //输出：Array ( [0] => /test/1.php [1] => /test/test2 )
 
 </pre>
 <pre><strong>5、checkDir(path)</strong>
@@ -141,7 +141,7 @@ ocPrint($ftp-&gt;listDir('test')); //输出：Array ( [0] =&gt; /test/1.php [1] 
 	</tr>
 </table> 
   <p>实例如下：</p>
-  <pre class="brush: php;">echo $ftp-&gt;checkDir('test/test4'); //输出true 
+  <pre class="brush: php;">echo $ftp->checkDir('test/test4'); //输出true
 
 </pre>
   <pre><strong>6、delDir(dirName, delRecursive, path)</strong>
@@ -168,7 +168,7 @@ ocPrint($ftp-&gt;listDir('test')); //输出：Array ( [0] =&gt; /test/1.php [1] 
 </table> 
   <p>实例如下：</p>
   <p> 将上例中的test目录删除，如下： </p>
-  <pre class="brush: php;">  echo $ftp-&gt;delDir('test', true); //输出true，递归删除了test目录
+  <pre class="brush: php;">  echo $ftp->delDir('test', true); //输出true，递归删除了test目录
 
 </pre>
   <pre><strong>7、upload(localFile, remoteFile, resumeGet, mode)</strong>
@@ -203,9 +203,9 @@ ocPrint($ftp-&gt;listDir('test')); //输出：Array ( [0] =&gt; /test/1.php [1] 
 </table>   
   <p>实例如下：</p>
   <p>假设本地required/data/ftp_test.txt存在，如下上传到远程FTP目录的test下面，保存为ftp_upload.txt： </p>
-  <pre class="brush: php;">$ftp-&gt;createDir('test');
+  <pre class="brush: php;">$ftp->createDir('test');
 
-$ftp-&gt;upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
+$ftp->upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 
 </pre>
     <pre><strong>8、download(remoteFile, localFile, resumeGet, mode)</strong>
@@ -240,7 +240,7 @@ $ftp-&gt;upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 </table> 
     <p>实例如下：</p>
     <p>把上面upload()实例中的ftp_upload.txt下载下来保存为/required/data/ftp_download.txt： </p>
-    <pre class="brush: php;">$ftp-&gt;download('test/ftp_upload.txt', ocPath('data', 'ftp_download.txt')); //输出true
+    <pre class="brush: php;">$ftp->download('test/ftp_upload.txt', ocPath('data', 'ftp_download.txt')); //输出true
 
 </pre>
      <pre><strong>9、delFile(path)</strong>
@@ -259,14 +259,14 @@ $ftp-&gt;upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 </table> 
      <p>实例如下：</p>
      <p>删除上例中的ftp_upload.txt，如下： </p>
-     <pre class="brush: php;">echo $ftp-&gt;delFile('test/ftp_upload.txt'); //输出true
+     <pre class="brush: php;">echo $ftp->delFile('test/ftp_upload.txt'); //输出true
 
 </pre>
 <pre><strong>10、 getPwd()</strong>
     获取当前所在FTP目录。
 </pre>
   <p>实例如下：</p>
-<pre class="brush: php;"> echo $ftp-&gt;getPwd(); //输出当前目录，本教程实例是在根目录，输出“/”
+<pre class="brush: php;"> echo $ftp->getPwd(); //输出当前目录，本教程实例是在根目录，输出“/”
 
 </pre>
 <pre><strong>11、getSize(remoteFile)</strong>
@@ -284,7 +284,7 @@ $ftp-&gt;upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 	</tr>
 </table> 
 <p>实例如下：</p>
-<pre class="brush: php;">echo $ftp-&gt;getSize('test/ftp_upload.txt'); //结果输出了文件大小的数字 
+<pre class="brush: php;">echo $ftp->getSize('test/ftp_upload.txt'); //结果输出了文件大小的数字
 </pre>
 
 <pre><strong>12、rename(oldname, newname)</strong>
@@ -306,7 +306,7 @@ $ftp-&gt;upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 	  <td>新文件名</td>
     </tr>
 </table><p>实例如下：</p>
-<pre class="brush: php;">echo $ftp-&gt;rename('test/ftp_upload.txt', 'test/ftp_test.txt'); //结果为true，查看可知道该远程文件重命名成功
+<pre class="brush: php;">echo $ftp->rename('test/ftp_upload.txt', 'test/ftp_test.txt'); //结果为true，查看可知道该远程文件重命名成功
 </pre>
 <pre><strong>13、execute(command)</strong>
      执行命令。
@@ -328,10 +328,10 @@ $ftp-&gt;upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 </pre>
 <p>实例如下：</p>
 <pre class="brush: php;">$ftp = new Ftp();
-$ftp-&gt;connect('61.164.140.166', 'host19469562', '456789linyihu');
-echo $ftp-&gt;getPwd(); //输出“/”
-$ftp-&gt;close();
-echo $ftp-&gt;getPwd(); //错误提示：ftp_pwd(): 32 is not a valid FTP Buffer resource（说明已经关闭，无法再使用FTP服务）
+$ftp->connect('61.164.140.166', 'host19469562', '456789linyihu');
+echo $ftp->getPwd(); //输出“/”
+$ftp->close();
+echo $ftp->getPwd(); //错误提示：ftp_pwd(): 32 is not a valid FTP Buffer resource（说明已经关闭，无法再使用FTP服务）
 </pre>
 </div>
 </body>

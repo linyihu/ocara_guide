@@ -92,7 +92,7 @@
                 $class = '\Model\\' . $controller;
           		 $model = new $class();
                  $fields = implode(',', $params);
-                 return $model-&gt;fields($fields)-&gt;getAll();
+                 return $model->fields($fields)->getAll();
             } elseif ($action == 'read') {
                  //read动作的代码
             }
@@ -113,7 +113,7 @@
                  $class = '\Model\\' . $controller;
                  $model = new $class();
                  //字段名处理
-                 foreach ($params as $key =&gt; $field) {
+                 foreach ($params as $key => $field) {
                        if ($field == 'fid') {
                              $params[$key] = 'forum_id AS fid';
                        }
