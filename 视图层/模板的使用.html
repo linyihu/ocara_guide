@@ -22,15 +22,15 @@
 
 <strong>1、什么是模板</strong>
       在MVC中，所谓的模板，是视图层的实现，具体的一般是HTML页面，其中HTML中嵌入PHP代码，或者嵌入模板引擎的代码。
-      每个控制器动作都可以拥有自己的同名模板文件，如果文件存在的话，就会输出打印，除非在输出前停止代码执行；<strong>如果不存在，不会输出内容，也
-不会提示出错</strong>。
+      每个控制器动作都可以拥有自己的同名模板文件，如果文件存在的话就会输出打印，否则不会输出内容。
 
 <strong>2、模板文件放在哪里?</strong>
 （1）模板目录
-         模板文件是视图层View的实现，放在application/view/template目录中，该template为模板文件的最高级目录。 
+         模板文件是视图层View的实现，放在每个模块目录的view/风格名/template目录中。
 （2）模板风格的多样化
-        在很多的开源或商业PHP系统中，一般会提供多种网站模板风格，如discuz、phpcms等。本框架也提供了。
-         在template目录中，默认有个默认模板风格目录default，如果想添加新的模板风格可以在template目录中添加风格目录。
+         在很多的开源或商业PHP系统中，一般会提供多种网站模板风格，如discuz、phpcms等。本框架也提供了。
+         在template目录中，默认有个默认模板风格目录default。
+         添加新的模板风格可在template下面新建模板目录，然后其中的文件可有选择性的复制default下的，如果某个模板文件没有复制过来，框架会使用default模板的。
          如何在程序中动态切换默认风格呢？比如切换成orange风格，可以如下代码切换：
 <pre class="brush: php;">Ocara::setConfig('TEMPLATE.default', 'orange');</pre>         这样，在显示模板时框架会先调用orange风格目录中的模板文件，如果该文件不存在时才会调用默认风格目录default中的模板文件。
          如果当前控制器目录要切换风格，只需使用setTemplate()方法，格式如下：

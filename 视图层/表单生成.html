@@ -56,7 +56,7 @@
 					'onchange' => 'reurn validateForm(this)'
 				)
 			)
-		    ->model('\Model\Item', 'item');  //指定表单验证规则，item是别名
+		    ->model('app\dal\models\Item', 'item');  //指定表单验证规则，item是别名
 	}
 	
 	//这里写页面显示前的逻辑...
@@ -175,7 +175,7 @@ $this-&gt;form('form_edit')-&gt;init($action, $attributes);
 			)
 		)
 		->upload()  //让表单具有上传文件的功能
-		->model('\Model\Item', 'item');
+		->model('app\dal\models\Item', 'item');
 }</pre>
 
 5、设置是否验证表单
@@ -252,7 +252,7 @@ class CreateAction extends Controller
 	{
 		$this->form('form_create')
 			 ->init(ocUrl($this->getRoute()))
-	         ->model('\Model\Item', 'item')
+	         ->model('app\dal\models\Item', 'item')
 			 ->validateForm(false); //设置不验证该表单
 	}
 	
@@ -263,7 +263,7 @@ class CreateAction extends Controller
 	//表单提交后的处理
 	public function _submit()
 	{
-		$itemModel = $this->model('\Model\Item');
+		$itemModel = $this->model('app\dal\models\Item');
 		$item->data()->save();  //自动获取数据并添加到数据库
 	}
 }
@@ -287,7 +287,7 @@ class CreateAction extends Controller
 	//表单提交后的处理
 	public function _submit()
 	{
-		$itemModel = $this->model('\Model\Item');
+		$itemModel = $this->model('app\dal\models\Item');
 		$item->data()->save();
 	}
 

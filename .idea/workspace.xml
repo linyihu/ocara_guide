@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9af443e-855c-4151-81f5-e33243d6efbc" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/控制器层/异常错误处理.html" beforeDir="false" afterPath="$PROJECT_DIR$/控制器层/异常错误处理.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/表单令牌.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/表单令牌.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/视图层/模板的使用.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/模板的使用.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/视图层/表单生成.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/表单生成.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/视图层/表单验证.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/表单验证.html" afterDir="false" />
     </list>
     <ignored path="ocara_guide.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,30 +26,30 @@
       <usages-collector id="statistics.lifecycle.project">
         <counts>
           <entry key="project.closed" value="5" />
-          <entry key="project.open.time.1" value="4" />
+          <entry key="project.open.time.1" value="5" />
           <entry key="project.open.time.88" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="6" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="html" value="37" />
+          <entry key="html" value="39" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="37" />
+          <entry key="HTML" value="39" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="6492" />
+          <entry key="html" value="6663" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="6492" />
+          <entry key="HTML" value="6663" />
         </counts>
       </usages-collector>
     </session>
@@ -60,13 +60,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/视图层/表单生成.html">
+        <entry file="file://$PROJECT_DIR$/视图层/模板的使用.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="546">
-              <caret line="420" column="81" lean-forward="true" selection-start-line="420" selection-start-column="81" selection-end-line="420" selection-end-column="81" />
-              <folding>
-                <element signature="e#10874#10878#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="380">
+              <caret line="32" column="78" selection-start-line="32" selection-start-column="78" selection-end-line="32" selection-end-column="78" />
             </state>
           </provider>
         </entry>
@@ -78,9 +75,11 @@
       <find>exists</find>
       <find>Base::$container</find>
       <find>如果要修改RESTFUL路由</find>
+      <find>\Model\Item</find>
     </findStrings>
     <replaceStrings>
       <replace>ocService()</replace>
+      <replace>app\dal\models\Item</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -118,6 +117,8 @@
         <option value="$PROJECT_DIR$/控制器层/异常错误处理.html" />
         <option value="$PROJECT_DIR$/视图层/表单令牌.html" />
         <option value="$PROJECT_DIR$/视图层/表单生成.html" />
+        <option value="$PROJECT_DIR$/视图层/表单验证.html" />
+        <option value="$PROJECT_DIR$/视图层/模板的使用.html" />
       </list>
     </option>
   </component>
@@ -214,17 +215,18 @@
       <workItem from="1541776194910" duration="8668000" />
       <workItem from="1541822522055" duration="3471000" />
       <workItem from="1541837216219" duration="8333000" />
+      <workItem from="1541906199205" duration="2009000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38205000" />
+    <option name="totallyTimeSpent" value="40214000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19420601" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19688842" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -514,11 +516,46 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/视图层/表单生成.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="420" column="81" lean-forward="true" selection-start-line="420" selection-start-column="81" selection-end-line="420" selection-end-column="81" />
+        <state relative-caret-position="-1323">
+          <caret line="178" column="7" lean-forward="true" selection-start-line="178" selection-start-column="7" selection-end-line="178" selection-end-column="7" />
           <folding>
-            <element signature="e#10874#10878#0" expanded="true" />
+            <element signature="e#4986#4990#0" expanded="true" />
+            <element signature="e#4994#4998#0" expanded="true" />
+            <element signature="e#5078#5082#0" expanded="true" />
+            <element signature="e#5086#5090#0" expanded="true" />
+            <element signature="e#5105#5109#0" expanded="true" />
+            <element signature="e#5113#5117#0" expanded="true" />
+            <element signature="e#5228#5232#0" expanded="true" />
+            <element signature="e#5253#5257#0" expanded="true" />
+            <element signature="e#5266#5270#0" expanded="true" />
+            <element signature="e#5352#5356#0" expanded="true" />
+            <element signature="e#5369#5373#0" expanded="true" />
+            <element signature="e#5381#5385#0" expanded="true" />
+            <element signature="e#5456#5460#0" expanded="true" />
+            <element signature="e#5462#5466#0" expanded="true" />
+            <element signature="e#5498#5502#0" expanded="true" />
+            <element signature="e#5514#5518#0" expanded="true" />
+            <element signature="e#5526#5530#0" expanded="true" />
+            <element signature="e#5591#5595#0" expanded="true" />
+            <element signature="e#5600#5604#0" expanded="true" />
+            <element signature="e#5707#5711#0" expanded="true" />
+            <element signature="e#5732#5736#0" expanded="true" />
+            <element signature="e#5743#5747#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/视图层/表单验证.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="28" column="27" lean-forward="true" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/视图层/模板的使用.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="32" column="78" selection-start-line="32" selection-start-column="78" selection-end-line="32" selection-end-column="78" />
         </state>
       </provider>
     </entry>
