@@ -5,37 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9af443e-855c-4151-81f5-e33243d6efbc" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/数据模型层/数据库配置.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/实例/实例2-留言本/2.2-添加留言.html" beforeDir="false" afterPath="$PROJECT_DIR$/实例/实例2-留言本/2.2-添加留言.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/实例/实例2-留言本/2.3-后台管理留言.html" beforeDir="false" afterPath="$PROJECT_DIR$/实例/实例2-留言本/2.3-后台管理留言.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/实例/实例2-留言本/2.4-留言删除.html" beforeDir="false" afterPath="$PROJECT_DIR$/实例/实例2-留言本/2.4-留言删除.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/扩展插件/Excel生成.html" beforeDir="false" afterPath="$PROJECT_DIR$/扩展插件/Excel生成.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/扩展插件/FTP处理.html" beforeDir="false" afterPath="$PROJECT_DIR$/扩展插件/FTP处理.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/控制器层/静态生成.html" beforeDir="false" afterPath="$PROJECT_DIR$/控制器层/静态生成.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/ORM模型的使用.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/ORM模型的使用.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/SQL安全过滤.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/SQL安全过滤.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/SQL语句生成.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/SQL语句生成.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/事务处理.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/事务处理.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/关联模型操作.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/关联模型操作.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/分库分表.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/分库分表.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/如何使用原生的sql语句.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/如何使用原生的sql语句.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/字段别名.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/字段别名.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/数据库操作.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/数据库操作.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/数据模型层/数据库查询.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/数据库查询.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/数据库的使用.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/数据库的使用.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/数据库设置.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/数据模型的使用.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/数据模型的使用.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据模型层/查询缓存.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/查询缓存.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/模板助手.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/模板助手.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/模板区块.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/模板区块.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/模板引擎.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/模板引擎.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/模板引擎扩展.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/模板引擎扩展.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/模板的使用.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/模板的使用.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/表单令牌.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/表单令牌.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/表单生成.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/表单生成.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/表单验证.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/表单验证.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/视图层/页面布局.html" beforeDir="false" afterPath="$PROJECT_DIR$/视图层/页面布局.html" afterDir="false" />
     </list>
     <ignored path="ocara_guide.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -53,31 +24,35 @@
     <session id="-509931738">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="5" />
+          <entry key="project.closed" value="8" />
+          <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.1" value="5" />
+          <entry key="project.open.time.18" value="1" />
+          <entry key="project.open.time.22" value="1" />
+          <entry key="project.open.time.32" value="1" />
           <entry key="project.open.time.88" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="7" />
+          <entry key="project.opened" value="11" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="html" value="66" />
+          <entry key="html" value="67" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="66" />
+          <entry key="HTML" value="67" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="10484" />
+          <entry key="html" value="10699" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="10484" />
+          <entry key="HTML" value="10699" />
         </counts>
       </usages-collector>
     </session>
@@ -86,39 +61,12 @@
     <favorites_list name="ocara_guide" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+    <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/数据模型层/数据库配置.html">
+        <entry file="file://$PROJECT_DIR$/数据模型层/数据库查询.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="202" column="8" lean-forward="true" selection-start-line="202" selection-start-column="8" selection-end-line="202" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/数据模型层/数据库的使用.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="616">
-              <caret line="53" column="44" selection-start-line="53" selection-start-column="44" selection-end-line="53" selection-end-column="44" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/视图层/模板的使用.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="69" column="33" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="33" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/视图层/表单令牌.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="31" column="10" lean-forward="true" selection-start-line="31" selection-start-column="10" selection-end-line="31" selection-end-column="54" />
+            <state relative-caret-position="546">
+              <caret line="532" column="25" lean-forward="true" selection-start-line="532" selection-start-column="25" selection-end-line="532" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -207,12 +155,12 @@
         <option value="$PROJECT_DIR$/数据模型层/事务处理.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据库操作.html" />
         <option value="$PROJECT_DIR$/数据模型层/ORM模型的使用.html" />
-        <option value="$PROJECT_DIR$/数据模型层/数据库查询.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据模型的使用.html" />
         <option value="$PROJECT_DIR$/数据模型层/字段别名.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据库设置.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据库的使用.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据库配置.html" />
+        <option value="$PROJECT_DIR$/数据模型层/数据库查询.html" />
       </list>
     </option>
   </component>
@@ -227,9 +175,10 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="237" />
+    <option name="x" value="-8" />
+    <option name="y" value="41" />
     <option name="width" value="1692" />
-    <option name="height" value="1026" />
+    <option name="height" value="1011" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -304,18 +253,22 @@
       <workItem from="1541776194910" duration="8668000" />
       <workItem from="1541822522055" duration="3471000" />
       <workItem from="1541837216219" duration="8333000" />
-      <workItem from="1541906199205" duration="18338000" />
+      <workItem from="1541906199205" duration="18682000" />
+      <workItem from="1541935540324" duration="1275000" />
+      <workItem from="1542030855785" duration="2310000" />
+      <workItem from="1542122123771" duration="372000" />
+      <workItem from="1542126276426" duration="1170000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="56543000" />
+    <option name="totallyTimeSpent" value="62014000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19688842" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2081545" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -558,30 +511,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1323">
           <caret line="178" column="7" lean-forward="true" selection-start-line="178" selection-start-column="7" selection-end-line="178" selection-end-column="7" />
-          <folding>
-            <element signature="e#4986#4990#0" expanded="true" />
-            <element signature="e#4994#4998#0" expanded="true" />
-            <element signature="e#5078#5082#0" expanded="true" />
-            <element signature="e#5086#5090#0" expanded="true" />
-            <element signature="e#5105#5109#0" expanded="true" />
-            <element signature="e#5113#5117#0" expanded="true" />
-            <element signature="e#5228#5232#0" expanded="true" />
-            <element signature="e#5253#5257#0" expanded="true" />
-            <element signature="e#5266#5270#0" expanded="true" />
-            <element signature="e#5352#5356#0" expanded="true" />
-            <element signature="e#5369#5373#0" expanded="true" />
-            <element signature="e#5381#5385#0" expanded="true" />
-            <element signature="e#5456#5460#0" expanded="true" />
-            <element signature="e#5462#5466#0" expanded="true" />
-            <element signature="e#5498#5502#0" expanded="true" />
-            <element signature="e#5514#5518#0" expanded="true" />
-            <element signature="e#5526#5530#0" expanded="true" />
-            <element signature="e#5591#5595#0" expanded="true" />
-            <element signature="e#5600#5604#0" expanded="true" />
-            <element signature="e#5707#5711#0" expanded="true" />
-            <element signature="e#5732#5736#0" expanded="true" />
-            <element signature="e#5743#5747#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -638,9 +567,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="832">
           <caret line="271" selection-start-line="271" selection-end-line="271" />
-          <folding>
-            <element signature="e#5332#5336#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -686,13 +612,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/数据模型层/数据库查询.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="427" selection-start-line="427" selection-end-line="437" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/数据模型层/数据模型的使用.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-11">
@@ -707,31 +626,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/视图层/表单令牌.html">
+    <entry file="file://$PROJECT_DIR$/数据模型层/数据库配置.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="31" column="10" lean-forward="true" selection-start-line="31" selection-start-column="10" selection-end-line="31" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/视图层/模板的使用.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="69" column="33" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="33" />
+        <state relative-caret-position="673">
+          <caret line="207" lean-forward="true" selection-start-line="207" selection-end-line="207" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/数据模型层/数据库的使用.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="616">
+        <state relative-caret-position="1007">
           <caret line="53" column="44" selection-start-line="53" selection-start-column="44" selection-end-line="53" selection-end-column="44" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/数据模型层/数据库配置.html">
+    <entry file="file://$PROJECT_DIR$/视图层/模板的使用.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="202" column="8" lean-forward="true" selection-start-line="202" selection-start-column="8" selection-end-line="202" selection-end-column="8" />
+        <state relative-caret-position="1311">
+          <caret line="69" column="33" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/视图层/表单令牌.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="589">
+          <caret line="31" column="10" lean-forward="true" selection-start-line="31" selection-start-column="10" selection-end-line="31" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/数据模型层/数据库查询.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="546">
+          <caret line="532" column="25" lean-forward="true" selection-start-line="532" selection-start-column="25" selection-end-line="532" selection-end-column="25" />
         </state>
       </provider>
     </entry>

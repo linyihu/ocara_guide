@@ -518,6 +518,22 @@ $result = $model
 	->getAll();
 </pre>
 
+<strong>7、动态查询</strong>
+     使用静态方法<span class="STYLE1">findBy+字段名、findRowBy+字段、getAllBy+字段名、getRowBy+字段名</span>可以按照某个字段进行查询。
+<pre class="brush: php;">
+//根据status查询多行（返回模型实例数组）
+$result = User::findByStatus(2);
+
+//根据user_id查询一行（返回模型实例）
+$result = User::findRowByUserId(234);
+
+//根据status查询多行（返回二维记录数组）
+$result = User::getAllByStatus(2);
+
+//根据user_id查询一行（返回一维记录数组）
+$result = User::getRowByUserId(234);
+</pre>
+
 <strong>7、更多SQL查询语句的生成方法</strong>
      更多SQL语句生成函数，请点击进入<a href="SQL语句生成.html">SQL查询语句的生成</a>。
 </pre>
