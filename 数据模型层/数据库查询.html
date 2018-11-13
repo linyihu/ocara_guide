@@ -340,7 +340,24 @@ $result = $userModel->where($where)->limit(1)->getValue(('username');
 
 </pre>
 
-<strong>5、原生SQL查询</strong>
+
+<strong>5、动态查询</strong>
+     使用静态方法<span class="STYLE1">findBy+字段名、findRowBy+字段、getAllBy+字段名、getRowBy+字段名</span>可以按照某个字段进行查询。
+<pre class="brush: php;">
+//根据status查询多行（返回模型实例数组）
+$result = User::findByStatus(2);
+
+//根据user_id查询一行（返回模型实例）
+$result = User::findRowByUserId(234);
+
+//根据status查询多行（返回二维记录数组）
+$result = User::getAllByStatus(2);
+
+//根据user_id查询一行（返回一维记录数组）
+$result = User::getRowByUserId(234);
+</pre>
+
+<strong>6、原生SQL查询</strong>
          使用Model的query()方法可以按条件查询一条记录的某个字段的值：
                 <span class="STYLE1">query(sql, [debug])</span>
          成功时返回所有查询行的结果数组,每行结果是数组或者对象，如果没有查到，则返回false。
@@ -380,7 +397,7 @@ $userModel
 
 </pre>
 
-<strong>6、原生SQL查询一行</strong>
+<strong>7、原生SQL查询一行</strong>
          使用Model的queryRow()方法可以按条件查询一条记录的某个字段的值：
                 <span class="STYLE1">queryRow(sql, [debug])</span>
          成功时返回查询的那行数据关联数组或对象，如果没有查到，则返回false。
@@ -402,7 +419,7 @@ $userModel
 
 </pre>
 
-<strong>5、多表联接查询</strong>
+<strong>8、多表联接查询</strong>
      使用<span class="STYLE1">leftJoin()、rightJoin()或innerJoin()</span>分别进行左联接、右联接和全联接的查询。
 <pre class="brush: php;">
 //查询结果
@@ -417,7 +434,7 @@ $result = $userModel->innerJoin('threads','b','a.user_id=b.user_id')//相当于I
 </pre>
 
 
-<strong>6、合并查询（可分页）</strong>
+<strong>9、合并查询（可分页）</strong>
 	（1）合并查询函数
          使用union()和unionAll方法可以合并多个查询，只要主表上面使用该两个方法，传递Model对象为参数，格式如下:
                 <span class="STYLE1">union(model) ｜ unionAll(model)</span>
@@ -518,23 +535,8 @@ $result = $model
 	->getAll();
 </pre>
 
-<strong>7、动态查询</strong>
-     使用静态方法<span class="STYLE1">findBy+字段名、findRowBy+字段、getAllBy+字段名、getRowBy+字段名</span>可以按照某个字段进行查询。
-<pre class="brush: php;">
-//根据status查询多行（返回模型实例数组）
-$result = User::findByStatus(2);
 
-//根据user_id查询一行（返回模型实例）
-$result = User::findRowByUserId(234);
-
-//根据status查询多行（返回二维记录数组）
-$result = User::getAllByStatus(2);
-
-//根据user_id查询一行（返回一维记录数组）
-$result = User::getRowByUserId(234);
-</pre>
-
-<strong>7、更多SQL查询语句的生成方法</strong>
+<strong>10、更多SQL查询语句的生成方法</strong>
      更多SQL语句生成函数，请点击进入<a href="SQL语句生成.html">SQL查询语句的生成</a>。
 </pre>
 </body></html>
