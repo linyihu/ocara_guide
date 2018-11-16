@@ -4,9 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/控制器层/异常错误处理.html" line="109" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e9af443e-855c-4151-81f5-e33243d6efbc" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/数据模型层/数据库查询.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/数据库查询.html" afterDir="false" />
-    </list>
+    <list default="true" id="e9af443e-855c-4151-81f5-e33243d6efbc" name="Default" comment="" />
     <ignored path="ocara_guide.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -23,7 +21,7 @@
     <session id="-509931738">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="8" />
+          <entry key="project.closed" value="9" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.1" value="5" />
           <entry key="project.open.time.18" value="1" />
@@ -256,12 +254,12 @@
       <workItem from="1541935540324" duration="1275000" />
       <workItem from="1542030855785" duration="2310000" />
       <workItem from="1542122123771" duration="372000" />
-      <workItem from="1542126276426" duration="1393000" />
+      <workItem from="1542126276426" duration="1453000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="62237000" />
+    <option name="totallyTimeSpent" value="62297000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
