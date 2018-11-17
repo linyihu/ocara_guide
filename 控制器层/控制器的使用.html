@@ -9,8 +9,10 @@
 <script src="../treeview/lib/jquery.cookie.js" type="text/javascript"></script>
 <script src="../treeview/jquery.treeview.js" type="text/javascript"></script>
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
 <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
 <link rel="stylesheet" href="../treeview/jquery.treeview.css" />
+<link type="text/css" rel="stylesheet" href="../style/plugin.css" />
 <script type="text/javascript" src="../treeview/base.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -24,6 +26,11 @@ $(document).ready(function(){
   collapsed: false,
   unique: true
  });
+$("#browser_module").treeview({
+    persist: "location",
+    collapsed: false,
+    unique: true
+});
 });
 </script>
 <style type="text/css">
@@ -38,46 +45,47 @@ $(document).ready(function(){
 <body>
 <pre><h2>控制器（Controller）</h2>
 
-         控制器的总目录是application/controller。
-<table class="hint">
-	<tr class="head">
-		<td><h2>注意：</h2>控制器目录下面的任何目录和文件名称都必须是<strong style="text-decoration:underline">首字母大写，其他字符小写</strong>。</td>
-	</tr>
-</table>
-
 <pre>
  <strong>1、控制器介绍</strong>
      （1）控制器分类
-          本框架中，控制器可以分为普通控制器、Restful控制器等。
-          普通控制器，即平常的MVC控制器。
-          Restful控制器，是引入了Restful架构的控制器。请参考<a href="Restful控制器.html">Restful控制器</a>。
-     （2）控制器类型
-          本框架中，控制器可以分为根控制器、全局控制器和模块控制器三种。
+            控制器可以分为普通控制器、Restful控制器等。
+     （2）控制器继承
+            控制器由根控制器、模块和具体的控制器从上到下继承。
 </pre>
 <strong>2、根控制器</strong>
-     该控制器类为application/controller下面的Controller结尾的文件，如Controller.php、RestController.php。如下所示：
+     根控制器为library/Base下面的Controller结尾的文件，都继承自Ocara\Core\Controller类，所有的模块和全局控制器都要继承于它们。
+     其中：
+         （1）CommonController，平常的MVC控制器。
+         （2）RestController，Rest控制器。引入了Rest架构的控制器。请参考<a href="Restful控制器.html">Rest控制器</a>。
 </pre>
 <ul id="browser1" class="filetree">
-		<li><span class="folder">controller（controller目录）</span>
-			<ul>
-			    <li><span class="file">Controller.php（Controller类文件）</span></li>
-                <li><span class="file">RestController.php（RestController类文件）</span></li>
-			</ul>
-		</li>
+    <li><span class="folder">library</span>
+        <ul>
+            <li><span class="folder">Base</span>
+                <ul>
+                    <li><span class="file">CommonController.php（Controller类文件）</span></li>
+                    <li><span class="file">RestController.php（RestController类文件）</span></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
 </ul>
-<pre>         它们定义了根控制器，也可以自定义名称。所有的模块和全局控制器都要继承于它们。
-         Controller控制器继承于控制器基类\Ocara\Controller，RestController控制器继承于控制器基类\Ocara\RestController。
+<pre>
          如下代码：
 <pre class="brush: php;">
 /**
  * 普通的根控制器
  */
-class Controller extends Controller
+namespace Base;
+use Ocara\Core\Controller;
+
+class CommonController extends Controller
 {
-    //根控制器初始化函数
-	protected function _start()
+    /**
+     * 初始化代码
+     */
+	public function _start()
 	{
-		//这里写根控制器初始化代码
 	}
 }
 </pre>
@@ -85,139 +93,194 @@ class Controller extends Controller
 /**
  * Restful根控制器
  */
-class RestController extends RestController
+namespace Base;
+use Ocara\Core\Controller;
+
+class RestController extends Controller
 {
-    //根控制器初始化函数
-	protected function _start()
+    protected static $_providerType = 'rest'; //指定为Rest控制器类型
+
+	public function _start()
 	{
-		//这里写根控制器初始化代码
 	}
 }
 </pre>
-         其中，<span class="STYLE1">_start()</span>是根控制器的初始化函数，相当于它的__construct()。这里写根控制器的初始化代码。
+         其中，<span class="STYLE1">_start()</span>方法是初始化函数，不要用__construct()。这里写根控制器的初始化代码。
+                 <span class="STYLE1">$_providerType</span>属性用于指定控制器类型，默认为“Common”。
 
-<strong>3、全局控制器</strong>
-         一般的控制器，不属于任何模块，我们称为全局控制器。
-（1）控制器目录
-         全局控制器都在appalication/controller下面有一个与该控制器名称同名的目录，称为控制器目录。
-         目录结构如下实例：
-</pre>
- <ul id="browser2" class="filetree">
-		<li><span class="folder">controller（controller目录）</span>
-			<ul>
-				<li><span class="file">Controller.php（Controller类文件）</span></li>
-				<li><span class="folder">Home（home控制器目录）</span>
-				<ul>
-					<li><span class="file">Home.php（home控制器主文件）</span></li>
-					<li><span class="folder">Action（动作目录）</span>
+<strong>3、模块</strong>
+    （1）模块类
+           模块在Ocara中也视为一个控制器，所以模块下面的控制器都要继承相应的模块类。
+           整个应用全局也算是一个模块，它的子控制器都在application/controller目录，其中的Module文件就是模块类。
+           模块的子控制器都在application/modules/模块名/controller目录，其中也存在模块名+Module的模块类。
+           请参见<a href="模块的使用.html">模块的使用</a>
+<pre>
+    <ul id="browser_module" class="filetree">
+	<li><span class="folder">application</span>
+	<ul>
+		<li><span class="folder">modules</span>
+		<ul>
+		<li><span class="folder">admin（admin模块目录）</span>
+			  <ul>
+					<li><span class="folder">controller</span>
+						<ul>
+							<li><span class="folder">item（item控制器目录）</span></li>
+                            <li><span class="folder">order（order控制器目录）</span></li>
+                            <li><span class="folder">user（user控制器目录）</span></li>
+							<li><span class="file">AdminModule.php（模块文件）</span></li>
+						</ul>
+					</li>
+                  <li><span class="folder">privates</span>
                     <ul>
-                        <li><span class="file">Index.php（index动作文件）</span></li>
+                        <li><span class="folder">config（config控制器目录）</span></li>
+                        <li><span class="folder">lang（lang控制器目录）</span></li>
+                        <li><span class="folder">model（model控制器目录）</span></li>
+                        <li><span class="folder">entities（entities控制器目录）</span></li>
+                        <li><span class="folder">values（values控制器目录）</span></li>
                     </ul>
-                    </li>
-				</ul>
-				</li>
-                <li><span class="folder">Order（order控制器目录）</span></li>
-                <li><span class="folder">User（user控制器目录）</span></li>
-				<li><span class="folder">Admin（admin模块目录）</span></li>
-			</ul>
+                  </li>
+                  <li><span class="folder">services</span></li>
+                  <li><span class="folder">view</span>
+                    <ul>
+                        <li><span class="folder">defaults（默认模板风格目录）</span></li>
+                    </ul>
+                  </li>
+			  </ul>
 		</li>
-</ul>
-<pre>
-
-（2）控制器类文件
-         控制器文件定义了控制器类，并且必须继承于根控制器，默认是Controller。
-         （a）初始化方法_control()
-                  该方法是控制器的初始化函数，初始化时的代码都写在这里。控制器的所有动作执行前都会先执行这些代码。
-         （b）控制器动作方法
-                  控制器动作可以独立成类，也可以作为一个方法写在控制器中，方法名要以Action结尾，如IndexAction，请参考<a href="动作Action的使用.html">动作Action的使用</a>。
-         （c）实例
-                  home控制器类定义如下：
-<pre class="brush: php;">
-/**
- * 普通的控制器
- * 直接继承默认的控制器类Controller
- */
-//直接继承默认的控制器类Controller。
-class HomeController extends Controller
-{	
-    //控制器的初始化函数
-	protected function _control()
-	{					  
-        //这里填写home控制器的初始化代码，其下的所有动作都会执行
-    }
-}
+		</ul>
+	</ul>
+    </li>
+    </ul>
 </pre>
-    其中，<span class="STYLE1">_control()</span>是控制器的初始化函数，相当于它的__construct()。这里写控制器的初始化代码。
-
-（3）Action目录
-         存放控制器动作类文件，必须继承于当前控制器类。如果action代码太多，可以独立成类放在该目录。点击进入：<a href="动作Action的使用.html">动作Action的使用</a>。
-         例如，index动作类定义如下：
+           以下是模块类AdminModule类的示例：
 <pre class="brush: php;">
-/**
- * 动作类
- * 继承它的控制器类HomeController
- */
-class IndexAction extends HomeController
-{	
-    //action的初始化函数
-    protected function _action()
-	{	
-        //这里填写index动作的初始化代码
-    } 
-}
-</pre>
-</pre>
-<table class="hint" style="width:750px">
-  <tr class="head">
-		<td><h2>注：</h2>
-		控制器和动作类的继承思路是，控制器继承于根控制器，action继承于当前所属控制器类。</td>
-	</tr>
-</table>
-<pre>
+namespace app\modules\admin\controller;
 
-<strong>4、模块控制器</strong>
-    （1）什么是模块控制器
-           一个模块，在Ocara中也视为一个控制器，只不过它下面有很多子控制器，因此叫作模块控制器。
-           模块的定义，请参见<a href="模块的使用.html">模块的使用</a>
-           以下是示例：
-<pre class="brush: php;">
-/**
- * 模块（也是一种控制器）
- * 直接继承默认的控制器类Controller。
- */
-class AdminModule extends Controller
+use Base\CommonController;
+
+class AdminModule extends CommonController
 {
-    //模块的初始化函数
-	protected function _module()
-	{
-        //这里填写admin模块的初始化代码，其下的所有控制器都会执行
+    /**
+     * 初始化模块
+     */
+    public function _module()
+    {
+        $this->response->setHeader("Content-type: text/html; charset=utf-8");
+        $this->setLayout('admin'); //切换成admin.php布局文件
     }
 }
 </pre>
         其中，<span class="STYLE1">_module()</span>是模块的初始化函数，相当于它的__construct()。这里写模块的初始化代码。
 
- <strong>5、模块的子控制器</strong>
-     （1）什么是模块的子控制器
-              指属于某个模块的控制器。
-              与全局控制器不同的是，在appliation/controller中存在的是该模块目录，该模块的所有子控制器都放在该模块目录。
-              同时，模块目录中要有继承于根控制器的模块类，而其下面的所有子控制器类继承于该模块类。
-    （2）模块子控制器的使用
-             模块子控制器类的定义和目录结构与全局控制器一样，不同点在于，模块子控制器继承于当前模块控制器类。参见<a href="模块的使用.html">模块的使用</a>。
-             如下示例：
+<strong>4、具体的控制器</strong>
+         （1）全局控制器
+                  全局控制器都在appalication/controller目录，都继承于其中的Module模块类。
+                  目录结构如下实例：
+</pre>
+<ul id="browser2" class="filetree">
+    <li><span class="folder">controller（controller目录）</span>
+        <ul>
+            <li><span class="file">Controller.php（Controller类文件）</span></li>
+            <li><span class="folder">Home（home控制器目录）</span>
+                <ul>
+                    <li><span class="file">Home.php（home控制器主文件）</span></li>
+                    <li><span class="folder">Action（动作目录）</span>
+                        <ul>
+                            <li><span class="file">Index.php（index动作文件）</span></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><span class="folder">Order（order控制器目录）</span></li>
+            <li><span class="folder">User（user控制器目录）</span></li>
+            <li><span class="folder">Admin（admin模块目录）</span></li>
+        </ul>
+    </li>
+</ul>
+<pre>
+         （2）模块子控制器
+                  模块的子控制器都在application/modules/模块名/controller目录，都继承于其中的模块名+Module模块类，如AdminModule。
+
+         （3）控制器类文件
+                  控制器文件定义了控制器类，并且必须继承于根控制器，默认是Controller。
+                      （a）初始化方法_control()
+                                该方法是控制器的初始化函数，控制器的所有动作执行前执行。
+                      （b）控制器动作方法
+                                控制器动作可以独立成类，也可以直接写在控制器中，格式为动作名+Action，如indexAction，请参考<a href="动作Action的使用.html">动作Action的使用</a>。
+                      （c）实例
+                                home控制器类定义如下：
 <pre class="brush: php;">
 /**
- * 模块控制器
- * 继承所属的模块类AdminModule
+ * 普通的控制器
  */
-class UserController extends AdminModule
+namespace app\controller\home;
+
+use app\controller\Module;
+
+class HomeController extends Module
 {
-    //模块的初始化函数
+    //初始化函数
 	protected function _control()
 	{
-        //这里填写admin模块的初始化代码，其下的所有控制器都会执行
+        //这里填写home控制器的初始化代码，其下的所有动作都会执行
+    }
+
+    /**
+     * index动作
+     */
+    public function indexAction()
+    {
     }
 }
 </pre>
+                  其中，<span class="STYLE1">_control()</span>是控制器的初始化函数，不要用__construct()。
 
+         （4）动作目录（actions）
+                  存放控制器动作类文件，必须继承于当前控制器类。如果action代码太多或者业务多样，可以独立成类放在该目录。点击进入：<a href="动作Action的使用.html">动作Action的使用</a>。
+                  例如，index动作类定义如下：
+<pre class="brush: php;">
+/**
+ * 动作类
+ * 继承它的控制器类HomeController
+ */
+namespace app\controller\home\actions;
+
+use app\controller\home\HomeController;
+
+class IndexAction extends HomeController
+{
+    //初始化函数
+    protected function _action()
+	{
+        //这里填写index动作的初始化代码
+    }
+
+    //未提交表单的页面显示处理
+    protected function _display()
+	{
+    }
+
+    //表单生成
+    protected function _form()
+	{
+    }
+
+    //Ajax处理
+    protected function _ajax()
+	{
+    }
+
+    //提交表单后处理
+    protected function _submit()
+	{
+    }
+
+
+    //判断是否表单提交数据
+    protected function _isSubmit()
+	{
+    }
+}
+</pre>
 </pre>
 </body></html>

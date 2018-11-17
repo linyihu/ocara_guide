@@ -16,12 +16,16 @@
 <script type="text/javascript" src="../treeview/base.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-  
- $("#browser").treeview({
-  persist: "location",
-  collapsed: false,
-  unique: true
- });
+$("#browser").treeview({
+	persist: "location",
+	collapsed: false,
+	unique: true
+});
+$("#browser_module").treeview({
+	persist: "location",
+	collapsed: true,
+	unique: true
+});
 });
 </script>
 </head>
@@ -44,32 +48,30 @@ $(document).ready(function(){
     假设有个商品控制器命名为item，要进行list（列表）、add(新建）、edit(更新)和del（删除）操作。
   
     <strong>其目录结构如下所示</strong>：
-</pre>
-<ul id="browser" class="filetree">
+		<ul id="browser" class="filetree">
 	<li><span class="folder">application</span>
 	<ul>
-		<li><span class="folder">index（index模块目录）</span>
+		<li><span class="folder">controller</span>
+		<ul>
+		<li><span class="folder">item（item控制器目录）</span>
 			  <ul>
-					<li><span class="folder">controllers</span>
-						<ul>
-							<li><span class="folder">item（item控制器目录）</span>
-							<ul>
-								<li><span class="file">Controller.php（控制器文件）</span></li>
-								<li><span class="file">ListAction.php（index动作文件）</span></li>
-								<li><span class="file">AddAction.php（create动作文件）</span></li>
-								<li><span class="file">EditAction.php（update动作文件）</span></li>
-								<li><span class="file">DelAction.php（delete动作文件）</span></li>
-							</ul>
-						</li>
-						</ul>
+					<li><span class="file">ItemController.php（控制器文件）</span></li>
+				  <li><span class="folder">actions（动作目录）</span>
+					<ul>
+						<li><span class="file">ListAction.php（index动作文件）</span></li>
+						<li><span class="file">AddAction.php（create动作文件）</span></li>
+						<li><span class="file">EditAction.php（update动作文件）</span></li>
+						<li><span class="file">DelAction.php（delete动作文件）</span></li>
+					</ul>
 					</li>
-				    <li><span class="file">Module.php（模块文件）</span></li>
 			  </ul>
 		</li>
+		<li><span class="file">Module.php（模块文件）</span></li>
+		</ul>
 	</ul>
 </li>
 </ul>
-
+</pre>
 <pre>
 
      <strong>实例说明如下：</strong>
@@ -79,11 +81,11 @@ $(document).ready(function(){
 /**
  * index模块类
  */
-namespace app\modules\index;
+namespace app\controller;
 
-use Base\CommonModule;
+use Base\CommonController;
 
-class Module extends CommonModule
+class Module extends CommonController
 {
 	/**
 	 * 初始化模块
@@ -93,18 +95,18 @@ class Module extends CommonModule
 	}
 }
 </pre>
-             注：其中的Base\CommonModule是框架在library/Base中生成的普通控制器模块，继承了框架的Ocara\Core\Controller。
+             注：其中的Base\CommonController是框架在library/Base中生成的普通控制器模块，继承了框架的Ocara\Core\Controller。
 
              控制器文件Controller.php代码:
 <pre class="brush: php;">
 /**
  * item控制器类
  */
-namespace app\modules\index\controllers\item;
+namespace app\controller\item;
 
-use app\modules\index\Module;
+use app\controller\Module;
 
-class Controller extends Module
+class ItemController extends Module
 {
 	/**
 	 * 初始化控制器
@@ -122,12 +124,12 @@ class Controller extends Module
 /**
  * edit动作类
  */
-namespace app\modules\index\controllers\item;
+namespace app\controller\item;
 
-use app\modules\index\controllers\item\Controller;
-use app\dal\models\main\User;
+use app\controller\item\ItemController;
+use app\dal\models\defaults\User;
 
-class EditAction extends Controller
+class EditAction extends ItemController
 {
 	/**
 	 * 初始化代码
@@ -179,15 +181,15 @@ class EditAction extends Controller
 }
  </pre>
      （2）优化代码
-             以上是直接在控制器中写代码，代码可能太多，所以可以另写业务逻辑类。放在模块目录下面的services下面：
+             以上是直接在控制器中写代码，代码可能太多，所以可以另写业务逻辑类。放在模块目录下面的service下面：
 <pre class="brush: php;">
 /**
  * User业务逻辑类
  */
-namespace Base\Service;
+namespace service;
 
 use Base\BaseService;
-use app\dal\models\main\User; //引入User模型类
+use app\dal\models\defaults\User; //引入User模型类
 
 class UserService extends BaseService
 {
@@ -227,12 +229,12 @@ class UserService extends BaseService
 /**
  * edit动作类
  */
-namespace app\modules\index\controllers\item;
+namespace app\controller\item;
 
-use app\modules\index\controllers\item\Controller;
-use app\modules\index\services\UserService; //引入业务逻辑类
+use app\controller\item\ItemController;
+use app\service\UserService; //引入业务逻辑类
 
-class EditAction extends Controller
+class EditAction extends ItemController
 {
 	/**
 	 * 初始化代码
@@ -271,6 +273,45 @@ class EditAction extends Controller
 }
 </pre>
 
+<pre>
+	<strong>另外，下面是模块动作目录结构，命名空间要与目录路径一致，application目录为根命名空间app：</strong>
+	<ul id="browser_module" class="filetree">
+	<li><span class="folder">application</span>
+	<ul>
+		<li><span class="folder">modules</span>
+		<ul>
+		<li><span class="folder">admin（admin模块目录）</span>
+			  <ul>
+					<li><span class="folder">controller</span>
+						<ul>
+							<li><span class="folder">item（item控制器目录）</span>
+							<ul>
+								<li><span class="file">ItemController.php（控制器文件）</span></li>
+								<li><span class="folder">actions（动作目录）</span>
+									<ul>
+										<li><span class="file">ListAction.php（index动作文件）</span></li>
+										<li><span class="file">AddAction.php（create动作文件）</span></li>
+										<li><span class="file">EditAction.php（update动作文件）</span></li>
+										<li><span class="file">DelAction.php（delete动作文件）</span></li>
+									</ul>
+								</li>
+							</ul>
+							</li>
+							<li><span class="file">AdminModule.php（模块文件）</span></li>
+						</ul>
+					</li>
+					  <li><span class="folder">privates</span>
+					  <li><span class="folder">service</span>
+					  <li><span class="folder">view</span>
+
+			  </ul>
+		</li>
+		</ul>
+	</ul>
+</li>
+</ul>
+</pre>
+
 <h2>第2种 Action直接写在控制器文件</h2>
 
      适合于代码较少或者处理业务比较单一的场景。注：下面实例是复制上面的实例，不算此种场景。
@@ -288,11 +329,11 @@ class EditAction extends Controller
 /**
  * item控制器类
  */
-namespace app\modules\index\controllers\item;
+namespace app\controller\item;
 
-use app\modules\index\Module;
+use app\controller\Module;
 
-class Controller extends Module
+class ItemController extends Module
 {
 	/**
 	 * 初始化控制器
