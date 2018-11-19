@@ -32,10 +32,7 @@
  * 应用自动加载映射
  */
 $OC_CONF['APP_AUTOLOAD_MAP'] = array(
-    'app\console\\' 							=> OC_ROOT . 'application/console/',
-    'app\modules\\' 							=> OC_ROOT . 'application/modules/',
-    'app\view\\' 								=> OC_ROOT . 'application/view/',
-    'app\dal\\' 							    => OC_ROOT . 'application/dal/',
+    'app\\' 							=> OC_ROOT . 'application/',
 );
 </pre>
        （2）不是以app开头的命名空间定义了library目录下的类（目录名和命名空间名必须大写）

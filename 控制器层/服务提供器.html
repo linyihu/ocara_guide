@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>服务提供器</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<script src="../treeview/lib/jquery.js" type="text/javascript"></script>
+<script src="../treeview/lib/jquery.cookie.js" type="text/javascript"></script>
+<script src="../treeview/jquery.treeview.js" type="text/javascript"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<link rel="stylesheet" href="../treeview/jquery.treeview.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  
+ $("#browser").treeview({
+  persist: "location",
+  collapsed: false,
+  unique: true
+ });
+});
+</script>
+</head>
+<body>
+<pre><h2>服务提供器</h2>
+
+  服务提供器可以作为两种角色来使用：
+    1、服务组件
+    就是提供一种服务功能。是为了实现一种服务功能，组合了多个服务类进行业务处理的一种组件。
+    它对内封装了自己的依赖注入容器，对外保持业务逻辑和类依赖管理的透明。
+    （1）组合使用多个服务类处理业务。
+    （2）通过依赖注入容器进行类的依赖管理。
+    （3）对外提供一种服务功能。
+比如我们的控制器Controller实际上就是一个服务提供器。
+
+  2、服务定位器
+    它只是封装了依赖注入容器的使用，用来提供类的调用和绑定。
+    （1）对依赖注入容器的封装，进行类的依赖管理。
+    （2）对外提供服务的调用和绑定。
+比如整个应用有一个全局默认的服务定位器，可以使用ocService()来调用。例如调用Request类，可以通过ocService()->request或者ServiceProvider::getDefault()。
+<pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+//通过ServiceProvider类来调用
+$username = ServiceProvider::getDefault()->getPost('username');
+
+//通过ocService()函数来调用
+$username = ocService()->request->getPost('username');
+</pre>
+
+<strong>一、服务提供器的初始化</strong>
+1、初始化过程
+    新建一个服务提供器时，会进行如下几步：
+    （a）设置属性数据setProperty（）
+    （b）新建一个依赖注入容器setContainer（）
+    （c）注册服务register()
+    （d）初始化init()
+
+    请看服务提供器的源代码便明白了：
+<pre class="brush: php;">
+        /**
+     * 初始化
+     * ServiceProvider constructor.
+     * @param array $data
+     * @param \Ocara\Core\Container|null $container
+     */
+    public function __construct(array $data = array(), Container $container = null)
+    {
+        $this->setProperty($data);
+        $this->setContainer($container ? : new Container());
+        $this->register();
+        $this->init();
+    }
+</pre>
+    2、服务提供器类的生成
+（1）继承基础服务提供器
+    新建一个服务提供器时，要继承Ocara\Core\ServiceProvider.
+<pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+class UserRoleManager extends ServiceProvider
+{
+}
+
+</pre>
+    （2）注册服务
+    每个服务提供器都提供了一个register()函数入口进行服务注册，它会在类的初始化函数init()之前就执行。
+
+<pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+class UserRoleManager extends ServiceProvider
+{
+    /**
+     * 注册服务
+     */
+    public function register()
+    {
+        $this->_container->bindSingleton('userRole', '\Providers\User\Role');
+    }
+}
+
+</pre>
+    （3）初始化
+    要写初始化代码请使用init()方法，不要使用__construct()。
+    <pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+class UserRoleManager extends ServiceProvider
+{
+    public function register()
+    {
+        $this->_container->bindSingleton('userRole', '\Providers\User\Role');
+    }
+
+    /**
+     * 初始化
+     */
+    public function init()
+    {
+         $userRole = $this->userRole;
+    }
+}
+</pre>
+
+二、服务提供器的使用
+
+    1、使用属性注入
+    在服务提供器内部，可以使用结构函数中传入的属性数据。并且属性只能在内部使用。
+    <pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+class UserRoleManager extends ServiceProvider
+{
+    public function register()
+    {
+        $this->_container->bindSingleton('userRole', '\Providers\User\Role');
+    }
+
+    public function init()
+    {
+
+        $userId = $this->userId;   //这个属性是新建服务器提供器对象时传入参数设置的
+        $this->userRole->setRole(array('users',  $userId));
+    }
+}
+</pre>
+    2、使用服务类
+    无论是在服务提供器内部还是外部，都可以使用服务提供器中封装的类。
+<div class="function">
+<pre><strong>（1）用属性获取服务对象</strong>
+    使用服务提供器的属性可以获取一个服务类对象。
+    只会新建一次。
+    （1）不管是单例还是动态对象，第一次新建后都会存储起来供下次调用。
+    （2）如果有同名的属性。
+    在服务提供器的外部调用对象时，只表示调用该对象。
+    在内部调用时，优先获取属性值，不存在属性值时，才调用该对象。
+</pre>
+ <pre class="brush: php;">
+//全局默认服务提供器实例
+ $request = ocService()->request;
+
+//UserRoleManager实例
+$manager = new UserRoleManager();
+$userRole = $manager->userRole;
+
+ </pre>
+<pre><strong>（2）getService(name[, params, deps])</strong>
+  同上。只会新建一次并存储起来。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+	</table>
+ <pre class="brush: php;">
+//全局默认服务提供器实例
+$request = ocService()->getService('request');
+
+//UserRoleManager实例
+$manager = new UserRoleManager();
+$userRole = $manager->getService('userRole');
+
+ </pre>
+
+<pre><strong>（3）createService(name[, params, deps])</strong>
+   重新新建一个服务类对象。
+        getService()或属性调用服务对象时只会在第一次新建该对象，所以一直都是同一个对象。
+        所以要生成一个新的非单例对象可以使用createService().
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+</table>
+<pre class="brush: php;">
+//全局默认服务提供器实例
+$request = ocService()->createService('request');
+
+//UserRoleManager实例
+$manager = new UserRoleManager();
+$params = array('user_status' => 1);
+$userRole = $manager->createService('userRole', $params);
+
+</pre>
+
+<pre><strong>（4）hasService(name)</strong>
+   获取session值。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+</table>
+<pre class="brush: php;">
+//全局默认服务提供器实例
+echo ocService()->hasService('request');
+
+//UserRoleManager实例
+$manager = new UserRoleManager();
+echo $manager->hasService('userRole');
+</pre>
+
+<pre><strong>（5）setService(name, service)</strong>
+   设置服务对象。可以用来替换掉在服务提供器第一次新建的对象。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+</table>
+ <pre class="brush: php;">
+//全局默认服务提供器实例
+$myRequest = new Base\Request();
+ocService()->setService('request', $myRequest);
+
+//UserRoleManager实例
+$manager = new UserRoleManager();
+$userRole = new \Base\UserRole;
+echo $manager->setService('userRole', $userRole);
+ </pre>
+
+</div>
+</pre>
+</body></html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>事件回调</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>事件回调</h2>
+
+<strong>一、事件介绍</strong>
+         通常在业务代码的某个位置可能会调用一个回调函数去处理业务，从而实现业务处理的自定义，并达到解耦目的。
+         这样一种回调处理需要在某个位置进行触发，称为事件。比如前端页面中某个按钮的单击事件，会回调某一个函数做某些操作。
+
+<strong>二、注册事件</strong>
+        Ocara的任何一个类继承自Ocara\Core\Base，它默认都提供event()方法函数用来注册事件。
+    <span class="STYLE1">event(name)</span>
+    其中的name参数就是事件名称。
+<pre class="brush: php;">
+$this->event('updateStatus'); //注册并返回更新状态的事件
+</pre>
+
+<strong>三、添加处理器</strong>
+ <span class="STYLE1">append(callback[, args])</span>
+
+<pre class="brush: php;">
+namespace app\services;
+
+use Base\DatabaseModel;
+
+class OrdersService extends DatabaseModel
+{
+    public function __construct()
+    {
+        //注册事件和处理器
+        $this->event('afterUpdateStatus')
+             ->append('\app\services\OrderStatusLog') //记录订单的状态更新日志
+             ->append(array('\app\services\UserLog', 'writeLog')); //记录用户日志
+    }
+}
+</pre>
+
+事件处理器如果是一个类名，框架会自动调用该处理器的handler()方法去执行。
+    <span class="STYLE1">handler(evnet[, params])</span>
+
+<pre class="brush: php;">
+namespace app\services;
+
+class OrderStatusLog
+{
+    public function handler($event, $order, $oldStatus)
+    {
+         /*存入订单状态日志表*/
+         $orderStatus = new \app\dal\models\OrderStatusLog;
+         $orderStatus->oldStatus = $oldSttaus;
+         $orderStatus->newStatus = $order->status;
+    }
+}
+</pre>
+
+
+<strong>四、事件触发</strong>
+     <span class="STYLE1">fire(params)</span>
+
+<pre class="brush: php;">
+namespace app\services;
+
+use Base\DatabaseModel;
+
+class OrdersService extends DatabaseModel
+{
+    public function updateStatus($orderId, $extraData)
+    {
+        $order = new \app\dal\Orders();
+        $order->select($orderId);
+
+        $oldStatus = $order->status;
+        $newStatus = 1;
+
+        $order->status = $newStatus;
+        $order->save($extraData);
+
+        //触发事件
+        $args = array($order, $oldStatus);
+        $order->event('afterUpdateStatus')
+              ->fire($args);
+    }
+}
+</pre>
+
+<strong>五、事件中断</strong>
+在事件的多个处理器中，可以使用stop()来中断事件的执行。
+  <span class="STYLE1">stop()</span>
+
+使用isRunning()判断是否在运行中
+    <span class="STYLE1">isRunning()</span>
+
+<pre class="brush: php;">
+namespace app\services;
+
+class OrderStatusLog
+{
+    public function handler($event, $order, $oldStatus)
+    {
+        if (empty($orderId)){
+            $event->stop(); //中断事件
+        }
+
+        if ($event->isRunning()) { //事件是否在运行中
+             /*存入订单状态日志表*/
+        }
+    }
+}
+</pre>
+
+</pre>
+</pre>
+</body>
+</html>
