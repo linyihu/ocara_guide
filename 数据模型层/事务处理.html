@@ -51,14 +51,14 @@
 <pre class="brush: php;">$userModel= new \app\dal\models\User();
 
 //事务开始
-Base::$container->transaction->begin();
+ocService()->transaction->begin();
 
     $users = \app\dal\models\User::select(53290);
     $users->avatar = 'test';
     $users->save();
 
 //事务提交
-Base::$container->transaction->commit();
+ocService()->transaction->commit();
 </pre>
             回滚实例：
 <pre class="brush: php;">
