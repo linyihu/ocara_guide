@@ -27,7 +27,7 @@
 </table>
 
 <strong>1、事务池介绍</strong>
-      事务处理要使用事务池管理器\Ocara\Core\Transaction。该事务管理器，有以下特点：
+      事务处理要使用事务池管理器\Ocara\Core\Transaction。它有以下特点：
             （1）使用简单
             （2）可以嵌套使用
             （3）支持跨服务器和跨库事务处理
@@ -65,7 +65,7 @@ Base::$container->transaction->commit();
 $userModel= new \app\dal\models\User();
 
 //事务开始
-Base::$container->transaction->begin();
+ocService()->transaction->begin();
 
 	$users = new \app\dal\models\User();
     $users->user_sn = '1236433231322131';
@@ -89,7 +89,7 @@ Base::$container->transaction->begin();
     }
 
 //事务提交
-Base::$container->transaction->commit();
+ocService()->transaction->commit();
 </pre>
 
             自动回滚实例：
@@ -97,7 +97,7 @@ Base::$container->transaction->commit();
 $userModel= new \app\dal\models\User();
 
 //事务开始
-Base::$container->transaction->begin();
+ocService()->transaction->begin();
 
     $users = new \app\dal\models\User();
     $users->user_sn = '1236433231322131';
@@ -117,7 +117,7 @@ Base::$container->transaction->begin();
     ocService()->error->show('这里抛出错误！系统自动回滚.');
 
 //事务回滚
-Base::$container->transaction->commit();
+ocService()->transaction->commit();
 </pre>
 
             ORM模型自动使用事务实例：
@@ -151,24 +151,26 @@ if (!$result) {
     
       使用很简单，直接嵌套使用即可。
 <pre class="brush: php;">
-namespace app\modules\index\controllers\home;
+namespace app\service;
 
-class TestAction extends Controller
+use Base\BaseService;
+
+class UserService extends BaseService
 {
-    public function _action()
+    public function handler()
     {
         //一级事务开始（Transation的事务计数变量$_count+1，由0变为1）（没有数据库操作也可以）
-        $this->transaction->begin();
+        ocService()->transaction->begin();
 
         //二级事务开始（Transation的$_count+1，变为2）
-        $this->transaction->begin();
+        ocService()->->transaction->begin();
 
             $users = \app\dal\models\User::select(53290);
             $users->avatar = 'test';
             $users->save();
 
             //三级事务开始（Transation的$_count+1，变为3）
-            $this->transaction->begin();
+            ocService()->->transaction->begin();
 
                 $users = new \app\dal\models\User();
                 $users->user_sn = '1236433231322131';
@@ -193,13 +195,13 @@ class TestAction extends Controller
                 }
 
             //三级事务提交（提交成功后Transation的$_count会-1，为2）
-            $this->transaction->commit();
+            ocService()->->transaction->commit();
 
         //二级事务提交（提交成功后Transation的$_count会-1，为1）
-        $this->transaction->commit();
+        ocService()->->transaction->commit();
 
         //一级事务提交（真正进行数据库提交，提交成功后Transation的$_count置0，$_list置空）
-        $this->transaction->commit();
+        ocService()->->transaction->commit();
     }
 }
 </pre>
