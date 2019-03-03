@@ -53,14 +53,14 @@ class OrdersService extends DatabaseModel
 </pre>
 
 事件处理器如果是一个类名，框架会自动调用该处理器的handler()方法去执行。
-    <span class="STYLE1">handler(evnet[, params])</span>
-
+    <span class="STYLE1">handler(params, ... [,evnet , eventTarget])</span>
+最后的两个参数必是evnet和eventTarget，分别是事件类实例和触发事件的对象实例，可选参数。
 <pre class="brush: php;">
 namespace app\services;
 
 class OrderStatusLog
 {
-    public function handler($event, $order, $oldStatus)
+    public function handler($order, $oldStatus, $event)
     {
          /*存入订单状态日志表*/
          $orderStatus = new \app\dal\models\OrderStatusLog;
@@ -112,7 +112,7 @@ namespace app\services;
 
 class OrderStatusLog
 {
-    public function handler($event, $order, $oldStatus)
+    public function handler($order, $oldStatus, $event)
     {
         if (empty($orderId)){
             $event->stop(); //中断事件
