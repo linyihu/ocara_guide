@@ -25,11 +25,21 @@
          这样一种回调处理需要在某个位置进行触发，称为事件。比如前端页面中某个按钮的单击事件，会回调某一个函数做某些操作。
 
 <strong>二、注册事件</strong>
-        Ocara的任何一个类继承自Ocara\Core\Base，它默认都提供event()方法函数用来注册事件。
-    <span class="STYLE1">event(name)</span>
+
+        使用本框架时，任何一个类应该继承自Ocara\Core\Base，它默认都提供registerEvents()封装注册事件的代码，在其中使用对象的event()新建和调用事件。
+    <span class="STYLE1">registerEvents()</span> //注册事件
+    <span class="STYLE1">event(name)</span> //调用事件
     其中的name参数就是事件名称。
 <pre class="brush: php;">
-$this->event('updateStatus'); //注册并返回更新状态的事件
+class test extends Ocara\Core\Base
+{
+    public function registerEvents()
+    {
+         $this->event('updateStatus')  //新建和调用事件
+              ->append(array($this, 'updateStatusCallback')); //添加处理器
+    }
+
+}
 </pre>
 
 <strong>三、添加处理器</strong>
