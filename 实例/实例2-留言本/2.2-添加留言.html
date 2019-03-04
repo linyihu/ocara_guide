@@ -13,22 +13,22 @@
        上节已经说到新建控制器，其中自动生成的index动作，我们就作为添加留言的页面。
 
 <strong>1、 生成表单</strong>
-       在indexAction中添加_form()方法，并生成表单：
+       在indexAction中添加registerForms()方法，并生成表单：
 <pre class="brush: php;">
 class IndexAction extends GuestbookController
 {
 	/**
 	 * 初始化
 	 */
-	public function _action(){}
+	public function __action(){}
 
-	public function _form()
+	public function registerForms()
 	{
 		$this->form('form_edit')
 			 ->init(ocUrl('/guestbook/index'));
 	}
 
-	public function _display()
+	public function display()
 	{
 		//这里写显示前的处理代码
 	}
@@ -65,28 +65,28 @@ class IndexAction extends GuestbookController
 &lt;?php echo $form_edit->end();?&gt;
 </pre>
 <strong>3、提交保存</strong>
-      在indexAction中添加_submit()方法，保存提交来的数据。代码如下：
+      在indexAction中添加submit()方法，保存提交来的数据。代码如下：
 <pre class="brush: php;">
 class IndexAction extends GuestbookController
 {
     /**
      * 初始化
      */
-    public function _action(){}
+    public function __action(){}
 
-    public function _form()
+    public function registerForms()
     {
         $this->form('form_edit')
              ->init(ocUrl('/guestbook/index'));
     }
 
-    public function _display()
+    public function display()
     {
          //这里写显示前的处理代码
      }
 
 	//提交保存
-	public function _submit()
+	public function submit()
 	{
 		$model = $this->model('\Model\Guestbook');
 		$model->data();

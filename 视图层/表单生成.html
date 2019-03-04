@@ -23,7 +23,7 @@
 
 <strong>一、生成表单</strong>
 1、表单新建（自动验证）
-      在Action类中，应该在_form()方法中新建表单，它是在_action()之前，_display()和_submit()之后执行。
+      在Action类中，应该在registerForms()方法中新建表单，它是在__action()之前，display()和submit()之后执行。
       如果action不是独立成类，而是在控制器类中，则在action方法合适位置生成。
              <span class="STYLE1">form(name)</span>
 </pre>
@@ -42,11 +42,11 @@
 <pre class="brush: php;">class CreateAction extends ItemController
 {
     //初始化代码
-	public function _action()
+	public function __action()
 	{}
 	
 	//新建表单
-    public function _form()
+    public function registerForms()
 	{
 		$this->form('form_item_edit') 
 			->init(
@@ -60,11 +60,11 @@
 	}
 	
 	//这里写页面显示前的逻辑...
-	public function _display()
+	public function display()
 	{}
 	
 	//这里写表单提交后的代码...
-	public function _submit()
+	public function submit()
 	{}
 }
 	</pre>
@@ -92,7 +92,7 @@
 <pre class="brush: php;">class TestController extends Controller
 {
 	//控制器初始化代码
-	public function _control()
+	public function __control()
 	{}
 	
 	public function createAction()
@@ -164,7 +164,7 @@ $this->form('form_edit')->init($action, $attributes);
      表单上传文件，一般是加上enctype="multipart/form-data"属性值。
      您可以在上例中的init()中添加，还可以简单地使用<span class="STYLE1">upload()</span>方法，它会自动加上该属性。
      如下实例：
-<pre class="brush: php;">public function _form()
+<pre class="brush: php;">public function registerForms()
 {
 	$this->form('form_item_edit')
 		->init(
@@ -203,17 +203,17 @@ $this->form('form_edit')->init($action, $attributes);
 class CreateAction extends Controller
 {
     //初始化代码
-	public function _action()
+	public function __action()
 	{}
 
-	public function _form()
+	public function registerForms()
 	{
 		$this->form('form_create')
 			 ->init(ocUrl($this->getRoute()))
 			 ->validateForm(false); //设置不验证该表单
 	}
 
-	public function _display()
+	public function display()
 	{
 		//检测是否验证该表单
 		$ifValidateForm = $this->form('form_create')->validateForm();
@@ -240,15 +240,15 @@ class CreateAction extends Controller
 
 <strong>三、表单提交后的处理</strong>
 1、POST方式提交的表单处理
-	表单提交后的处理代码，要在<span class="STYLE1">_submit()</span>方法中写。如下示例：
+	表单提交后的处理代码，要在<span class="STYLE1">submit()</span>方法中写。如下示例：
 <pre class="brush: php;">class CreateAction extends Controller
 {
     //初始化代码
-	public function _action()
+	public function __action()
 	{}
 	
 	//这里新建表单
-    public function _form()
+    public function registerForms()
 	{
 		$this->form('form_create')
 			 ->init(ocUrl($this->getRoute()))
@@ -257,11 +257,11 @@ class CreateAction extends Controller
 	}
 	
 	//这里写页面显示前的逻辑...
-	public function _display()
+	public function display()
 	{}
 	
 	//表单提交后的处理
-	public function _submit()
+	public function submit()
 	{
 		$itemModel = $this->model('app\dal\models\Item');
 		$item->data()->save();  //自动获取数据并添加到数据库
@@ -269,29 +269,29 @@ class CreateAction extends Controller
 }
 </pre>
         框架在判断表单是否已提交时默认使用request对象的isPost()判断，如果要自定义呢？
-	只要在<span class="STYLE1">_isSubmit()</span>中做修改判断就行了，需要返回true或false。示例如下：
+	只要在<span class="STYLE1">isSubmit()</span>中做修改判断就行了，需要返回true或false。示例如下：
 <pre class="brush: php;">class CreateAction extends Controller
 {
     //初始化代码
-	public function _action()
+	public function __action()
 	{}
 
 	//这里新建表单
-    public function _form()
+    public function registerForms()
 	{}
 
 	//这里写页面显示前的逻辑...
-	public function _display()
+	public function display()
 	{}
 
 	//表单提交后的处理
-	public function _submit()
+	public function submit()
 	{
 		$itemModel = $this->model('app\dal\models\Item');
 		$item->data()->save();
 	}
 
-	public function _isSubmit()
+	public function isSubmit()
 	{
 		//手动判断表单是否提交
 		return isset($_POST['submit']);
@@ -303,7 +303,7 @@ class CreateAction extends Controller
       当然，一般不建议使用GET方式提交表单。这里只是以GET方式为例说明。
       （1）两种判断方式
               GET提交的情形比较少，这种方式提交后，后台要做表单是否提交的判断。有以下两种场景：
-              （a）如果控制器动作是个类的话，需要添加它的_isSubmit()方法检测是否是表单提交。
+              （a）如果控制器动作是个类的话，需要添加它的isSubmit()方法检测是否是表单提交。
               （b）如果控制器动作只是所属控制器的一个方法的话，要在其代码中检测。
       （2）服务端处理时设置表单提交方式
               控制器动作类中判断表单是否提交的具体实现，分为两步：
@@ -312,32 +312,32 @@ class CreateAction extends Controller
       （3）怎样获取GET提交的数据
               那么，怎么获取提交来的数据呢？有两种方法：
               （a）使用request对象的<span class="STYLE1">getGet()</span>方法
-              （b）使用控制器动作的<span class="STYLE1">getSubmit()</span>方法，它不管是POST还是GET提交的都能区分。
+              （b）使用控制器动作的<span class="STYLE1">getSubmitData()</span>方法，它不管是POST还是GET提交的都能区分。
       如果Action独立成类的话，如下示例：
 <pre class="brush: php;">class CreateAction extends Controller
 {
     //初始化代码
-	public function _action()
+	public function __action()
 	{}
 	
 	//这里新建表单
-    public function _form()
+    public function registerForms()
 	{}
 	
 	//这里写页面显示前的逻辑...
-	public function _display()
+	public function display()
 	{}
 	
 	//这里写表单提交后的代码...
-	public function _submit()
+	public function submit()
 	{
 		$itemModel = $this->model('app\dal\models\Item');
-		$item->data($this->getSubmit()) //使用$this->request->getGet()也是可以的
+		$item->data($this->getSubmitData()) //使用$this->request->getGet()也是可以的
 			 ->save();
     }
 	
 	//是否是表单GET提交的判断
-	public function _isSubmit()
+	public function isSubmit()
 	{
 	    //设置表单的提交方式是GET
 	    $this->submitMethod('get');
@@ -351,7 +351,7 @@ class CreateAction extends Controller
 <pre class="brush: php;">class Controller extends Module
 {
     //控制器初始化代码
-	public function _control()
+	public function __control()
 	{}
 
 	//这里新建表单
@@ -363,7 +363,7 @@ class CreateAction extends Controller
 	    //【必须】判断表单是否提交
 	    if (isset($GET['submit'])) {
 			$itemModel = $this->model('app\dal\models\Item');
-      		$item->data($this->getSubmit()) //使用$this->request->getGet()也是可以的
+      		$item->data($this->getSubmitData()) //使用$this->request->getGet()也是可以的
 				 ->save();
 		} else {
 			//这里写页面显示前的逻辑...
@@ -387,16 +387,16 @@ class CreateAction extends Controller
 <pre class="brush: php;">class CreateAction extends ItemController
 {
     //初始化代码
-	public function _action()
+	public function __action()
 	{}
 
 	//这里新建表单
-    public function _form()
+    public function registerForms()
 	{
 		$this->form('form_create')->init(ocUrl($this->getRoute()));
 	}
 
-	public function _display()
+	public function display()
 	{
 		$this->form('form_create')->text('userName2');
 	}

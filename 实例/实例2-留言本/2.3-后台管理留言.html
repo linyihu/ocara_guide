@@ -21,13 +21,13 @@
 <strong>3、新建布局</strong>
       添加留言是在前台，使用的是layout.php作为布局文件。后台管理这里，要重新新建一个布局文件，我们定名为admin.php。
       只要在application/view/layout/admin.php文件。
-      然后在admin模块文件中的_module()初始化函数中添加如下代码，修改layout：
+      然后在admin模块文件中的__module()初始化函数中添加如下代码，修改layout：
 <pre class="brush: php;">class AdminModule extends Controller
 {
     /**
      * 初始化模块
      */
-    public function _module()
+    public function __module()
     {
         $this->setLayout('admin');
     }
@@ -35,7 +35,7 @@
 </pre>
   
 <strong>4、查询并处理数据</strong>
-      在indexAction中添加_display()方法。
+      在indexAction中添加display()方法。
       注：这里的搜索条件是一个form_search的表单，因为该表单可以多次刷新使用不需要验表单，所以要加上checkForm(false)禁掉验证表单令牌。
       代码如下：
 <pre class="brush: php;">
@@ -44,18 +44,18 @@ class IndexAction extends GuestbookController
 	/**
 	 * 初始化
 	 */
-	public function _action()
+	public function __action()
 	{
 		//搜索列表不需要验证表单
 		$this->checkForm(false);
 	}
 
-	public function _form()
+	public function registerForms()
 	{
 		$this->form('form_search')->init(ocUrl('/admin/guestbook/index'));
 	}
 
-	public function _display()
+	public function display()
 	{
 		//新建Model
 		//Model名称与控制器名称相同，可以直接使用$this->model()

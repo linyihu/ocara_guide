@@ -90,7 +90,7 @@ class Module extends CommonController
 	/**
 	 * 初始化模块
 	 */
-	public function _module(){
+	public function __module(){
 	    //模块初始化代码
 	}
 }
@@ -111,7 +111,7 @@ class ItemController extends Module
 	/**
 	 * 初始化控制器
 	 */
-	public function _control()
+	public function __control()
 	{
 	    //控制器初始化代码
 	}
@@ -134,12 +134,12 @@ class EditAction extends ItemController
 	/**
 	 * 初始化代码
 	 */
-	public function _action()
+	public function __action()
 	{
 	    //初始化代码
 	}
 
-    public function _display()
+    public function display()
 	{
 	 	$userId = $this->request->getGet('user_id');
 
@@ -164,7 +164,7 @@ class EditAction extends ItemController
 	         ->init($url);
 	}
 
-	public function _submit()
+	public function submit()
 	{
 	    //更新用户信息
 	    $userId = $this->request->getGet('user_id');
@@ -239,12 +239,12 @@ class EditAction extends ItemController
 	/**
 	 * 初始化代码
 	 */
-	public function _action()
+	public function __action()
 	{
 	    //初始化代码
 	}
 
-    public function _display()
+    public function display()
 	{
 	    //获取用户信息
 		$userId = $this->request->getGet('user_id');
@@ -263,7 +263,7 @@ class EditAction extends ItemController
 	         ->init($url);
 	}
 
-	public function _submit()
+	public function submit()
 	{
 		//更新用户信息
 		$posts = $this->request->getPost();
@@ -338,7 +338,7 @@ class ItemController extends Module
 	/**
 	 * 初始化控制器
 	 */
-	public function _control()
+	public function __control()
 	{
 	    //控制器初始化代码
 	}
@@ -361,20 +361,20 @@ class ItemController extends Module
 <h2>Action类的结构控制函数介绍</h2>
 
      Action是独立成类的代码更加美观和易于维护，因为在该类中提供了一些结构函数：
-     <strong>（1）_action()</strong>
+     <strong>（1）__action()</strong>
              用于写初始化代码（类似于类的析构函数）。这个方法会首先执行，因此不需要新建_construct()函数，以免覆盖父级类的析构函数。
              如下实例：
 <pre class="brush: php;">
-	protected function _action()
+	protected function __action()
 	{
 		$this->model = $this->model();
 	}
 </pre>
-     <strong>（2）_form()</strong>
-             用于表单的新建。
+     <strong>（2）registerForms()</strong>
+             用于表单的注册新建。
              一般地，表单统一是在本函数当中新建，可以新建多个表单，当然在其他地方也是可以的。
 <pre class="brush: php;">
-	protected function _form()
+	public function registerForms()
 	{
 		$this->form('form_edit')
 		     ->init(
@@ -388,12 +388,12 @@ class ItemController extends Module
 		     );
 	}
 </pre>   
-     <strong>（3）_display()</strong>
+     <strong>（3）display()</strong>
               用于在表单提交之前的模板输出。没有表单提交时，都会路由到该方法执行。
-              因此，如果要输出html，就在这里写输出前的逻辑处理代码，包括表单的输出。当表单提交后，一般是在_submit()方法中处理。
+              因此，如果要输出html，就在这里写输出前的逻辑处理代码，包括表单的输出。当表单提交后，一般是在submit()方法中处理。
               如下实例：
 <pre class="brush: php;">
-	protected function _display()
+	public function display()
 	{
 		//获取用户信息
 		$userId = $this->request->getGet('user_id');
@@ -403,11 +403,11 @@ class ItemController extends Module
 	    $this->assign('data', $data);
 	}
 </pre>
-     <strong>（4）_submit()</strong>
+     <strong>（4）submit()</strong>
              用于表单提交后的处理。
-             默认是通过判断是否POST提交数据。否则，请使用_isSubmit()函数去判断是否表单提交。参见<a href="../视图层/表单生成.html" title="表单生成">表单生成</a>第三第2点。
+             默认是通过判断是否POST提交数据。否则，请使用isSubmit()函数去判断是否表单提交。参见<a href="../视图层/表单生成.html" title="表单生成">表单生成</a>第三第2点。
 <pre class="brush: php;">
-	protected function _submit()
+	public function submit()
 	{
 		//更新用户信息
 		$posts = $this->request->getPost();
@@ -415,22 +415,22 @@ class ItemController extends Module
 		$user->editUser($posts);
 	}
 </pre>
-     <strong>（5）_isSubmit()</strong>
+     <strong>（5）isSubmit()</strong>
              用于手动判断表单是否提交。
              若Action类中没有该方法函数，默认是使用框架的Request::isPost()来检测的；如果不合适，可以新建该函数去检测，然后return true/false即可。
              如下实例：
 <pre class="brush: php;">
-	protected function _isSubmit()
+	public function isSubmit()
 	{
 	    //重写表单是否提交的判断
 		return $this->request->isPost() && array_key_exists('submit_button_name', $_POST);
 	}
 </pre>
-     <strong>（6）_ajax()</strong>
+     <strong>（6）ajax()</strong>
              用于ajax提交的后台代码处理。框架中使用Request::isAjax()判断是否是ajax提交的。
              如下实例：
 <pre class="brush: php;">
-protected function _ajax()
+public function ajax()
 {
 	//更新用户信息
 	$posts = $this->request->getPost();
@@ -440,18 +440,18 @@ protected function _ajax()
 	return true;
 }
 </pre>
-     <strong>（7）_after()（后置事件）</strong>
-             用于动作执行完成以后的处理。_display()、_submit()和_ajax()执行完以后会自动执行。
+     <strong>（7）after()（后置事件）</strong>
+             用于动作执行完成以后的处理。display()、submit()和ajax()执行完以后会自动执行。
 <pre class="brush: php;">
-	protected function _after()
+	public function after()
 	{
 		//这里写Action执行完以后的代码
 	}
 </pre>
-             使用上述7个函数，您的代码将变得更加有条理。其中_after()、_isSubmit()一般要手动添加。
+             使用上述7个函数，您的代码将变得更加有条理。其中after()、isSubmit()一般要手动添加。
 </div>
       <strong>3、结构控制函数的执行顺序</strong>
              上面几个结构型函数按优先级从高到低的执行顺序：
-             _action() -> _form()-> _isSubmit() -> _display()或_submit()或_ajax() -> _after()
+             __action() -> registerForms()-> isSubmit() -> display()或submit()或ajax() -> after()
 </pre>
 </body></html>

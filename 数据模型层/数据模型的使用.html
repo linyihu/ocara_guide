@@ -66,13 +66,13 @@ $userModel = $this->model('\app\dal\models\BBS\User'); //会调用bbs数据库�
 <pre class="brush: php;">
 class UpdateAction extends Controller
 {
-	public function _action()
+	public function __action()
 	{}
 
 	/**
 	 * 初始化
 	 */
-	public function _display()
+	public function display()
 	{
         //用户表Model使用
 		$userData = $this
@@ -96,7 +96,7 @@ class UpdateAction extends Controller
     /**
      * 表单提交的处理
      */
-	public function _submit()
+	public function submit()
 	{}
 }
 </pre>

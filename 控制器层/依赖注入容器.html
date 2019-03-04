@@ -63,18 +63,18 @@ class EditAction extends ItemController
 	/**
 	 * 初始化
 	 */
-	public function _action()
+	public function __action()
 	{}
 
-	public function _form()
+	public function registerForms()
 	{}
 
-	public function _display()
+	public function display()
 	{
         $id = $this->request->getGet('id'); //使用默认容器的request对象
     }
 
-	public function _submit()
+	public function submit()
 	{
         $data = $this->response->setStatusCode(400); //优先使用当前控制器私有容器$this->_container的response对象
     }

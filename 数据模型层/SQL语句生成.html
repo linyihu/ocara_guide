@@ -406,7 +406,7 @@ $userInfo = $itemModel->where(&quot;user_name='{$userName}'&quot;)
 <pre class="brush: php;">
 class ListAction extends ItemController
 {
-     public function _action()
+     public function __action()
 	 {
 	    //设置分页
 		$this->pager()->config('page', 10, 10);
@@ -451,7 +451,7 @@ class ListAction extends ItemController
 <pre class="brush: php;">
 class ListAction extends ItemController
 {
-     public function _action()
+     public function __action()
 	 {
 	    $itemModel = $this->model();
 	    $result = $itemModel->fields('item_id, item_name, status');
@@ -483,7 +483,7 @@ $userModel->where(array('type' => 2))
 <pre class="brush: php;">
 class CreateAction extends ItemController
 {
-     public function _action()
+     public function __action()
 	 {
 	    $itemModel = $this->model();
 	    $itemModel->data();
@@ -511,7 +511,7 @@ class CreateAction extends ItemController
 <pre class="brush: php;">
 class CreateAction extends ItemController
 {
-     public function _action()
+     public function __action()
 	 {
 	    $itemModel = $this->model();
 	    $itemModel->selectDatabase('bbs');
@@ -541,7 +541,7 @@ class CreateAction extends ItemController
 <pre class="brush: php;">
 class CreateAction extends ItemController
 {
-     public function _action()
+     public function __action()
 	 {
 	    $itemModel = $this->model();
 	    $itemModel->selectTable('item_201702');

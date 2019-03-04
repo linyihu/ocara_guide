@@ -50,12 +50,12 @@
 <pre class="brush: php;">
 class ListAction extends Controller
 {
-     protected function _action()
+     public function __action()
      {
          $this->setTemplate('orange');
      }
      
-     protected function _display(){}
+     protected function display(){}
 }
 </pre> 
 <strong>3、新建模板文件</strong>

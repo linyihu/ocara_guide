@@ -38,13 +38,13 @@ class EditAction extends Controller
 	/**
 	 * 初始化
 	 */
-	public function _action()
+	public function __action()
 	{}
 
-	public function _form()
+	public function registerForms()
 	{}
 
-	public function _display()
+	public function display()
 	{
         //设置返回状态码
         $this->response->setStatusCode(200);
@@ -57,7 +57,7 @@ class EditAction extends Controller
     }
 
 	//提交后保存
-	public function _submit()
+	public function submit()
 	{}
 }
 

@@ -98,7 +98,7 @@
 class UserController extends Controller
 {
 	//初始化控制器
-	protected function _control()
+	public function __control()
 	{}
 	
 	//验证用户名是否存在
@@ -121,7 +121,7 @@ class UserController extends Controller
 <pre class="brush: php;">
 class ExistsusernameAction extends UserController
 {
-	public function _action($field, $value, $index)
+	public function __action($field, $value, $index)
 	{
 		$userModel = $this->model('\Model\User');
 		$result = $userModel->existsUserName($value);
@@ -151,21 +151,21 @@ class ExistsusernameAction extends UserController
 
     <strong>3、使用验证规则</strong>
             在新建表单时，使用model()方法就可以使用配置好的验证规则。该方法的格式请参考<a href="../表单生成.html">表单生成</a>。
-           如上例中新建bbs的登录表单时，在login的动作类的_form()方法中指定user验证规则：
+           如上例中新建bbs的登录表单时，在login的动作类的registerForms()方法中指定user验证规则：
 <pre class="brush: php;">
 class LoginAction extends UserController
 {
-     protected function _action(){}
+     public function __action(){}
 	 
-     protected function _form() 
+     public function registerForms()
      {   
          $this->form('form_bbs_edit')
 			  ->init(ocUrl('/bbs/user/login'))
 			  ->model('\Model\Bbs\user', 'user');
      } 
 	 
-	 protected function _display(){}
-	 protected function _submit(){}
+	 public function display(){}
+	 public function submit(){}
 }
 </pre>
           <strong>提示：</strong>
@@ -180,10 +180,10 @@ class LoginAction extends UserController
 class CreateAction extends ItemController
 {
 	//控制器初始化代码
-	public function _action()
+	public function __action()
 	{}
 
-	public function _form()
+	public function registerForms()
 	{
 		//新建表单
 		$this->form('form_item_edit')
@@ -198,12 +198,12 @@ class CreateAction extends ItemController
 		->model('\Model\Item'); //一定在这里指定模型配置
 	}
 
-	public function _display()
+	public function display()
 	{
 		//这里写页面显示前的代码
 	}
 
-	public function _submit()
+	public function submit()
 	{
 		//框架在前面会自动验证，这里写表单提交后的处理逻辑
 	}
@@ -219,7 +219,7 @@ class CreateAction extends ItemController
 class ItemController extends Controller
 {
 	//控制器初始化代码
-	public function _control()
+	public function __control()
 	{}
 
 	public function createAction()
@@ -240,7 +240,7 @@ class ItemController extends Controller
         if ($this->_isPost) {
             //手动验证表单
             $formObj = $this('form_item_edit');
-            $formObj->validate($this->validator, Request::getSubmit());
+            $formObj->validate($this->validator, $this->getSubmitData());
 
 		    //这里写表单提交后的处理逻辑
         } else {

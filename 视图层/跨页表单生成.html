@@ -32,18 +32,18 @@
 <pre class="brush: php;">class CreateshowAction extends ItemController
 {
     //初始化代码
-	public function _action()
+	public function __action()
 	{}
 	
 	//新建表单
-    public function _form()
+    public function registerForms()
 	{
 		$this->form('form_item_edit') 
 			->init(ocUrl('/admin/item/createpost')) //提交到另外的控制器动作;
 	}
 
 	//这里写页面显示前的逻辑...
-	public function _display()
+	public function display()
 	{}
 }
 </pre>
@@ -52,11 +52,11 @@
 <pre class="brush: php;">class CreatepostAction extends ItemController
 {
     //初始化代码
-	public function _action()
+	public function __action()
 	{}
 
 	//新建表单
-    public function _form()
+    public function registerForms()
 	{
 		$this->form('form_item_edit')
 			->model('\Model\Item')
@@ -64,7 +64,7 @@
 	}
 
 	//这里写表单提交后的代码...
-	public function _submit()
+	public function submit()
 	{
 		$itemModel = new \Model\Item();
 		$itemModel->data()->save();

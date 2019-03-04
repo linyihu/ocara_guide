@@ -61,7 +61,7 @@ class DelAction extends ItemController
              如果没有设置返回文档格式，框架默认返回Json格式。
 
 <strong>2、Ajax提交的php代码写在哪里？</strong>
-       Ajax后台的代码，直接写在Action类中的<span class="STYLE1">_ajax()</span>方法函数中写就行了：
+       Ajax后台的代码，直接写在Action类中的<span class="STYLE1">ajax()</span>方法函数中写就行了：
 <pre class="brush: php;">
 namespace modules\index\guestbook;
 
@@ -70,12 +70,12 @@ use modules\index\item\Controller;
 class DelAction extends Controller
 {
 
-   protected function _action()
+   public function __action()
    {
       //action公共代码
    }
 
-   protected function _ajax()
+   public function ajax()
    {
        //获取item_id
        $item_id = $this->request->getGet('item_id');

@@ -70,7 +70,7 @@ class IndexAction extends TestController
 	/**
 	 * 初始化函数
 	 */
-	public function _action()
+	public function __action()
 	{
 		trigger_error('抱歉，程序出错！');
 	}
@@ -87,7 +87,7 @@ class IndexAction extends TestController
 	/**
 	 * 初始化函数
 	 */
-	public function _action()
+	public function __action()
 	{
 		Error::trigger('抱歉，程序出错！');
 	}
@@ -228,7 +228,7 @@ class IndexAction extends TestController
 	/**
 	 * 初始化函数
 	 */
-	public function _action()
+	public function __action()
 	{
 		 Error::show('my_application_error');
 	}
@@ -248,7 +248,7 @@ class IndexAction extends TestController
 	/**
 	 * 初始化函数
 	 */
-	public function _action()
+	public function __action()
 	{
 		Error::show('fault_filename');
 	}
@@ -269,7 +269,7 @@ class IndexAction extends TestController
 	/**
 	 * 初始化函数
 	 */
-	public function _action()
+	public function __action()
 	{
 		$errorContent = ocLang('my_application_error');
 		echo $errorContent; //输出“我的Web应用错误”

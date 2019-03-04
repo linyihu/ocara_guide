@@ -86,7 +86,7 @@ class FindAction extends QuerycacheController
 	/**
 	 * 初始化
 	 */
-	public function _action($cacheObj, $sql, $required)
+	public function __action($cacheObj, $sql, $required)
 	{
 		$key   = md5($sql . '123');
 		$value = $cacheObj->get($key);

@@ -84,7 +84,7 @@ class CommonController extends Controller
     /**
      * 初始化代码
      */
-	public function _start()
+	public function __start()
 	{
 	}
 }
@@ -100,12 +100,12 @@ class RestController extends Controller
 {
     protected static $_providerType = 'rest'; //指定为Rest控制器类型
 
-	public function _start()
+	public function __start()
 	{
 	}
 }
 </pre>
-         其中，<span class="STYLE1">_start()</span>方法是初始化函数，不要用__construct()。这里写根控制器的初始化代码。
+         其中，<span class="STYLE1">__start()</span>方法是初始化函数，不要用__construct()。这里写根控制器的初始化代码。
                  <span class="STYLE1">$_providerType</span>属性用于指定控制器类型，默认为“Common”。
 
 <strong>3、模块</strong>
@@ -163,14 +163,14 @@ class AdminModule extends CommonController
     /**
      * 初始化模块
      */
-    public function _module()
+    public function __module()
     {
         $this->response->setHeader("Content-type: text/html; charset=utf-8");
         $this->setLayout('admin'); //切换成admin.php布局文件
     }
 }
 </pre>
-        其中，<span class="STYLE1">_module()</span>是模块的初始化函数，相当于它的__construct()。这里写模块的初始化代码。
+        其中，<span class="STYLE1">__module()</span>是模块的初始化函数，相当于它的__construct()。这里写模块的初始化代码。
 
 <strong>4、具体的控制器</strong>
          （1）全局控制器
@@ -203,7 +203,7 @@ class AdminModule extends CommonController
 
          （3）控制器类文件
                   控制器文件定义了控制器类，并且必须继承于根控制器，默认是Controller。
-                      （a）初始化方法_control()
+                      （a）初始化方法__control()
                                 该方法是控制器的初始化函数，控制器的所有动作执行前执行。
                       （b）控制器动作方法
                                 控制器动作可以独立成类，也可以直接写在控制器中，格式为动作名+Action，如indexAction，请参考<a href="动作Action的使用.html">动作Action的使用</a>。
@@ -220,7 +220,7 @@ use app\controller\Module;
 class HomeController extends Module
 {
     //初始化函数
-	protected function _control()
+	public function __control()
 	{
         //这里填写home控制器的初始化代码，其下的所有动作都会执行
     }
@@ -233,7 +233,7 @@ class HomeController extends Module
     }
 }
 </pre>
-                  其中，<span class="STYLE1">_control()</span>是控制器的初始化函数，不要用__construct()。
+                  其中，<span class="STYLE1">__control()</span>是控制器的初始化函数，不要用__construct()。
 
          （4）动作目录（actions）
                   存放控制器动作类文件，必须继承于当前控制器类。如果action代码太多或者业务多样，可以独立成类放在该目录。点击进入：<a href="动作Action的使用.html">动作Action的使用</a>。
@@ -250,33 +250,33 @@ use app\controller\home\HomeController;
 class IndexAction extends HomeController
 {
     //初始化函数
-    protected function _action()
+    public function __action()
 	{
         //这里填写index动作的初始化代码
     }
 
     //未提交表单的页面显示处理
-    protected function _display()
+    public function display()
 	{
     }
 
     //表单生成
-    protected function _form()
+    public function registerForms()
 	{
     }
 
     //Ajax处理
-    protected function _ajax()
+    public function ajax()
 	{
     }
 
     //提交表单后处理
-    protected function _submit()
+    public function submit()
 	{
     }
 
     //判断是否表单提交数据
-    protected function _isSubmit()
+    public function isSubmit()
 	{
     }
 }

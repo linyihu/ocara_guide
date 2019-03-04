@@ -88,16 +88,16 @@ $this->load(array('admin/guestbook/index.js'));
       上节中已经添加了删除链接，也添加了函数调用。
   
 <strong>3、编写AJAX后台代码</strong>
-      在开发者中心添加delete动作，并在其中添加_ajax()方法，在其中编写后台代码，如下：
+      在开发者中心添加delete动作，并在其中添加ajax()方法，在其中编写后台代码，如下：
 <pre class="brush: php;">
 class DeleteAction extends GuestbookController
 {
 	/**
 	 * 初始化
 	 */
-	public function _action(){}
+	public function __action(){}
 
-	public function _ajax()
+	public function ajax()
 	{
 		$id = Request::getPost('id');
 		$model = \Model\Guestbook::select($id);

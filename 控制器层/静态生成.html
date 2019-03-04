@@ -144,10 +144,10 @@
       （3）动作回调
           使用static控制器的gethtmldata动作回调。
           （a）使用控制动作类
-                   使用动作类时，回调要写在_action中。
+                   使用动作类时，回调要写在__action中。
 <pre class="brush: php;">class GethtmldataAction extends StaticController 
 {
-　　 protected function _action($module, $controller, $action, $params)
+　　 public function __action($module, $controller, $action, $params)
 	 {
       	 //代码同上
  	 }

@@ -35,13 +35,13 @@ class EditAction extends Controller
 	/**
 	 * 初始化
 	 */
-	public function _action()
+	public function __action()
 	{}
 
-	public function _form()
+	public function registerForms()
 	{}
 
-	public function _display()
+	public function display()
 	{
         //使用$this->request
         echo $this->request->isGet();
@@ -58,7 +58,7 @@ class EditAction extends Controller
     }
 
 	//提交后保存
-	public function _submit()
+	public function submit()
 	{
         //获取id参数
         $id = $this->request->getPost('id');

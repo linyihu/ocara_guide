@@ -66,15 +66,15 @@
 </pre>
 
       （3） 如何手动控制表单令牌的过期?
-                框架默认是在action类的_submit()方法执行以后，删除当前表单令牌，让表单令牌过期。
+                框架默认是在action类的submit()方法执行以后，删除当前表单令牌，让表单令牌过期。
                 如果想在此之前手动过期，就使用<span class="STYLE1">formManager</span>表单令牌对象的<span class="STYLE1">clear()</span>清除即可。
                 代码实例如下：
 <pre class="brush: php;">
 class AddAction extends ItemController
 {
-    protected function _action(){}
+    public function __action(){}
 
-    protected function _submit()
+    public function submit()
     {
         //处理掉提交的数据
         $this->model()->data()->save();
@@ -97,9 +97,9 @@ class AddAction extends ItemController
 <pre class="brush: php;">
 class AddAction extends ItemController
 {
-    protected function _action(){}
+    public function __action(){}
 
-    protected function _form()
+    public function registerForms()
     {
         $url = ocUrl($this->getRoute());
         $this->form('form_add')
