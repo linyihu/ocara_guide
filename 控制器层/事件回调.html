@@ -52,7 +52,7 @@ use Base\DatabaseModel;
 
 class OrdersService extends DatabaseModel
 {
-    public function __construct()
+    public function registerEvents()
     {
         //注册事件和处理器
         $this->event('afterUpdateStatus')
@@ -95,7 +95,7 @@ class UserLog
 </pre>
 
 <strong>四、事件触发</strong>
-     <span class="STYLE1">fire(params)</span>
+     <span class="STYLE1">fire(eventName[, params])</span>
 
 <pre class="brush: php;">
 namespace app\services;
@@ -117,8 +117,7 @@ class OrdersService extends DatabaseModel
 
         //触发事件
         $args = array($order, $oldStatus);
-        $order->event('afterUpdateStatus')
-              ->fire($args);
+        $order->fire('afterUpdateStatus', $args);
     }
 }
 </pre>

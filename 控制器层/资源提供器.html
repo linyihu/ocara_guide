@@ -56,13 +56,26 @@ class CacheGetConfig extends Resource
 </pre>
     然后在使用的地方调用：
 <pre class="brush: php;">
-//事件注册
-$this->event('get_config')->append('\services\resources\CacheGetConfig', array('type' => 'redis')));
+use Ocara\Core\Base;
 
-/*...*/
+class CacheFactory extends Base
+{
+    //事件注册
+    public function registerEvents()
+    {
+        $this->event('get_config')
+             ->append('\services\resources\CacheGetConfig', array('type' => 'redis')));
+    }
 
-//事件触发
-$cacheConfig = $this->event('get_config')->fire(); //会自动调用handler方法
+
+    /*...*/
+
+    //事件触发
+    public function getConfig()
+    {
+        $cacheConfig = $this->fire('get_config'); //会自动调用handler方法
+    }
+}
 </pre>
 
     或者在resource.php中配置：

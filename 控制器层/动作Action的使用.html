@@ -55,15 +55,11 @@ $("#browser_module").treeview({
 		<ul>
 		<li><span class="folder">item（item控制器目录）</span>
 			  <ul>
-					<li><span class="file">ItemController.php（控制器文件）</span></li>
-				  <li><span class="folder">actions（动作目录）</span>
-					<ul>
-						<li><span class="file">ListAction.php（index动作文件）</span></li>
-						<li><span class="file">AddAction.php（create动作文件）</span></li>
-						<li><span class="file">EditAction.php（update动作文件）</span></li>
-						<li><span class="file">DelAction.php（delete动作文件）</span></li>
-					</ul>
-					</li>
+					<li><span class="file">Controller.php（控制器文件）</span></li>
+					<li><span class="file">ListAction.php（index动作文件）</span></li>
+					<li><span class="file">AddAction.php（create动作文件）</span></li>
+					<li><span class="file">EditAction.php（update动作文件）</span></li>
+					<li><span class="file">DelAction.php（delete动作文件）</span></li>
 			  </ul>
 		</li>
 		<li><span class="file">Module.php（模块文件）</span></li>
@@ -154,7 +150,7 @@ class EditAction extends ItemController
 	    $this->assign('data', $data);
 	}
 
-	public function _from()
+	public function registerForms()
 	{
 	 	$userId = $this->request->getGet('user_id');
 	    $url = ocUrl('item/update', array('user_id' => $userId);
@@ -254,7 +250,7 @@ class EditAction extends ItemController
 	    $this->assign('data', $data);
 	}
 
-	public function _from()
+	public function registerForms()
 	{
 	    $url = ocUrl('item/update', array('user_id' => $userId);
 
@@ -286,15 +282,11 @@ class EditAction extends ItemController
 						<ul>
 							<li><span class="folder">item（item控制器目录）</span>
 							<ul>
-								<li><span class="file">ItemController.php（控制器文件）</span></li>
-								<li><span class="folder">actions（动作目录）</span>
-									<ul>
-										<li><span class="file">ListAction.php（index动作文件）</span></li>
-										<li><span class="file">AddAction.php（create动作文件）</span></li>
-										<li><span class="file">EditAction.php（update动作文件）</span></li>
-										<li><span class="file">DelAction.php（delete动作文件）</span></li>
-									</ul>
-								</li>
+								<li><span class="file">Controller.php（控制器文件）</span></li>
+								<li><span class="file">ListAction.php（index动作文件）</span></li>
+								<li><span class="file">AddAction.php（create动作文件）</span></li>
+								<li><span class="file">EditAction.php（update动作文件）</span></li>
+								<li><span class="file">DelAction.php（delete动作文件）</span></li>
 							</ul>
 							</li>
 							<li><span class="file">AdminModule.php（模块文件）</span></li>
