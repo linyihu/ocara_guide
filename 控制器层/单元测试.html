@@ -87,7 +87,7 @@ class TestFirst extends TestCase
 
     public function testUser(){
         $user = new Users();
-        print_r($user->findRow(1));
+        print_r($user->selectOne(1));
     }
 }
 </pre>
