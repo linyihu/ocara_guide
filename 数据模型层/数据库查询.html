@@ -95,7 +95,7 @@ $result = $detailModel->fields('detail_id, line, price')
 <strong>2、查询多条记录</strong>
      使用Model的getAll()或findAll方法可以查询多行记录：
             <span class="STYLE1">getAll([condition, option, debug])</span>
-            <span class="STYLE1">findAll([condition, option, debug])</span>
+            <span class="STYLE1">selectAll([condition, option, debug])</span>
      两者的区别是，getAll返回的数组中每个元素是记录数组或对象，而findAll返回的数组每个元素是记录的模型类实例。
      注：（1）一般地，没有分页时返回查询数据。
                   返回的是结果集数组，每条结果都是一个数组或对象，或实例。
@@ -166,7 +166,7 @@ $result = $userModel->where($where)
 	 ->orderBy($order)
 	 ->limit($limit)
 	 ->simple() //使用simple指定对象
-	 ->findAll();
+	 ->getAll();
 
 //返回模型实例数组
 $userModel = new \app\dal\models\User();
@@ -174,7 +174,7 @@ $result = $userModel->where($where)
      ->fields($fields)
 	 ->orderBy($order)
 	 ->limit($limit)
-	 ->findAll(); //使用findAll返回实例
+	 ->selectAll(); //使用findAll返回实例
 
 </pre>
 （2）统计不同状态status的男性用户(sex字段值为1)数量，使用where()设置条件
@@ -210,7 +210,7 @@ $userModel = new \app\dal\models\User();
 $result = $userModel->where($where)
      ->fields($fields)
 	 ->groupBy($group)
-     ->findAll(); //使用findAll返回实例
+     ->selectAll(); //使用findAll返回实例
 </pre>
 <strong>3、查询一条记录</strong>
         使用Model的getRow()方法可以查询一条记录：
@@ -282,7 +282,7 @@ $userModel = new \app\dal\models\User();
 $result = $userModel->where($where)
     ->fields($fields)
 	->orderBy($order)
-	->findRow(); //返回实例
+	->selectOne(); //返回实例
 </pre>
 （2）选择user_id为1用户的用户名和邮箱
 <pre class="brush: php;">
