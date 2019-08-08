@@ -4,7 +4,10 @@
     <bookmark url="file://$PROJECT_DIR$/控制器层/异常错误处理.html" line="109" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e9af443e-855c-4151-81f5-e33243d6efbc" name="Default" comment="" />
+    <list default="true" id="e9af443e-855c-4151-81f5-e33243d6efbc" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/数据模型层/事务处理.html" beforeDir="false" afterPath="$PROJECT_DIR$/数据模型层/事务处理.html" afterDir="false" />
+    </list>
     <ignored path="ocara_guide.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -14,56 +17,24 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
+  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
-  </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-509931738">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="10" />
-          <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.1" value="6" />
-          <entry key="project.open.time.18" value="1" />
-          <entry key="project.open.time.22" value="1" />
-          <entry key="project.open.time.32" value="1" />
-          <entry key="project.open.time.88" value="1" />
-          <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="12" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="html" value="67" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="HTML" value="67" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="html" value="10710" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="HTML" value="10710" />
-        </counts>
-      </usages-collector>
-    </session>
   </component>
   <component name="FavoritesManager">
     <favorites_list name="ocara_guide" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/数据模型层/数据库查询.html">
+        <entry file="file://$PROJECT_DIR$/数据模型层/事务处理.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-99">
-              <caret line="71" column="26" selection-start-line="71" selection-start-column="26" selection-end-line="71" selection-end-column="26" />
+            <state relative-caret-position="382">
+              <caret line="173" column="49" selection-start-line="173" selection-start-column="49" selection-end-line="173" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -87,6 +58,7 @@
       <find>表单提交</find>
       <find>_after</find>
       <find>query(</find>
+      <find>$_list</find>
     </findStrings>
     <replaceStrings>
       <replace>ocService()</replace>
@@ -98,6 +70,7 @@
       <replace>-&gt;</replace>
       <replace>after</replace>
       <replace>\app\dal\models\User</replace>
+      <replace>$list</replace>
     </replaceStrings>
     <dirStrings>
       <dir>D:\wwwroot\vendor\linyihu\ocara_guide</dir>
@@ -149,7 +122,6 @@
         <option value="$PROJECT_DIR$/数据模型层/查询缓存.html" />
         <option value="$PROJECT_DIR$/数据模型层/分库分表.html" />
         <option value="$PROJECT_DIR$/数据模型层/如何使用原生的sql语句.html" />
-        <option value="$PROJECT_DIR$/数据模型层/事务处理.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据库操作.html" />
         <option value="$PROJECT_DIR$/数据模型层/ORM模型的使用.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据模型的使用.html" />
@@ -158,24 +130,19 @@
         <option value="$PROJECT_DIR$/数据模型层/数据库的使用.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据库配置.html" />
         <option value="$PROJECT_DIR$/数据模型层/数据库查询.html" />
+        <option value="$PROJECT_DIR$/数据模型层/事务处理.html" />
       </list>
     </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="PhpServers">
     <servers />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="41" />
-    <option name="width" value="1692" />
-    <option name="height" value="1011" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="5" />
+    <option name="y" value="120" />
+    <option name="width" value="1940" />
+    <option name="height" value="1050" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -224,7 +191,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+    <configuration default="true" type="js.build_tools.gulp">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <gulpfile />
@@ -256,16 +223,21 @@
       <workItem from="1542122123771" duration="372000" />
       <workItem from="1542126276426" duration="1453000" />
       <workItem from="1543037251931" duration="2000" />
+      <workItem from="1561824528336" duration="1223000" />
+      <workItem from="1564852433412" duration="798000" />
+      <workItem from="1564898880386" duration="59000" />
+      <workItem from="1565275347142" duration="955000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="62299000" />
+    <option name="totallyTimeSpent" value="65334000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="4" y="96" width="1552" height="840" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21083692" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22252011" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -296,9 +268,6 @@
     <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
       <collection />
     </option>
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/控制器层/静态生成.html">
@@ -588,13 +557,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/数据模型层/事务处理.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="760">
-          <caret line="40" column="61" selection-start-line="40" selection-start-column="61" selection-end-line="40" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/数据模型层/数据库操作.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="494">
@@ -653,8 +615,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/数据模型层/数据库查询.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-99">
+        <state relative-caret-position="18">
           <caret line="71" column="26" selection-start-line="71" selection-start-column="26" selection-end-line="71" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/数据模型层/事务处理.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="173" column="49" selection-start-line="173" selection-start-column="49" selection-end-line="173" selection-end-column="49" />
         </state>
       </provider>
     </entry>

@@ -53,7 +53,7 @@
 //事务开始
 ocService()->transaction->begin();
 
-    $users = \app\dal\models\User::select(53290);
+    $users = \app\model\entity\database\UserEntity::select(53290);
     $users->avatar = 'test';
     $users->save();
 
@@ -62,28 +62,26 @@ ocService()->transaction->commit();
 </pre>
             回滚实例：
 <pre class="brush: php;">
-$userModel= new \app\dal\models\User();
-
 //事务开始
 ocService()->transaction->begin();
 
-	$users = new \app\dal\models\User();
+	$users = new \app\model\entity\database\UserEntity();
     $users->user_sn = '1236433231322131';
     $users->userName = '小刚';
     $result = $users->save();
     
-    //事务回滚（Transation的$_count置0，Transation的$_list置空）
+    //事务回滚（Transation的$count置0，Transation的$list置空）
     if (!$result) {
         $this->transaction->rollback();
     }
 
-    $goods = new \app\dal\models\Goods();
+    $goods = new \app\model\entity\database\GoodsEntity();
     $goods->goods_name = '小米手机';
     $goods->price = 1900;
     $goods->status = 1;
     $result = $goods->save();
     
-    //事务回滚（Transation的$_count置0，Transation的$_list置空）
+    //事务回滚（Transation的$count置0，Transation的$list置空）
     if (!$result) {
         $this->transaction->rollback();
     }
@@ -94,22 +92,20 @@ ocService()->transaction->commit();
 
             自动回滚实例：
 <pre class="brush: php;">
-$userModel= new \app\dal\models\User();
-
 //事务开始
 ocService()->transaction->begin();
 
-    $users = new \app\dal\models\User();
+    $users = new \app\model\entity\database\UserEntity();
     $users->user_sn = '1236433231322131';
     $users->userName = '小刚';
     $result = $users->save();
     
-    //事务回滚（Transation的$_count置0，Transation的$_list置空）
+    //事务回滚（Transation的$count置0，Transation的$list置空）
     if (!$result) {
         $this->transaction->rollback();
     }
 
-    $goods = new \app\dal\models\Goods();
+    $goods = new \app\model\entity\database\GoodsEntity();
     $goods->goods_name = '小米手机';
     $goods->price = 1900;
     $goods->status = 1;
@@ -122,12 +118,12 @@ ocService()->transaction->commit();
 
             ORM模型自动使用事务实例：
 <pre class="brush: php;">
-$users = new \app\dal\models\User();
+$users = new \app\model\entity\database\UserEntity();
 $users->user_sn = '333';
 $users->userName = '4554';
 $users->user_id = 53295;
 
-$userVerify = \app\dal\models\UserVerify::build();
+$userVerify = \app\model\entity\database\UserVerifyEntity()::build();
 $userVerify->verify_status = 3;
 $userVerify->verified_desc = 5533;
 
@@ -143,10 +139,10 @@ if (!$result) {
       嵌套事务中，子级事务成功提交，才会提交上级事务。
       如果任何一级子级事务代码抛错或者回滚事务，上级所有事务都不会提交。
       （1）嵌套事务原理
-             事务管理器使用事务计数属性变量$_count进行多级事务管理。
-             只有$_count为0时也就是最后一个commit()才是真正的数据库事务提交，其他的都是事务计数变量的增减而已。
+             事务管理器使用事务计数属性变量$count进行多级事务管理。
+             只有$count为0时也就是最后一个commit()才是真正的数据库事务提交，其他的都是事务计数变量的增减而已。
       （2）跨服务器事务原理
-             事务管理器使用$_list属性变量保存要进行事务处理的服务器连接的第一个使用者（数据库对象）
+             事务管理器使用$list属性变量保存要进行事务处理的服务器连接的第一个使用者（数据库对象）
              然后使用它来提交事务。因此，支持跨服务器事务处理。
     
       使用很简单，直接嵌套使用即可。
@@ -159,23 +155,23 @@ class UserService extends BaseService
 {
     public function handler()
     {
-        //一级事务开始（Transation的事务计数变量$_count+1，由0变为1）（没有数据库操作也可以）
-        ocService()->transaction->begin();
+        //一级事务开始（Transation的事务计数变量$count+1，由0变为1）（没有数据库操作也可以）
+        $this->transaction->begin(); //或者使用ocService()->transaction
 
-        //二级事务开始（Transation的$_count+1，变为2）
-        ocService()->->transaction->begin();
+        //二级事务开始（Transation的$count+1，变为2）
+        $this->transaction->begin();
 
             $users = \app\dal\models\User::select(53290);
             $users->avatar = 'test';
             $users->save();
 
-            //三级事务开始（Transation的$_count+1，变为3）
-            ocService()->->transaction->begin();
+            //三级事务开始（Transation的$count+1，变为3）
+            $this->transaction->begin();
 
                 $users = new \app\dal\models\User();
                 $users->user_sn = '1236433231322131';
                 $users->userName = '小刚';
-                $users->pushTransaction();  //手动提前推入事务池
+                $users->pushTransaction();  //也可以手动提前推入事务池
 
                 $goods = new \app\dal\models\Goods();
                 $goods->goods_name = '小米手机';
@@ -184,24 +180,24 @@ class UserService extends BaseService
                 $goodResult = $goods->save();
 
                 $result = $users->save();
-                //事务回滚（Transation的$_count置0，Transation的$_list置空）
+                //事务回滚（Transation的$count置0，Transation的$list置空）
                 if (!$result) {
                     $this->transaction->rollback();
                 }
 
-                //事务回滚（Transation的$_count置0，Transation的$_list置空）
+                //事务回滚（Transation的$count置0，Transation的$list置空）
                 if (!$goodResult) {
                     $this->transaction->rollback();
                 }
 
-            //三级事务提交（提交成功后Transation的$_count会-1，为2）
-            ocService()->->transaction->commit();
+            //三级事务提交（提交成功后Transation的$count会减1，为2）
+            $this->transaction->commit();
 
-        //二级事务提交（提交成功后Transation的$_count会-1，为1）
-        ocService()->->transaction->commit();
+        //二级事务提交（提交成功后Transation的$count会减1，为1）
+        $this->transaction->commit();
 
-        //一级事务提交（真正进行数据库提交，提交成功后Transation的$_count置0，$_list置空）
-        ocService()->->transaction->commit();
+        //一级事务提交（真正进行数据库提交，提交成功后Transation的$count置0，$list置空）
+        $this->transaction->commit();
     }
 }
 </pre>
