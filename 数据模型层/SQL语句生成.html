@@ -127,9 +127,7 @@ $userInfo = $itemModel->where(1)
 </pre>
 
 <strong>  3、复杂查询条件</strong>
-      <span class="STYLE1">cWhere(operator, field, value[, alias])</span>
-      <span class="STYLE1">cHaving(operator, field, value[, alias])</span>
-      其中的cHaving()是分组条件。
+      复杂条件还是用where()，orWhere()，having()，orHaving()，只不过要传三个参数。
       函数说明：如果条件数组的比较符号不是等于号“=”时，可使用该方法生成复杂查询条件，并且可以多次使用。
       参数说明：
 </pre>
@@ -160,20 +158,20 @@ $userInfo = $itemModel->where(1)
       （1）查出ID大于或等于53的商品
 <pre class="brush: php;">
 $itemModel = new \Model\Item();
-$itemData = $itemModel->cWhere('>=', 'id', 53)
+$itemData = $itemModel->where('id', '>=', 53)
 					  ->getAll();
 </pre>
       （2）查出数组ID值为1,5,33的商品
 <pre class="brush: php;">
 $itemModel = new \Model\Item();
-$itemData = $itemModel->cWhere('in', 'id', array(1,5,33))
+$itemData = $itemModel->where('id', 'in', array(1,5,33))
 					  ->getAll();
 </pre>
       （2）查出出ID大于或等于53，或者数组ID值为1,5,33的商品
 <pre class="brush: php;">
 $itemModel = new \Model\Item();
-$itemData = $itemModel->cWhere('>=', 'id', 53)
-		->cWhere('OR/in', 'id', array(1,5,33))
+$itemData = $itemModel->where('id', '>=', 53)
+		->orWhere('id', 'in', array(1,5,33))
 		->getAll();
 </pre>
 
@@ -225,7 +223,7 @@ $userInfo = $itemModel->where(1)
 </pre>
 
 <strong>  4、更多条件</strong>
-      <span class="STYLE1">mWhere(where[, sign])</span>
+      <span class="STYLE1">moreWhere(where[, sign])</span>
       函数说明：此方法是在已有的整个where语句最后加上以sign参数指定的符号联接的查询条件，可以多次使用。
       参数说明：
 </pre>
@@ -249,7 +247,7 @@ $userInfo = $itemModel->where(1)
 <pre class="brush: php;">
 $itemModel = new \Model\Item();
 $itemModel->where(array('id'=>1))
-		  ->mWhere(&quot;IF(status = '0', 0, 1)&quot;, 'AND')
+		  ->moreWhere(&quot;IF(status = '0', 0, 1)&quot;, 'AND')
 	 	  ->getRow();
 </pre>
        会在整个Where语句最后加上“ AND IF(status = '0', 0, 1)”的条件。

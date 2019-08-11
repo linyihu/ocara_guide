@@ -63,7 +63,7 @@ $userModel->save($extraData); //更新记录，会合并属性设置和$extraDat
 数据模型Model进行SQL过滤的情形，如下所示：
 <strong>（1）进行安全过滤的情况</strong>
        （a）where()的条件为字段数组时，其字段值会进行sql安全过滤；
-       （b）使用cWhere()时，其条件参数为字符串时会进行过滤，若为字段数组时，也对该字段值进行sql安全过滤。
+       （b）使用where()作复杂条件时，其条件参数为字符串时会进行过滤，若为字段数组时，也对该字段值进行sql安全过滤。
        （c）使用save()、create()和update()时，添加或修改的字段值会进行SQL安全过滤。
 <strong>（2）不进行安全过滤的情况</strong>
        （a）where()的条件参数为字符串时；
