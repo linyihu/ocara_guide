@@ -37,8 +37,8 @@
 	<tr>
 		<td>class</td>
 		<td>必需。数据表模型类名或关联配置名。<br/>
-			（1）数据表模型类名，如\Model\User;<br/>
-			（2）关联配置名，配置在resource/conf/model中的模型配置$CONF['JOIN']。
+			（1）数据表模型类名，如\app\model\database\User;<br/>
+			（2）关联配置名，配置在application/config/model中的模型配置$CONF['JOIN']。
 		</td>
 	</tr>
 	<tr>
@@ -54,22 +54,22 @@
       实例如下，查询商品的名称和分类名称信息：
 <pre class="brush: php;">
 //数据表模型类联接查询
-$itemModel = new \Model\Item();
-$result = $itemModel->leftJoin('\Model\Category', 'b', 'a.category_id=b.id')
+$itemModel = new \app\model\database\Item();
+$result = $itemModel->leftJoin('\app\model\database\Category', 'b', 'a.category_id=b.id')
       				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('b.name as category_name')
       				->getAll();
 
 //关联配置联接查询（使用别名）
-$itemModel = new \Model\Item();
-$result = $itemModel->leftJoin('itemCatery', 'b') //在resource/conf/model中的item.php配置
+$itemModel = new \app\model\database\Item();
+$result = $itemModel->leftJoin('itemCatery', 'b') //在application/config/model中的item.php配置
       				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('b.name as category_name')
       				->getAll();
 
 //关联配置联接查询（不使用别名）
-$itemModel = new \Model\Item();
-$result = $itemModel->leftJoin('itemCatery') //在resource/conf/model中的item.php配置
+$itemModel = new \app\model\database\Item();
+$result = $itemModel->leftJoin('itemCatery') //在application/config/model中的item.php配置
       				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('itemCatery.name as category_name')
       				->getAll();
@@ -104,7 +104,7 @@ $where = array(
 );
 
 //查询结果
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $userInfo = $itemModel->where($where)
 					  ->getRow();
 </pre>
@@ -112,7 +112,7 @@ $userInfo = $itemModel->where($where)
 <pre class="brush: php;">$userName = Request::getGet('username');
 
 //查询
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $userInfo = $itemModel->where(&quot;user_name='{$userName}'&quot;)
 					  ->getRow();
 </pre>
@@ -120,7 +120,7 @@ $userInfo = $itemModel->where(&quot;user_name='{$userName}'&quot;)
 <pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
 
 //查询
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $userInfo = $itemModel->where(1)
 	->orWhere(&quot;user_name='{$userName}'&quot;)
 	->getRow();
@@ -157,19 +157,19 @@ $userInfo = $itemModel->where(1)
       实例如下：
       （1）查出ID大于或等于53的商品
 <pre class="brush: php;">
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $itemData = $itemModel->where('id', '>=', 53)
 					  ->getAll();
 </pre>
       （2）查出数组ID值为1,5,33的商品
 <pre class="brush: php;">
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $itemData = $itemModel->where('id', 'in', array(1,5,33))
 					  ->getAll();
 </pre>
       （2）查出出ID大于或等于53，或者数组ID值为1,5,33的商品
 <pre class="brush: php;">
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $itemData = $itemModel->where('id', '>=', 53)
 		->orWhere('id', 'in', array(1,5,33))
 		->getAll();
@@ -208,14 +208,14 @@ $itemData = $itemModel->where('id', '>=', 53)
       （1）键值数组条件（系统自动进行安全过滤）
 <pre class="brush: php;">
 //查询结果
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $userInfo = $itemModel->between('id', 1, 10)
 					  ->getRow();
 </pre>
       （2）OR条件（对变量进行SQL安全过滤）
 <pre class="brush: php;">
 //查询
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $userInfo = $itemModel->where(1)
     ->where(array('id' => 29))
 	->orBetween('id', 1, 10)
@@ -245,7 +245,7 @@ $userInfo = $itemModel->where(1)
       实例如下：
              查出ID为1的商品，如果商品的状态为0则不查询，可以使用status &lt;&gt; '0'，也可以使用IF(status = '0', 0, 1)条件，以下是第二种条件方案：
 <pre class="brush: php;">
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $itemModel->where(array('id'=>1))
 		  ->moreWhere(&quot;IF(status = '0', 0, 1)&quot;, 'AND')
 	 	  ->getRow();
@@ -276,7 +276,7 @@ $itemModel->where(array('id'=>1))
       实例如下：
             查出用户user1的用户和邮箱信息。
 <pre class="brush: php;">
-$userModel = new \Model\User();
+$userModel = new \app\model\database\User();
 $userData = $userModel->where(array('user_name' => 'user1'))
 					  ->leftJoin('user_group', 'b', 'a.gid=b.id')
 	 				  ->fields('{distinct}') // 字段选项
@@ -305,7 +305,7 @@ $userData = $userModel->where(array('user_name' => 'user1'))
       实例如下：
             查出分类ID的商品，按照添加时间降序排序：
 <pre class="brush: php;">
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $itemData = $itemModel->where(array('category_id' => $category_id))
 					  ->orderBy('create_time DESC')
 					  ->getAll();
@@ -329,7 +329,7 @@ $itemData = $itemModel->where(array('category_id' => $category_id))
       实例如下：
             统计商品分类的商品数：
 <pre class="brush: php;">
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $staticData = $itemModel->fields('count(id)	as num')
 						->groupBy('category_id')
 						->getAll();
@@ -365,7 +365,7 @@ $where = array(
 );
 
 //查询结果
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $userInfo = $itemModel->where($where)
 					  ->getRow();
 </pre>
@@ -373,7 +373,7 @@ $userInfo = $itemModel->where($where)
 <pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
 
 //查询结果
-$itemModel = new \Model\Item();
+$itemModel = new \app\model\database\Item();
 $userInfo = $itemModel->where(&quot;user_name='{$userName}'&quot;)
 					  ->getRow();
 </pre>
@@ -409,7 +409,7 @@ class ListAction extends ItemController
 	    //设置分页
 		$this->pager()->config('page', 10, 10);
 		
-		$itemModel = new \Model\Item();
+		$itemModel = new \app\model\database\Item();
 		$where = array('category_id' => 2);
 		
 		$result = $itemModel
@@ -468,7 +468,7 @@ class ListAction extends ItemController
       如果设置了读写分离数据库配置，使用该方法则规定使用主库进行查询。
       实例如下：
 <pre class="brush: php;">
-$userModel = new \Model\User();
+$userModel = new \app\model\database\User();
 $userModel->where(array('type' => 2))
 	->master() //规定使用主库查询
 	->getAll();

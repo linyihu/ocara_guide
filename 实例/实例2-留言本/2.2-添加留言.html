@@ -88,7 +88,7 @@ class IndexAction extends GuestbookController
 	//Ìá½»±£´æ
 	public function submit()
 	{
-		$model = $this->model('\Model\Guestbook');
+		$model = $this->model('\app\model\database\Guestbook');
 		$model->data();
 		$model->save();
 		echo  'success';

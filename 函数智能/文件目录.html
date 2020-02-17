@@ -16,7 +16,7 @@
 </pre>
 <div class="function">
 <pre><strong>1、ocImport(path[, required, once, vars])</strong>
-     加载php文件。
+     使用include加载php文件。加载成功会有返回。
      参数说明：
 <table>
 	<tr class="head">
@@ -29,15 +29,15 @@
 	</tr>
 	<tr>
 		<td>required</td>
-		<td>可选。是否必需。默认为TRUE，没有返回值。此时如果文件存在则直接加载，否则会提示错误；如果为FALSE, 有返回值。当文件存在时返回include或include_once函数的返回值，否则返回FALSE。</td>
+		<td>可选。是否必需。默认为true，如果文件不存在，则提示错误。</td>
 	</tr>
 	<tr>
 		<td>once</td>
-		<td>可选。是否使用include_once函数加载而不是include。默认为TRUE，表示使用include_once函数加载，否则用include函数加载。<br/>注：如果加载的文件中有定义的变量要多次在函数或方法中加载使用，则要用include函数，否则可能无法使用这个变量，比如配置文件。</td>
+		<td>可选。是否使用include_once函数加载。默认为true。</td>
 	</tr>
 	<tr>
 	  <td>vars</td>
-	  <td>可选。变量数组。这个数组是传递的一些自定义变量，会在加载文件中被使用到。ocImport()会在加载前，通过extract()生成这些变量。</td>
+	  <td>可选。变量数组。这个数组是传递到加载文件的一些自定义变量，类似于模板变量。</td>
   </tr>
 </table>
       实例如下：
@@ -120,7 +120,7 @@ echo ($path);
 	</tr>
 	<tr>
 		<td>check</td>
-		<td>可选。是否优化文件名。默认为FALSE，如果为TRUE，会进行乱码处理，并且可以返回优化处理后的路径名。<br/>如果您的Ocara框架使用的是UTF-8版本，由于中文文件名可能乱码，所以在UTF-8的编码下需要进行乱码处理。所以如果文件路径filePath中可能存在中文，请将该参数置为TRUE，由该函数自行处理乱码，从而准确判断是否存在文件。</td>
+		<td>可选。是否优化文件名。默认为false，如果为true，会进行乱码处理，并且可以返回优化处理后的路径名。<br/>如果您的Ocara框架使用的是UTF-8版本，由于中文文件名可能乱码，所以在UTF-8的编码下需要进行乱码处理。所以如果文件路径filePath中可能存在中文，请将该参数置为true，由该函数自行处理乱码，从而准确判断是否存在文件。</td>
 	</tr>
 </table>
      实例如下：
@@ -187,6 +187,46 @@ echo $result;
 </pre>
 <pre><strong>5、ocPath(type[, path])</strong>
       获取完整的文件或目录路径。
+      具体的配置是APP_PATH_INFO的belongs配置项。
+      配置如下，键名为空表示根目录：
+<pre class="brush: php;">
+array(
+	'config'        => 'application',
+	'console'  	    => 'application',
+	'controller'  	=> 'application',
+	'lang'          => 'application',
+	'model'         => 'application',
+	'modules'  	    => 'application',
+	'service'  	    => 'application',
+	'view'  	  	=> 'application',
+
+	'entity'        => 'application/model',
+	'enums'         => 'application/model',
+	'cache'         => 'application/cache',
+	'database'      => 'application/database',
+
+	'tools'  	    => '', //根目录
+	'data'          => '', //根目录
+	'doc'           => 'data',
+	'fields'        => 'data',
+
+	'runtime'       => '', //根目录
+	'temp'          => 'data/runtime',
+	'logs'          => 'data/runtime',
+	'sessions'      => 'data/runtime',
+
+	'support'	    => '', //根目录
+	'functions'	    => '', //根目录
+	'pass'			=> '', //根目录
+
+	'attachments' 	=> 'public',
+	'src'           => 'public',
+	'static'  	  	=> 'public',
+	'css'  		  	=> 'public/src',
+	'images'  	  	=> 'public/src',
+	'js'  		  	=> 'public/src'
+)
+</pre>
       参数说明：
 <table>
 	<tr class="head">
@@ -195,15 +235,16 @@ echo $result;
 	</tr>
 	<tr>
 		<td>type</td>
-		<td>要获取的类型</td>
+		<td>要获取的类型。该参数可以取上面配置中的键名。<br/>
+		</td>
 	</tr>
 	<tr>
 		<td>path</td>
 		<td>具体的路径</td>
 	</tr>
 </table>
+
       实例如下：
-</pre>
 <pre class="brush: php;">
 /*
  * 会输出当前web应用目录下的required/data/test/test1/test.txt的完整路径
@@ -249,7 +290,7 @@ echo ocBasename($path);
 </pre>
 <pre><strong>8、ocFunc(filePath)</strong>
       加载函数文件。框架会从以下目录中按照优先级寻找并加载文件：
-	  （1）当前应用目录的service/functions下面的函数库或文件。
+	  （1）当前应用根目录的functions下面的函数库或文件，没有functions目录请自动添加。
 	  （2）框架系统目录system/service/functions下面的函数文件，这是框架提供的扩展函数库。
 	  （3）框架扩展目录extension/service/functions下面的函数文件，这是我们自己放入的可供多个应用调用的公共函数库目录。
       参数同上ocFile()。

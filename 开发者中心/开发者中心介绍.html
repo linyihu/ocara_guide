@@ -18,7 +18,7 @@
 <h2>开发者中心的使用</h2>
 
 <strong>（1）开启开发模式</strong>
-     在resource/conf/develop.php中，将$CONF['SYS_MODE']改为'develop'。应用上线在生产环境下，要将这个改为其他任意值即可。
+     在application/config/system.php中，将$CONF['SYS_MODE']改为'develop'。应用上线在生产环境下，要将这个改为其他任意值即可。
 <pre class="brush: php;">/*
  * 系统模式配置
  * 分为开发模式和运营模式两种
@@ -27,7 +27,7 @@
 $CONF['SYS_MODEL'] 	= 'develop'; 	
 </pre>
 <strong>（2）进入开发者中心</strong>
-     进入开发者中心，要使用开发者中心标志。该标志是在resource/conf/develop.php中修改$CONF['DEV_SIGN']，默认为'dev'，如下所示：
+     进入开发者中心，要使用开发者中心标志。该标志是在application/config/system.php中修改$CONF['DEV_SIGN']，默认为'dev'，如下所示：
 
 <pre class="brush: php;">/*
  * 开发者中心标志配置

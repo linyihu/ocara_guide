@@ -30,7 +30,7 @@
     <strong>1、配置验证规则</strong>
           要进行表单验证，首先要进行表单验证规则配置。
           （1）配置文件所在目录
-                 配置文件是在resource/conf/model目录中。
+                 配置文件是在application/config/model目录中。
                  这个目录类似于application/model目录，其中的配置文件一般都是默认数据库default的数据表模型配置。而其子目录则是非默认数据库的数据表
            模型的字段配置，子目录名是该数据库服务器名称。
           （2）验证规则配置
@@ -104,7 +104,7 @@ class UserController extends Controller
 	//验证用户名是否存在
 	public function existsusernameAction($field, $value, $index)
 	{
-		$userModel = $this->model('\Model\User');
+		$userModel = $this->model('\app\model\database\User');
 		$result = $userModel->existsUserName($value);
 		
 		//错误时返回字符串
@@ -123,7 +123,7 @@ class ExistsusernameAction extends UserController
 {
 	public function __action($field, $value, $index)
 	{
-		$userModel = $this->model('\Model\User');
+		$userModel = $this->model('\app\model\database\User');
 		$result = $userModel->existsUserName($value);
 		
 		//错误时返回字符串
@@ -161,7 +161,7 @@ class LoginAction extends UserController
      {   
          $this->form('form_bbs_edit')
 			  ->init(ocUrl('/bbs/user/login'))
-			  ->model('\Model\Bbs\user', 'user');
+			  ->model('\app\model\database\Bbs\user', 'user');
      } 
 	 
 	 public function display(){}
@@ -195,7 +195,7 @@ class CreateAction extends ItemController
 			)
 		)
 		->upload()
-		->model('\Model\Item'); //一定在这里指定模型配置
+		->model('\app\model\database\Item'); //一定在这里指定模型配置
 	}
 
 	public function display()
@@ -235,7 +235,7 @@ class ItemController extends Controller
 		)
 		->validateForm(false) //取消自动验证
 		->upload()
-		->model('\Model\Item'); //一定在这里指定模型配置
+		->model('\app\model\database\Item'); //一定在这里指定模型配置
 
         if ($this->_isPost) {
             //手动验证表单
@@ -254,7 +254,7 @@ class ItemController extends Controller
         当表单验证出错，Ocara会抛出验证出错误，比如“用户名不能为空”等等。但其实，如果没有配置字段的提示文本，是不会显示这样的友好提示
 的， 而是显示成“username不能为空”，直接提示字段名称，这体验对于用户来说显然是不友好的。所以，我们需要配置一下字段提示文本。
     （1）配置文件所在的目录
-            配置文件是在resource/lang/model目录中。
+            配置文件是在application/lang/model目录中。
             lang目录其实就是我们的语言目录。字段提示文本要在其子目录model中添加。目录结构与上面所述的配置规则文件目录类似。
     （2）配置字段提示文本
 	如上例中的bbs/user表，我们在model中添加bbs目录，并在bbs目录添加user.php文件，文件内容如下代码：

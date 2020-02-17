@@ -113,7 +113,7 @@ class IndexAction extends UserController
         );
 
         //查询用户列表，执行分库分表
-        $userModel = $this->model('\Model\User');
+        $userModel = $this->model('\app\model\database\User');
 		$userList = $userModel->sharding($shardingData)
                               ->orderBy('create_time DESC')
                               ->limit(0, 100)

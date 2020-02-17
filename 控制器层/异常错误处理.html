@@ -110,7 +110,7 @@ class IndexAction extends TestController
         1、框架默认处理方式
             （1）输出打印错误
                            框架有自己的错误显示页面。如果不满足需求，可以通过事件指定输出页面。
-                           假设要使用myerror类的output方法来显示错误，要在develop.php配置文件中修改配置如下：
+                           假设要使用myerror类的output方法来显示错误，要在system.php配置文件中修改配置如下：
 <pre class="brush: php;">
 /*
  * 错误输出事件
@@ -122,7 +122,7 @@ class IndexAction extends TestController
 </pre>
             （2）设置哪些错误类型要输出
                    异常抛出的错误都会输出错误。
-                   但是程序错误需要配置develop.php文件中ERROR_HANDLER的except_error_list选项排除一些不想让框架输出的错误，而使用PHP原生的方法输出。
+                   但是程序错误需要配置system.php文件中ERROR_HANDLER的except_error_list选项排除一些不想让框架输出的错误，而使用PHP原生的方法输出。
                    实例如下，
                           如果使用trigger_error()抛出错误：
 
@@ -165,7 +165,7 @@ class ExceptionHandler extends Base
     }
 }
 </pre>
-                    然后，在conf/develop.php中配置自定义回调，如下所示：
+                    然后，在config/system.php中配置自定义回调，如下所示：
 
 <pre class="brush: php;">
 $CONF['CALLBACK']['error_log'] = 'ExceptionHandler::writeLog';
@@ -194,7 +194,7 @@ if (empty($itemInfo)) {
 }
 </pre>
 <strong>四、错误提示的语言配置</strong>
-        错误提示的语言配置，一般是在resource/lang及其子目录control或者model中。
+        错误提示的语言配置，一般是在application/lang及其子目录control或者model中。
         通常有两种配置格式：
         （1）错误数组
                  一般用于错误提示，是由错误码和错误文本组成的数组。比如：array(1201, 'Session路径设置出错。请检测权限或路径!')。
@@ -210,7 +210,7 @@ if (empty($itemInfo)) {
                  一般只是作为语言文本，当然也可以作为错误提示，只是缺少错误码。比如：'Session路径设置出错。请检测权限或路径!'。
                  作为正常语言文本时，要用<span class="STYLE1">ocLang()</span>函数获取该文本的语言配置。
                  实例如下，
-                       假设我们在语言目录根文件resource/lang/base.php中做的语言配置，代码如下：
+                       假设我们在语言目录根文件application/lang/base.php中做的语言配置，代码如下：
 <pre class="brush: php;">/**
 /**
  * Ocara base language config

@@ -43,7 +43,7 @@ $(document).ready(function(){
     比如整个应用有一个全局默认的服务定位器，可以使用ocService()来调用。例如调用Request类，可以通过ocService()->request或者ServiceProvider::getDefault()。
 
   2、服务提供器与容器IOC的关系和区别：
-    （1）服务提供器是通过容器进行类对象的依赖注入和管理，每个服务提供器都有一个<strong>私有的容器$_container</strong>；
+    （1）服务提供器是通过容器进行类对象的依赖注入和管理，每个服务提供器都有一个<strong>私有的容器属性$container</strong>；
     （2）服务提供器是对容器的封装。
 <pre class="brush: php;">
 use Ocara\Core\ServiceProvider;
@@ -55,9 +55,9 @@ $username = ServiceProvider::getDefault()->getPost('username');
 $username = ocService()->request->getPost('username');
 </pre>
 
-<strong>一、服务提供器的初始化</strong>
+<strong>一、服务提供器的初始化和服务注册</strong>
 1、初始化过程
-    新建一个服务提供器时，会进行如下几步：
+     新建一个服务提供器时，会进行如下几步：
     （a）设置属性数据setProperty（）
     （b）新建一个依赖注入容器setContainer（）
     （c）注册服务register()
@@ -80,7 +80,7 @@ $username = ocService()->request->getPost('username');
     }
 </pre>
     2、服务提供器类的生成
-（1）继承基础服务提供器
+（1） 新建一个服务提供器
     新建一个服务提供器时，要继承Ocara\Core\ServiceProvider.
 <pre class="brush: php;">
 use Ocara\Core\ServiceProvider;
@@ -103,7 +103,7 @@ class UserRoleManager extends ServiceProvider
      */
     public function register()
     {
-        $this->_container->bindSingleton('userRole', '\Providers\User\Role');
+        $this->container->bindSingleton('userRole', '\Providers\User\Role');
     }
 }
 
@@ -117,7 +117,8 @@ class UserRoleManager extends ServiceProvider
 {
     public function register()
     {
-        $this->_container->bindSingleton('userRole', '\Providers\User\Role');
+        $this->container->bindSingleton('userRole', '\Providers\User\Role'); //单例模式
+        $this->container->bind('userInfo', '\Providers\User\UserInfo'); //非单例模式
     }
 
     /**
@@ -131,29 +132,7 @@ class UserRoleManager extends ServiceProvider
 </pre>
 
 <strong>二、服务提供器的使用</strong>
-
-    1、使用属性注入
-    在服务提供器内部，可以使用结构函数中传入的属性数据。并且属性只能在内部使用。
-    <pre class="brush: php;">
-use Ocara\Core\ServiceProvider;
-
-class UserRoleManager extends ServiceProvider
-{
-    public function register()
-    {
-        $this->_container->bindSingleton('userRole', '\Providers\User\Role');
-    }
-
-    public function init()
-    {
-
-        $userId = $this->userId;   //这个属性是新建服务器提供器对象时传入参数设置的
-        $this->userRole->setRole(array('users',  $userId));
-    }
-}
-</pre>
-    2、使用服务类
-    无论是在服务提供器内部还是外部，都可以使用服务提供器中封装的类。
+    全局默认服务提供器可通过ocService()获取。
 <div class="function">
 <pre><strong>（1）用属性获取服务对象</strong>
     使用服务提供器的属性可以获取一个服务类对象。
@@ -173,7 +152,7 @@ $userRole = $manager->userRole;
 
  </pre>
 <pre><strong>（2）loadService(name[, params, deps])</strong>
-  获取服务实例，如果没有并且私有容器或全局容器已注册过，则加载该类例并储存；否则返回null。
+  加载并获取服务实例，如果没有并且私有容器或全局容器已注册过，则加载该类例并储存；否则返回null。
   如果容器注册为单例模式，则获取的永远是同一个实例对象。
   参数说明：
  </pre>
@@ -249,7 +228,7 @@ $userRole = $manager->createService('userRole', $params);
 </pre>
 
 <pre><strong>（5）canService(name)</strong>
-   检测服务组件能否加载。如果服务已加载，或者当前容器中存在该类，或者全局容器ocContainer()中存在该类时，返回true。
+   检测是否可提供服务组件。如果服务已加载，或者当前容器中存在该类，或者全局容器ocContainer()中存在该类时，返回true。
   参数说明：
  </pre>
 <table>
@@ -273,7 +252,7 @@ echo $manager->canService('userRole');
 </pre>
 
 <pre><strong>（6）hasService(name)</strong>
-   检测是否加载服务组件。如果服务已加载返回true。
+   检测服务组件是否存在。如果服务已加载返回true。
   参数说明：
  </pre>
 <table>
@@ -296,6 +275,7 @@ $manager = new UserRoleManager();
 echo $manager->hasService('request');
 
 //如果UserRoleManager已注册该实例，返回true
+$manager->request; //获取实例
 echo $manager->hasService('userRole');
 </pre>
 

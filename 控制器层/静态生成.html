@@ -27,25 +27,46 @@
 
 <strong>1、配置URL路由格式</strong>
        静态生成，不是全站都要静态生成，所以，我们在做静态生成时，要确定哪些页面要静态生成。
-       我们需要在required/conf/static.php中进行静态生成的配置。
-       静态配置分成route、map和params三项，分别是$CONF['STATIC']的三个数组键。
-（1）配置路由格式
-         配置项是$CONF['STATIC']['route']。
+       我们需要在application/conf/static.php中STATIC的route、map和params三项配置。
+<pre class="brush: php;">
+/*
+ * ----------------------------------------------------------------------------
+ * 开发级配置-静态生成
+ * ----------------------------------------------------------------------------
+ */
+return array(
+    /**
+     * 分隔符
+     */
+    'delimiter' => '-',
+
+    /**
+     * 路由格式
+     */
+    'route' => '',
+
+    /**
+     * 参数格式
+     */
+    'params' => array(),
+);
+</pre>
+（1）配置路由格式（route）
          说明：
               {c}代表控制器，{a}代表动作，{p}表示其他参数。
               分隔符只能是下划线"-"和顺斜杠"/"。
          具体实例：
                 实例1，假设路由格式为http://域名/控制器/动作/其他参数，配置如下：
-<pre class="brush: php;">$CONF['STATIC']['route'] = '{c}/{a}/{p}';</pre>                实例2,，假设路由格式为http://域名/控制器/动作-其他参数，配置如下：
-<pre class="brush: php;">$CONF['STATIC']['route'] = '{c}/{a}-{p}';</pre>             
+<pre class="brush: php;">'route' => '{c}/{a}/{p}';</pre>                实例2,假设路由格式为http://域名/控制器/动作-其他参数，配置如下：
+<pre class="brush: php;">'route' => '{c}/{a}-{p}';</pre>
 </pre><table class="hint">
 	<tr class="head">
 		<td><h2>注意：</h2>模块是不需要配置的，因为模块是强制使用顺斜杠"/"将其与后面的参数分隔的。</td>
 	</tr>
 </table>
 <pre>
-（2）配置URL的查询字符串参数格式
-         配置项是$CONF['STATIC']['params']，是多维数组。
+（2）配置URL的查询字符串参数格式（params）
+         该配置项是多维数组。
          说明：
              （a）模块、控制器和动作参数都作为数组键名。
              （b）其他的参数字段都要用花括号括起来。并且以斜杠"/"或英文横杠“-”等分隔。
@@ -53,26 +74,28 @@
                                  也就是说其左边参数字符串会作为要保存的目录名称。 比如，若配置成&quot;{id}/{fid}-{tid}&quot;，那么生成静态时会将静态文件保存到id字段命名的目录中。
                        （a2）”-“为参数分隔符（可修改）
                                  如果不想用“-”而希望使用别的分隔符，则可以配置<span class="brush: php;">$CONF['STATIC']['</span>delimiter<span class="brush: php;">']选项</span>。 比如以下划线“_”分隔，如下所示：
-<pre class="brush: php;">$CONF['STATIC']['delimiter'] = '_';  </pre>
+<pre class="brush: php;">'delimiter' => '_';  </pre>
          具体实例，假设上面的路由格式配置为'{c}/{a}-{p}'，有如下参数配置：
 		 
-<pre class="brush: php;">$CONF['STATIC']['params'] = array(
-	//前台论坛帖子控制器
-	'thread' => array(
-		'index'   => '{id}-{fid}-{tid}', //参数格式会是：id-fid-tid，访问地址会是http://域名/home/index-1-2-25.html
-		'read'    => '{id}-{fid}'				//参数格式会是：id-fid，访问地址会是http://域名//home/read-1-2.html
-	),
-	//论坛会员中心模块ucenter
-	'ucenter' => array(
-        //我的回帖
-		'repost' => array(            
-			'list'=> '{fid}/{tid}'  //参数格式会是：tid，静态页面访问地址会是http://域名/bbs/thread/read/12/2.html
-		),
-        //我的帖子
-		'thread' => array(        
-			'list' => '{fid}' //参数格式会是：fid-tid，，静态页面访问地址会是http://域名/bbs/forum/list-2.html
-		)
-	)
+<pre class="brush: php;">
+    'params' => array(
+        //前台论坛帖子控制器
+        'thread' => array(
+            'index'   => '{id}-{fid}-{tid}', //参数格式会是：id-fid-tid，访问地址会是http://域名/home/index-1-2-25.html
+            'read'    => '{id}-{fid}'				//参数格式会是：id-fid，访问地址会是http://域名//home/read-1-2.html
+        ),
+        //论坛会员中心模块ucenter
+        'ucenter' => array(
+            //我的回帖
+            'repost' => array(
+                'list'=> '{fid}/{tid}'  //参数格式会是：tid，静态页面访问地址会是http://域名/bbs/thread/read/12/2.html
+            ),
+            //我的帖子
+            'thread' => array(
+                'list' => '{fid}' //参数格式会是：fid-tid，，静态页面访问地址会是http://域名/bbs/forum/list-2.html
+            )
+        )
+    )
 );
 </pre>
 <strong>2、回调函数、类方法或路由</strong>
@@ -89,7 +112,7 @@
      if ($controller == 'thread') {
            if ($action == 'list')  {
                  //从数据库中查询路由
-                $class = '\Model\\' . $controller;
+                $class = '\app\model\database\\' . $controller;
           		 $model = new $class();
                  $fields = implode(',', $params);
                  return $model->fields($fields)->getAll();
@@ -110,7 +133,7 @@
 	 if ($controller == 'thread') {
            if ($action == 'list')  {
                  //从数据库中查询路由
-                 $class = '\Model\\' . $controller;
+                 $class = '\app\model\database\\' . $controller;
                  $model = new $class();
                  //字段名处理
                  foreach ($params as $key => $field) {

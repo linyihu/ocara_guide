@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>角色权限控制（Auth）</title>
+<title>角色权限控制</title>
 <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
 <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
@@ -18,16 +18,22 @@
 </style>
 </head>
 <body><pre><h2>角色权限控制</h2>
-       一般一个应用中都会涉到及角色的权限控制。例如网站后台一般都要给不同的管理员组或管理员分配不同的权限。 
-       本框架做权限控制，很简单，只要开发者使用Auth设置好权限，然后提供一个回调函数调用check()方法检测权限即可。
-       使用Ocara\Service\Auth。
+
+       角色权限操作类是Ocara\Service\Auth，可以使用ocService()->auth调用。
 
 <strong>一、权限分配</strong>
 
-<strong>1、分配角色</strong>
-        角色信息一般保存在数据库中。大多情况下，角色一般是会员组，管理员组等。这里的角色组是为了设置权限用，需要先从数据库中查出
-来，这里就不用说明了。
-        （1）设置角色
+<strong>1、新建权限设置对象</strong>
+     注意：Ocara\Service\Auth是非单例绑定方式绑定的服务，所以操作前要新建一个对象实例。
+
+<pre class="brush: php;">
+ $auth = ocService()->auth; //实例化一个新的Auth操作对象
+</pre>
+
+<strong>2、设置角色</strong>
+        角色信息一般保存在数据库中。
+        大多情况下，角色一般是会员组，管理员组等。这里的角色组是为了设置权限用，需要先从数据库中查出来，这里就不用说明了。
+        （1）添加角色
                 角色的分配使用Auth的setRole()方法，格式如下：
                         <span class="STYLE1">setRole(roleList)</span>
                 参数说明：
@@ -39,40 +45,54 @@
 	</tr>
 	<tr> 
 		<td>roleList</td>
-		<td>必需。角色层级列表。也就是要设置的角色，多层级角色用英文半角状态下的圆点“.”分隔，或者直接用数字型数组。</td>
+		<td>必需。角色列表。也就是要设置的角色，多层级角色用英文半角状态下的圆点“.”分隔，或者直接用数字型数组。</td>
 	</tr>
 </table>
 <pre>
 
-                实例如下：
 <pre class="brush: php;">
-$auth = new Ocara\Service\Auth();
+//添加角色ID
+$auth->setRole(123);
 
-$auth->setRole('role1');
-</pre>                如果增加子角色，只要用圆点"."或者用数组，即：
-<pre class="brush: php;">//使有圆点键名方式
-$auth->setRole('role1.role2'); 
+//使有圆点键名方式
+$auth->setRole('role1.role2');
 
 //使用数组方式
 $auth->setRole(array('role1', 'role2'));
-</pre>                这相当于设置$auth的私有属性（private）$_data属性值，如下代码：
-<pre class="brush: php;">$auth->_data['role1']['role2'] = array();</pre>
+</pre>
                 （2）获取角色的权限信息
                         获取角色只要使用getRole()方法，格式如下：
                               <span class="STYLE1">getRole(roleList)</span>
-                        参数同上，使用方法同上。
 
+<pre class="brush: php;">
+//角色ID
+$data = $auth->getRole(123);
+
+//使有圆点键名方式
+$data = $auth->getRole('role1.role2');
+
+//使用数组方式
+$data = $auth->getRole(array('role1', 'role2'));
+</pre>
                 （3）删除角色
                         删除角色只要使用delRole()方法，格式如下：
                                 <span class="STYLE1">delRole(roleList)</span>
-                        参数同上，使用方法同上。
-	  
-<strong>2、分配权限</strong>
-	分配权限时，可以使用<span class="STYLE1">路由数组</span>，还可以使用<span class="STYLE1">保存在数据库路由表中的记录ID</span>。
-        （1）设置权限
-                权限的设置使用Auth的setAuth()方法，格式如下：
-                        <span class="STYLE1"> setAuth(roleList, routeList[, allowed])</span>
-                参数说明：
+
+<pre class="brush: php;">
+//角色ID
+$auth->delRole(123);
+
+//使有圆点键名方式
+$auth->delRole('role1.role2');
+
+//使用数组方式
+$auth->delRole(array('role1', 'role2'));
+</pre>
+<strong>3、添加权限</strong>
+          设置权限时，可以使用<span class="STYLE1">路由数组</span>，还可以使用<span class="STYLE1">保存在数据库路由表中的记录ID</span>。
+          权限的设置使用Auth的setAuth()方法，格式如下：
+                 <span class="STYLE1"> setAuth(roleList, routeList[, allowed])</span>
+           参数说明：
 </pre>
 <table>
 	<tr class="head">
@@ -97,44 +117,49 @@ $auth->setRole(array('role1', 'role2'));
 <pre>
 
                 实例如下：
-                        权限分配，可能有下面两种情况。
-                （a）路由数组
+                （1）使用路由数组保存权限
                         如下设置role1的role2拥有bbs模块的forum控制器的index权限：
-                        设置有权限：
-<pre class="brush: php;">//使用圆点键名方式
-$auth->setAuth('role1.role2', 'bbs.forum.index'); //第三个参数为true, 因为默认为true可以省略
-
-//使用数组方式
-$auth->setAuth('role1.role2', array('bbs', 'forum', 'index'));
-
-//都使用数组方式
-$auth->setAuth(array('role1', 'role2'), array('bbs', 'forum', 'index'));
-</pre>                        结果相当于设置$auth的$_data属性值，如下所示：
 <pre class="brush: php;">
-$auth->_data['role1']['role2']['bbs']['forum']['index'] = 1;
-</pre>
-                        设置无权限：
-<pre class="brush: php;">//使用圆点键名方式
+//设置允许权限
+$auth->setAuth(123, 'bbs.forum.index'); //使用圆点键名方式
+$auth->setAuth('role1.role2', 'bbs.forum.index'); //使用圆点键名方式
+$auth->setAuth('role1.role2', array('bbs', 'forum', 'index')); //使用数组
+$auth->setAuth(array('role1', 'role2'), array('bbs', 'forum', 'index')); //两者都使用数组方式
+
+//设置禁止权限：
+$auth->setAuth(123, 'bbs.forum.index', false); //使用圆点键名方式
 $auth->setAuth('role1.role2', 'bbs.forum.index', false);
+$auth->setAuth('role1.role2', array('bbs', 'forum', 'index'), false); //使用数组方式
 
-//使用数组方式
-$auth->setAuth('role1.role2', array('bbs', 'forum', 'index'), false);
-</pre>                        结果相当于：
-<pre class="brush: php;">
-$auth->_data['role1']['role2']['bbs']['forum']['index'] = 0;
 </pre>
-                （b）路由记录ID
-                        如下示例：
-<pre class="brush: php;">$auth->setAuth('role1.role2', '1', true);
-</pre>                        结果相当于如下代码：
-<pre class="brush: php;">$auth->_data['role1']['role2'][1] = 1;
-</pre> 
-        （2）删除权限
-                删除权限只要使用delAuth()方法，格式如下：
-                        <span class="STYLE1">delAuth(roleList, routeList)</span>
-                参数同上。
-	  
-<strong>3、获取权限</strong>
+                （2）使用路由记录ID保存权限
+                        如下示例，假设bbs/forum/index路由ID为1：
+<pre class="brush: php;">
+//设置允许权限
+$auth->setAuth(123, '1', true);
+$auth->setAuth('role1.role2', '1', true);
+
+//设置禁止权限
+$auth->setAuth(123, '1', false);
+$auth->setAuth('role1.role2', '1', false);
+</pre>
+<strong>3、删除权限</strong>
+        删除权限只要使用delAuth()方法，格式如下：
+                <span class="STYLE1">delAuth(roleList, routeList)</span>
+        参数同上。
+
+<pre class="brush: php;">
+//使用路由数组保存权限
+$auth->delAuth(123, 'bbs.forum.index');
+$auth->delAuth('role1.role2', 'bbs.forum.index');
+$auth->delAuth('role1.role2', array('bbs', 'forum', 'index'));
+
+//使用路由记录ID保存权限
+$auth->delAuth(123, 1);
+$auth->delAuth('role1.role2', 1);
+</pre>
+
+<strong>4、获取权限</strong>
         获取权限使用Auth的getAuth()方法，格式如下：
                 <span class="STYLE1">getAuth([roleList, routeList])</span>
         参数同上。
@@ -142,25 +167,18 @@ $auth->_data['role1']['role2']['bbs']['forum']['index'] = 0;
 <pre class="brush: php;">//获取所有权限
 $allAuthData = $auth->getAuth();
 
-//获取role1.role2的权限设置
+//获取role1.role2角色的所有权限
 $authData = $auth->getAuth('role1.role2');
-
-//获取role1.role2角色的bbs/forum/index动作权限设置
-$authData = $auth->getAuth('role1.role2', 'bbs.forum.index');
-</pre>
-                或者使用数组方式：
-<pre class="brush: php;">//获取所有权限
-$allAuthData = $auth->getAuth();
-
-//获取role1.role2的权限设置
 $authData = $auth->getAuth(array('role1', 'role2'));
 
-//获取role1.role2角色的bbs/forum/index动作权限设置
+//获取role1.role2角色的bbs/forum/index权限
+$authData = $auth->getAuth('role1.role2', 'bbs.forum.index');
 $authData = $auth->getAuth('role1.role2', array('bbs', 'forum', 'index'));
 $authData = $auth->getAuth(array('role1', 'role2'), 'bbs.forum.index');
+
 </pre>
 
-<strong>4、初始化权限数据</strong>
+<strong>5、初始化权限数据</strong>
         不仅可以使用上述方法设置权限，我们也可以使用setData()方法直接设置好自定义的权限数组，格式如下：
                 <span class="STYLE1">setData([data])</span>
         参数说明：
@@ -179,16 +197,19 @@ $authData = $auth->getAuth(array('role1', 'role2'), 'bbs.forum.index');
       实例如下：
 <pre class="brush: php;">
 //自定义权限数组
-$model = new \app\dal\models\Auth();
-$data = $model->getAuthData();
+$data = ocSet(array('123', 'bbs', 'forum', 'index'), 1); //设置允许权限
+$data = ocSet(array('123', 'bbs', 'forum', 'index'), 0); //设置禁止权限
+
+$data = ocSet(array('role1', 'role2', 'bbs', 'forum', 'index'), 1); //设置允许权限
+$data = ocSet(array('role1', 'role2', 'bbs', 'forum', 'index'), 0); //设置禁止权限
 
 //设置权限数据
-$auth = new \Ocara\Service\Auth();
+$auth = ocService()->auth;
 $auth->setData($data);
 
 </pre>
 
-<strong>5、检测权限</strong>
+<strong>6、检测权限</strong>
         要检测权限，使用Auth的check()方法，格式如下：
                 <span class="STYLE1">check(roleList, routeList))</span>
         参数说明：
@@ -198,81 +219,86 @@ $auth->setData($data);
 		<td width="90">名称</td>
 		<td width="400">描述</td>
 	</tr>
-	<tr> 
+	<tr>
 		<td>roleList</td>
 		<td>必需。同上setAuth()。</td>
 	</tr>
-	<tr> 
+	<tr>
 		<td>routeList</td>
 		<td>必需。同上setAuth()。</td>
 	</tr>
 </table>
 <pre>
-       
+
                 实例如下：
                         检测role1角色下的role2角色是否拥有bbs模块的forum控制器下面的index动作的权限，如下：
-                        （a）直接指定权限分配的对象，
-<pre class="brush: php;">//使用圆点键名方式
-$result = $auth->check('role1.role2','bbs.forum.index');
-
-//使用数组方式
-$result = $auth->check('role1.role2', array('bbs', 'forum','index'));
-</pre>                        （b）如果权限分配的对象是以数据库形式保存的，比如bbs模块forum控制器index动作对应的记录id为1，检测权限则为：
+                        （a）使用路由数组保存权限
 <pre class="brush: php;">
-$result = $auth->check('role1.role2', 1);
+$result = $auth->check('123','bbs.forum.index'); //角色ID方式
+$result = $auth->check('role1.role2','bbs.forum.index'); //使用圆点键名方式
+$result = $auth->check('role1.role2', array('bbs', 'forum','index')); //使用数组方式
+</pre>                        （b）使用路由记录ID保存权限
+<pre class="brush: php;">
+$result = $auth->check('123', 1); //角色ID方式
+$result = $auth->check('role1.role2', 1); //1为路由记录ID
 </pre>
 
-<strong>二、权限检测步骤和实例</strong>
+<strong>二、权限检测步骤</strong>
 
 1、设计权限数据
-       权限数据，要保存到数据库的。
-       最基本的可能包含以下三个表：
+       一般权限相关数据不会直接写在代码，而是存在数据库。
+       可能包含以下三个表：
               角色表，保存角色信息，比如role_id表示角色ID。
               权限表，保存路由信息，比如action_id表示路由ID。
               角色权限对应表，保存角色和路由的权限对应关系，比如包含role_id和action_id联合主键，还有一个字段has_auth表示是否有权限。
 
-2、设置事件回调
-      在event.php中可配置权限检测事件处理器：
+2、事件配置
+      检测权限时，需要在路由分发前置事件回调函数中进行。
+      具体配置在event.php中修改before_dispatch选项。
 </pre>
 <pre class="brush: php;">
-/*
- * 权限检测事件
- */
-'auth' => array(
-	'check' => 'app\services\AuthCheck', //权限检测事件
-	'check_error' => '', //无权限错误事件
-),
+	/*
+	 * 路由分发事件
+	 */
+	'dispatch' => array(
+		'before_dispatch' => 'Events\BeforeDispatch', //路由分发前回调
+		'after_dispatch' => 'Events\AfterDispatch', //路由分发后回调
+	),
 </pre>
 <pre>
 3、编写检测函数
         上面配置好了检测路由，就可以编写该检测回调函数。
-        （1）获取权限数据
-                权限数据可以是缓存、数据库或文件。
-        （2）检测权限
-
-        实例如下：
+        比如上述实例在根目录下support新建Events/BeforeDispatch类。
+        内容如下：
 <pre class="brush: php;">
-namespace app\services;
+namespace Events;
 
-use Base\BaseService;
-
-class AuthCheck extends BaseService
+class BeforeDispatch extends Base
 {
-	public function __construct() {
-		$this->auth = new \Ocara\Service\Auth();
+	public $auth;
+
+	public function __construct()
+	{
+		$this->auth = ocService()->auth;
 	}
 
-	protected function handler($module, $controller, $action)
+	/**
+	 * 事件处理
+	 */
+	public function handler($route, $event, $object)
 	{
 	    //获取角色ID
-		$roleId = $this->session->get('loginInfo.roleId'); //获取当前的角色
+		$roleId = ocService()->session->get('loginInfo.roleId'); //获取当前的角色
 
 	    //获取路由ID
-	    $model = new \app\models\AuthRoute();
-	    $actionId = $model->getActionId($module, $controller, $action);
+	    $model = new \app\model\database\AuthRoute();
+	    $actionId = $model->getActionId($route['module'], $route['controller'], $route['action']);
 
 	    //检测权限
-	    $result = $this->_checkRole($role, $actionId);
+	    $result = $this->checkRole($route, $roleId, $actionId);
+	    if (!$result) {
+	        ocService()->response->redirect();
+	    }
 
 	    return $result;
 	}
@@ -280,10 +306,13 @@ class AuthCheck extends BaseService
 	/**
 	 * 检测权限
 	 */
-	protected function _checkRole($roleId, $actionId)
+	protected function checkRole($route, $roleId, $actionId)
 	{
-	     //获取权限数据
-		$authData = $this->_getAuthData();
+	    //排除登录控制器
+	    if ($route['controller'] == 'login') return true;
+
+	    //获取权限数据
+		$authData = $this->getAuthData();
 
 		//检测权限
 		$result = $this->auth->check($roleId, $actionId);
@@ -294,47 +323,18 @@ class AuthCheck extends BaseService
 	/**
 	 * 获取所有权限数据
 	 */
-    protected function _getAuthData()
+    protected function getAuthData()
     {
         //从保存有权限数据的文件中获取
 	    $authPath = ocPath('data', 'authData.php');
 		$authData = ocService()->file->readFile($authPath);
 
 	    //或者，从数据库或缓存中获取
-		$authModel = new \app\dal\models\Auths();
+		$authModel = new \app\model\database\Auths();
 		$authData = $authModel->getAuthData(); //getAuthData()是自定义方法
 
 		$return $authData;
     }
-}
-</pre>
-4、检测出错处理
-        如果权限检测不通过，可以配置事件回调进行错误输出：
-<pre class="brush: php;">
-/*
- * 权限检测事件
- */
-'auth' => array(
-	'check' => 'app\services\AuthCheck', //权限检测事件处理
-	'check_error' => 'app\services\CheckError', //错误输出事件处理
-),
-</pre>
-        该回调路由，如下示例：
-<pre class="brush: php;">
-namespace app\services;
-
-use Base\BaseService;
-
-class CheckError extends BaseService
-{
-	/**
-	 * 初始化
-	 * $route是包含模块、控制器和动作的路由关联数组
-	 */
-	protected function handler($route)
-	{
-	    //这里处理错误
-	}
 }
 </pre>
 </pre>

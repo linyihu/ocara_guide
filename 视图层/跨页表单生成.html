@@ -59,14 +59,14 @@
     public function registerForms()
 	{
 		$this->form('form_item_edit')
-			->model('\Model\Item')
+			->model('\app\model\database\Item')
 			->setRoute('item/createshow');  //设置表单的路由为原表单页面的控制器动作路由
 	}
 
 	//这里写表单提交后的代码...
 	public function submit()
 	{
-		$itemModel = new \Model\Item();
+		$itemModel = new \app\model\database\Item();
 		$itemModel->data()->save();
 	}
 }

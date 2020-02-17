@@ -45,7 +45,7 @@ class test extends \Ocara\Base
 </pre>
 
      （2）私有容器
-            控制器动作继承于ServiceProvider类，所以其本身包含自己的私有容器$this->_container。
+            控制器动作继承于ServiceProvider类，所以其本身包含自己的私有容器$this->container。
             可以使用“$this->属性名”方式获取默认容器中的类对象。
             如果默认容器和私有容器有同名的类对象，这种调用方式会优先调用私有容器中的对象，如果没有则取默认容器中的。
             实例如下：
@@ -57,7 +57,7 @@ class EditAction extends ItemController
      */
     public function register()
     {
-       $this->_container->bindSingleTon('response', '\Base\MyResponse'); //私有容器中注册对象
+       $this->container->bindSingleTon('response', '\Base\MyResponse'); //私有容器中注册对象
     }
 
 	/**
@@ -76,7 +76,7 @@ class EditAction extends ItemController
 
 	public function submit()
 	{
-        $data = $this->response->setStatusCode(400); //优先使用当前控制器私有容器$this->_container的response对象
+        $data = $this->response->setStatusCode(400); //优先使用当前控制器私有容器$this->container的response对象
     }
 }
 </pre>
@@ -220,11 +220,11 @@ $computer->get('computer', array($name, $config));
 class Computer
 {
     protected $_mouse;
-    protected $_container;
+    protected $container;
 
-    public function __construction($_container)
+    public function __construction($container)
     {
-        $this->_container = $_container;
+        $this->container = $container;
     }
 
     /**

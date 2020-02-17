@@ -46,7 +46,7 @@
 
       （3）设置返回的文档格式
               Ajax返回的文档格式，包括Json、XML和html格式。
-              如果要设置Ajax文档格式，只要设置resource/conf/develop.php中的$CONF['DEFAULT_AJAX_CONTENT_TYPE']即可。
+              如果要设置Ajax文档格式，只要设置application/config/system.php中的$CONF['DEFAULT_AJAX_CONTENT_TYPE']即可。
 <pre class="brush: php;">
 $CONF['DEFAULT_AJAX_CONTENT_TYPE'] = 'json'; //默认Ajax返回文档类型
 </pre>
@@ -88,7 +88,7 @@ class DelAction extends Controller
             }
        } else {
             //删除失败，返回error状态值。
-            //failed_delete是多语言设置的提示消息键名，需要在resource/lang语言目录配置具体内容。
+            //failed_delete是多语言设置的提示消息键名，需要在application/lang语言目录配置具体内容。
             $this->error->show('failed_delete');
        }
     }

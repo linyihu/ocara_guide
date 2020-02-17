@@ -15,7 +15,7 @@
 
 </pre>
 <div class="function">
-<pre><strong>1、ocUrl(route[, params, relative, static, urlType])
+<pre><strong>1、ocUrl(route[, params, relative, urlType, static])
 </strong>       新建URL。
        特色：统一的URL生成函数，自动使用静态生成过的静态页面。
        参数说明：
@@ -32,7 +32,7 @@
 	</tr>
 	<tr>
 		<td>params</td>
-		<td>可选。参数数组。</td>
+		<td>可选。URL参数数组。</td>
 	</tr>
 	<tr>
 		<td>relative</td>
@@ -40,7 +40,7 @@
 	</tr>
 	 <tr>
 	  <td>urlType</td>
-	  <td>可选。不常用。URL路由类型。默认为系统配置的路由类型。</td>
+	  <td>可选。不常用。URL路由类型。默认为系统配置的路由类型，默认是当前路由类型。参见Ocara\Core\Url的常量。</td>
    </tr>
 	<tr>
 	  <td>static</td>
@@ -49,7 +49,7 @@
 </table>
 	实例如下：
 </pre>
-<p>假设当前域名是ocara.cn，如下：</p>
+<p>假设当前域名是www.ocara.cn，如下：</p>
 <pre class="brush: php;">
 //生成完整URL
 $url = ocUrl('/item/index', array('id' => 2)); //返回http://www.ocara.cn/item/index/id/2
@@ -84,10 +84,10 @@ echo $url;
 </pre>
 <pre class="brush: php;">
 $ret = ocRealUrl('images', 'default/logo.jpg');
-echo $ret; //输出类似于http://www.ocara.cn/public/images/default/logo.jpg
+echo $ret; //输出类似于http://localhost/images/default/logo.jpg
 
 $ret = ocRealUrl('images', 'default/logo.jpg', 'ftp://www.ocara.cn');
-echo $ret; //输出类似于ftp://www.ocara.cn/public/images/default/logo.jpg
+echo $ret; //输出类似于ftp://localhost/images/default/logo.jpg
 </pre>
 <pre><strong>3、ocSimpleUrl(dir[, subPath])
 </strong>       生成相对URL。类似于ocRealUrl()，只不过是相对URL，前面去掉了协议和主机名。
@@ -97,7 +97,7 @@ echo $ret; //输出类似于ftp://www.ocara.cn/public/images/default/logo.jpg
 </pre>
 <pre class="brush: php;">
 $ret = ocSimpleUrl('images', 'default/logo.jpg');
-echo $ret; //输出/public/images/default/logo.jpg
+echo $ret; //输出http://localhost/images/default/logo.jpg
 </pre>
 </div>
 </body>

@@ -73,86 +73,30 @@ $data = array(
     'hits'=> ocSql('hits+1')
 );
 
-$itemModel = new \Model\Item();
-$itemModel->update($where, $data, 1);
+$itemEntity = new \app\model\entity\database\Item::select(2);
+$itemEntity->hits = 'hits+1';
+$itemEntity->save();
+
 //生成的SQL语句中set语句为：set `hits` = hits+1。
 </pre> 
 <p>然而，没有使用ocSql()函数时，</p>
-<pre class="brush: php;">$where = array('item_id' => 2); 
+<pre class="brush: php;">
 $data = array(
     'hits' => 'hits+1'
 );
 
-$itemModel = new \Model\Item();
-$itemModel->update($where, $data, 1);
+$itemEntity = new \app\model\entity\database\Item::select(2);
+$itemEntity->hits = 'hits+1';
+$itemEntity->save();
+
 //生成的SQL语句中set语句为：set `hits` = 'hits+1'
 //hits+1两边加上了单引号，这样就item_id字段就直接用字符串“hits+1”保存处理而没有执行加1。
 </pre>
-<pre><strong>3、ocCookie(name, value[, expire, path, domain, secure, httponly])</strong>
-      设置cookie。参数跟PHP原生的setcookie函数一致，请看PHP的setcookie函数的介绍。
-      只不过，默认值可以在resource/conf/develop.php中<span class="STYLE5">配置COOKIE的相关选项</span>，如下是Web应用刚生成时框架默认的配置：
-<pre class="brush: php;">
-/*
- * cookie配置
- */
-$CONF['COOKIE'] = array(
-	'path'		=>  '/', //有效路径
-	'domain' 	=> '', //有效域名
-	'secure' 	=> 0, //是否使用Https来传输cookie
-	'httponly' 	=> 1, //是否禁止Javascript使用该cookie
-);
-</pre>	  
-      参数说明：
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>name</td>
-		<td>必需。规定 cookie 的名称。</td>
-	</tr>
-		<tr>
-		<td>value</td>
-		<td>必需。规定 cookie 的值。。</td>
-	</tr>
-		<tr>
-		<td>expire</td>
-		<td>可选。规定 cookie 的有效期。</td>
-	</tr>
-		<tr>
-		<td>path</td>
-		<td>可选。规定 cookie 的服务器路径。<span class="STYLE4">默认是使用COOKIE的path配置</span>，如果不存在该配置则在当前目录有效。<br/>
-如果该参数设为 '/' 的话，cookie 就在整个 domain 内有效，如果设为 '/foo/'，cookie 就只在 domain 下的 /foo/ 目录及其子目录内有效，例如 /foo/bar/。默认值为设定 cookie 的当前目录。</td>
-	</tr>
-		<tr>
-		<td>domain</td>
-		<td>可选。规定 cookie 的域名。<span class="STYLE5">默认是使用COOKIE的domain配置</span>，如果不存在该配置则在当前域有效。例如，要使 cookie 能在如 example.com 域名下的所有子域都有效的话，该参数应该设为 '.example.com'。</td>
-	</tr>
-	<tr>
-		<td>secure</td>
-		<td>可选。规定是否通过安全的 HTTPS 连接来传输 cookie。<span class="STYLE5">默认是使用COOKIE的secure配置</span>，默认为0表示False，指不使用HTTPS传输。为True时，cookie 仅在安全的连接中被设置。如果不存在该配置则为False。</td>
-	</tr>
-	<tr>
-		<td>httponly</td>
-		<td>可选。规定是否禁止Javascript使用该cookie。<span class="STYLE5">默认是使用COOKIE.httponly配置</span>，如果没有该配置，则为True，表示禁止。<br/>
-	  为了防止JS中的Session劫持，防止XSS攻击，<strong>建议对于关键的cookie将该参数设置为true</strong>。</td>
-	</tr>
-</table>
-      实例如下：
-</pre>
-<pre class="brush: php;">
-//设置username变量，其他参数使用COOKIE的相关配置。
-ocCookie('username', 'Jim');
 
-//设置username，其他参数自定义，在未来一天内的ocara.cn根目录下有效
-ocCookie('username', 'Tom', 86400, '/', '.ocara.cn');
-</pre> 
-
-<pre><strong>4、ocGlobal(name[, value])</strong>
-     设置或获取框架虚拟的全局变量。
-     只是虚构的全局变量，不是真正的全局变量，而是Ocara类的$_GLOBALS属性的键值。
-     本框架是纯面向对象的开发方式，为了防止全局变量的不良使用习惯，导致安全问题，所以虚构了全局变量。如果要使用全局变量，建议用该函数。
+<pre><strong>3、ocGlobal(name[, value])</strong>
+     设置或获取框架虚拟的全局变量。调用的是Ocara\Core\Globals类。
+     只是虚构的全局变量，不是真正的全局变量。
+     为了防止全局变量的不良使用习惯，导致安全问题，所以虚构了全局变量。建议使用。
      <span class="STYLE5">如果设置了value参数，则表示设置全局变量，否则表示获取全局变量值。</span>
      参数说明：
 <table>
@@ -178,8 +122,9 @@ ocGlobal('username', 'Jim');
 //获取全局变量值
 $username = ocGlobal('username');
 </pre>
-<pre><strong>5、ocLang(name[, params, default])</strong>
-      获取多语言变量的配置。这些语言配置的配置文件都在Web应用目录的resource/lang目录下。
+<pre><strong>4、ocLang(name[, params, default])</strong>
+      获取多语言变量的配置。调用的是Ocara\Core\Lang类。
+      这些语言配置文件都在Web应用目录的application/lang目录下。
       参数说明：
 <table>
 	<tr class="head">
@@ -217,8 +162,9 @@ $username = 'Jim';
 $error = ocLang('not_exists_username', array('username' => $username)); //依然返回：用户名Jim不存在
 
 </pre>
-<pre><strong>6、ocConfig(name[, default, unempty])</strong>
-      获取配置。除了语言配置，其他所有的配置文件在当前应用的resource/conf下面。
+<pre><strong>5、ocConfig(name[, default, unEmpty])</strong>
+      获取配置。除了语言配置，其他所有的配置文件在当前应用的application/config下面。
+      总结：<strong>如果指定了默认值则返回默认值，如果0不算空值就将第三个参数设为true。</strong>
       参数说明：
 <table>
 	<tr class="head">
@@ -227,89 +173,40 @@ $error = ocLang('not_exists_username', array('username' => $username)); //依然
 	</tr>
 	<tr>
 		<td>name</td>
-		<td>必需。配置名称，其实就是$CONF的键名。如果是多级键名，可以为键名数组或圆点分隔的键名。</td>
+		<td>必需。配置名称。如果是多级键名，可以为键名数组或圆点分隔的键名字符串。</td>
 	</tr>
 		<tr>
 		<td>default</td>
-		<td>可选。如果配置不存在，并且指定了该参数，则会返回该参数作为默认值；如果也没有指定该参数，则会抛出错误提示。</td>
+		<td>可选。配置不存在或非空时返回的默认值。<br/>
+			（1）配置键名不存在时：若指定了默认值，则返回默认值；若没有指定默认值，则会抛出错误提示。<br/>
+			（2）配置值为空时：若指定了默认值，则返回默认值；若没有指定默认值，一般原样返回，当指定了unEmpty参数时则例外。
+		</td>
 	</tr>
 		<tr>
-		<td>unempty</td>
-		<td>可选。默认为false。如果为true，表示函数的返回值不能为空。此时如果配置数组中没有该变量的配置或者配置值为非0的空值（空字符串、false或null），则会返回default参数值</td>
+		<td>unEmpty</td>
+		<td>可选。表示0是否作为非空值。默认为false。如果为true，0也作为非空返回。此时规则如下：<br/>
+			若配置值为0，则直接返回0；<br/>
+			若配置值为非0的空值（空字符串、false或null），则返回默认值。<br/>
+		</td>
 	</tr>
 </table>
       实例如下：
 </pre>
 <pre class="brush: php;">
-//不提定默认值
-echo ocConfig('COOKIE.path'); //存在path的配置，返回其值
-echo ocConfig('COOKIE.path_test'); //如果不存在path_test的配置，不返回值，而是抛出错误提示
+//不指定默认值
+echo ocConfig('COOKIE.path'); //若存在path的配置，返回其值
+echo ocConfig('COOKIE.path_test'); //若不存在path_test的配置，不返回值，而是抛出错误提示
 
-//指定配置变量不存在时的默认值
-echo ocConfig('COOKIE.path_test', '/'); //如果不存在path_test的配置，不报错，而是返回默认值'/'
+//指定默认值
+echo ocConfig('COOKIE.path', '/'); //若存在配置path，配置值非空(包括非0）则直接返回，否则返回默认值'/'
+echo ocConfig('COOKIE.path_test', '/'); //若不存在path_test的配置，不报错，而是返回默认值'/'
 
-//提定变量配置不存在或者配置值为空时的默认值
-echo ocConfig('COOKIE.path_test', '/', true); //如果不存在path_test的配置，不报错，而是返回默认值'/'
-echo ocConfig('COOKIE.path', '/', true); //假设存在配置path，其值为非0的空值，则这里也不报错，而是返回默认值'/'
+//提定默认值和非空参数
+echo ocConfig('COOKIE.path_test', '/', true); //若存在path_test的配置，配置值非空或0则直接返回，否则返回默认值'/'
 
 </pre> 
 
-
-<pre><strong>7、ocDie(content)</strong>
-      停止代码执行。即die()函数的重写。如果加入自定义回调，还可以在停止执行前执行回调代码。
-      参数说明：
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>content</td>
-		<td>要输出的变量</td>
-	</tr>
-</table>
-      实例如下：
-</pre>
-<pre class="brush: php;">
-ocDie('die content');
-</pre>
-<pre><strong>8、ocPrint(content)</strong>
-      使用print_r()打印内容，并且停止代码执行。用于代码暂停式的调试。
-      参数说明：
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>content</td>
-		<td>要使用print_r()函数打印的内容。</td>
-	</tr>
-</table>
-      实例如下：
-</pre>
-<pre class="brush: php;">
-ocPrint(array(0)); //输出Array ( [0] => 0 )
-</pre> 
-<pre><strong>9、ocDump(content)</strong>
-      使用var_dump()打印内容，并且停止代码执行。也用于代码暂停式的调试。
-      参数说明：
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>content</td>
-		<td>要使用var_dump()函数打印的内容。</td>
-	</tr>
-</table>
-     实例如下：
-</pre>
-<pre class="brush: php;">
-var_dump(array(0)); //输出array(1) { [0]=> int(0) }
-</pre> 
-<pre><strong>10、ocReplaceSpace(string[, replace])</strong>
+<pre><strong>6、ocReplaceSpace(string[, replace])</strong>
       替换空白字符，如回车或换行、制表符或空格等。
       参数说明：
 <table>
@@ -319,11 +216,11 @@ var_dump(array(0)); //输出array(1) { [0]=> int(0) }
 	</tr>
 	<tr>
 		<td>string</td>
-		<td>必需。要替换空白的原字符串。</td>
+		<td>必需。原字符串。</td>
 	</tr>
 		<tr>
-		<td>string</td>
-		<td>可选。要将空白字符替换的字符。如果不指定，则替换为空字符串，也就是去除空白。</td>
+		<td>replace</td>
+		<td>可选。要替换的字符。如果不指定，则替换为空串，相当于去除掉了空白字符。</td>
 	</tr>
 </table>
      实例如下：

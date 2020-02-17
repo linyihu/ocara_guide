@@ -21,13 +21,13 @@
 <strong>二、配置目录介绍</strong>
        注：同一配置目录中所有文件的配置都会同时加载。
        1、控制层配置
-        （1）全局配置（<strong>resource/config</strong>）
+        （1）全局配置（<strong>application/config</strong>）
                 这是全局性配置，任何时候和地方都能使用。控制器、数据模型和视图都能用。
                 框架默认在新建应用时都默认生成了以下配置文件，其中的配置任何控制器动作都有效，除非在control控制器配置中覆盖了，配置内容不允许删除。
               （a）application.php
                        应用级配置。
                        修改这些配置不影响系统代码和功能。特别有利于开源系统开发，因为可以允许站长修改其中配置。
-              （b）develop.php
+              （b）system.php
                        开发级配置。
                        只能由开发人员修改，否则可能会影响代码运行。
               （c）database.php
@@ -49,7 +49,7 @@
        2、模型层配置
             该目录是数据模型的配置，其目录结构与models目录结构一致。
             在调用模型时，会加载相应模型配置。
-            （1）全局语言配置：<strong>resource/config/model</strong>。application/dal/models中的模型会加载这里的配置。
+            （1）全局语言配置：<strong>application/config/model</strong>。application/dal/models中的模型会加载这里的配置。
             （2）模块语言配置：<strong>application/modules/模块名/private/config/model</strong>。index/private/models中的模型会加载这里的配置
 
 <strong>三、配置文件的加载顺序</strong>

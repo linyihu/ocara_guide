@@ -100,7 +100,7 @@ class DeleteAction extends GuestbookController
 	public function ajax()
 	{
 		$id = Request::getPost('id');
-		$model = \Model\Guestbook::select($id);
+		$model = \app\model\database\Guestbook::select($id);
 
 		if (empty($ret)) {
 			$this->ajaxReturn('error', '找不到该记录！', '255');

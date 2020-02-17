@@ -101,7 +101,7 @@ $id = ocGet('id', $_GET, 0);
 </pre>
 <pre>
         如果允许JS内容过滤的话，可以使用以下方法获取：
-        （1）<span class="STYLE1">getGet([name, default])</span>
+        （1）<span class="STYLE1">getGet([key, default])</span>
                 获取GET提交的数据。两个参数都不指定时，获取所有的GET参数数据。
                 参数说明：
  </pre>
@@ -111,7 +111,7 @@ $id = ocGet('id', $_GET, 0);
         <td width="400">描述</td>
     </tr>
     <tr>
-        <td>name</td>
+        <td>key</td>
         <td>可选。参数名称。</td>
     </tr>
     <tr>
@@ -130,7 +130,7 @@ $postData = ocService()->request->getGet();
 </pre>
 </pre>
 <pre>
-        （2）<span class="STYLE1">getPost([name, default])</span>
+        （2）<span class="STYLE1">getPost([key, default])</span>
                 获取POST提交的数据。两个参数都不指定时，获取所有的GET参数数据。
                 参数说明：
 </pre>
@@ -141,7 +141,7 @@ $postData = ocService()->request->getGet();
         <td width="400">描述</td>
     </tr>
     <tr>
-        <td>name</td>
+        <td>key</td>
         <td>可选。参数名称。</td>
     </tr>
     <tr>
@@ -159,7 +159,7 @@ $id = ocService()->request->getPost('id', 0);
 $postData = ocService()->request->getPost();
 </pre>
 
-    （2）<span class="STYLE1">getCookie([name, default])</span>
+        （3）<span class="STYLE1">getCookie([key, default])</span>
                 获取Cookie的数据。两个参数都不指定时，获取所有的Cookie参数数据。
                 参数说明：
 </pre>
@@ -170,7 +170,7 @@ $postData = ocService()->request->getPost();
         <td width="400">描述</td>
     </tr>
     <tr>
-        <td>name</td>
+        <td>key</td>
         <td>可选。参数名称。</td>
     </tr>
     <tr>
@@ -188,8 +188,8 @@ $id = ocService()->request->getCookie('id', 0);
 $postData = ocService()->request->getCookie();
 </pre>
 
-    类似地，<span class="STYLE1">getRequest()</span>可以获取$_REQUEST数据。
-    上述四个函数都做了JS等安全过滤，想获取$_SERVER数据，可以使用<span class="STYLE1">getService()</span>，这个没有做安全滤。
+    类似地，<span class="STYLE1">getRequest()</span>、<span class="STYLE1">getServer()</span>可以获取$_SERVER变量，而getInput()可以获取php://input内容。
+    注：上述getGet、getPost和getRequest函数都做了JS等安全过滤。
 </pre>
 
 </pre>

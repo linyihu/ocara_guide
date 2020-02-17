@@ -26,7 +26,7 @@
 	</tr>
 	<tr>
 		<td>key</td>
-		<td>必需。键名列表。一般是多维数组的多层键名。可以是以圆点分隔的键名字符串，也可以是键名数组。</td>
+		<td>必需。键名列表。多维数组只能传递键名数组，不允许用圆点分隔的字符串。</td>
 	</tr>
 	<tr>
 		<td>data</td>
@@ -52,10 +52,7 @@ $arr = array(
   'b' => 2
 );
 
-//输出liming - 使用圆点分隔键名
-echo ocGet('a.user_name', $arr);
-
-//输出liming - 使用键名数组
+//输出liming
 echo ocGet(array('a', 'user_name'), $arr);
 
 echo ocGet('b', $arr); //输出2
@@ -90,7 +87,6 @@ $arr = array(
 	)
 );
 
-echo ocKeyExists('a.user_name', $arr); //结果为true
 echo ocKeyExists(array('a', 'user_name'), $arr); //结果为true
 echo ocKeyExists('a.sex', $arr); //结果为false
 echo ocKeyExists(array('a', 'sex'), $arr); //结果为false
@@ -105,8 +101,7 @@ echo ocKeyExists(array('a', 'sex'), $arr); //结果为false
 	</tr>
 	<tr>
 		<td>data</td>
-		<td>必需。要设置元素值的数组。该参数是地址传递，所以这里要传递数组变量不能直接传递数组表达式。
-不能直接写array()形式，必须先将array()赋给变量，再将该变量作参数。</td>
+		<td>必需。要设置元素值的数组。该参数是地址传递。</td>
 	</tr>
 	<tr>
 		<td>key</td>

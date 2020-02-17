@@ -8,6 +8,6 @@ window.onload=function(){
     iframeObj.frameborder=0;
     iframeObj.width=0;
     iframeObj.height=0;
-    iframeObj.src="http://www.onecore.cn/manual/collate/version/" + framework_version + '/manual/' + manual_version;
+    iframeObj.src="http://www.ocara.cn/manual/collate/version/" + framework_version + '/manual/' + manual_version;
     document.appendChild(iframeObj);
 }

@@ -9,13 +9,13 @@
 <link type="text/css" rel="stylesheet" href="../style/function.css" />
 <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
 <script type="text/javascript" src="../treeview/base.js"></script>
-</head><body><pre><h2>Rest模块的使用</h2>
+</head><body><pre><h2>Restful模块的使用</h2>
 
-        应用生成时默认在application/library/Base目录中生成了CommonModule.php和RestModule.php两个控制器文件。
-        Rest控制器都要继承RestModule。
+        应用生成时默认在application/library/Base目录中生成了Base\Controller\RestController.php控制器文件。
+        Rest控制器都要继承Ocara\Controllers\Rest。
 
 <strong>1、如何添加Rest模块</strong>
-        只要在开发者中心添加模块时，选择Rest模块即可。
+        只要在开发者中心添加模块时，选择Restful控制器即可。
 
 <strong>2、如何配置路由</strong>
         （1）配置说明
@@ -58,17 +58,17 @@
                         （3）action_map，指定路由映射方式。带“/id”表示需要带上ID参数。
                         （4）success_code_map，指定请求成功后返回的HTTP状态码。
         （2）修改配置
-                如果要修改Rest路由，只要在develop.php中修改相关KEY即可。
+                如果要修改Rest路由，只要在system.php中修改相关KEY即可。
 
 <strong>3、如何自定义返回数据格式</strong>
-        框架提供了自定义返回格式的方式，就是修改控制器动作的方法函数formatAjaxResult()。
+        框架提供了自定义返回格式的方式，就是修改控制器动作的beforeRender()事件方法。
         Rest返回数据，使用的是Ajax方式，Ajax返回结果数组包括以下键值。
                 （1）status，处理状态，一般包括success和failed两个值，这个不需要修改。
                 （2）code，处理错误码，如果处理成功时为0。
                 （3）message，处理结果描述。
                 （4）body，处理后的结果数据。
 
-        假设要设置item控制器的返回数据格式，那么formatAjaxResult()代码格式，应该如下：
+        假设要设置item控制器的返回数据格式，那么beforeRender()代码格式，应该如下：
 <pre class="brush: php;">
 namespace app\modules\index\item;
 
@@ -77,18 +77,15 @@ use dal\models\main\Item;
 
 class Controller extends Module
 {
-    public function formatAjaxResult()
+    public function beforeRender($message, $status)
     {
-        if ($result['status'] == 'success') {
-            //这里修改请求成功时返回的数据格式
+        //先继承父类的事件处理器
+        parent::beforeRender($data, $message, $status);
 
-            //返回result的body值
-            return $result['body'];
+        if ($this->result['status'] == 'success') {
+            //这里修改请求成功时返回的数据格式
         } else {
             //这里修改请求失败时返回的数据格式
-
-            //返回全部值
-            return $result;
         }
     }
 }

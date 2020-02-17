@@ -40,7 +40,7 @@
 <strong>4、如何修改表单令牌</strong>
       （1）自定义表单令牌隐藏域名称
                表单令牌隐藏域名称默认为_oc_temp_ocform_token，其中的“_oc_”是自动加上的。
-               默认设置是在develop.php文件FORM的token_tag配置选项。
+               默认设置是在system.php文件FORM的token_tag配置选项。
                如下所示：
 <pre class="brush: php;">
 /*
@@ -105,7 +105,7 @@ class AddAction extends ItemController
         $this->form('form_add')
              ->init($url)
              ->validateToken(false)
-             ->model('\Model\Item');
+             ->model('\app\model\database\Item');
     }
 } 
 </pre>

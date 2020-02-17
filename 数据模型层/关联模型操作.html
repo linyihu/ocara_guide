@@ -14,7 +14,7 @@
 <pre>
 
 <strong>1、关联配置</strong>
-    关联配置的选项，一般是在resource/conf/model中的数据表模型配置文件中的$CONF['JOIN']。
+    关联配置的选项，一般是在application/config/model中的数据表模型配置文件中的$CONF['JOIN']。
     如下实例：
 <pre class="brush: php;">
 /**
@@ -202,7 +202,7 @@ $user->user_name = 'user1'; //获取主键为1的记录数据
 $user->email = 'newEmail@163.com'; //修改email
 
 //修改user_verify表的字段数据
-$userVerify = new \Model\userVerify();
+$userVerify = new \app\model\database\userVerify();
 $userVerify->verify_status = 1;
 $userVerify->create_time = time();
 
