@@ -83,7 +83,7 @@ CREATE TABLE `sessions` (
 <strong>3、缓存保存方式</strong>
       需要缓存支持。
       先要装好Memcache或Redis等缓存，然后在/application/config/cache.php配置好缓存选项。
-      假设使用$CONF['CACHE']['cache_redis']的话，修改配置文件/application/config/system.php：
+      假设使用的是CACHE的redis缓存配置，修改配置文件/application/config/system.php：
 <pre class="brush: php;">
     /*
      * session配置
@@ -95,15 +95,15 @@ CREATE TABLE `sessions` (
         //选项设置，不同的处理器选项不同
         'options' => array(
             'save_time'	 => 0, //session的最长存活时间（单位为秒）
-            'server'     => '', //服务器名称，数据库服务器名称或Redis服务器名
-            'location'	 => 'session', //保存位置，文件目录名、数据库表名或缓存前缀
+            'server'     => 'redis', //服务器名称，数据库服务器名称或Redis服务器名
+            'location'	 => '', //保存位置，文件目录名、数据库表名或缓存前缀
         ),
     ),
 </pre>
       说明：
             （a）选项“save_time”为session的最长存活时间（单位为秒）；
             （b）选项“server”，即保存session的缓存服务器名称，这里使用cache_redis，默认为default；
-            （c）选项“location”为保存session的缓存前缀，默认为session，框架会自动加上下划线。
+            （c）选项“location”为保存session的缓存前缀，默认为“session_”。
 
 <h2>Session操作方式</h2>
 
@@ -113,7 +113,7 @@ CREATE TABLE `sessions` (
     或者，
 <pre class="brush: php;">$login_info = ocGet('login_info', $_SESSION);</pre>
 <strong>（2）使用插件Session（推荐）</strong>
-     session操作请使用\Ocara\Core\Session，控制器动作中可以直接使用$this->session。该插件的方法函数介绍，请参见<a href="./Session操作.html" title="表单生成">Session操作</a>
+     session操作请使用\Ocara\Core\Session，控制器动作中可以直接使用$this->session。该插件的方法函数介绍，请参见<a href="./Session操作.html" title="表单生成">Session操作</a>。
      调用代码：
     （a）控制器中使用$this->session调用
 	<pre class="brush: php;">

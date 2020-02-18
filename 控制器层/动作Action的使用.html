@@ -79,7 +79,7 @@ $("#browser_module").treeview({
  */
 namespace app\controller;
 
-use Base\CommonController;
+use Base\Controller\CommonController;
 
 class Module extends CommonController
 {
@@ -91,9 +91,9 @@ class Module extends CommonController
 	}
 }
 </pre>
-             注：其中的Base\CommonController是框架在library/Base中生成的普通控制器模块，继承了框架的Ocara\Core\Controller。
+             注：其中的CommonController是框架在support/Base/Controller中生成的根控制器，继承了框架的Ocara\Core\ControllerBase。
 
-             控制器文件Controller.php代码:
+             控制器文件Controller.php代码，注：控制器继承了Module模块类。
 <pre class="brush: php;">
 /**
  * item控制器类
@@ -113,19 +113,16 @@ class ItemController extends Module
 	}
 }
  </pre>
-             注：控制器继承了Module模块类。
-
-             EditAction代码所示：
+             EditAction代码所示，继承了当前目录下的Controller类：
  <pre class="brush: php;">
 /**
  * edit动作类
  */
 namespace app\controller\item;
 
-use app\controller\item\ItemController;
-use app\dal\models\defaults\User;
+use app\model\database\User;
 
-class EditAction extends ItemController
+class EditAction extends Controller
 {
 	/**
 	 * 初始化代码
@@ -140,13 +137,13 @@ class EditAction extends ItemController
 	 	$userId = $this->request->getGet('user_id');
 
 	    //获取用户信息
-	    $user = User::select($userId);
+	    $userEntity = UserEntity::select($userId);
 
-	    if (empty($user)) {
+	    if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
 	    }
 
-	    $data = ->toArray();
+	    $data = $userEntity->toArray();
 	    $this->assign('data', $data);
 	}
 
@@ -165,14 +162,14 @@ class EditAction extends ItemController
 	    //更新用户信息
 	    $userId = $this->request->getGet('user_id');
 	    $posts = $this->request->getPost();
-	    $user = User::select($userId);
+	    $userEntity = UserEntity::select($userId);
 
-	    if (empty($user)) {
+	    if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
 	    }
 
-        $user->update_time = time();
-	    $user->save($posts); //会过滤掉主键user_id字段和不存在的字段
+        $userEntity->update_time = time();
+	    $userEntity->save($posts); //会过滤掉主键user_id字段和不存在的字段
 	}
 }
  </pre>
@@ -184,8 +181,8 @@ class EditAction extends ItemController
  */
 namespace service;
 
-use Base\BaseService;
-use app\dal\models\defaults\User; //引入User模型类
+use Base\Service\BaseService;
+use app\model\entity\database\UserEntity; //引入User模型类
 
 class UserService extends BaseService
 {
@@ -194,13 +191,13 @@ class UserService extends BaseService
 	 */
 	public function getUserInfo($userId)
 	{
-		$user = User::select($userId);
+		$userEntity = UserEntity::select($userId);
 
-	    if (empty($user)) {
+	    if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
 	    }
 
-	    $data = $user->toArray();
+	    $data = $userEntity->toArray();
 		return $data;
 	}
 
@@ -209,9 +206,9 @@ class UserService extends BaseService
 	 */
 	public function editUser($request)
 	{
-		$user = User::select($request['user_id']);
+		$userEntity = UserEntity::select($request['user_id']);
 
-		if (empty($user)) {
+		if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
 	    }
 
@@ -409,7 +406,7 @@ class ItemController extends Module
 </pre>
      <strong>（5）isSubmit()</strong>
              用于手动判断表单是否提交。
-             若Action类中没有该方法函数，默认是使用框架的Request::isPost()来检测的；如果不合适，可以新建该函数去检测，然后return true/false即可。
+             若Action类中没有该方法函数，默认是使用框架的ocService()->request->isPost()来检测的；如果不合适，可以新建该函数去检测，然后return true/false即可。
 
 <pre class="brush: php;">
 	public function isSubmit()
@@ -418,11 +415,12 @@ class ItemController extends Module
 		return $this->request->isPost() && array_key_exists('submit_button_name', $_POST);
 	}
 </pre>
-     <strong>（6）ajax()</strong>
-             用于ajax提交的后台代码处理。框架中使用Request::isAjax()判断是否是ajax提交的。
+     <strong>（6）api()</strong>
+             用于ajax提交的后台代码处理。注：对于API控制器这个方法无效，而且无意义！
+             框架中使用ocService()->request->isAjax()判断是否是ajax提交的，会判断$_SERVER['HTTP_X_REQUESTED_WITH']是否等xmlhttprequest，或者是否传了GET参数oc_ajax为1。
 
 <pre class="brush: php;">
-public function ajax()
+public function api()
 {
 	//更新用户信息
 	$posts = $this->request->getPost();
@@ -432,18 +430,10 @@ public function ajax()
 	return true;
 }
 </pre>
-     <strong>（7）after()（后置事件）</strong>
-             用于动作执行完成以后的处理。display()、submit()和ajax()执行完以后会自动执行。
-<pre class="brush: php;">
-	public function after()
-	{
-		//这里写Action执行完以后的代码
-	}
-</pre>
-             使用上述7个函数，您的代码将变得更加有条理。其中after()、isSubmit()一般要手动添加。
+             使用上述6个函数，您的代码将变得更加有条理。其中after()、isSubmit()一般要手动添加。
 </div>
       <strong>3、结构控制函数的执行顺序</strong>
              上面几个结构型函数按优先级从高到低的执行顺序：
-             __action() -> registerForms()-> isSubmit() -> display()或submit()或ajax() -> after()
+             __action() -> registerForms()-> isSubmit() -> display()或submit()或api() -> after()
 </pre>
 </body></html>
