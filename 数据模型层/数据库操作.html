@@ -20,7 +20,7 @@
 <strong>1、添加记录</strong>
             （1）使用save()方法
                 只要Model未设置查询条件，使用ORM模型的save()都是添加记录。
-                实例如下：
+
                     （a）使用POST数据【data()方法不传参数】
 <pre class="brush: php;">
 $userModel = new \app\dal\models\User();
@@ -83,7 +83,7 @@ $userModel->save($extraData);
 </table>
 <pre>
 
-                    实例如下：
+
                     （a）使用POST数据
 <pre class="brush: php;">
 //添加记录
@@ -107,7 +107,7 @@ $userModel->create($data);
 <strong>2、更新记录</strong>
         （1）单记录更新【使用ORM模型】
                 使用select()选择记录，再使用data()设置修改数据，最后使用save()方法保存.
-                实例如下：
+
                 （a）获取POST数据【data()方法不传参数】
 <pre class="brush: php;">
 $userModel = new \app\dal\models\User();
@@ -176,7 +176,7 @@ $extraData = array(
 </table>
 <pre>
 
-                实例如下：
+
                 （a）获取POST数据
 <pre class="brush: php;">
 $userModel = new \app\dal\models\User();
@@ -228,7 +228,7 @@ $userModel->update($data);
 </table>
 <pre>
 
-        实例如下：
+
         （a）使用ORM模型
 <pre class="brush: php;">
 $userModel = \app\dal\models\User::select(1);
@@ -250,7 +250,7 @@ $userModel->where($where)
 	当使用ORM模型进行数据操作时，可以使用以下方法事件。
     （1）添加记录事件
 	使用beforeCreate()和afterCreate()方法处理添加记录前后的数据操作。
-        实例如下：
+
 <pre class="brush: php;">
 class GuestbookModel extends Model
 {
@@ -312,7 +312,7 @@ class GuestbookModel extends Model
 	</tr>
 </table>
 <pre>
-        实例如下：
+
 </pre>
 <pre class="brush: php;">
 class GuestbookModel extends Model
@@ -345,7 +345,7 @@ class GuestbookModel extends Model
     （3）删除记录
 	使用beforeDelete()和afterDelete()方法处理删除记录前后的数据操作。
 	注：必须是通过select()或selectedFirst()方法选择记录然后使用delete()方法时才会生效。
-        实例如下：
+
 </pre>
 <pre class="brush: php;">
 class GuestbookModel extends Model

@@ -22,33 +22,25 @@
       依赖注入容器，可以实现类或接口的绑定、实例化或实现，以及依赖管理。
 
 <strong>1、容器的使用</strong>
-      （1）默认容器
+      （1）全局容器
             容器类为\Ocara\Core\Container。
-            框架开始时便生成了一个默认容器，可以通过以下两种方式获取:
+            框架开始时默认生成了一个全局容器，可以通过以下两种方式获取:
             （a）Container::getDefault()。
-                  实例如下：
-<pre class="brush: php;">
-//Container::getDefault()
-$container = Container::getDefault();
-</pre>
             （b）使用ocContainer()函数。
-                  实例如下：
-<pre class="brush: php;">
-//继承自Base的类中使用
-class test extends \Ocara\Base
-{
-    public function output()
-    {
-       $response = ocContainer()->response;
-    }
-}
-</pre>
+            （c）使用ocService()->container获取。
 
+<pre class="brush: php;">
+$container = Container::getDefault();
+$container = ocContainer();
+$container = ocService()->container;
+
+$response = ocService()->container->response;
+</pre>
      （2）私有容器
-            控制器动作继承于ServiceProvider类，所以其本身包含自己的私有容器$this->container。
-            可以使用“$this->属性名”方式获取默认容器中的类对象。
-            如果默认容器和私有容器有同名的类对象，这种调用方式会优先调用私有容器中的对象，如果没有则取默认容器中的。
-            实例如下：
+            控制器动作继承于ServiceProvider类，所以其本身包含自己的私有容器。
+            可以使用“$this->属性名”方式获取全局容器中的类对象。
+            如果全局容器和私有容器有同名的类对象，这种调用方式会优先调用私有容器中的对象，如果没有则取全局容器中的。
+
 <pre class="brush: php;">
 class EditAction extends ItemController
 {
@@ -71,7 +63,7 @@ class EditAction extends ItemController
 
 	public function display()
 	{
-        $id = $this->request->getGet('id'); //使用默认容器的request对象
+        $id = $this->request->getGet('id'); //使用全局容器的request对象
     }
 
 	public function submit()
@@ -81,7 +73,7 @@ class EditAction extends ItemController
 }
 </pre>
       （2）生成新的容器
-            除了使用默认容器，我们还可以新建一个容器，只要新建\Ocara\Core\Container类即可。
+            除了使用全局容器，我们还可以新建一个容器，只要新建\Ocara\Core\Container类即可。
             如下所示：
 <pre class="brush: php;">
 //使用new 关键字新建容器
@@ -123,7 +115,7 @@ $container = \Ocara\Core\Container::build();
     </tr>
 </table>
 <pre>
-            实例如下：
+
             （a）绑定和使用
 </pre>
 <pre class="brush: php;">
@@ -300,7 +292,7 @@ $computer->get('computer', array(), array('keyboard' => $keyboardObj));
     </tr>
 </table>
 <pre>
-            实例如下：
+
 </pre>
 <pre class="brush: php;">
 $userChecker = ocContainer()->get('userChecker');

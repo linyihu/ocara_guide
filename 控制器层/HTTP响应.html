@@ -30,7 +30,7 @@ HTTP响应使用的是\Ocara\Response类。
     可以有以下方法使用该Response对象：
     （1）任意处可以使用ocService()->response获取
     （2）在控制器动作中可以使用$this->response获取
-    实例如下：
+
 <pre class="brush: php;">
 
 class EditAction extends Controller
@@ -86,7 +86,7 @@ class EditAction extends Controller
     </tr>
 </table>
 <pre>
-        实例如下：
+
 <pre class="brush: php;">
 //字符串
 ocService()->response->setHeader('Cache-control: private, must-revalidate');
@@ -116,7 +116,7 @@ ocService()->response->setHeader(array('Cache-control: private, must-revalidate'
     </tr>
 </table>
 <pre>
-        实例如下：
+
 <pre class="brush: php;">
 //设置缓存控制
 ocService()->response->setOption('Cache-control', 'private, must-revalidate');
@@ -142,7 +142,7 @@ $cacheControl = ocService()->response->getOption('Cache-control');
     </tr>
 </table>
 <pre>
-                实例如下：
+
 <pre class="brush: php;">
 ocService()->response->setStatusCode('200');
 </pre>
@@ -163,7 +163,7 @@ ocService()->response->setStatusCode('200');
     </tr>
 </table>
 <pre>
-                实例如下：
+
 <pre class="brush: php;">
 ocService()->response->setContentType('text/html');
 </pre>
@@ -184,7 +184,7 @@ ocService()->response->setContentType('text/html');
     </tr>
 </table>
 <pre>
-                实例如下：
+
 <pre class="brush: php;">
 ocService()->response->setCharset('utf-8');
 </pre>
@@ -205,7 +205,7 @@ ocService()->response->setCharset('utf-8');
     </tr>
 </table>
 <pre>
-        实例如下：
+
 <pre class="brush: php;">
 //设置选项
 ocService()->response->setOption('Cache-control', 'private, must-revalidate');
@@ -231,7 +231,7 @@ echo ocService()->response->getOption('Cache-control');
     </tr>
 </table>
 <pre>
-        实例如下：
+
 <pre class="brush: php;">
 //设置缓存
 ocService()->response->setOption('Cache-control', 'private, must-revalidate');

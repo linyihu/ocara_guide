@@ -56,7 +56,7 @@
 </table>
 <pre>
 
-        实例如下：
+
         （1）查询主键id为1记录的username和email字段值
 <pre class="brush: php;">
 $userModel = \app\dal\models\User::select(1, 'username, email');
@@ -133,7 +133,7 @@ $result = $detailModel->fields('detail_id, line, price')
 </table>
 <pre>
 
-        实例如下：
+
 （1）选择状态status为1并且按添加时间create_time降序排列的前10行记录的用户名和邮箱：
 <pre class="brush: php;">
 $fields= 'username, email';
@@ -243,7 +243,7 @@ $result = $userModel->where($where)
 </table>
 <pre>
 
-        实例如下：
+
 
 （1）选择状态status为1最新用户（按添加时间create_time降序排列）的用户名和邮箱：
 <pre class="brush: php;">
@@ -380,7 +380,7 @@ $result = User::getRowByUserId(234);
 	</tr>
 </table>
 <pre>
-         实例如下：
+
 <pre class="brush: php;">
 /*
  * 查询10行
@@ -402,7 +402,7 @@ $userModel
                 <span class="STYLE1">queryRow(sql, [debug])</span>
          成功时返回查询的那行数据关联数组或对象，如果没有查到，则返回false。
          参数同上。
-         实例如下：
+
 <pre class="brush: php;">
 /*
  * 查询一行

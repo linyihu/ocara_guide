@@ -80,7 +80,7 @@ echo $url;
 		<td>可选。根URL。一般用于URL协议不是HTTP的情况。</td>
 	</tr>
 </table>
-       实例如下：
+
 </pre>
 <pre class="brush: php;">
 $ret = ocRealUrl('images', 'default/logo.jpg');
@@ -93,7 +93,7 @@ echo $ret; //输出类似于ftp://localhost/images/default/logo.jpg
 </strong>       生成相对URL。类似于ocRealUrl()，只不过是相对URL，前面去掉了协议和主机名。
        特色：统一的URL生成函数，自动使用静态生成过的静态页面。
        参数同上。
-       实例如下：
+
 </pre>
 <pre class="brush: php;">
 $ret = ocSimpleUrl('images', 'default/logo.jpg');

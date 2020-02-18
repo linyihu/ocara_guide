@@ -11,11 +11,8 @@
 <script type="text/javascript" src="../treeview/base.js"></script>
 </head><body><pre>
 <h2>Session操作</h2>
-
      Session操作可以使用\Ocara\Session插件。
      具体使用方法如下:
-
-<div class="function">
 <pre><strong>1、get(name)</strong>
    获取session值。  
   参数说明：
@@ -29,8 +26,7 @@
 		<td>name</td>
 		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
 	</tr>
-	</table>  
-  实例如下：
+	</table>
  <pre class="brush: php;">
  $login_info = $this->session->get('login_info'); </pre>
 <pre><strong>2、set(name, value)</strong>
@@ -51,7 +47,7 @@
 		<td>必需。变量值</td>
 	</tr>
 	</table>  
-  实例如下：
+
 （1）设置is_login为true
 <pre class="brush: php;">
   $this->session->set('is_login', true); </pre>
@@ -75,23 +71,20 @@ $this->session->set(array(
 		<td>name</td>
 		<td>必需。变量名称。</td>
 	</tr>
-	</table>  
-  实例如下：
+	</table>
  <pre class="brush: php;">
  $this->session->delete('login_info'); </pre>
 <strong>4、getId()</strong>
-  获取session ID。 
-  实例如下：
+  获取session ID。
  <pre class="brush: php;">
  $sessionId = $this->session->getId(); </pre>
  <strong>5、getName()</strong>
   获取session名称。  
-  实例如下：
+
  <pre class="brush: php;">
  $sessionName = $this->session->getName();; </pre>
 <strong>6、clear()</strong>
   清空session。
-  实例如下：
  <pre class="brush: php;">
  $this->session->clear(); </pre>
 <pre><strong>7、has(name)</strong>
@@ -107,8 +100,7 @@ $this->session->set(array(
 		<td>name</td>
 		<td>必需。变量名称。</td>
 	</tr>
-	</table>  
-  实例如下：
+	</table>
  <pre class="brush: php;">
 if ($this->session->exists('user_name')) {
 	echo true;
@@ -118,12 +110,11 @@ if ($this->session->exists('user_name')) {
 </pre>
 <strong>8、destroy()</strong>
   释放session。
-  实例如下：
  <pre class="brush: php;">
  $this->session->destroy(); </pre>
 <strong>9、setSaveTime(saveTime)</strong>
   设置session有效期(单位为秒)。 
-  实例如下：
+
  <pre class="brush: php;">
  $this->session->setSaveTime(86400); </pre>
 <pre><strong>10、setCookie(saveTime[, path, domain, secure, httponly])</strong>
@@ -155,13 +146,12 @@ if ($this->session->exists('user_name')) {
 		<td>httponly</td>
 		<td>可选。安全参数，默认为true。为防注入，建议保持为true。</td>
 	</tr>
-	</table>  
-  实例如下：
+	</table>
  <pre class="brush: php;">
  $login_info = $this->session->setCookie(86400); </pre>
 <strong>11、serialize()</strong>
   序列化session数组。  
-  实例如下：
+
  <pre class="brush: php;">
  $sessionString = $this->session->serialize(); </pre>
 <pre><strong>12、unserialize(data)</strong>
@@ -177,10 +167,8 @@ if ($this->session->exists('user_name')) {
 		<td>data</td>
 		<td>必需。要反序列化的session字符串。</td>
 	</tr>
-	</table>  
-  实例如下：
+	</table>
  <pre class="brush: php;">
  $session = $this->session->unserialize($sessionString); </pre>
-</div>
 </pre>
 </body></html>

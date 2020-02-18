@@ -40,7 +40,7 @@
 	  <td>可选。变量数组。这个数组是传递到加载文件的一些自定义变量，类似于模板变量。</td>
   </tr>
 </table>
-      实例如下：
+
       假设required/functions目录下只存在test.php，则可以：
 </pre>
 <pre class="brush: php;">
@@ -65,7 +65,7 @@ ocImport(ocPath('function', 'test.php'), true, false, array('name' => 'test')); 
 		<td>必需。文件或目录路径。</td>
 	</tr>
 </table>
-     实例如下：
+
 </pre>
 <pre class="brush: php;">
 //单个目录
@@ -91,7 +91,7 @@ echo ($path);
 		<td>必需。命名空间的路径目录。</td>
 	</tr>
 </table>
-     实例如下：
+
 </pre>
 <pre class="brush: php;">
 //单个目录
@@ -123,7 +123,7 @@ echo ($path);
 		<td>可选。是否优化文件名。默认为false，如果为true，会进行乱码处理，并且可以返回优化处理后的路径名。<br/>如果您的Ocara框架使用的是UTF-8版本，由于中文文件名可能乱码，所以在UTF-8的编码下需要进行乱码处理。所以如果文件路径filePath中可能存在中文，请将该参数置为true，由该函数自行处理乱码，从而准确判断是否存在文件。</td>
 	</tr>
 </table>
-     实例如下：
+
      如果服务器为windows系统，文件名是不区分大小写的，如：
 </pre>
 <pre class="brush: php;">
@@ -174,7 +174,7 @@ if ($path = ocFileExists($path, true)) {
 	  <td>可选。新建目录的权限，默认为0755。</td>
   </tr>
 </table>
-     实例如下：
+
      假设，required/data下不存在test目录，如果data有写权限的话，
 </pre>
 
@@ -244,7 +244,7 @@ array(
 	</tr>
 </table>
 
-      实例如下：
+
 <pre class="brush: php;">
 /*
  * 会输出当前web应用目录下的required/data/test/test1/test.txt的完整路径
@@ -258,7 +258,7 @@ echo ocPath('data', 'test/test1/test.txt');
       参数同上ocPath()。
 </pre>
 <pre>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 //文件存在，输出路径
@@ -280,7 +280,7 @@ echo ocFile('data', 'test/test1/test.txt');
 		<td>必需。文件路径。</td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 $path = ocPath('data', 'test/d.txt');
@@ -294,7 +294,7 @@ echo ocBasename($path);
 	  （2）框架系统目录system/service/functions下面的函数文件，这是框架提供的扩展函数库。
 	  （3）框架扩展目录extension/service/functions下面的函数文件，这是我们自己放入的可供多个应用调用的公共函数库目录。
       参数同上ocFile()。
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 /*

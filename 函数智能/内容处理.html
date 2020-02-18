@@ -40,7 +40,7 @@
 		<td>可选。新建目录的权限，默认为0755。</td>
 	</tr>
 </table>
-       实例如下：
+
 </pre>
 <pre class="brush: php;">
 $path = ocPath('data', 'test/d.txt'); //返回/resource/data/test/d.txt
@@ -65,7 +65,7 @@ ocWrite($path, 'append_test'); //向文件中追加内容append_test
 		<td>可选。是否检测文件路径名。如果为true时，若文件名没有扩展名则会报错。</td>
 	</tr>
 </table>
-       实例如下：
+
 </pre>
 <pre class="brush: php;">
 //读取本地文件内容
@@ -105,7 +105,7 @@ $localConent = ocRead($path, true);
 </tr>
 </table>
 
-     实例如下：
+
 </pre>
 <pre class="brush: php;">
 /*

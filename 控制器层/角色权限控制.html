@@ -116,7 +116,7 @@ $auth->delRole(array('role1', 'role2'));
 </table>
 <pre>
 
-                实例如下：
+
                 （1）使用路由数组保存权限
                         如下设置role1的role2拥有bbs模块的forum控制器的index权限：
 <pre class="brush: php;">
@@ -163,7 +163,7 @@ $auth->delAuth('role1.role2', 1);
         获取权限使用Auth的getAuth()方法，格式如下：
                 <span class="STYLE1">getAuth([roleList, routeList])</span>
         参数同上。
-        实例如下：
+
 <pre class="brush: php;">//获取所有权限
 $allAuthData = $auth->getAuth();
 
@@ -194,7 +194,7 @@ $authData = $auth->getAuth(array('role1', 'role2'), 'bbs.forum.index');
 	</tr>
 </table>
 <pre>
-      实例如下：
+
 <pre class="brush: php;">
 //自定义权限数组
 $data = ocSet(array('123', 'bbs', 'forum', 'index'), 1); //设置允许权限
@@ -230,7 +230,7 @@ $auth->setData($data);
 </table>
 <pre>
 
-                实例如下：
+
                         检测role1角色下的role2角色是否拥有bbs模块的forum控制器下面的index动作的权限，如下：
                         （a）使用路由数组保存权限
 <pre class="brush: php;">

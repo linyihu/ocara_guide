@@ -40,7 +40,7 @@
 		<td>必需。要检测的变量</td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 echo ocEmpty(array()); //结果为true 
@@ -64,7 +64,7 @@ echo ocEmpty('');      //结果为true
 		<td>必需。SQL语句字符串</td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <p>修改商品的点击数字段hits</p>
 <pre class="brush: php;">
@@ -113,7 +113,7 @@ $itemEntity->save();
 		<td>可选。如果是设置全局变量，则需传递该参数作为值。 </td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 //设置全局变量
@@ -144,7 +144,7 @@ $username = ocGlobal('username');
 		<td>可选。设置默认值。如果不存在该变量配置，则可传递该参数来返回默认值。</td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 //假设已经设置了username为用户名
@@ -190,7 +190,7 @@ $error = ocLang('not_exists_username', array('username' => $username)); //依然
 		</td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 //不指定默认值
@@ -223,7 +223,7 @@ echo ocConfig('COOKIE.path_test', '/', true); //若存在path_test的配置，�
 		<td>可选。要替换的字符。如果不指定，则替换为空串，相当于去除掉了空白字符。</td>
 	</tr>
 </table>
-     实例如下：
+
 </pre>
 <pre class="brush: php;">
 echo ocReplaceSpace("aa|t\t", "<br/>"); //将结尾的制表符“\t”替换成“<br/>”，变成“aa|t<br/>”

@@ -41,7 +41,7 @@
 	  <td>可选。表示键名是否必须存在，如果存在则返回其值。否则，不管default设置为何值都不会返回，而是抛出键名不存在的异常错误。</td>
     </tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 $arr = array(
@@ -77,7 +77,7 @@ echo ocGet('c', $arr, 0, true); //找不到键名c，不管第3个参数设置�
 		<td>可选。要检测键名的数组。同上</td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 $arr = array(
@@ -112,7 +112,7 @@ echo ocKeyExists(array('a', 'sex'), $arr); //结果为false
 		<td>必需。要设置的值。</td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 $arr = array(
@@ -148,7 +148,7 @@ echo ocGet('a.user_name', $arr); //输出xiaoming
 		<td>必需。键名列表，同上</td>
 	</tr>
 </table>
-      实例如下：
+
 </pre>
 <pre class="brush: php;">
 $arr = array(
@@ -199,7 +199,7 @@ ocDie();
 　 </td>
 	</tr>
 </table>
-       实例如下：
+
 </pre>
 <pre class="brush: php;">
 $arr = array(

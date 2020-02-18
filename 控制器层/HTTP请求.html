@@ -28,7 +28,7 @@ HTTP请求默认使用的是Ocara\Core\Request类。
 <strong>1、请求类的使用</strong>
     （1）任意处可以使用ocService()->request获取
     （2）在控制器动作中可以使用$this->request获取
-    实例如下：
+
 <pre class="brush: php;">
 class EditAction extends Controller
 {
@@ -120,7 +120,7 @@ $id = ocGet('id', $_GET, 0);
     </tr>
 </table>
 <pre>
-        实例如下：
+
 <pre class="brush: php;">
 //获取GET参数id的值
 $id = ocService()->request->getGet('id', 0);
@@ -150,7 +150,7 @@ $postData = ocService()->request->getGet();
     </tr>
 </table>
 <pre>
-                实例如下：
+
 <pre class="brush: php;">
 //获取POST参数id的值
 $id = ocService()->request->getPost('id', 0);
@@ -179,7 +179,7 @@ $postData = ocService()->request->getPost();
     </tr>
 </table>
 <pre>
-                实例如下：
+
 <pre class="brush: php;">
 //获取Cookie参数id的值
 $id = ocService()->request->getCookie('id', 0);

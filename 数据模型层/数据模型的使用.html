@@ -21,7 +21,7 @@
 
 <strong>2、详细说明</strong>
       （1）直接新建Model类
-             实例如下：
+
 <pre class="brush: php;">
 //新建User模型类实例
 $userModel = new \app\dal\models\User();
@@ -32,7 +32,7 @@ $userModel = new \app\dal\models\BBS\User();
 </pre>
       （2）使用build()方法
           本框架所有的类，都继随自\Ocara\Base基类，该基类定义了build()方法，可以新增当前对象。
-             实例如下：
+
 <pre class="brush: php;">
 //会新建application/model下面的User模型类实例
 $userModel = \app\dal\models\User::build();
