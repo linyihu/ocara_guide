@@ -26,7 +26,7 @@
 <pre><strong>
 <br />二、方法函数介绍</strong></pre>
 <div class="function">
-<pre><strong>1、connect(ftpserver, username, password[, timeOut])</strong>
+<pre><strong>1、connect(ftpServer, username, password[, port, timeOut])</strong>
     连接FTP。连接失败会提示出错信息。不返回任何信息。
     参数说明：
 </pre>
@@ -48,6 +48,10 @@
 		<td>必需。密码</td>
 	</tr>
 	<tr>
+		<td>port</td>
+		<td>可选。端口。默认为21。</td>
+	</tr>
+	<tr>
 	  <td>timeOut</td>
 	  <td>可选，超时时间</td>
     </tr>
@@ -59,7 +63,7 @@ $ftp = new Ftp();
 $ftp->connect('85.134.120.16', 'myhost001', '123456@dlyg');
 
 </pre>
-<pre><strong>2、createDir(dirName, mode)  </strong>
+<pre><strong>2、createDir(dirName[, perm])  </strong>
    新建远程目录。如果成功，则返回新建的目录名，否则返回 false。
   	参数说明： 
 </pre>
@@ -73,7 +77,7 @@ $ftp->connect('85.134.120.16', 'myhost001', '123456@dlyg');
 		<td>必需。目录名称</td>
 	</tr>
 	<tr>
-		<td>mode</td>
+		<td>perm</td>
 		<td>可选。目录权限</td>
 	</tr>
 </table> 
@@ -81,7 +85,7 @@ $ftp->connect('85.134.120.16', 'myhost001', '123456@dlyg');
       <pre class="brush: php;"> echo $ftp->createDir('test'); //输出/test
 
 </pre>
-      <pre><strong>3、listDir(dirPath)</strong>
+      <pre><strong>3、listDir(path)</strong>
    列出FTP目录内容。
    参数说明： 
 </pre>
@@ -144,7 +148,7 @@ print_r($ftp->listDir('test')); //输出：Array ( [0] => /test/1.php [1] => /te
   <pre class="brush: php;">echo $ftp->checkDir('test/test4'); //输出true
 
 </pre>
-  <pre><strong>6、delDir(dirName, delRecursive, path)</strong>
+  <pre><strong>6、delDir(dirName[, recursive, path])</strong>
      删除远程目录。
 	 参数说明： 
 </pre>
@@ -171,7 +175,7 @@ print_r($ftp->listDir('test')); //输出：Array ( [0] => /test/1.php [1] => /te
   <pre class="brush: php;">  echo $ftp->delDir('test', true); //输出true，递归删除了test目录
 
 </pre>
-  <pre><strong>7、upload(localFile, remoteFile, resumeGet, mode)</strong>
+  <pre><strong>7、upload(localFile, remoteFile[, async, mode, location])</strong>
     上传远程文件。成功返回true，失败返回false。
     参数说明：  
 </pre>
@@ -189,8 +193,8 @@ print_r($ftp->listDir('test')); //输出：Array ( [0] => /test/1.php [1] => /te
 		<td>必需。远程保存路径</td>
 	</tr>
 	<tr>
-		<td>asyn</td>
-		<td>可选。默认为true</td>
+		<td>async</td>
+		<td>可选。是否同步。默认为true</td>
 	</tr>
 	<tr>
 	  <td>mode</td>
@@ -198,7 +202,7 @@ print_r($ftp->listDir('test')); //输出：Array ( [0] => /test/1.php [1] => /te
     </tr>
 	<tr>
 	  <td>location</td>
-	  <td>&nbsp;</td>
+	  <td>规定在本地文件中的何处开始拷贝。默认是0。</td>
     </tr>
 </table>   
   <p>实例如下：</p>
@@ -208,7 +212,7 @@ print_r($ftp->listDir('test')); //输出：Array ( [0] => /test/1.php [1] => /te
 $ftp->upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 
 </pre>
-    <pre><strong>8、download(remoteFile, localFile, resumeGet, mode)</strong>
+    <pre><strong>8、download(remoteFile, localFile[, async, mode, location])</strong>
      下载远程文件。成功返回true，失败返回false。
      参数说明：
 </pre>
@@ -226,8 +230,8 @@ $ftp->upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 		<td>必需。要保存的本地路径</td>
 	</tr>
 	<tr>
-		<td>asyn</td>
-		<td>同上</td>
+		<td>async</td>
+		<td>同上。</td>
 	</tr>
 	<tr>
 	  <td>mode</td>
@@ -287,7 +291,7 @@ $ftp->upload(ocPath('data', 'ftp_test.txt'), 'test/ftp_upload.txt');
 <pre class="brush: php;">echo $ftp->getSize('test/ftp_upload.txt'); //结果输出了文件大小的数字
 </pre>
 
-<pre><strong>12、rename(oldname, newname)</strong>
+<pre><strong>12、rename(oldName, newName)</strong>
      重命名FTP文件。
      参数说明：
 </pre>
