@@ -164,7 +164,7 @@ $container->bind('computer', '\Computer', array($mouse));
 $keyboardObj = new \Keyboard();
 $name = 'computer1';
 $config = array();
-$computer->get('computer', array($name, $config));
+$computer = $container->get('computer', array($name, $config));
 </pre>
 <pre>
                     上述实例中，$mouse参数是通过传参传过去的，但是也可以不传而在对象调用时让容器自动重新建一个\Mouse类，这称为依赖管理。
@@ -229,7 +229,7 @@ $container->bind('computer', '\Computer', array($container), array('mouse' => $m
 
 //获取对象时属性注入（注入键盘对象）
 $keyboardObj = new \Keyboard();
-$computer->get('computer', array(), array('keyboard' => $keyboardObj));
+$computer = $container->get('computer', array(), array('keyboard' => $keyboardObj));
 
 </pre>
 <pre>
