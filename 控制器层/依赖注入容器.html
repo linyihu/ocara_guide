@@ -171,18 +171,7 @@ $computer->get('computer', array($name, $config));
                     但是前提是容器中也指定了该类的实现，而参数数组中该参数使用null即可。如下所示：
 </pre>
 <pre class="brush: php;">
-//绑定鼠标对象
-$container->bind('\Interface\Mouse', '\Mouse');
-
-//绑定时传递前面的参数（注入鼠标对象）
-$container = new \Ocara\Core\Container();
 $container->bind('computer', '\Computer', array(null)); //这里传null
-
-//获取对象
-$keyboardObj = new \Keyboard();
-$name = 'computer1';
-$config = array();
-$computer->get('computer', array($name, $config));
 </pre>
 <pre>
 
