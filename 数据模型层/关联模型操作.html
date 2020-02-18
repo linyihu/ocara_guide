@@ -15,7 +15,7 @@
 
 <strong>1、关联配置</strong>
     关联配置的选项，一般是在application/config/model中的数据表模型配置文件中的$CONF['JOIN']。
-    如下实例：
+
 <pre class="brush: php;">
 /**
  * 表关联
@@ -38,7 +38,7 @@
 <strong>2、使用关联ORM模型</strong>
             使用主表的时候，也可以使用它的关联表模型。
             一般是通过调用与关联名同名的关联属性来调用关联模型的，如$user->userVerify。
-            如下实例：
+
 <pre class="brush: php;">
 //查询user表
 $user = \app\dal\models\User::select(1);
@@ -54,7 +54,7 @@ echo $verifyStatus;
             （2）一对多（hasMany）
                     关联属性返回的是一个PHP迭代器，可以使用foreach进行遍历。
                     每个元素就是一个该关联表的数据模型类，表示某一条关联记录。
-                    如下实例：
+
 <pre class="brush: php;">
 //查询user表
 $users = \app\dal\models\User::select(11);
@@ -72,7 +72,7 @@ foreach ($users->userVerify as $row) {
                     对于不同的关系类型，关联属性也要设置不同的值类型，如下详细说明：
                     （a）一对一（hasOne）和多对一（belongsTo）
                             关联属性要设置关联模型类对象，表示一条记录。
-                            如下实例：
+
 <pre class="brush: php;">
 //新建主表模型
 $user= new \app\dal\models\User();

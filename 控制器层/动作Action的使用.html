@@ -355,7 +355,7 @@ class ItemController extends Module
      Action是独立成类的代码更加美观和易于维护，因为在该类中提供了一些结构函数：
      <strong>（1）__action()</strong>
              用于写初始化代码（类似于类的析构函数）。这个方法会首先执行，因此不需要新建_construct()函数，以免覆盖父级类的析构函数。
-             如下实例：
+
 <pre class="brush: php;">
 	protected function __action()
 	{
@@ -383,7 +383,7 @@ class ItemController extends Module
      <strong>（3）display()</strong>
               用于在表单提交之前的模板输出。没有表单提交时，都会路由到该方法执行。
               因此，如果要输出html，就在这里写输出前的逻辑处理代码，包括表单的输出。当表单提交后，一般是在submit()方法中处理。
-              如下实例：
+
 <pre class="brush: php;">
 	public function display()
 	{
@@ -410,7 +410,7 @@ class ItemController extends Module
      <strong>（5）isSubmit()</strong>
              用于手动判断表单是否提交。
              若Action类中没有该方法函数，默认是使用框架的Request::isPost()来检测的；如果不合适，可以新建该函数去检测，然后return true/false即可。
-             如下实例：
+
 <pre class="brush: php;">
 	public function isSubmit()
 	{
@@ -420,7 +420,7 @@ class ItemController extends Module
 </pre>
      <strong>（6）ajax()</strong>
              用于ajax提交的后台代码处理。框架中使用Request::isAjax()判断是否是ajax提交的。
-             如下实例：
+
 <pre class="brush: php;">
 public function ajax()
 {
