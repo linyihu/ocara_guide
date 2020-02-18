@@ -24,7 +24,7 @@
 <strong>1、容器的使用</strong>
       （1）全局容器
             容器类为\Ocara\Core\Container。
-            框架开始时默认生成了一个全局容器，可以通过以下两种方式获取:
+            框架开始时默认生成了一个全局容器，可以通过以下方式获取:
             （a）Container::getDefault()。
             （b）使用ocContainer()函数。
             （c）使用ocService()->container获取。
@@ -37,9 +37,9 @@ $container = ocService()->container;
 $response = ocService()->container->response;
 </pre>
      （2）私有容器
-            控制器动作继承于ServiceProvider类，所以其本身包含自己的私有容器。
-            可以使用“$this->属性名”方式获取全局容器中的类对象。
-            如果全局容器和私有容器有同名的类对象，这种调用方式会优先调用私有容器中的对象，如果没有则取全局容器中的。
+            <a href="../控制器层/服务提供器.html" title="服务提供器">ServiceProvider服务提供器</a>包含自己的私有容器。
+            在其内部可以使用“$this->属性名”方式获取私有容器对象，如果没有该对象，则去找全局容器中找。
+            控制器动作也继承于ServiceProvider，所以也可以这样获取服务对象。
 
 <pre class="brush: php;">
 class EditAction extends ItemController
@@ -116,53 +116,38 @@ $container = \Ocara\Core\Container::build();
 </table>
 <pre>
 
-            （a）绑定和使用
+            （a）绑定
 </pre>
 <pre class="brush: php;">
 //方法数组
-Base::$container->bind('userChecker', array('User', 'getChecker'));
+ocContainer()->bind('userChecker', array('User', 'getChecker'));
 
 //回调匿名函数
-Base::$container->bind('userChecker', function(){
+ocContainer()->bind('userChecker', function(){
     return User::getChecker();
 });
 
 //获取类名
-Base::$container->bind('userChecker', '\User\Checker');
+ocContainer()->bind('userChecker', '\User\Checker');
 
 //用类实现接口
-Base::$container->bind('\Interface\User\Checker', '\User\Checker');
+ocContainer()->bind('\Interface\User\Checker', '\User\Checker');
 
 //用新类替换被绑定的类（新类须继承旧类，或者与旧类继承同一个父类）
-Base::$container->bind('\User\Checker', '\User\NewChecker');
-</pre>
-<pre>
-            另外，可以不用bind()方法，直接使用未定义的属性来绑定。实例如下：
-</pre>
-<pre class="brush: php;">
-//方法数组
-Base::$container->userChecker = array('User', 'getChecker');
-
-//回调函数
-Base::$container->userChecker = function(){
-    return User::getChecker();
-};
-
-//获取类名
-Base::$container->userChecker = '\User\Checker';
+ocContainer()->bind('\User\Checker', '\User\NewChecker');
 </pre>
 <pre>
             （b）传递参数
-                    传递参数可以是在bind()绑定时，或者get()获取时，两者会合并使用。
+                    在bind()绑定或者get()获取都可以传递参数，在调用对象时会合并使用所有参数，注意：绑定的参数合并在前。
 </pre>
 <pre class="brush: php;">
 class Computer
 {
-    protected $_mouse;
+    protected $mouse;
 
     public function __construction(\Mouse $mouse, $name, $config = array())
     {
-        $this->_mouse = $mouse;
+        $this->mouse = $mouse;
     }
 }
 </pre>
@@ -182,7 +167,7 @@ $config = array();
 $computer->get('computer', array($name, $config));
 </pre>
 <pre>
-                    上述实例中，$mouse参数是通过传参传过去的，但是也可以不传而让容器自己自动重新建一个\Mouse类，这称为依赖管理。
+                    上述实例中，$mouse参数是通过传参传过去的，但是也可以不传而在对象调用时让容器自动重新建一个\Mouse类，这称为依赖管理。
                     但是前提是容器中也指定了该类的实现，而参数数组中该参数使用null即可。如下所示：
 </pre>
 <pre class="brush: php;">
@@ -200,18 +185,17 @@ $config = array();
 $computer->get('computer', array($name, $config));
 </pre>
 <pre>
-                    上面定义了\Interface\Mouse接口的实现类为\Mouse，在传参时只要传递null即可，容器会自动创建该\Mouse类传递给Computer的构造函数。
-                    实现自动化依赖管理。
+
 </pre>
 <pre>
-
             （c）属性注入
                      对于第4个参数deps，它是一个属性注入数组，被注入的类必须包含set和get方法，如下所示：
 </pre>
 <pre class="brush: php;">
 class Computer
 {
-    protected $_mouse;
+    protected $mouse;
+    protected $keyboard;
     protected $container;
 
     public function __construction($container)
@@ -235,14 +219,14 @@ class Computer
     /**
      * 键盘
      */
-    public function setMouse($mouseObj)
+    public function setKeyboard($keyboardObj)
     {
-        $this->_mouse = $mouseObj;
+        $this->keyboard = $keyboardObj;
     }
 
-    public function getMouse()
+    public function getKeyboard()
     {
-        return $this->_mouse;
+        return $this->keyboard;
     }
 }
 </pre>
@@ -268,7 +252,7 @@ $computer->get('computer', array(), array('keyboard' => $keyboardObj));
 <pre>
 
 <strong>3、绑定类的使用</strong>
-      使用容器的get()方法，或者使用容器绑定过的名称属性，就可以获取实例化后的绑定类。
+      使用容器的get()方法，或者使用容器绑定过的名称属性，就可以获取实例化后的绑定类。不同在于，get()可以附加传递参数和属性注入。
       （1）使用get()方法
                   <span class="STYLE1">get(name[, params, deps])</span>
             参数说明：
@@ -295,7 +279,9 @@ $computer->get('computer', array(), array('keyboard' => $keyboardObj));
 
 </pre>
 <pre class="brush: php;">
-$userChecker = ocContainer()->get('userChecker');
+$params = array('user_id' => 1);
+$deps = array('sex' => ['0' => '未知', '1' => '男', '2' => '女']);
+$userChecker = ocContainer()->get('userChecker', $params, $deps);
 </pre>
 <pre>
       （2）使用未定义的属性
