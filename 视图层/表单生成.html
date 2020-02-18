@@ -217,7 +217,7 @@ class CreateAction extends Controller
 	{
 		//检测是否验证该表单
 		$ifValidateForm = $this->form('form_create')->validateForm();
-		ocPrint($ifValidateForm); //输出false
+		print_r($ifValidateForm); //输出false
 	}
 }
 </pre>

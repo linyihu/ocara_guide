@@ -35,7 +35,7 @@ $fileCache->format();
 $fileCache->save($filePath);
 
 $content = $fileCache->read($filePath, 'users');
-ocPrint($content);
+print_r($content);
 </pre>
 <p>执行结果：</p><pre>
 （1）保存文件，内容为：

@@ -26,7 +26,7 @@
         $auth->setRole('g1.g2.g3'); 
         $auth->setAuth('g1.g2.g3', 'menu.index');
         $auth->save();
-        ocPrint($auth->getAuth());
+        print_r($auth->getAuth());
 </pre>
 <p>输出结果：Array ( [g1] => Array ( [g2] => Array ( [g3] => Array ( [menu] => Array ( [index] => 1 ) ) ) ) )
 		</p><p><strong>三、方法函数介绍</strong></p>

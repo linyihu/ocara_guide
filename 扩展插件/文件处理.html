@@ -151,7 +151,7 @@ File::delFile($path); </pre>
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 $content = File::readFile($path);
-ocPrint($content); </pre>
+print_r($content); </pre>
 <pre><strong>7、writeFile(path, content[, perm, trim])</strong>
   向文件写入内容。返回true或false。  
   参数说明：
@@ -284,7 +284,7 @@ File::moveFile($path, ocPath('data', 'test2.txt')); </pre>
   <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test3.txt');
-ocPrint(File::fileInfo($path));
+print_r(File::fileInfo($path));
 </pre>
 <pre>      结果输出（类似于）：</pre>
 <pre class="brush: php;">

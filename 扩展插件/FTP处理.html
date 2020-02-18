@@ -101,7 +101,7 @@ $ftp->connect('85.134.120.16', 'myhost001', '123456@dlyg');
 $ftp->upload(ocPath('data', 'test.txt'), 'test/1.txt');
 $ftp->upload(ocPath('data', 'test.txt'), 'test/test2/2.txt');
 
-ocPrint($ftp->listDir('test')); //输出：Array ( [0] => test/1.txt [1] => test/test2 )
+print_r($ftp->listDir('test')); //输出：Array ( [0] => test/1.txt [1] => test/test2 )
 
 </pre>
 <pre><strong>4、chDir(path)</strong>
@@ -123,7 +123,7 @@ ocPrint($ftp->listDir('test')); //输出：Array ( [0] => test/1.txt [1] => test
 </p>
 <pre class="brush: php;"> $ftp->chDir('test');
 
-ocPrint($ftp->listDir('test')); //输出：Array ( [0] => /test/1.php [1] => /test/test2 )
+print_r($ftp->listDir('test')); //输出：Array ( [0] => /test/1.php [1] => /test/test2 )
 
 </pre>
 <pre><strong>5、checkDir(path)</strong>

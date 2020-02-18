@@ -209,20 +209,20 @@ $arr = array(
 
 //使用函数
 $arr = ocArrayMap('strtolower', $arr);
-ocPrint($arr);
+print_r($arr);
 //输出结果Array ( [A] => Array ( [0] => c [1] => d ) [a] => b )，元素值全部变为小写了
 
 /**
  * 使用类的静态方法（假设存在）
  */
 $arr = ocArrayMap('StringUtil::getLower', $arr);
-ocPrint($arr);
+print_r($arr);
 
 /**
 * 使用对象的方法（假设存在）
 */
 $arr = ocArrayMap(array($obj, 'getLower'), $arr);
-ocPrint($arr);
+print_r($arr);
 
 </pre>
 </div>

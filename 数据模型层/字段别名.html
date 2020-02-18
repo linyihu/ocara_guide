@@ -78,7 +78,7 @@ $result = $user->where(array('userName' => 'Jim'))
      ->fields('username')
      ->fields(array('password'))
      ->getRow();
-ocPrint($result);
+print_r($result);
 </pre>
             以上代码，用了字段别名userName当条件，而且真实字段输出的是字段别名，打印结果如下：
 <pre class="brush: php;">
