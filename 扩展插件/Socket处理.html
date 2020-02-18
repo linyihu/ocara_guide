@@ -11,7 +11,7 @@
 <script type="text/javascript" src="../treeview/base.js"></script>
 </head>
 <body>
-<pre><h1>Socket</h1>
+<pre><h1>Ocara\Service\SocketServer、Ocara\Service\SocketClient</h1>
   
 <p><strong>一、插件介绍</strong></p>
        Socket插件，实现了Socket的各种常用操作。</pre>
@@ -88,7 +88,7 @@ D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/server  (服务端代�
 	</table>  
 <pre><strong>2、accept()</strong>
   接收客户端请求。 </pre>
-<pre><strong>3、read(length[, type])</strong>
+<pre><strong>3、read([length, type])</strong>
   读取指定长度的数据。  
   参数说明：
  </pre>
@@ -99,14 +99,14 @@ D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/server  (服务端代�
 	</tr>
 		<tr>
 		<td>length</td>
-		<td>必需。要读取的字数，默认512个字符</td>
+		<td>可选。要读取的字数，默认512个字符</td>
 	</tr>
 		<tr>
 		<td>type</td>
-		<td>必需。有PHP_BINARY_READ和PHP_NORMAL_READ。默认为PHP_BINARY_READ</td>
+		<td>可选。有PHP_BINARY_READ和PHP_NORMAL_READ。默认为PHP_BINARY_READ</td>
 	</tr>
 	</table>  
-<pre><strong>4、send(output[, length])</strong>
+<pre><strong>4、send(content[, length])</strong>
   发送数据。  
   参数说明：
  </pre>
@@ -116,12 +116,12 @@ D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/server  (服务端代�
 		<td width="400">描述</td>
 	</tr>
 		<tr>
-		<td>output</td>
+		<td>content</td>
 		<td>必需。要发送的内容</td>
 	</tr>
 		<tr>
 		<td>length</td>
-		<td>必需。要发送的字符长度，默认512个字符</td>
+		<td>可选。要发送的字符长度，默认512个字符</td>
 	</tr>
 	</table>  
 <pre><strong>5、close()</strong>
@@ -129,7 +129,7 @@ D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/server  (服务端代�
 <p><span class="bold">
 （二）、客户端插件SocketClient
 </p><pre>
-	<strong>6、connect(host, port[, limitTime, recTimeout, sendTimeout])</strong>
+	<strong>6、connect(host, port[, limitTime, receiveTimeout, sendTimeout])</strong>
   接收客户端请求。  
   参数说明：
  </pre>
@@ -152,16 +152,16 @@ D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/server  (服务端代�
 	</tr>
 	</tr>
 	<tr>
-		<td>recTimeout</td>
-		<td>可选。接受超时时间。</td>
+		<td>receiveTimeout</td>
+		<td>可选。接受超时时间。默认为3秒。</td>
 	</tr>
 	</tr>
 	<tr>
 		<td>sendTimeout</td>
-		<td>可选。发送超时时间。</td>
+		<td>可选。发送超时时间。默认为2秒。</td>
 	</tr>
 	</table>  
-<pre><strong>7、read(length[, type])</strong>
+<pre><strong>7、read([length, type])</strong>
   读取指定长度的数据。  
   参数说明：
  </pre>
@@ -172,14 +172,14 @@ D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/server  (服务端代�
 	</tr>
 		<tr>
 		<td>length</td>
-		<td>必需。同服务端</td>
+		<td>可选。同服务端</td>
 	</tr>
 		<tr>
 		<td>type</td>
-		<td>必需。同服务端</td>
+		<td>可选。同服务端</td>
 	</tr>
 	</table>  
-<pre><strong>8、send(output[, length])</strong>
+<pre><strong>8、send(content[, length])</strong>
   发送数据。  
   参数说明：
  </pre>
@@ -189,14 +189,31 @@ D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/server  (服务端代�
 		<td width="400">描述</td>
 	</tr>
 		<tr>
-		<td>output</td>
+		<td>content</td>
 		<td>必需。同服务端</td>
 	</tr>
 		<tr>
 		<td>length</td>
 		<td>必需。同服务端</td>
 	</tr>
-	</table>  
+</table>
+<strong>9、shutdown([how])</strong>
+	优雅安全地关闭连接。
+	参数说明：
+	</pre>
+	<table>
+		<tr class="head">
+			<td width="90">名称</td>
+			<td width="400">描述</td>
+		</tr>
+		<tr>
+			<td>how</td>
+			<td>关闭方式。默认为2。0关闭读，1关闭写，2关闭读写。</td>
+		</tr>
+</table>
+
+<strong>10、close()</strong>
+	强制关闭连接。
 </div>
 </body>
 </html>

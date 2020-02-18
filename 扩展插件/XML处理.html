@@ -7,127 +7,206 @@
 <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
 <link type="text/css" rel="stylesheet" href="../style/function.css" />
-<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css" />
 <script type="text/javascript" src="../treeview/base.js"></script>
 </head>
-<body>
-<pre><h1>Xml</h1>
-  
+<body><pre>
+<h1>XML处理</h1>
+
 <p><strong>一、插件介绍</strong></p>
-       XML文档处理插件，能够实现XML的新建、保存、导出、显示和生成XML数组等操作。</pre>
-<table class="hint">
-	<tr class="head">
-		<td><h2>特色：</h2>使用方便。</td>
-	</tr>
-</table>
-<p><strong>二、方法函数介绍</strong></p>
+       XML处理插件，对应类名Ocara\Service\XML。
+
+</pre>
+<pre>
+<strong>二、函数介绍</strong>
+
+</pre>
 <div class="function">
-<pre><strong>1、setData(type, xmlSource)</strong>
-  新建XML。  
-  参数说明：
- </pre>
+<pre><strong>1、loadString(xmlString)</strong>
+       新建URL。
+       特色：统一的URL生成函数，自动使用静态生成过的静态页面。
+       参数说明：
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
 		<td width="400">描述</td>
 	</tr>
-		<tr>
-		<td>type</td>
-		<td>必需。数据来源类型。包括string、array和file三种。</td>
+	<tr>
+		<td>xmlString</td>
+		<td>必需。XML字符串。</td>
 	</tr>
-		<tr>
-		<td>xmlSource</td>
-		<td>必需。数据来源</td>
-	</tr>
-  </table>  
-  <p>实例如下：</p>
-<p>（1）字符串
-  </p>
+</table>
+</pre>
 <pre class="brush: php;">
- $str = '<?xml version="1.0" encoding="utf-8"?>
-       <users> 
+$xmlString = '<?xml version="1.0" encoding="utf-8"?>
+	<users>
              <total>1</total>
              <list>
 	              <user_name>小明</user_name>
                   <user_id>12</user_id>
              </list>
        </users>';
-$xml = new Xml();
-$xml->setData('string',$str);
+
+$xml = ocService()->xml;
+$xml->loadString($xmlString);
 </pre>
-  <p>（2）数组</p>
+
+<pre><strong>2、loadArray(xmlArray)</strong>
+       导入XML数组数据。
+       参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>xmlArray</td>
+		<td>必需。XML数组。</td>
+	</tr>
+</table>
+</pre>
 <pre class="brush: php;">
-$xml = new Xml();
-$arr = array(
-   'users', 
+$xmlArray = array(
+   'users',
 	array(
 		'total' => 1,
 		'list' => array(
-			'user_name' => '小明', 
+			'user_name' => '小明',
 			'user_id' => '12'
 		)
-	)			
+	)
 );
- $xml->setData('array', $arr)
 
-); </pre>
-  <p>（3）XML文件
-           假设，required/data下有source.xml。</p>
-<pre class="brush: php;">
-$xml= new Xml();
-$xml->setData('file', ocPath('data', 'source.xml')); </pre>
-  <pre><strong>2、save(filePath[, perm])</strong>
-  保存为XML文件。  
-  参数说明：
- </pre>
+$xml = ocService()->xml;
+$xml->loadArray($xmlArray);
+</pre>
+
+<pre><strong>3、loadFile(xmlFile)</strong>
+       导入XML文件。
+       特色：统一的URL生成函数，自动使用静态生成过的静态页面。
+       参数说明：
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
 		<td width="400">描述</td>
-	</tr>
-		<tr>
-		<td>filePath</td>
-		<td>必需。要保存的文件路径</td>
 	</tr>
 	<tr>
-		<td>perm</td>
-		<td>必需。可选。如果文件不存在新建文件时添加的可读写权限，默认为0755。</td>
+		<td>xmlFile</td>
+		<td>必需。XML文件路径。</td>
 	</tr>
-  </table>  
-  <p>实例如下：</p>
-<p>在上述实例中，使用setData()设置了数据来源。</p>
+</table>
+</pre>
 <pre class="brush: php;">
-$xml->save(ocPath('data', test.xml')); //会在required/data下面生成test.xml </pre>
-  <pre><strong>3、export(fileName)</strong>
-  导出XML。  
-  参数说明：
- </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
+$xml= ocService()->xml;
+$xml->setData('file', ocPath('data', 'source.xml'));
+</pre>
+<pre><strong>4、toArray()</strong>
+       转换成数组。
+</pre>
+<pre class="brush: php;">
+$xmlString = '<?xml version="1.0" encoding="utf-8"?>
+	<users>
+             <total>1</total>
+             <list>
+	              <user_name>小明</user_name>
+                  <user_id>12</user_id>
+             </list>
+       </users>';
+
+$xml = ocService()->xml;
+$xml->loadString($xmlString);
+$xmlArray = $xml->toArray();
+</pre>
+
+<pre><strong>5、getResult()</strong>
+       获取XML字符串数据。
+</pre>
+	<pre class="brush: php;">
+$xmlArray = array(
+   'users',
+	array(
+		'total' => 1,
+		'list' => array(
+			'user_name' => '小明',
+			'user_id' => '12'
+		)
+	)
+);
+
+$xml = ocService()->xml;
+$xml->loadArray($xmlArray);
+
+//获取XML格式字符串
+$result = $xml->getContent();
+</pre>
+
+<pre><strong>6、export(fileName)</strong>
+       导出XML数据。
+       参数说明：
+	<table>
+		<tr class="head">
+			<td width="90">名称</td>
+			<td width="400">描述</td>
+		</tr>
 		<tr>
-		<td>fileName</td>
-		<td>必需。要导出的XML文件名。</td>
-	</tr>
-  </table>  
-  <p>实例如下：</p>
- <pre class="brush: php;">
- $xml->export(ocPath('data', test.xml')); //浏览器会提示下载。 </pre>
-<pre><strong>4、makeArray()</strong>
-  生成XML数组。 </pre>
-  <p>实例如下：</p>
- <pre class="brush: php;">
-$array = $xml->makeArray(); 
-print_r($array); //会打印出xml数组 </pre>
-<pre><strong>5、display()</strong>
-  显示XML。 </pre>
-  <p>实例如下：</p>
- <pre class="brush: php;">
-$xml->display(); //直接显示出xml </pre>
-<pre><strong>6、destroy()</strong>
-  清空。释放掉Xml的xml对象。 </pre>
+			<td>fileName</td>
+			<td>必需。导出文件名。</td>
+		</tr>
+	</table>
+
+</pre>
+<pre class="brush: php;">
+$xmlString = '<?xml version="1.0" encoding="utf-8"?>
+	<users>
+             <total>1</total>
+             <list>
+	              <user_name>小明</user_name>
+                  <user_id>12</user_id>
+             </list>
+       </users>';
+
+$xml = ocService()->xml;
+$xml->loadString($xmlString);
+
+//导出
+$xml->export();
+</pre>
+
+<pre><strong>7、save(filePath[, perm])</strong>
+       导出XML数据。
+       参数说明：
+	<table>
+		<tr class="head">
+			<td width="90">名称</td>
+			<td width="400">描述</td>
+		</tr>
+		<tr>
+			<td>fileName</td>
+			<td>必需。导出文件名。</td>
+		</tr>
+		<tr>
+			<td>perm</td>
+			<td>可选。文件权限。默认0755。</td>
+		</tr>
+	</table>
+
+</pre>
+<pre class="brush: php;">
+$xmlString = '<?xml version="1.0" encoding="utf-8"?>
+		<users>
+             <total>1</total>
+             <list>
+	              <user_name>小明</user_name>
+                  <user_id>12</user_id>
+             </list>
+       </users>';
+
+$xml = ocService()->xml;
+$xml->loadString($xmlString);
+
+//保存
+$xml->save(ocPath('temp', 'test.xml'));
+</pre>
 </div>
 </body>
 </html>

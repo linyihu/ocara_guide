@@ -62,7 +62,7 @@ $this->model->update($condition, $data);</pre>
 	（4）表单必须是POST方式提交，并且使用了enctype="multipart/form-data"属性。这个可以自己添加，也可以使用表单的upload()方法。</pre></p>
 <p><strong>三、方法函数介绍</strong></p>
 <div class="function">
-<pre><strong>1、setSavePath(savePath[, prefix])</strong>
+<pre><strong>1、setSavePath(savePath[, prefix, perm])</strong>
   设置上传文件要保存的目录。  
   参数说明：
  </pre>
@@ -75,9 +75,13 @@ $this->model->update($condition, $data);</pre>
 		<td>savePath</td>
 		<td>必需。保存目录。</td>
 	</tr>
-		<tr>
+	<tr>
 		<td>prefix</td>
 		<td>可选。保存文件名的前缀。</td>
+	</tr>
+	<tr>
+		<td>perm</td>
+		<td>可选。文件权限。默认0777。</td>
 	</tr>
 	</table>  
 <pre><strong>2、setRules(rules)</strong>

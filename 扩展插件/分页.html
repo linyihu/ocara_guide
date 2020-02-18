@@ -58,8 +58,8 @@
 <strong>三、方法函数介绍</strong>
 <div class="function">
 <pre><strong>1、config(pageParam, perPage, perShow)</strong>
-  配置分页参数。  
-  参数说明：
+       配置分页参数。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -80,8 +80,8 @@
 	</tr>
 	</table>  
 <pre><strong>2、setPage(page)</strong>
-  设置当前页。  
-  参数说明：
+       设置当前页。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -94,8 +94,8 @@
 	</tr>
 	</table>  
 <pre><strong>3、setPerPage(perPage)</strong>
-  设置每页显示多少条记录。  
-  参数说明：
+       设置每页显示多少条记录。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -108,8 +108,8 @@
 	</tr>
 	</table>  
 <pre><strong>4、setPageParam(pageParam)</strong>
-  设置查询字符串中的分页参数的名称。  
-  参数说明：
+       设置查询字符串中的分页参数的名称。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -122,8 +122,8 @@
 	</tr>
 	</table>  
 <pre><strong>5、setPerShow(perShow)</strong>
-  设置每次显示多少页。  
-  参数说明：
+       设置每次显示多少页。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -136,8 +136,8 @@
 	</tr>
 	</table>  
 <pre><strong>6、setUrl(url)</strong>
-  设置分页URL。  
-  参数说明：
+       设置分页URL。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -149,9 +149,9 @@
 		<td>必需。页码的主要URL，可以是URL字符串或URL信息数组。其中不需要包含分页参数，分页参数会自动在该URL后面加上。</td>
 	</tr>
 	</table>  
-<pre><strong>7、setActClass(class)</strong>
-  设置当前页CSS样式。  
-  参数说明：
+<pre><strong>7、setActiveClass(class)</strong>
+       设置当前页CSS样式。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -163,9 +163,9 @@
 		<td>必需。当页选中页的超链接的css class名称。</td>
 	</tr>
 	</table>  
-<pre><strong>8、setHtml(total, url, attr)</strong>
-  设置页码的主函数。  
-  参数说明：
+<pre><strong>8、setHtml(total, url[, attr])</strong>
+       设置页码的主函数。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -186,7 +186,13 @@
 	</tr>
 	</table>  
 <pre><strong>9、getInfo()</strong>
-  返回分页信息。 返回分页信息，即Mysql的limit语句的两个参数：记录开始指针和查询数量</pre>
+       返回分页信息。 返回分页信息，即Mysql的limit语句的两个参数：记录开始指针和查询数量
+</pre>
+
+<pre>
+<strong>10、getPage()</strong>
+       获取当前页。
+</pre>
 </div>
 </body>
 </html>

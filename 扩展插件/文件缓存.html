@@ -28,9 +28,9 @@ $users = array(
 	array('小刚', 13)
 );
 
-$filePath = ocPath('data', 'test.php');
+$filePath = ocPath('temp', 'users.php');
 
-$fileCache->setData($users, 'users');
+$fileCache->setData($users, 'users', '用户数据');
 $fileCache->format();
 $fileCache->save($filePath);
 
@@ -40,6 +40,9 @@ print_r($content);
 <p>执行结果：</p><pre>
 （1）保存文件，内容为：
 <pre class="brush: php;">
+/**
+ * 用户数据
+ */
 $users = array(
       array(
             '小明',
@@ -112,6 +115,32 @@ $filePath = ocPath('data','test.php');
 $fileCache->setData($users, 'users');
 $fileCache->save($filePath);
 </pre>
+
+	<pre>
+<strong>3、read(filePath[, name])</strong>
+  按动作action生成HTML。
+  参数说明：
+ </pre>
+	<table>
+		<tr class="head">
+			<td width="90">名称</td>
+			<td width="400">描述</td>
+		</tr>
+		<tr>
+			<td>filePath</td>
+			<td>必需。文件路径。</td>
+		</tr>
+		<tr>
+			<td>name</td>
+			<td>可选。要获取的变量名称。</td>
+		</tr>
+	</table>
+
+<pre class="brush: php;">
+$content = $fileCache->read(ocPath('temp', 'users.php'), 'users');
+print_r($content);
+</pre>
+
 <pre>
 
 <strong>3、format()</strong>

@@ -45,7 +45,7 @@
 	</tr>
 	<tr> 
 		<td>roleList</td>
-		<td>必需。角色列表。也就是要设置的角色，多层级角色用英文半角状态下的圆点“.”分隔，或者直接用数字型数组。</td>
+		<td>必需。角色列表。数字型数组。</td>
 	</tr>
 </table>
 <pre>
@@ -54,10 +54,7 @@
 //添加角色ID
 $auth->setRole(123);
 
-//使有圆点键名方式
-$auth->setRole('role1.role2');
-
-//使用数组方式
+//多角色
 $auth->setRole(array('role1', 'role2'));
 </pre>
                 （2）获取角色的权限信息
@@ -68,10 +65,7 @@ $auth->setRole(array('role1', 'role2'));
 //角色ID
 $data = $auth->getRole(123);
 
-//使有圆点键名方式
-$data = $auth->getRole('role1.role2');
-
-//使用数组方式
+//多角色
 $data = $auth->getRole(array('role1', 'role2'));
 </pre>
                 （3）删除角色
@@ -82,10 +76,7 @@ $data = $auth->getRole(array('role1', 'role2'));
 //角色ID
 $auth->delRole(123);
 
-//使有圆点键名方式
-$auth->delRole('role1.role2');
-
-//使用数组方式
+//多角色
 $auth->delRole(array('role1', 'role2'));
 </pre>
 <strong>3、添加权限</strong>
@@ -121,15 +112,12 @@ $auth->delRole(array('role1', 'role2'));
                         如下设置role1的role2拥有bbs模块的forum控制器的index权限：
 <pre class="brush: php;">
 //设置允许权限
-$auth->setAuth(123, 'bbs.forum.index'); //使用圆点键名方式
-$auth->setAuth('role1.role2', 'bbs.forum.index'); //使用圆点键名方式
-$auth->setAuth('role1.role2', array('bbs', 'forum', 'index')); //使用数组
-$auth->setAuth(array('role1', 'role2'), array('bbs', 'forum', 'index')); //两者都使用数组方式
+$auth->setAuth(123, array('bbs', 'forum', 'index')); //单角色
+$auth->setAuth(array('role1', 'role2'), array('bbs', 'forum', 'index')); //多角色
 
 //设置禁止权限：
-$auth->setAuth(123, 'bbs.forum.index', false); //使用圆点键名方式
-$auth->setAuth('role1.role2', 'bbs.forum.index', false);
-$auth->setAuth('role1.role2', array('bbs', 'forum', 'index'), false); //使用数组方式
+$auth->setAuth(123, array('bbs', 'forum', 'index'), false); //单角色
+$auth->setAuth(array('role1', 'role2'), array('bbs', 'forum', 'index'), false); //多角色
 
 </pre>
                 （2）使用路由记录ID保存权限
@@ -137,11 +125,11 @@ $auth->setAuth('role1.role2', array('bbs', 'forum', 'index'), false); //使用�
 <pre class="brush: php;">
 //设置允许权限
 $auth->setAuth(123, '1', true);
-$auth->setAuth('role1.role2', '1', true);
+$auth->setAuth(array('role1', 'role2'), '1', true);
 
 //设置禁止权限
 $auth->setAuth(123, '1', false);
-$auth->setAuth('role1.role2', '1', false);
+$auth->setAuth(array('role1', 'role2'), '1', false);
 </pre>
 <strong>3、删除权限</strong>
         删除权限只要使用delAuth()方法，格式如下：
@@ -150,13 +138,12 @@ $auth->setAuth('role1.role2', '1', false);
 
 <pre class="brush: php;">
 //使用路由数组保存权限
-$auth->delAuth(123, 'bbs.forum.index');
-$auth->delAuth('role1.role2', 'bbs.forum.index');
-$auth->delAuth('role1.role2', array('bbs', 'forum', 'index'));
+$auth->delAuth(123, array('bbs', 'forum', 'index')); //单角色
+$auth->delAuth(array('role1', 'role2'), array('bbs', 'forum', 'index')); //多角色
 
 //使用路由记录ID保存权限
 $auth->delAuth(123, 1);
-$auth->delAuth('role1.role2', 1);
+$auth->delAuth(array('role1', 'role2'), 1);
 </pre>
 
 <strong>4、获取权限</strong>
@@ -167,14 +154,11 @@ $auth->delAuth('role1.role2', 1);
 <pre class="brush: php;">//获取所有权限
 $allAuthData = $auth->getAuth();
 
-//获取role1.role2角色的所有权限
-$authData = $auth->getAuth('role1.role2');
+//获取role1的role2角色的所有权限
 $authData = $auth->getAuth(array('role1', 'role2'));
 
-//获取role1.role2角色的bbs/forum/index权限
-$authData = $auth->getAuth('role1.role2', 'bbs.forum.index');
-$authData = $auth->getAuth('role1.role2', array('bbs', 'forum', 'index'));
-$authData = $auth->getAuth(array('role1', 'role2'), 'bbs.forum.index');
+//获取role1的role2角色的bbs/forum/index权限
+$authData = $auth->getAuth(array('role1', 'role2'), array('bbs', 'forum', 'index'));
 
 </pre>
 
@@ -231,16 +215,15 @@ $auth->setData($data);
 <pre>
 
 
-                        检测role1角色下的role2角色是否拥有bbs模块的forum控制器下面的index动作的权限，如下：
+                        检测role1的role2角色是否拥有bbs模块的forum控制器下面的index动作的权限，如下：
                         （a）使用路由数组保存权限
 <pre class="brush: php;">
-$result = $auth->check('123','bbs.forum.index'); //角色ID方式
-$result = $auth->check('role1.role2','bbs.forum.index'); //使用圆点键名方式
-$result = $auth->check('role1.role2', array('bbs', 'forum','index')); //使用数组方式
+$result = $auth->check('123',array('bbs', 'forum', 'index')); //单角色
+$result = $auth->check(array('role1', 'role2'), array('bbs', 'forum','index')); //多角色
 </pre>                        （b）使用路由记录ID保存权限
 <pre class="brush: php;">
 $result = $auth->check('123', 1); //角色ID方式
-$result = $auth->check('role1.role2', 1); //1为路由记录ID
+$result = $auth->check(array('role1', 'role2'), 1); //1为路由记录ID
 </pre>
 
 <strong>二、权限检测步骤</strong>
@@ -288,7 +271,7 @@ class BeforeDispatch extends Base
 	public function handler($route, $event, $object)
 	{
 	    //获取角色ID
-		$roleId = ocService()->session->get('loginInfo.roleId'); //获取当前的角色
+		$roleId = ocService()->session->get(array('loginInfo', 'roleId')); //获取当前的角色
 
 	    //获取路由ID
 	    $model = new \app\model\database\AuthRoute();

@@ -51,7 +51,7 @@
   </table>  
   <p>实例如下：</p>
  <pre class="brush: php;">
-echo Date::add('2015-02-28 12:02:00', 3, 'month');
+echo ocService()->date->add('2015-02-28 12:02:00', 3, 'month');
 //输出2015-05-28 12:02:00 </pre>
 <pre><strong>2、set(time, number, type)</strong>
   设置时间参数。返回日期型字符串。  
@@ -77,7 +77,7 @@ echo Date::add('2015-02-28 12:02:00', 3, 'month');
   </table>  
   <p>实例如下：</p>
  <pre class="brush: php;">
-echo Date::set('2015-02-28 12:02:00', 3, 'month'); 
+echo ocService()->date->set('2015-02-28 12:02:00', 3, 'month'); 
 //输出2015-03-28 12:02:00 </pre>
 <pre><strong>3、get(time, type)</strong>
    获取时间参数。返回日期型字符串。  
@@ -99,7 +99,7 @@ echo Date::set('2015-02-28 12:02:00', 3, 'month');
   </table>  
   <p>实例如下：</p>
  <pre class="brush: php;">
-echo Date::get('2015-02-28 12:02:00', 'month'); 
+echo ocService()->date->get('2015-02-28 12:02:00', 'month'); 
 //输出02 </pre>
 <pre><strong>4、getDate(time[, format])</strong>
   获取日期时间格式。返回日期型字符串。  
@@ -122,17 +122,17 @@ echo Date::get('2015-02-28 12:02:00', 'month');
   <p>实例如下：</p>
  <pre class="brush: php;">
 //时间戳
-echo Date::getDate(time(), 'mdy'); 
+echo ocService()->date->getDate(time(), 'mdy'); 
 //输出当前月日年格式的时间字符串，比如：04-05-2013 13:13:24 
 
 //规定键名的数组
-$dateArray = Date::getDateInfo(time());
-echo Date::getDate($dateArray, 'mdy'); 
+$dateArray = ocService()->date->getDateInfo(time());
+echo ocService()->date->getDate($dateArray, 'mdy'); 
 //也输出月日年格式的当前时间字符串
 
 //时间字符串
 $dateStr = '2013-05-04 13:13:24';
-echo Date::getDate($dateStr); 
+echo ocService()->date->getDate($dateStr); 
 //没有指定输出格式，默认输出年月日格式：2013-05-04 13:13:24
 </pre>
 <pre><strong>5、getInterval(startTime, endTime[, type])</strong>
@@ -160,18 +160,18 @@ echo Date::getDate($dateStr);
   <p>实例如下：</p>
 <pre class="brush: php;">
 //时间字符串
-$result = Date::getInterval('2015-02-28 12:15:13', '2015-03-05 13:25:13', 'hours');
+$result = ocService()->date->getInterval('2015-02-28 12:15:13', '2015-03-05 13:25:13', 'hours');
 echo $result; 
 //输出1
 
 //时间戳
-$result = Date::getInterval('2015-02-28 12:15:13', time());
+$result = ocService()->date->getInterval('2015-02-28 12:15:13', time());
 print_r($result); 
 //没有指定type参数，输出类似于Array ( [days] => 36 [hours] => 1 [minutes] => 10 [seconds] => 2 ) 
 
 //规定键名的数组
-$dateArray = Date::getDateInfo('2015-02-28 12:15:13');
-$result = Date::getInterval($dateArray, time());
+$dateArray = ocService()->date->getDateInfo('2015-02-28 12:15:13');
+$result = ocService()->date->getInterval($dateArray, time());
 print_r($result); 
 //没有指定type参数，输出类似于上数组 </pre>
   <pre><strong>6、getDateInfo(time)</strong>
@@ -191,11 +191,11 @@ print_r($result);
   <p>实例如下：</p>
  <pre class="brush: php;">
 //时间字符串
-print_r(Date::getDateInfo('2015-02-28 12:02:00'));
+print_r(ocService()->date->getDateInfo('2015-02-28 12:02:00'));
 //输出Array ( [hour] => 12 [minute] => 02 [second] => 00 [month] => 02 [day] => 28 [year] => 2015 )
 
 //时间戳
-print_r(Date::getDateInfo(time()));
+print_r(ocService()->date->getDateInfo(time()));
 //输出类似
 </pre>
 <pre><strong>7、isYun(year)</strong>
@@ -215,11 +215,11 @@ print_r(Date::getDateInfo(time()));
   <p>实例如下：</p>
  <pre class="brush: php;">
 //1953非闰年
-echo Date::isYun(1953); 
+echo ocService()->date->isYun(1953); 
 //输出false 
  
 //2008是闰年
-echo Date::isYun(2008);
+echo ocService()->date->isYun(2008);
 //输出1</pre>
 </div>
 </body>
