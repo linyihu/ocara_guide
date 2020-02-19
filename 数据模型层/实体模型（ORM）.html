@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>实体模型（ORM）</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>实体模型（ORM）</h2>
+
+<strong>1、什么是ORM模型</strong>
+      对象关系映射（<a target="_blank" href="http://baike.baidu.com/view/1458.htm">英语</a>：Object Relational Mapping，简称ORM，或O/RM，或O/R mapping），是一种程序技术，用于实现面向对象编程语言里不
+同类型系统的数据之间的转换。
+      <strong>简单点说，</strong>在Ocara中，就是将一个数据表映射成一个类对象，表字段作为对象属性，字段值即该对象属性的值。
+      新建了一个表的ORM模型后，就可以使用对象的create()和update()方法添加和修改表数据的操作。一个对象实例就是表的一行记录。<strong>
+</strong>
+
+<strong>2、什么是实体模型</strong>
+      传统的框架对于ORM模型都是在数据模型Model中实现的。
+      本框架引入了领域驱动设计中的实体概念后，就将ORM模型从Model中分离出来，成为实体模型类，一般以Entity结尾。
+      实体的概念，请参考<a href="../基础知识和概念/领域驱动设计.html">Ocara领域驱动设计</a>。
+
+           <img src="../style/images/实体目录.png" alt="实体目录"/>
+
+      （1）获取Model对象
+            实体模型操作数据库是调用模型Model进行的，一般可以通过实体的<span class="STYLE1">getModel()</span>来获取当前Model对象。
+
+<pre class="brush: php;">
+$userEntity = new app\model\entity\database\UserEntity();
+$userModel = $userEntity->getModel();
+</pre>
+    （2）Entity可以调用Model的方法
+            Entity不存在而Model存在的方法函数，Entity是可以直接调用的。
+
+<pre class="brush: php;">
+$userEntity = new app\model\entity\database\UserEntity();
+$fields1 = $userEntity->getModel()->getFields(); //通过Model获取字段
+$fields2 = $userEntity->getFields(); //通过Entity获取字段
+
+//返回true
+echo $fields1 === $fields2;
+</pre>
+
+<strong>3、缓存实体</strong>
+    实体的概念狭义上不仅局限于数据库实体，本框架也定义了缓存实体，但是用得不多目前没有怎么支持，但是提供了缓存实体基类Ocara\Entities\CacheEntity。
+
+<strong>4、新建和获取实体模型</strong>
+      使用<span class="STYLE1">select()</span>可以按主键获取一条记录的ORM实体模型对象；
+      使用<span class="STYLE1">selectFrom()</span>可以按条件获取一条记录的ORM实体模型对象；
+
+      （1）获取已存在记录的实体模型
+<pre class="brush: php;">
+//查询主键为1的的记录
+$userEntity = \app\model\entity\database\UserEntity::select(1);
+
+//按条件查询一条记录
+$where = array(
+    'mobile' => '18388399939',
+    'sex' => '1',
+    'status' => 1
+);
+$userEntity = \app\model\entity\database\UserEntity::selectFrom($where);
+
+</pre>
+      （2）新建实体模型，导入POST数据
+             使用data()方法不传参数，框架会自动查表获取POST数据。
+<pre class="brush: php;">$userModel= new \app\dal\models\User();
+$userModel->data();</pre>
+       （3）新建实体模型，导入指定数组数据
+<pre class="brush: php;">$userEntity= new \app\model\entity\database\UserEntity();
+$data = array(
+     'user_name' => 'test',
+     'email'  =>   'test@163.com'
+ );
+ $userEntity->data($data);
+</pre>
+<strong>3、使用实体模型操作数据库</strong>
+      请参考<a href="../数据模型层/数据库操作.html">数据库操作</a>。
+
+<pre>
+<strong>4、使用关联表的ORM模型</strong>
+      请参考<a href="../数据模型层/关联模型操作.html">关联模型操作</a>。
+
+
+</pre></body>
+</html>
