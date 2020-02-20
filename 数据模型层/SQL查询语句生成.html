@@ -544,8 +544,14 @@ class CreateAction extends ItemController
 {
      public function __action()
 	 {
+	    //数据模型Model切换数据库
 	    $itemModel = $this->model(); //获取与控制器同名的模型类
 	    $itemModel->selectDatabase('bbs');
+
+	    //实体模型Entity切换数据库（直接调用的是Model的函数方法）
+	    $itemEntity = \app\model\entity\database\ItemEntity::build()
+			->selectDatabase('bbs')
+			->select(1);
 	}
 }
 </pre>
@@ -574,8 +580,14 @@ class CreateAction extends ItemController
 {
      public function __action()
 	 {
+	    //数据模型Model切换数据表
 	    $itemModel = $this->model(); //获取与控制器同名的模型类
 	    $itemModel->selectTable('item_201702');
+
+	    //实体模型Entity切换数据表（直接调用的是Model的函数方法）
+	    $itemEntity = \app\model\entity\database\ItemEntity::build()
+			->selectTable('item_201702')
+			->select(1);
 	}
 }
 </pre>
