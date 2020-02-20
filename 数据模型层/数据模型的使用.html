@@ -24,10 +24,10 @@
 
 <pre class="brush: php;">
 //新建User模型类实例
-$userModel = new \app\model\database\User();
+$userModel = new \app\model\database\UserModel();
 
 //新建BBS数据库连接下面的User模型类实例
-$userModel = new \app\model\database\BBS\User();
+$userModel = new \app\model\database\BBS\UserModel();
 
 </pre>
       （2）使用build()方法
@@ -41,6 +41,7 @@ $userModel = \app\model\database\User::build();
 $userModel = \app\model\database\BBS\User::build();
 </pre>
       （3）使用控制器动作的model()方法
+           使用model()方法建立的模型，后面都可以用该方法函数直接获取。默认是当前控制器同名的模型。
                   <span class="function"><strong>model([class])</strong></span>
              参数说明：
 <table>
@@ -50,19 +51,19 @@ $userModel = \app\model\database\BBS\User::build();
 	</tr>
 	<tr>
 		<td>class</td>
-		<td>必需。数据模型类，必须是继承于框架的基本模型\Ocara\Core\Model。
+		<td>可选。数据模型类。默认是当前控制器同名的模型。
 		</td>
 	</tr>
 </table>
              上述实例可以改成如下：
 <pre class="brush: php;">
-$userModel = $this->model('\app\model\database\User');
+$userModel = $this->model('\app\model\database\UserModel');
 </pre>
              如果是bbs服务器默认库中的user表，则是：
 <pre class="brush: php;">
-$userModel = $this->model('\app\model\database\BBS\User'); //会调用bbs数据库连接的目录中的User模型
+$userModel = $this->model('\app\model\database\BBS\UserModel'); //会调用bbs数据库连接的目录中的User模型
 </pre>
-             其他地方再次使用时，不会再重新建立该模型对象。如下示例：
+             如下示例：
 <pre class="brush: php;">
 class UpdateAction extends Controller
 {
@@ -76,13 +77,13 @@ class UpdateAction extends Controller
 	{
         //用户表Model使用
 		$userData = $this
-                ->model('\app\model\database\UserInfo') //第一次使用时，会新建该模型类对象
+                ->model('\app\model\database\UserModel') //第一次使用时，会新建该模型类对象
                 ->limit(0, 100)
                 ->getAll();
 
         //用户表Model使用
         $userData2 = $this
-                ->model('\app\model\database\UserInfo') //第二次使用，不会再新建类
+                ->model('\app\model\database\UserModel') //第二次使用，不会再新建类
                 ->limit(0, 100)
                 ->getAll();
 
@@ -103,7 +104,7 @@ class UpdateAction extends Controller
  <strong>3、如何切换数据库和数据表（分库分表）？</strong>
       如果数据库要进行分库，方法如下：
       首先在Model类内部使用用_sharding()定义分库规则，然后外部调用sharing()方法传递分库规则要使用的具体数据，就可以进行分库。
-      而在_sharding()中，可以使用selectDatabase()和selectTabe()切换数据库和表。
+      而在_sharding()中，可以使用selectDatabase()和selectTable()切换数据库和表。
       请参考<a href="分库分表.html">分库分表</a>。
 
 </pre></body></html>

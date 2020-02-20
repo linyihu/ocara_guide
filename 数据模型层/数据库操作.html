@@ -17,52 +17,15 @@
 
 <body><pre><h2>数据操作</h2>
 
-<strong>1、添加记录</strong>
-            （1）使用save()方法
-                只要Model未设置查询条件，使用ORM模型的save()都是添加记录。
+        （1）单条记录的新建、编辑和删除操作，一般是通过实体模型Entity来实现。
+        （1）批量记录的编辑和删除操作，一般是通过数据模型Model来实现。
 
-                    （a）使用POST数据【data()方法不传参数】
-<pre class="brush: php;">
-$userModel = new \app\dal\models\User();
-
-$userModel->data(); //建立ORM模型，获取POST提交的数据
-
-$userModel->status = 0;
-$userModel->create_time = time();
-
-$extraData = array(
-	'update_time' => time()
-);
-
-//保存记录
-$userModel->save($extraData);
-</pre>
-                    （b）指定数组的数据记录
-<pre class="brush: php;">
-$userModel = new \app\dal\models\User();
-
-//新建数据数组
-$data = array(
-  'user_name' => ocService()->request->getPost('userName'),
-  'email'  => 'test@163.com',  //手动指定的
-);
-
-
-$userModel->data($data); //建立ORM模型
-$userModel->status = 0;
-$userModel->create_time = time();
-
-$extraData = array(
-	'update_time' => time()
-);
-
-//保存数据
-$userModel->save($extraData);
-</pre>
-            （2）使用create()方法
-                    使用Model的create()方法也可以添加记录，格式如下：
-                        <span class="STYLE3">create([data, debug])</span>
-                    参数说明：
+<strong>一、获取保存数据</strong>
+<pre>
+        1、导入数据
+                使用实体模型的data()方法可以导入指定的数据。
+                        <span class="STYLE3">data(data)</span>
+                参数说明：
 </pre>
 <table>
 	<tr class="head">
@@ -71,93 +34,98 @@ $userModel->save($extraData);
 	</tr>
 	<tr>
 		<td>data</td>
-		<td>可选。如果为空，自动获取POST提交的数据。必须是关联数组。
-		键名为字段名或<a href="字段别名.html">字段别名</a>。<br/>
-		如果键名与表的字段名称或别名相同，则这条键值数据会保存，否则被忽略。
-	    </td>
-	</tr>
-	<tr>
-		<td>debug</td>
-		<td>可选。用于SQL语句调试，参见<a href="数据库查询.html">数据查询</a>中的主键查询方法select()的debug参数。</td>
+		<td>可选。数据数组。其中可以有字段别名。</td>
 	</tr>
 </table>
-<pre>
 
-
-                    （a）使用POST数据
 <pre class="brush: php;">
-//添加记录
-$userModel = new \app\dal\models\User();
-$userModel->create();
-</pre>
-                    （b）指定数组的数据记录
-<pre class="brush: php;">//新建数据数组
+$userEntity = new UserEntity();
+
 $data = array(
   'user_name' => ocService()->request->getPost('userName'),
-  'email'  => ocService()->request->getPost('email'),  //手动指定的
-  'status' => 0,
-  'create_time' => time()
+  'email'  => 'test@163.com',
 );
 
-//添加记录
-$userModel = new \app\dal\models\User();
-$userModel->create($data);
+$userEntity->data($data);
 </pre>
-
-<strong>2、更新记录</strong>
-        （1）单记录更新【使用ORM模型】
-                使用select()选择记录，再使用data()设置修改数据，最后使用save()方法保存.
-
-                （a）获取POST数据【data()方法不传参数】
-<pre class="brush: php;">
-$userModel = new \app\dal\models\User();
-
-//选择主键ID为1的记录，建立ORM模型
-$userModel = \app\model\entity\database\UserEntity::build()->select(1);
-$userModel->update_time = time();
-
-//设置POST提交的数据
-$userModel->data();
-
-$extraData = array(
-	'update_time' => time()
-);
-
-//保存记录
-
-//1.使用save()
-//$userModel->save($extraData);
-//2.使用update()
-//$userModel->update($extraData);
+<pre>
+        2、使用属性注入数据
 </pre>
-                （b）指定数据数组
 <pre class="brush: php;">
-//选择主键ID为1的记录，建立ORM模型
-$userModel = \app\model\entity\database\UserEntity::build()->select(1);
-$userModel->update_time = time();
-
-//指定数据数组
+$userModel->status = 0;
+$userEntity->create_time = time();
+</pre>
+        3、保存时导入数据
+                在执行create()、update()和save()方法时，可以传递数据参数。
+</pre>
+<pre class="brush: php;">
+//保存时导入数据
 $data = array(
-  'user_name' => ocService()->request->getPost('test'),
-  'email'  => 'test@163.com',  //手动指定的
+  'user_name' => ocService()->request->getPost('userName'),
+  'email'  => 'test@163.com',
 );
+
+$userEntity->save($data);
+</pre>
+
+<pre>
+<strong>二、添加记录</strong>
+        添加记录可以使用实体模型的save()和create()方法。
+        只要未设置查询条件，使用实体的save()都是添加记录。
+</pre>
+<pre class="brush: php;">
+$userEntity = new UserEntity();
+</pre>
+<pre>
+        格式介绍：
+                <span class="STYLE3">save([data])</span>
+                <span class="STYLE3">create([data])</span>
+        参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>data</td>
+		<td>可选。数据数组。其中可以包含字段别名。</td>
+	</tr>
+</table>
+
+<pre class="brush: php;">
+//新建实体
+$userEntity = new UserEntity();
+
+//导入数据
+$data = array('email'  => 'test@163.com',);
 $userModel->data($data);
 
+//属性注入数据
+$userModel->status = 0;
+
+//保存时指定数据
 $extraData = array(
 	'update_time' => time()
 );
 
-//更新记录
-
-//1.使用save()
-//$userModel->save($extraData);
-
-//2.使用update()
-//$userModel->update($extraData);
+//保存。也可以使用create()
+$userModel->save($extraData);
 </pre>
-        （2）批量更新【使用update()】
-                先使用where()等等设置条件，再使用update()方法更新数据，格式如下：
-                        <span class="STYLE3">update([data, debug])</span>
+
+<pre>
+<strong>三、更新记录</strong>
+        1、单记录更新
+                先使用select()和selectFrom()选择记录再保存。
+
+<pre class="brush: php;">
+//查询记录实体
+$userEntity = new UserEntity::build()->select(1);
+</pre>
+<pre>
+                格式介绍：
+                       <span class="STYLE3">save([data])</span>
+                       <span class="STYLE3">update([data])</span>
                 参数说明：
 </pre>
 <table>
@@ -169,204 +137,224 @@ $extraData = array(
 		<td>data</td>
 		<td>可选。同上。</td>
 	</tr>
+</table>
+
+<pre class="brush: php;">
+//查询记录实体
+$userEntity = new UserEntity::build()->select(1);
+
+//导入数据
+$data = array('email'  => 'test@163.com');
+$userModel->data($data);
+
+//属性注入数据
+$userModel->status = 0;
+
+//保存时指定数据
+$extraData = array('update_time' => time());
+
+//保存。也可以使用update()
+$userModel->save($extraData);
+</pre>
+
+        2、批量更新
+                （1）使用实体模型Entity的update()更新
+                        使用数据模型Model的where()等条件获取记录实体集合再操作。
+
+<pre class="brush: php;">
+$userModel = new UserModel();
+$userEntityList = $userModel
+	->where('id', '>=', 20)
+	->where('id', '<=', 30)
+	->selectAll();
+
+//手动批量更新
+foreach ($userEntityList as $userEntity) {
+	$userEntity->status = 1;
+	$userEntity->data(array('sex' => 1));
+	$userEntity->save(array('update_time' => time()));
+	$userEntity->update(); //也可以用save()
+}
+</pre>
+                （2）使用数据模型Model的update()更新
+                        使用数据模型Model的where()等设置条件后再操作。
+                        格式如下：
+                                <span class="STYLE3">update([data, batchLimit])</span>
+                        参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
 	<tr>
-		<td>debug</td>
+		<td>data</td>
 		<td>可选。同上。</td>
 	</tr>
+	<tr>
+		<td>batchLimit</td>
+		<td>可选。批量更新数量。</td>
+	</tr>
 </table>
-<pre>
 
-
-                （a）获取POST数据
 <pre class="brush: php;">
-$userModel = new \app\dal\models\User();
-
-//设置条件
-$where = array(
-	'user_id' => 1
-);
-$userModel->where($where);
-
-//更新记录，未指定第一个参数data，则保存POST提交的数据
-$userModel->update();
-</pre>
-                （b）指定数据数组
-<pre class="brush: php;">
-$userModel = new \app\dal\models\User();
-
-//设置条件
-$where = array(
-	'user_id' => 1
-);
-$userModel->where($where);
-
-//新建数据数组
 $data = array(
-  'user_name' => ocService()->request->getPost('test'),
-  'email'  => 'test@163.com',  //手动指定的
-  'update_time' => time()
+	'status' => 1,
+	'sex' => 1,
+	'sex' => time(),
 );
 
-//更新记录，传递第一个参数data，指定数据
-$userModel->update($data);
+$userModel = new UserModel();
+$userEntityList = $userModel
+	->where('id', '>=', 20)
+	->where('id', '<=', 30)
+	->update(1000); //自动批量更新
 </pre>
 
-<strong>3、删除记录</strong>
-        更新记录必须先设置条件，然后使用delete()方法删除记录，格式如下：
-            <span class="STYLE3">delete([debug])</span>
-        参数说明：
-</pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>debug</td>
-		<td>可选。同上。</td>
-	</tr>
-</table>
 <pre>
 
+<strong>三、删除记录</strong>
+        1、单条记录删除
+                通过select()和selectFrom()来获取实体，然后使用<span class="STYLE3">delete()</span>删除记录。
 
-        （a）使用ORM模型
 <pre class="brush: php;">
-$userModel = \app\model\entity\database\UserEntity::build()->select(1);
-$userModel->delete();
+//查询记录实体
+$userEntity = new UserEntity::build()->select(1);
+$userEntity->delete();
 </pre>
-        （b）使用条件where()等批量更新
-<pre class="brush: php;">
-$userModel = new \app\dal\models\User();
-$where = array(
-	'status' => 1
-);
-
-//删除记录
-$userModel->where($where)
-               ->delete();
-</pre>
-
- <strong>4、ORM模型下的事件回调</strong>
-	当使用ORM模型进行数据操作时，可以使用以下方法事件。
-    （1）添加记录事件
-	使用beforeCreate()和afterCreate()方法处理添加记录前后的数据操作。
+        2、批量删除
+                （1）使用实体模型Entity的delete()更新
+                        先要用数据模型Model的where()等条件获取实体列表后再操作。
 
 <pre class="brush: php;">
-class GuestbookModel extends Model
-{
-	protected static $primary = 'id';
-	protected static $table = 'guestbook';
+$userModel = new UserModel();
+$userEntityList = $userModel
+	->where('id', '>=', 20)
+	->where('id', '<=', 30);
 
-	/**
-	 * 初始化模型
-	 */
-	protected function __model()
-	{}
-
-	protected function beforeCreate()
-	{
-		$this->create_time = time();
-		echo 'create_time:' . $this->create_time . "|";
-	}
-
-	protected function afterCreate()
-	{
-		echo 'id:' . $this->id;
-	}
+//手动一条条删除
+foreach ($userEntityList as $userEntity) {
+	$userModel->delete();
 }
 </pre>
-    （2）更新记录
-	使用beforeUpdate()和afterUpdate()方法处理更新记录前后的数据操作。
-	注：必须是通过select()或selectedFirst()方法选择记录然后使用save()或update()方法时才会生效。
-	在afterUpdate()方法中，还可以使用hasChange()判断字段值是否修改。
-	            <span class="STYLE3">hasChange([name])</span>
-        参数说明：
-</pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>name</td>
-		<td>字段名称。</td>
-	</tr>
-</table>
-</pre>
-<pre>
-	使用getOld()获取旧值。
-</pre>
-<pre>
-	            <span class="STYLE3">getOld([name])</span>
-        参数说明：
+                （2）使用数据模型Model的delete()更新
+                        先要用数据模型Model的where()等设置条件后再操作。
 
-</pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>name</td>
-		<td>字段名称。</td>
-	</tr>
-</table>
-<pre>
-
-</pre>
 <pre class="brush: php;">
-class GuestbookModel extends Model
+$userModel = new UserModel();
+$userEntityList = $userModel
+	->where('id', '>=', 20)
+	->where('id', '<=', 30)
+	->delete(1000);  //批量删除
+</pre>
+
+ <strong>四、事件回调</strong>
+        1、有哪些事件
+                实体模型存在以下事件：
+                        （1）beforeCreate：添加记录之前执行
+                        （2）afterCreate：添加记录之后执行
+                        （3）beforeUpdate：更新记录之前执行
+                        （4）afterUpdate：更新记录之后执行
+                        （5）beforeDelete：删除记录之前执行
+                        （6）afterCreate：删除记录之后执行
+        2、事件处理
+                可以直接在实体模型中同名函数中做处理。
+                （1）统一处理可在根实体模型实现
+                        所有数据库实体一般继承于Base\Model\DatabaseEntity，所以统一性的事件处理可在此根实体实现。
+
+<pre class="brush: php;">
+namespace Base\Model;
+
+use app\service\AuthService;
+use Helper\DateHelper;
+use Ocara\Entities\DatabaseEntity as BaseDatabaseEntity;
+
+class DatabaseEntity extends BaseDatabaseEntity
 {
-	protected static $primary = 'id';
-	protected static $table = 'guestbook';
+    /**
+     * 添加前执行
+     */
+    public function beforeCreate()
+    {
+        //自动保存添加时间
+        if ($this->hasField('create_time')) {
+            if (empty($this->create_time)) {
+                $this->create_time = DateHelper::now();
+            }
+        }
+
+        //自动保存修改时间
+        if ($this->hasField('update_time')) {
+            if (empty($this->update_time)) {
+                $this->update_time = DateHelper::now();
+            }
+        }
+    }
+
+    /**
+     * 添加后执行
+     */
+    public function afterCreate()
+    {}
 
 	/**
-	 * 初始化模型
-	 */
-	protected function __model()
-	{}
+     * 更新前执行
+     */
+    public function beforeUpdate()
+    {
+        //自动保存修改时间
+        if ($this->hasField('update_time')) {
+            if (empty($this->update_time)) {
+                $this->update_time = DateHelper::now();
+            }
+        }
+    }
 
-	protected function beforeUpdate()
-	{
-		$this->update_time = time();
-		echo 'update_time:' . $this->update_time . "|";
-	}
+	/**
+     * 更新后执行
+     */
+    public function afterUpdate()
+    {}
 
-	protected function afterUpdate()
-	{
-	    if ($this->hasChange('id')) {
-			echo 'id旧值:' . $this->getOld('id');
-			echo 'id新值:' . $this->id;
-	   }
-	}
+	/**
+     * 删除前执行
+     */
+    public function beforeDelete()
+    {}
+
+	/**
+     * 删除后执行
+     */
+    public function afterDelete()
+    {}
 }
 </pre>
-<pre>
-    （3）删除记录
-	使用beforeDelete()和afterDelete()方法处理删除记录前后的数据操作。
-	注：必须是通过select()或selectedFirst()方法选择记录然后使用delete()方法时才会生效。
+                （2）每个实体个性化地处理事件
 
-</pre>
 <pre class="brush: php;">
-class GuestbookModel extends Model
-{
-	protected static $primary = 'id';
-	protected static $table = 'guestbook';
+namespace app\model\entity\database;
 
-	/**
-	 * 初始化模型
-	 */
-	protected function __model()
+use Base\Model\DatabaseEntity;
+
+class OrdersEntity extends DatabaseEntity
+{
+	public function __entity()
 	{}
 
-	protected function beforeDelete()
+	public static function source()
 	{
-		echo 'id:' . $this->id;
+		return 'app\model\database\OrdersModel';
 	}
 
-	protected function afterDelete()
-	{
-	    //其他操作
+	/**
+     * 删除后执行
+     */
+	public function afterDelete()
+    {
+	    //删除订单商品，假设OrdersModel已配置了商品关联，关联配置键名为orderGoods
+	    foreach($this->orderGoods as $goodsEntity) {
+			$goodsEntity->delete();
+	    }
 	}
 }
 </pre>

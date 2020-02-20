@@ -11,113 +11,108 @@
 </head>
 
 <body><pre>
-<h2>什么是字段别名</h2>
+<h2>字段别名介绍</h2>
       
-      字段别名，就是为了安全起见，设置的一个或多个字段的虚拟名称，用于表单元素起名和后台保存时自动获取值，以及作为查询条件时自动匹配字段。
+     使用字段别名，有以下用处：
+          （1）可以避免字段真名直接暴露在前端；
+          （2）能在不同的业务场景给字段设置容易理解的名称。
       
 <h2>如何指定字段别名</h2>
 
-      只要新建一个model文件配置，其中定义$CONF['MAP']的键值数组的配置就行了，键名为字段别名，键值为字段名。
-      比如，我们在required/model中添加user.php，在其中添加配置：
+      主要是在Model的fieldsMap()函数中的别名映射数组指定，键名是别名，键值是字段真实名称。
+      因此，可以为字段设置多个别名。
+
 <pre class="brush: php;">
-/**
- * 字段别名映射
- */
-'MAP' => array(
-    'userName' => 'user_name',
-    'password_alias' => 'password',
-),
-</pre>      当然你还可以定义某个字段的多个别名，如下username配置有两个别名：
-<pre class="brush: php;">
-/**
- * 字段别名映射
- */
-'MAP' => array(
-    'userName' => 'user_name',
-    'userName2' => 'user_name',
-    'password_alias' => 'password',
-),
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class UserModel extends DatabaseModel
+{
+	protected static $table = 'call_orders';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\UserEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+	/**
+	 * 字段别名映射配置
+	 */
+	public function fieldsMap()
+	{
+        'userName' => 'user_name',
+        'password_alias' => 'password',
+    }
+}
 </pre>
-<h2>字段别名有什么用处？</h2>
 
-      （1）在保存记录时，可以当作真实字段名用（输入时当成字段名使用）。
-      （2）在查询时，真实字段会以字段别名输出（输出时返回字段别名），而且查询时字段列表不需要使用别名。
+<h2>字段别名的应用</h2>
 
-
-      （1）保存记录时字段别名当真实字段用
-            比如说，下面我们定义了users表的几个别名。
-<pre class="brush: php;">$CONF['MAPS'] = array(
-      'userName' => 'username',
-      'password_alias' => 'password'
-);
-</pre>            那么，我们在添加或更新数据时，可以将别名当真实字段用：
-<pre class="brush: php;">
-$data = array(
-      'userName' => 'Jim',
-      'password_alias' => '123456'
-);
-
+      <strong>（1）别名可以返回给前端使用</strong>
+              查询结果会把字段名转成别名。
+ <pre class="brush: php;">
 $user = new \app\dal\models\Users();
-$user->data($data)->save();
+$result = $user->where(array('user_name' => 'Jim'))
+     ->fields('user_name') //会自动变成：user_name AS userName
+     ->fields(array('password'))
+     ->getRow();
+
+//会输出：Array ( [userName] => Jim [password_alias] => e10adc3949ba59abbe56e057f20f883e )
+print_r($result);
 </pre>
-            这跟以下代码是同样的效果：
+
+     <strong> （2）别名作为数据保存</strong>
+              保存时会自动把别名转换成字段真名。
+
 <pre class="brush: php;">
 $data = array(
-      'username' => 'Jim',
+      'userName' => 'Jim', //使用别名userName，会自动变成user_name
+      'password_alias' => md5('123456'), //使用别名userName，会自动变成password
+);
+
+//会成功保存为用户和密码
+$userEntity = new UserEntity();
+$userEntity
+    ->data($data)
+    ->save();
+</pre>
+              这跟以下代码是同样的效果：
+
+<pre class="brush: php;">
+$data = array(
+      'user_name' => 'Jim',
       'password' => '123456'
 );
 
 $user = new \app\dal\models\Users();
 $user->data($data)->save();
 </pre>
-      （2）查询记录时真实字段以字段别名输出，条件数组中别名也可以作为条件
-            同上例别名配置。那么查询时，真实字段会以字段别名返回：
+      <strong>（3）别名作为查询条件</strong>
+              查询时会自动把别名转换成字段真名。
+
 <pre class="brush: php;">
-$user = new \app\dal\models\Users();
-$result = $user->where(array('userName' => 'Jim'))
-     ->fields('username')
+//别名作为条件
+$where = array(
+    'userName' => 'Jim', //使用别名userName，会自动变成user_name
+);
+
+$userModel = new UserModel();
+
+$result = $userModel
+     ->where($where)
+     ->fields('user_name')
      ->fields(array('password'))
      ->getRow();
+
+//打印结果：Array ( [userName] => Jim [password_alias] => e10adc3949ba59abbe56e057f20f883e )
 print_r($result);
 </pre>
-            以上代码，用了字段别名userName当条件，而且真实字段输出的是字段别名，打印结果如下：
-<pre class="brush: php;">
-Array ( [userName] => Jim [password_alias] => e10adc3949ba59abbe56e057f20f883e )
-</pre>
 
-<h2>应用场景和实例</h2>
-
-<strong>（1）数据保存时匹配字段</strong>
-      传统地，如果表单提交的字段与表字段不同名时，我们需要这样处理：
-<pre class="brush: php;">
-$data = array(
-    'username' => ocService()->request->getPost('userName'),
-    'password' => ocService()->request->getPost('pass')
-);
-
-//添加记录
-$userModel->data($data)->save();
-</pre>
-      如果使用了字段别名就简单了：
-      首先，在conf/model/user.php中指定别名：
-<pre class="brush: php;">$CONF['MAP'] = array(
-    'userName2' => 'username',
-	'pass' => 'password'
-);
-</pre>      然后，添加记录，就不需要如此麻烦了：
-<pre class="brush: php;">
-//添加记录
-$userModel->data($data)->save();
-</pre>      由于系统会自动匹配字段名称与别名，所以直接使用data()，不需要赋值给字段就能保存。
-
-<strong>（2）查询时匹配条件字段</strong>
-       字段别名在关联数组中做查询条件时，也能匹配到。如将上例中POST提交的数据作为查询条件；
-<pre class="brush: php;">
-//查询结果
-$result = $userModel->where($_POST)->getRow();
-</pre>
-
-<strong>（3）生成表单时匹配字段文本</strong>
-        如果设置了别名，并且关联了表单（使用表单的model()方法）。则表单字段的标签，以及表单字段验证时都会匹到
+      <strong>（4）生成表单时匹配字段文本</strong>
+              如果设置了别名，在registerForms()中使用表单的model()方法关联Model后，那么表单中Model的字段如果没有配置语言文本，则会自动显示成别名。
+              同时，在提交设定的表单时，表单参数的格式验证也会能匹配到别名，和字段真名一样的效果。
 </pre></body>
 </html>
