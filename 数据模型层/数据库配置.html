@@ -172,7 +172,7 @@ $userModel->where(array('type' => 2))
 				);
 				break;
 			default :
-				$config = array(); //默认使用配置文件database中的
+				$config = array(); //默认使用配置文件database中的，所以这里可以为空
 		}
 		
 		return $config;
