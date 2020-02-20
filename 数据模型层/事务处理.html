@@ -32,13 +32,15 @@
             （2）可以嵌套使用
             （3）支持跨服务器和跨库事务处理
             （4）抛出异常错误时，会自动回滚所有的事务
-            （5）ORM模型关联操作是自动进行事务处理
+            （5）实体模型关联操作是自动进行事务处理的
 
 <strong>2、事务池原理</strong>
-      （1）调用事务池的begin()，将计数器+1。
-      （2）新建模型对象，设置保存的字段数据，然后调用create()或update()或delete()，否则，要调用<span class="STYLE1">pushTransaction()</span>推入事务池，才能保持正常顺序。
-      （3）如果有异常错误，在异常错误输出前，系统会调用事务池的rollback()将所有的事务连接按顺序全部执行一遍rollback()进行回滚。
-      （4）如果没有异常错误，调用事务池的commit()方法，系统会将事务池的计数器减1。如果计数器变成0，会将所有的数据库连接按顺序都执行一遍commit()。
+      （1）调用begin()，将计数器+1。
+      （2）执行数据模型的添加、编辑和删除时，会自动调用<span class="STYLE1">pushTransaction()</span>推入事务池。也可以手动调用，才能保持正常顺序。
+      （3）若出错，在报错前执行rollback()进行回滚。如果没有手动调用，系统会在打印报错前自动调用rollback()实现回滚。
+      （4）若没有出错就调用事务池的commit()方法，每commit一次计数器减1。如果计数器变成0，才会真正地调用每全数据库连接的commit()。
+
+        注：每个begin必须要匹配一个commit()。
 
 <strong>3、单事务执行步骤</strong>
       （1）事务开始
@@ -53,97 +55,109 @@
 //事务开始
 ocService()->transaction->begin();
 
-    $users = \app\model\entity\database\UserEntity::build()->select(53290);
-    $users->avatar = 'test';
-    $users->save();
+    $usersEntity = UserEntity::build()->select(53290);
+    $usersEntity->avatar = 'test';
+    $usersEntity->save();
 
 //事务提交
 ocService()->transaction->commit();
 </pre>
-            回滚实例：
+            手动回滚实例：
+
 <pre class="brush: php;">
 //事务开始
 ocService()->transaction->begin();
 
-	$users = new \app\model\entity\database\UserEntity();
-    $users->user_sn = '1236433231322131';
+	$users = new UserEntity();
     $users->userName = '小刚';
     $result = $users->save();
     
-    //事务回滚（Transation的$count置0，Transation的$list置空）
+    //手动事务回滚（计数器置0）
     if (!$result) {
-        $this->transaction->rollback();
+        ocService()->transaction->rollback();
+        ocService()->show('保存用户出错！');
     }
 
-    $goods = new \app\model\entity\database\GoodsEntity();
-    $goods->goods_name = '小米手机';
-    $goods->price = 1900;
-    $goods->status = 1;
-    $result = $goods->save();
-    
-    //事务回滚（Transation的$count置0，Transation的$list置空）
+    $userMoneyEntity = new UserMoneyEntity();
+    $userMoneyEntity->money = 100;
+
+    $result = $userMoneyEntity->save();
+
+    //手动事务回滚（计数器置0）
     if (!$result) {
-        $this->transaction->rollback();
+        ocService()->transaction->rollback();
+        ocService()->show('保存金额出错！');
     }
 
-//事务提交
+//事务提交（计数器减1，也变成0）
 ocService()->transaction->commit();
 </pre>
 
             自动回滚实例：
+
 <pre class="brush: php;">
 //事务开始
 ocService()->transaction->begin();
 
-    $users = new \app\model\entity\database\UserEntity();
+    $users = new UserEntity();
     $users->user_sn = '1236433231322131';
-    $users->userName = '小刚';
     $result = $users->save();
     
-    //事务回滚（Transation的$count置0，Transation的$list置空）
+    //事务回滚（计数器置0）
     if (!$result) {
         $this->transaction->rollback();
+        ocService()->show('保存用户出错！');
     }
 
-    $goods = new \app\model\entity\database\GoodsEntity();
-    $goods->goods_name = '小米手机';
-    $goods->price = 1900;
-    $goods->status = 1;
-    $result = $goods->save();
-    ocService()->error->show('这里抛出错误！系统自动回滚.');
+    //因为更新成功时不一定有成功返回，所以要抓取异常
+    try {
+        $userMoneyEntity = UserMoneyEntity::build()->select(1);
+        $userMoneyEntity->money = 100;
+        $userMoneyEntity->update();
+    } catch (\Exception $exception) {
+        //这里抛出错误！系统自动回滚
+        ocService()->error->show($exception->getMessage());
+    }
 
-//事务回滚
+//事务提交
 ocService()->transaction->commit();
 </pre>
 
-            ORM模型自动使用事务实例：
+            关联实体保存时自动使用事务实例：
+
 <pre class="brush: php;">
-$users = new \app\model\entity\database\UserEntity();
+//主表实体
+$users = new UserEntity();
 $users->user_sn = '333';
 $users->userName = '4554';
 $users->user_id = 53295;
 
-$userVerify = \app\model\entity\database\UserVerifyEntity()::build();
+//关联实体
+$userVerify = new UserVerifyEntity();
 $userVerify->verify_status = 3;
 $userVerify->verified_desc = 5533;
 
+//绑定到主表
 $users->userVerify = $userVerify;
 
-$result = $users->save(); //如果保存成功会自动commit()
+//保存
+$result = $users->create(); //如果保存成功会自动commit()
 
 if (!$result) {
+    //这里如果没有手动回滚，系统自动回滚
 	ocService()->error->show('这里显示错误。');
 }
 </pre>
 <strong>2、多事务嵌套</strong>
       嵌套事务中，子级事务成功提交，才会提交上级事务。
       如果任何一级子级事务代码抛错或者回滚事务，上级所有事务都不会提交。
-      （1）嵌套事务原理
-             事务管理器使用事务计数属性变量$count进行多级事务管理。
-             只有$count为0时也就是最后一个commit()才是真正的数据库事务提交，其他的都是事务计数变量的增减而已。
-      （2）跨服务器事务原理
-             事务管理器使用$list属性变量保存要进行事务处理的服务器连接的第一个使用者（数据库对象）
-             然后使用它来提交事务。因此，支持跨服务器事务处理。
+
+    （1）嵌套事务原理
+             事务管理器使用事务计数器进行多级事务管理。
+             只有计数器为0时也就是最后一个commit()才是真正的数据库事务提交，其他的都是计数器增减而已。
+
+    （2）跨服务器事务原理
+             事务管理器保存了数据库服务器连接，因此支持跨服务器事务处理。
     
       使用很简单，直接嵌套使用即可。
 <pre class="brush: php;">
@@ -155,55 +169,57 @@ class UserService extends BaseService
 {
     public function handler()
     {
-        //一级事务开始（Transation的事务计数变量$count+1，由0变为1）（没有数据库操作也可以）
-        $this->transaction->begin(); //或者使用ocService()->transaction
+        $transaction = ocService()->transaction;
 
-        //二级事务开始（Transation的$count+1，变为2）
-        $this->transaction->begin();
+        //一级事务开始（计数器+1，由0变为1）（没有数据库操作也可以）
+        $transaction->begin(); //或者使用
 
-            $users = \app\model\Entity\database\UserEntity::build()->select(53290);
-            $users->avatar = 'test';
-            $users->save();
+        //二级事务开始（计数器+1，变为2）
+        $transaction->begin();
 
-            //三级事务开始（Transation的$count+1，变为3）
+            $usersEntity = UsersEntity::build()->select(53290);
+            $usersEntity->avatar = 'test';
+            $usersEntity->save();
+
+            //三级事务开始（计数器+1，变为3）
             $this->transaction->begin();
 
-                $users = new \app\dal\models\User();
-                $users->user_sn = '1236433231322131';
-                $users->userName = '小刚';
-                $users->pushTransaction();  //也可以手动提前推入事务池
+                $verifyEntity = new UsersVerifyEntity();
+                $verifyEntity->verify_status = 2;
+                $verifyEntity->pushTransaction();  //也可以手动提前推入事务池
+                $verifyResult = $verifyEntity->save();
 
-                $goods = new \app\dal\models\Goods();
-                $goods->goods_name = '小米手机';
-                $goods->price = 1900;
-                $goods->status = 1;
-                $goodResult = $goods->save();
+                $moneyEntity = new UserMoneyEntity();
+                $moneyEntity->money = 100;
+                $moneyResult = $moneyEntity->save();
 
-                $result = $users->save();
-                //事务回滚（Transation的$count置0，Transation的$list置空）
-                if (!$result) {
-                    $this->transaction->rollback();
+                //事务回滚（计数器置0）
+                if (!$verifyResult) {
+                    $transaction->rollback();
+                    ocService()->error->show('用户实名认证添加失败！');
                 }
 
-                //事务回滚（Transation的$count置0，Transation的$list置空）
-                if (!$goodResult) {
-                    $this->transaction->rollback();
+                //事务回滚（计数器置0）
+                if (!$moneyResult) {
+                    $transaction->rollback();
+                    ocService()->error->show('用户金额添加失败！');
                 }
 
-            //三级事务提交（提交成功后Transation的$count会减1，为2）
-            $this->transaction->commit();
+            //三级事务提交（提交成功后计数器减1，为2）
+            $transaction->commit();
 
-        //二级事务提交（提交成功后Transation的$count会减1，为1）
-        $this->transaction->commit();
+        //二级事务提交（提交成功后计数器减1，为1）
+        $transaction->commit();
 
-        //一级事务提交（真正进行数据库提交，提交成功后Transation的$count置0，$list置空）
-        $this->transaction->commit();
+        //一级事务提交（计数器减1变成0，真正提交事务）
+        $transaction->commit();
     }
 }
 </pre>
 <strong>3、跨服务器事务</strong>
-      对于跨服务器，会按照model的操作顺序在最后一次commit()进行逐个提交。
-      比如上例中，假如Users模型连接的是192.168.1.122，而goods连接的是192.168.1.10。
+      对于跨服务器，会按照模型操作顺序在最后一次commit()进行逐个提交。
+      比如上例中，假如Users和UserVerify模型连接的是192.168.1.122，而UserMoney连接的是192.168.1.10。
       那么，在上述最后一个commit()调用时，会先提交192.168.1.122服务器数据库，再提交192.168.1.10服务器数据库。
+
 </pre></body>
 </html>

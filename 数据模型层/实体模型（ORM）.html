@@ -63,7 +63,7 @@ echo $fields1 === $fields2;
       （1）获取已存在记录的实体模型
 <pre class="brush: php;">
 //查询主键为1的的记录
-$userEntity = \app\model\entity\database\UserEntity::build()->select1);
+$userEntity = \app\model\entity\database\UserEntity::build()->select(1);
 
 //按条件查询一条记录
 $where = array(

@@ -24,10 +24,10 @@
 
 <pre class="brush: php;">
 //新建User模型类实例
-$userModel = new \app\dal\models\User();
+$userModel = new \app\model\database\User();
 
 //新建BBS数据库连接下面的User模型类实例
-$userModel = new \app\dal\models\BBS\User();
+$userModel = new \app\model\database\BBS\User();
 
 </pre>
       （2）使用build()方法
@@ -35,10 +35,10 @@ $userModel = new \app\dal\models\BBS\User();
 
 <pre class="brush: php;">
 //会新建application/model下面的User模型类实例
-$userModel = \app\dal\models\User::build();
+$userModel = \app\model\database\User::build();
 
 //会新建application/model/BBS下面的User模型类实例
-$userModel = \app\dal\models\BBS\User::build();
+$userModel = \app\model\database\BBS\User::build();
 </pre>
       （3）使用控制器动作的model()方法
                   <span class="function"><strong>model([class])</strong></span>
@@ -56,11 +56,11 @@ $userModel = \app\dal\models\BBS\User::build();
 </table>
              上述实例可以改成如下：
 <pre class="brush: php;">
-$userModel = $this->model('\app\dal\models\User');
+$userModel = $this->model('\app\model\database\User');
 </pre>
              如果是bbs服务器默认库中的user表，则是：
 <pre class="brush: php;">
-$userModel = $this->model('\app\dal\models\BBS\User'); //会调用bbs数据库连接的目录中的User模型
+$userModel = $this->model('\app\model\database\BBS\User'); //会调用bbs数据库连接的目录中的User模型
 </pre>
              其他地方再次使用时，不会再重新建立该模型对象。如下示例：
 <pre class="brush: php;">
@@ -76,13 +76,13 @@ class UpdateAction extends Controller
 	{
         //用户表Model使用
 		$userData = $this
-                ->model('\app\dal\models\UserInfo') //第一次使用时，会新建该模型类对象
+                ->model('\app\model\database\UserInfo') //第一次使用时，会新建该模型类对象
                 ->limit(0, 100)
                 ->getAll();
 
         //用户表Model使用
         $userData2 = $this
-                ->model('\app\dal\models\UserInfo') //第二次使用，不会再新建类
+                ->model('\app\model\database\UserInfo') //第二次使用，不会再新建类
                 ->limit(0, 100)
                 ->getAll();
 

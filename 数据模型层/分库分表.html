@@ -28,7 +28,7 @@
 
 <strong>1、设置数据表模型的分库分表规则</strong>
       设置规则只需添加数据表模型的_sharding()方法，在其中设置数据库名和表名即可。该方法格式如下：
-           <span class="STYLE1">_sharding([data])</span>
+           <span class="STYLE1">__sharding([data])</span>
       参数说明：
 <table>
     <tr class="head">
@@ -45,18 +45,18 @@
 <pre class="brush: php;">
 class UserModel extends Model
 {
-	protected $_primary='id';
-    protected $_table='user_info';
+	protected static $primary='id';
+    protected static $table='user_info';
 
 	/**
 	 * 初始化
 	 */
-	public function _model(){}
+	public function __model(){}
 
     /**
      * 分库分表规则设置
      */
-	protected function _sharding($data = array())
+	protected function __sharding($data = array())
 	{
         //规则数据
         $groupId   = $data['group_id'];
@@ -107,9 +107,7 @@ class IndexAction extends UserController
 
         //分库分表规则数据
 		$shardingData = array(
-            'group_id'   => '2', //业务分组ID，作为分库信息
-            'user_group' => $userGroupId,
-            'date_num'   => date('Ym'),
+            'user_id'   => '2', //业务分组ID，作为分库信息
         );
 
         //查询用户列表，执行分库分表

@@ -20,72 +20,72 @@
 </head>
 <body><pre><h2>数据库配置</h2>
 
-     Ocara支持分布式数据库连接，支持读写分离。
+      Ocara支持分布式数据库连接，支持读写分离。
 
 <strong>1、 关于数据库服务器名</strong>
-      在数据库配置时，要给连接的服务器或者分布式服务器的主节点设置一个别名，统一称为数据库服务器名称。
-      默认的数据库服务器名为“main”。
-            <img src="../style/images/数据库服务器名称.png" />
+            在数据库配置时，要给连接的服务器或者分布式服务器的主节点设置一个别名，统一称为数据库服务器名称。
+            默认的数据库服务器名为“defaults”。
+                  <img src="../style/images/数据库服务器名称.png" />
 <strong>2、 配置数据库</strong>
-     （1）实例一（默认数据库）
-      默认的数据库服务器名为main, 配置文件是database.php。
+            （1）实例一（默认数据库）
+                  默认的数据库服务器名为defaults, 配置文件是database.php。
 
 <pre class="brush: php;">
-/*
- * 数据库连接配置
- * 如果是大型分布式数据库，请配置回调函数动态生成配置
- */
-'DATABASE' => array(
-	//默认数据库
-	'main' => array(
-		'type' 		=> 'mysql',  //数据库类型
-		'host' 		=> '127.0.0.1', //数据库服务器主机和端口，默认3306可以省略
-		'name' 	    => 'myapp', //数据库名称
-		'username' 	=> 'root', //数据库用户名
-		'password' 	=> 'root', //数据库用户密码
-		'charset' 	=> 'utf8', //数据库编码，如果是utf8不要写成utf-8
-		'prefix' 	=> '', //表名前缀
-		'keywords'  => '', //SQL关键字
-		'prepare'   => false, //是否使用预处理，默认true
-	)
-)
+    /*
+     * 数据库连接配置
+     * 如果是大型分布式数据库，请配置回调函数动态生成配置
+     */
+    'DATABASE' => array(
+        //默认服务器
+        'defaults' => array(
+            'type' 		=> 'mysql', //数据库类型
+            'host' 		=> '127.0.0.1', //数据库服务器主机和端口，默认端口可以省略
+            'username' 	=> '', //数据库用户名
+            'password' 	=> '', //数据库用户密码
+            'name' 		=> '', //数据库名称
+            'charset' 	=> '', //数据库编码，如果是utf8不要写成utf-8
+            'prefix' 	=> 'test_', //表名前缀
+            'keywords'  => array(), //要过滤的SQL关键字
+        )
+    )
 </pre>
-      注：（1）端口一般要放在host后面的，但是默认的端口可以省略。
-                      比如，如果是8807端口，就要将host写成'192.168.1.40:8807'了。
-             （2）如果表没有前缀，可保持为空不填；表名前缀后面一般以下划线“_”与表名连接，这里要带上下划线。
-             （3）如果编码是utf8格式，别忘了数据库编码utf8是没有中间的横杠"-"的
-             （4）keywords，表示会过滤掉的SQL关键字
-             （5）另有prepare选项，设置是否使用预处理，默认true
-             （6）另有isPdo选项，设置是否使用PDO，默认如果启用了PDO则true
-             （7）另有pconnect选项，设置是否使用长连接，默认false
+            注：（1）端口一般要放在host后面的，但是默认的端口可以省略；
+                           比如，如果是8807端口，就要将host写成'192.168.1.40:8807'了。
+                  （2）如果表没有前缀，可保持为空不填；表名前缀后面一般以下划线“_”与表名连接，这里要带上下划线；
+                  （3）如果编码是utf8格式，别忘了数据库编码utf8是没有中间的横杠"-"的；
+                  （4）keywords，表示会过滤掉的SQL关键字列表；
+                  （5）另有prepare选项，设置是否使用预处理，默认true；
+                  （6）另有isPdo选项，设置是否使用PDO，默认是如果启用了PDO才用；
+                  （7）另有pconnect选项，设置是否使用长连接，默认false。
 
-      （2）实例二
-      如下实例，假设我们要连接一台论坛服务器命名为“bbs”，默认数据库假设为mydb_bbs，没有前缀。
-      可以在database.php中新增以下配置：
+            （2）实例二
+                  如下实例，假设我们要连接一台论坛服务器命名为“bbs”，默认数据库假设为mydb_bbs，没有前缀。
+                  可以在database.php中新增以下配置：
+
 <pre class="brush: php;">
 'DATABASE' => array(
 	//默认数据库
 	'main' => array(
-		'type' 		=> 'mysql',  //数据库类型
-		'host' 		=> '127.0.0.1', //数据库服务器主机和端口，默认3306可以省略
-		'name' 	    => 'myapp', //数据库名称
+		'type' 		=> 'mysql', //数据库类型
+		'host' 		=> '127.0.0.1', //数据库服务器主机和端口，默认端口可以省略
 		'username' 	=> 'root', //数据库用户名
 		'password' 	=> 'root', //数据库用户密码
+		'name' 		=> 'main', //数据库名称
 		'charset' 	=> 'utf8', //数据库编码，如果是utf8不要写成utf-8
-		'prefix' 	=> '', //表名前缀
-		'keywords'  => '', //SQL关键字
-		'prepare'   => true, //是否使用预处理，默认是
+		'prefix' 	=> 'test_', //表名前缀
+		'keywords'  => array(), //要过滤的SQL关键字
 	),
 
 	//BBS数据库配置
 	'bbs' => array(
-		'type' 	    => 'mysql',  		//数据库类型
-		'host' 	    => '192.168.1.40',  //数据库服务器主机和端口，默认3306可以省略
-		'default' 	=> 'bbs_main',  	 	//默认数据库名称
-		'username' 	=> 'mydb_bbs',  	//数据库用户名
-		'password' 	=> 'mybbspass',  	 	//数据库用户密码
-		'charset' 	=> 'utf8',   		//数据库编码，注意不是utf-8
-		'prefix' 	=> '' 	 		    //表名前缀
+		'type' 	    => 'mysql', //数据库类型
+		'host' 		=> '192.168.1.40', //数据库服务器主机和端口，默认端口可以省略
+		'username' 	=> 'mydb_bbs', //数据库用户名
+		'password' 	=> 'mybbspass', //数据库用户密码
+		'name' 		=> 'bbs_main', //数据库名称
+		'charset' 	=> 'utf8', //数据库编码，如果是utf8不要写成utf-8
+		'prefix' 	=> 'bbs', //表名前缀
+		'keywords'  => array(), //要过滤的SQL关键字
 	)
 )
 </pre>
@@ -100,25 +100,25 @@
 'DATABASE' => array(
 	//默认数据库
 	'main' => array(
-		'type' 		=> 'mysql',  //数据库类型
-		'host' 	    => array(
+		'type' 		=> 'mysql', //数据库类型
+		'host' 		=> array( //数据库服务器主机和端口，默认端口可以省略
 						'192.168.1.40',
 						'192.168.1.41:3307'
-					),  			//数据库服务器主机和端口，默认3306可以省略
-		'name' 	    => 'myapp', 	//数据库名称
-		'username' 	=> 'root', 		//数据库用户名
-		'password' 	=> 'root', 		//数据库用户密码
-		'charset' 	=> 'utf8', 		//数据库编码，如果是utf8不要写成utf-8
-		'prefix' 	=> '', 			//表名前缀
-		'keywords'  => '', 			//SQL关键字
+					),
+		'username' 	=> 'root', //数据库用户名
+		'password' 	=> 'root', //数据库用户密码
+		'name' 		=> 'main', //数据库名称
+		'charset' 	=> 'utf8', //数据库编码，如果是utf8不要写成utf-8
+		'prefix' 	=> 'test_', //表名前缀
+		'keywords'  => array(), //要过滤的SQL关键字
 	)
 )
 </pre>
-       配置读写分离后，查询数据库时都会使用从库，但是有时候可能不希望使用从库查询，可以使用Model的master()方法。
+       配置读写分离后，查询数据库时都会使用从库，但是有时候可能不希望使用从库查询，可以使用Model或Entity的master()方法。
              <span class="STYLE1">master()</span>
        如下示例：
 <pre class="brush: php;">
-$userModel = new \app\model\database\User();
+$userModel = new \app\model\database\UserModel();
 $userModel->where(array('type' => 2))
 	->master() //规定使用主库查询
 	->getAll();
@@ -130,11 +130,12 @@ $userModel->where(array('type' => 2))
             适合于大型分布式数据库系统配置，配置繁多并且复杂，有不确定性。
 <table class="hint">
 	<tr class="head">
-		<td><h2>注：</h2>如果配置文件与资源提供器中重复设置了同一个连接配置，则优先使用后者。</td>
+		<td><h2>注：</h2>如果上述两种同时存在，则会优先使用第（2）种。</td>
 	</tr>
 </table>
 
             这里简单的做个配置类，现实中可能会有很多复杂的数据库配置：
+
 <pre class="brush: php;">class DatabaseConfig extends Base
 {
 	public static function get($server)
@@ -145,27 +146,29 @@ $userModel->where(array('type' => 2))
 		{
 			case 'bbs':
 				$config = array(
-					'type' 	    => 'mysql',          //数据库类型
-					'host' 	    => '192.168.1.42',   //数据库服务器主机
-					'default' 	=> 'db_bbs',  	     //默认数据库名称
-					'username' 	=> 'mybbsdb',  	     //数据库用户名
-					'password' 	=> 'mybbspass',  	 //数据库用户密码
-					'charset' 	=> 'utf8',           //数据库编码
-					'prefix' 	=> 'dz_' 	         //表前缀
+					'type' 	    => 'mysql', //数据库类型
+					'host' 		=> '192.168.1.40', //数据库服务器主机和端口，默认端口可以省略
+					'username' 	=> 'mydb_bbs', //数据库用户名
+					'password' 	=> 'mybbspass', //数据库用户密码
+					'name' 		=> 'bbs_main', //数据库名称
+					'charset' 	=> 'utf8', //数据库编码，如果是utf8不要写成utf-8
+					'prefix' 	=> 'bbs', //表名前缀
+					'keywords'  => array(), //要过滤的SQL关键字
 				);
 				break;
 			case 'blog':
 				$config = array(
-					'type' 	    => 'mysql',          //数据库类型
-					'host' 	    => array(
-										'192.168.1.43', 
-										'192.168.1.44:8890'
-									), 				 //数据库服务器主机（读写分离）
-					'default' 	    => 'db_blog',  	 //默认数据库名称
-					'username' 	=> 'myblogdb', 		 //数据库用户名
-					'password' 	=> 'myblogpass',  	 //数据库用户密码
-					'charset' 	=> 'utf8',           //数据库编码
-					'prefix' 	=> 'x_',			 //表前缀
+					'type' 		=> 'mysql', //数据库类型
+					'host' 		=> array( //数据库服务器主机和端口，默认端口可以省略
+									'192.168.1.43',
+									'192.168.1.44:8890'
+								),
+					'username' 	=> 'myblogdb', //数据库用户名
+					'password' 	=> 'myblogpass', //数据库用户密码
+					'name' 		=> 'db_blog', //数据库名称
+					'charset' 	=> 'utf8', //数据库编码，如果是utf8不要写成utf-8
+					'prefix' 	=> 'x_', //表名前缀
+					'keywords'  => array(), //要过滤的SQL关键字
 				);
 				break;
 			default :
@@ -176,6 +179,7 @@ $userModel->where(array('type' => 2))
 	}
 }</pre>
             然后，在resource.php配置文件中修改database的get_config选项：
+
 <pre class="brush: php;">
 /*
  * 数据库相关
