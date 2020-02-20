@@ -137,7 +137,7 @@ class EditAction extends Controller
 	 	$userId = $this->request->getGet('user_id');
 
 	    //获取用户信息
-	    $userEntity = UserEntity::select($userId);
+	    $userEntity = UserEntity::build()->select($userId);
 
 	    if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
@@ -162,7 +162,7 @@ class EditAction extends Controller
 	    //更新用户信息
 	    $userId = $this->request->getGet('user_id');
 	    $posts = $this->request->getPost();
-	    $userEntity = UserEntity::select($userId);
+	    $userEntity = UserEntity::build()->select($userId);
 
 	    if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
@@ -191,7 +191,7 @@ class UserService extends BaseService
 	 */
 	public function getUserInfo($userId)
 	{
-		$userEntity = UserEntity::select($userId);
+		$userEntity = UserEntity::build()->select($userId);
 
 	    if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
@@ -206,7 +206,7 @@ class UserService extends BaseService
 	 */
 	public function editUser($request)
 	{
-		$userEntity = UserEntity::select($request['user_id']);
+		$userEntity = UserEntity::build()->select($request['user_id']);
 
 		if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');

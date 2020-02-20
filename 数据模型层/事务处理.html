@@ -53,7 +53,7 @@
 //事务开始
 ocService()->transaction->begin();
 
-    $users = \app\model\entity\database\UserEntity::select(53290);
+    $users = \app\model\entity\database\UserEntity::build()->select(53290);
     $users->avatar = 'test';
     $users->save();
 
@@ -161,7 +161,7 @@ class UserService extends BaseService
         //二级事务开始（Transation的$count+1，变为2）
         $this->transaction->begin();
 
-            $users = \app\dal\models\User::select(53290);
+            $users = \app\model\Entity\database\UserEntity::build()->select(53290);
             $users->avatar = 'test';
             $users->save();
 

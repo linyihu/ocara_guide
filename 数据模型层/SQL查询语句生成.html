@@ -26,8 +26,10 @@
              <span class="STYLE1">rightJoin(class, alias, on)</span>
       （3） 内全联接
            <span class="STYLE1"> innerJoin(class, alias, on)</span>
-      联接查询可以使用关联配置（请参考<a href="../数据模型层/关联模型操作.html">数据模型层/关联模型操作</a>），也可以在查询时自定义关联。
-      参数说明：
+
+        联接查询可以使用<span class="STYLE1">relations()</span>进行关联配置（请参考<a href="../数据模型层/关联模型操作.html">数据模型层/关联模型操作</a>），也可以在查询时使用类名进行关联。
+
+        参数说明：
 </pre>
 <table>
 	<tr class="head">
@@ -38,7 +40,7 @@
 		<td>class</td>
 		<td>必需。数据表模型类名或关联配置名。<br/>
 			（1）数据表模型类名，如\app\model\database\User;<br/>
-			（2）关联配置名，配置在application/config/model中的模型配置$CONF['JOIN']。
+			（2）关联配置名，在relations()中配置。
 		</td>
 	</tr>
 	<tr>
@@ -51,33 +53,34 @@
 	</tr>
 </table>
 <pre>
-      实例如下，查询商品的名称和分类名称信息：
+
 <pre class="brush: php;">
-//数据表模型类联接查询
+//使用类名
 $itemModel = new \app\model\database\Item();
 $result = $itemModel->leftJoin('\app\model\database\Category', 'b', 'a.category_id=b.id')
       				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('b.name as category_name')
       				->getAll();
 
-//关联配置联接查询（使用别名）
+//使用关联配置名（使用别名）
 $itemModel = new \app\model\database\Item();
-$result = $itemModel->leftJoin('itemCatery', 'b') //在application/config/model中的item.php配置
+$result = $itemModel->leftJoin('itemCategory', 'b') //在relations()配置
       				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('b.name as category_name')
       				->getAll();
 
-//关联配置联接查询（不使用别名）
+//使用关联配置名（不使用别名）
 $itemModel = new \app\model\database\Item();
-$result = $itemModel->leftJoin('itemCatery') //在application/config/model中的item.php配置
+$result = $itemModel->leftJoin('itemCategory') //在relations()配置
       				->fields('a.item_id,a.name,a.category_id')
-	                ->fields('itemCatery.name as category_name')
+	                ->fields('item_category.name as category_name') //没设置别名，只能用表名
       				->getAll();
 </pre>
 
 <strong>  2、查询条件</strong>
-      <span class="STYLE1">where(where[, alias])</span>
-      <span class="STYLE1">orWhere(where[, alias])</span>
+      <span class="STYLE1">where(whereOrField[, signOrAlias, value, alias])</span>
+      <span class="STYLE1">orWhere(where[, signOrAlias, value, alias])</span>
+
       其中，where()是AND条件，orWhere是OR条件。
       参数说明：
 </pre>
@@ -87,12 +90,20 @@ $result = $itemModel->leftJoin('itemCatery') //在application/config/model中的
 		<td width="400">描述</td>
 	</tr>
 	<tr>
-		<td>where</td>
-		<td>必需。查询条件，参见<a href="数据库查询.html">数据查询</a>中的查询多行记录的condition参数。</td>
+		<td>whereOrField</td>
+		<td>必需。条件数组、字符串或字段名，参见<a href="数据库查询.html">数据查询</a>中的查询多行记录的condition参数。</td>
+	</tr>
+	<tr>
+		<td>signOrAlias</td>
+		<td>可选。表的别名或比较运算符。如果第一个参数是条件数组，这里可以设置表别名，系统会给无别名的字段名加上该别名。</td>
+	</tr>
+	<tr>
+		<td>value</td>
+		<td>可选。字段值，如果第一个参数whereOrField为字段名，这里要传字段值。</td>
 	</tr>
 	<tr>
 		<td>alias</td>
-		<td>可选。表的别名。设置后，会给没有指定别名的字段加上该别名。</td>
+		<td>可选。表的别名。第一个参数whereOrField为字段名时，这里可以传表的别名。</td>
 	</tr>
 </table>
 <pre>
@@ -100,59 +111,53 @@ $result = $itemModel->leftJoin('itemCatery') //在application/config/model中的
       （1）键值数组条件（系统自动进行安全过滤）
 <pre class="brush: php;">
 $where = array(
-   'user_name' => Request::getGet('username')
+   'user_name' => ocService()->request->getGet('username')
 );
 
 //查询结果
 $itemModel = new \app\model\database\Item();
-$userInfo = $itemModel->where($where)
-					  ->getRow();
+$userInfo = $itemModel
+	->where($where)
+	->getRow();
 </pre>
-      （2）字符串条件（对变量进行SQL安全过滤）
-<pre class="brush: php;">$userName = Request::getGet('username');
+      （2）直接传字段名和字段值
+<pre class="brush: php;">
+$username = ocService()->request->getGet('username');
 
-//查询
+//查询结果
 $itemModel = new \app\model\database\Item();
-$userInfo = $itemModel->where(&quot;user_name='{$userName}'&quot;)
-					  ->getRow();
+$userInfo = $itemModel
+	->where('user_name', '=', $username)
+	->getRow();
 </pre>
-      （3）OR条件（对变量进行SQL安全过滤）
-<pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
+      （2）字符串条件（手动安全过滤）
+<pre class="brush: php;">
+$userName = ocService()->request->getGet('username');
+
+//做一下SQL安全过滤
+$userName = ocService()->filter->sql($userName);
+
+//查询结果
+$itemModel = new \app\model\database\Item();
+$userInfo = $itemModel
+	->where(&quot;user_name='{$userName}'&quot;)
+	->getRow();
+</pre>
+      orWhere实例
+
+<pre class="brush: php;">
+$userName = ocService()->request->getGet('username');
 
 //查询
 $itemModel = new \app\model\database\Item();
 $userInfo = $itemModel->where(1)
-	->orWhere(&quot;user_name='{$userName}'&quot;)
+	->orWhere('user_name', '=', $userName)
 	->getRow();
 </pre>
 
 <strong>  3、复杂查询条件</strong>
-      复杂条件还是用where()，orWhere()，having()，orHaving()，只不过要传三个参数。
-      函数说明：如果条件数组的比较符号不是等于号“=”时，可使用该方法生成复杂查询条件，并且可以多次使用。
-      参数说明：
+      复杂条件还是用where()，orWhere()，having()和orHaving()，至少传前三个参数，分别是字段名、比较运算符和字段值。
 </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>operator</td>
-		<td>必需。AND或OR运算符和比较运算符，两者以英文输入法下的“/”分隔，如“OR/in”，"AND/>="。如果不指定OR或AND，则默认为AND，如"in"相当于"AND/in"</td>
-	</tr>
-    <tr>
-		<td>field</td>
-		<td>必需。字段名。</td>
-	</tr>
-	<tr>
-		<td>value</td>
-		<td>必需。字段值。</td>
-	</tr>
-	<tr>
-		<td>alias</td>
-		<td>可选。表的别名。</td>
-	</tr>
-</table>
 <pre>
 
       （1）查出ID大于或等于53的商品
@@ -224,7 +229,7 @@ $userInfo = $itemModel->where(1)
 
 <strong>  4、更多条件</strong>
       <span class="STYLE1">moreWhere(where[, sign])</span>
-      函数说明：此方法是在已有的整个where语句最后加上以sign参数指定的符号联接的查询条件，可以多次使用。
+      函数说明：此方法是在已有的整个where语句的最后加上的条件语句。
       参数说明：
 </pre>
 <table>
@@ -234,7 +239,7 @@ $userInfo = $itemModel->where(1)
 	</tr>
 	<tr>
 		<td>where</td>
-		<td>必需。查询条件字符串。</td>
+		<td>必需。条件字符串。</td>
 	</tr>
 	<tr>
 		<td>sign</td>
@@ -243,18 +248,19 @@ $userInfo = $itemModel->where(1)
 </table>
 <pre>
 
-             查出ID为1的商品，如果商品的状态为0则不查询，可以使用status &lt;&gt; '0'，也可以使用IF(status = '0', 0, 1)条件，以下是第二种条件方案：
+             查出ID为1的商品，如果商品的状态为0则不查询，可以使用status &lt;&gt; '0'，也可以使用IF(status = '0', 0, 1)条件。
+
 <pre class="brush: php;">
 $itemModel = new \app\model\database\Item();
 $itemModel->where(array('id'=>1))
 		  ->moreWhere(&quot;IF(status = '0', 0, 1)&quot;, 'AND')
 	 	  ->getRow();
 </pre>
-       会在整个Where语句最后加上“ AND IF(status = '0', 0, 1)”的条件。
+             生成的条件结果为“id = '1' AND IF(status = '0', 0, 1)”的条件。
 
 <strong>  5、字段及选项列表</strong>
       <span class="STYLE1">fields(fields[, alias])</span>
-      函数说明：生成字段列表语句，不会进行引号转义，可以多次使用。如果不指定字段列表，默认为“*”。
+      函数说明：生成字段列表语句，不会进行引号转义，可以多次使用。默认为“*”。
       如果要添加字段选项，比如Distinct，就用花括号括起来，如：fields('{distinct}')
       参数说明：
 </pre>
@@ -282,7 +288,7 @@ $userData = $userModel->where(array('user_name' => 'user1'))
 	 				  ->fields('{distinct}') // 字段选项
 	  				  ->fields(array('a.id', 'a.name')) //使用别名
 	  				  ->fields('id', 'b') //使用表名，框架会自动加上表的别名
-      			  ->fields('user_name, email') //不使用表别名
+      			      ->fields('user_name, email') //不使用表别名
 					  ->getRow();
 </pre>
 
@@ -337,8 +343,8 @@ $staticData = $itemModel->fields('count(id)	as num')
 
 
 <strong>  8、分组条件</strong>
-      <span class="STYLE1">having(where[, alias])</span>
-      <span class="STYLE1">orHaving(where[, alias])</span>
+      <span class="STYLE1">having(whereOrField[, sign, value])</span>
+      <span class="STYLE1">orHaving(whereOrField[, sign, value])</span>
       其中having()是AND条件，orHaving()是OR条件。
       参数说明：
 </pre>
@@ -348,12 +354,16 @@ $staticData = $itemModel->fields('count(id)	as num')
 		<td width="400">描述</td>
 	</tr>
 	<tr>
-		<td>where</td>
-		<td>必需。查询条件，参见<a href="数据库查询.html">数据查询</a>中的查询多行记录的condition参数。</td>
+		<td>whereOrField</td>
+		<td>必需。查询条件或字段名。同上where()</td>
 	</tr>
 	<tr>
-		<td>alias</td>
-		<td>可选。表的别名。</td>
+		<td>sign</td>
+		<td>可选。表的别名或比较运算符。同上where()</td>
+	</tr>
+	<tr>
+		<td>value</td>
+		<td>可选。字段值。同上where()。</td>
 	</tr>
 </table>
 <pre>
@@ -361,21 +371,43 @@ $staticData = $itemModel->fields('count(id)	as num')
       （1）键值数组条件（系统自动进行安全过滤）
 <pre class="brush: php;">
 $where = array(
-   'user_name' => Request::getGet('username')
+   'status' => 1
 );
 
 //查询结果
 $itemModel = new \app\model\database\Item();
-$userInfo = $itemModel->where($where)
-					  ->getRow();
+$userInfo = $itemModel
+	->groupBy('user_id')
+	->having($where)
+	->getRow();
 </pre>
-      （2）字符串条件（对变量进行SQL安全过滤）
-<pre class="brush: php;">$userName = Filter::sql(Request::getGet('username'));
+<pre>
+      （2）直接传字段名和字段值
+</pre>
+<pre class="brush: php;">
+$userName = ocService()->request->getPost('username');
 
 //查询结果
 $itemModel = new \app\model\database\Item();
-$userInfo = $itemModel->where(&quot;user_name='{$userName}'&quot;)
-					  ->getRow();
+$userInfo = $itemModel
+	->groupBy('user_id')
+	->having('status', '=', 1)
+	->getRow();
+</pre>
+
+      （3）字符串条件（手动做安全过滤）
+<pre class="brush: php;">
+$status = ocService()->request->getPost('status');
+
+//做一下SQL过滤
+$status = Filter::sql($status);
+
+//查询结果
+$itemModel = new \app\model\database\Item();
+$userInfo = $itemModel
+	->groupBy('user_id')
+	->having(&quot;status='{$status}}'&quot;)
+	->getRow();
 </pre>
 
 <strong>  8、分页</strong>
@@ -455,7 +487,7 @@ class ListAction extends ItemController
 	    $result = $itemModel->fields('item_id, item_name, status');
 	     		->where(array('status' => 1))
 				->limit(10) //只传第一个参数
-				->limit(0, 10) //传两个参数，效果一样
+				->limit(0, 10) //传两个参数
 				->getAll();
 
 		print_r($result);
@@ -476,16 +508,17 @@ $userModel->where(array('type' => 2))
 
 <strong>  12、获取最后一次插入的ID</strong>
       <span class="STYLE1">getInsertId()  </span>
-      函数说明：获取最后一次插入的ID。
+      函数说明：获取最后一次插入的自增ID。
 
 <pre class="brush: php;">
 class CreateAction extends ItemController
 {
      public function __action()
 	 {
-	    $itemModel = $this->model();
-	    $itemModel->data();
-	    $itemModel->save();
+	    $itemEntity = new \app\model\entity\database\ItemEntity();
+	    $itemEntity->data();
+	    $itemEntity->create();
+
 	    echo $itemModel->getInsertId(); //输出最后插入的item_id值
 	}
 }
@@ -511,7 +544,7 @@ class CreateAction extends ItemController
 {
      public function __action()
 	 {
-	    $itemModel = $this->model();
+	    $itemModel = $this->model(); //获取与控制器同名的模型类
 	    $itemModel->selectDatabase('bbs');
 	}
 }
@@ -541,7 +574,7 @@ class CreateAction extends ItemController
 {
      public function __action()
 	 {
-	    $itemModel = $this->model();
+	    $itemModel = $this->model(); //获取与控制器同名的模型类
 	    $itemModel->selectTable('item_201702');
 	}
 }

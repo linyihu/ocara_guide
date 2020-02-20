@@ -66,6 +66,7 @@ class DelAction extends ItemController
 namespace modules\index\guestbook;
 
 use modules\index\item\Controller;
+use app\model\entity\database\ItemEntity;
 
 class DelAction extends Controller
 {
@@ -81,7 +82,7 @@ class DelAction extends Controller
        $item_id = $this->request->getGet('item_id');
 
        if ($item_id){
-            $model = Item::select($item_id);
+            $model = ItemEntity::build()->select($item_id);
             if ($model->delete()) {
                 //删除成功，返回success状态值
                 $this->ajaxReturn();

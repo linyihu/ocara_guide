@@ -41,7 +41,7 @@
 
 <pre class="brush: php;">
 //查询user表
-$user = \app\dal\models\User::select(1);
+$user = \app\model\entity\database\UserEntity::build()->select1);
 
 //使用userVerify关联表的字段
 $verifyStatus = $user->userVerify->verify_status;
@@ -57,7 +57,7 @@ echo $verifyStatus;
 
 <pre class="brush: php;">
 //查询user表
-$users = \app\dal\models\User::select(11);
+$users = \app\model\entity\database\UserEntity::build()->select11);
 
 //遍历关联模型
 foreach ($users->userVerify as $row) {
@@ -176,7 +176,7 @@ $user->save(); //保存记录
                             更新时，直接使用关联属性。
 <pre class="brush: php;">
 //选择主表记录
-$user = \app\dal\models\User::select(1);
+$user = \app\model\entity\database\UserEntity::build()->select1);
 
 //修改当前user表的字段值
 $user->user_name = 'user1'; //获取主键为1的记录数据
@@ -195,7 +195,7 @@ $user->save(); //保存记录
 
 <pre class="brush: php;">
 //选择主表记录
-$user = \app\dal\models\User::select(1);
+$user = \app\model\entity\database\UserEntity::build()->select1);
 
 //修改当前user表的字段值
 $user->user_name = 'user1'; //获取主键为1的记录数据
@@ -218,7 +218,7 @@ $user->save(); //保存记录
                     （b）一对多（hasMany）
                             更新时，要遍历关联属性，因为它是一个迭代器。
 <pre class="brush: php;">
-$user = \app\dal\models\User::select(1);
+$user = \app\model\entity\database\UserEntity::build()->select1);
 
 //主表字段设置
 $user->user_name = 'user1'; //获取主键为1的记录数据
@@ -239,7 +239,7 @@ $user->save(); //保存记录
 
 <pre class="brush: php;">
 //选择主表记录
-$user = \app\dal\models\User::select(1);
+$user = \app\model\entity\database\UserEntity::build()->select1);
 
 //主表字段设置
 $user->user_name = 'user1'; //获取主键为1的记录数据

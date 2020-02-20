@@ -73,7 +73,7 @@ $data = array(
     'hits'=> ocSql('hits+1')
 );
 
-$itemEntity = new \app\model\entity\database\Item::select(2);
+$itemEntity = new \app\model\entity\database\ItemEntity::build()->select(2);
 $itemEntity->hits = 'hits+1';
 $itemEntity->save();
 
@@ -85,7 +85,7 @@ $data = array(
     'hits' => 'hits+1'
 );
 
-$itemEntity = new \app\model\entity\database\Item::select(2);
+$itemEntity = new \app\model\entity\database\Item::build()->select(2);
 $itemEntity->hits = 'hits+1';
 $itemEntity->save();
 

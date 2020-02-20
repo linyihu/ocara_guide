@@ -59,14 +59,14 @@
 
         （1）查询主键id为1记录的username和email字段值
 <pre class="brush: php;">
-$userModel = \app\dal\models\User::select(1, 'username, email');
+$userModel = \app\model\entity\database\UserEntity::build()->select1, 'username, email');
 $result = $userModel->getData();
 </pre>
         （2）查询detail表中的复合主键detail_id为1、line为2的记录
                  假设detailModel已设置属性$_primary为'detail_id,line'：
 <pre class="brush: php;">
 //查询结果
-$result = \app\dal\models\Detail::select('1,2');
+$result = \app\model\entity\models\DetailEntity::build()->select('1,2');
 </pre>
         （3）按create_time降序排列，查询前100条记录的detail_id、line和price。
                  假设detailModel已设置属性$_primary为'detail_id,line'：
@@ -79,7 +79,7 @@ $option = array(
 );
 
 //方式1.使用select()的参数
-$result = \app\dal\models\Detail::select('1,2', $option)->getData();
+$result = \app\model\entity\models\DetailEntity::build()->select('1,2', $option)->getData();
 
 //方式2.使用SQL查询的生成方法函数
 $result = $detailModel->fields('detail_id, line, price')

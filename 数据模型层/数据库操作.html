@@ -113,7 +113,7 @@ $userModel->create($data);
 $userModel = new \app\dal\models\User();
 
 //选择主键ID为1的记录，建立ORM模型
-$userModel = \app\dal\models\User::select(1);
+$userModel = \app\model\entity\database\UserEntity::build()->select1);
 $userModel->update_time = time();
 
 //设置POST提交的数据
@@ -133,7 +133,7 @@ $extraData = array(
                 （b）指定数据数组
 <pre class="brush: php;">
 //选择主键ID为1的记录，建立ORM模型
-$userModel = \app\dal\models\User::select(1);
+$userModel = \app\model\entity\database\UserEntity::build()->select1);
 $userModel->update_time = time();
 
 //指定数据数组
@@ -231,7 +231,7 @@ $userModel->update($data);
 
         （a）使用ORM模型
 <pre class="brush: php;">
-$userModel = \app\dal\models\User::select(1);
+$userModel = \app\model\entity\database\UserEntity::build()->select1);
 $userModel->delete();
 </pre>
         （b）使用条件where()等批量更新

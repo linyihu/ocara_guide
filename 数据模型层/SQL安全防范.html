@@ -197,7 +197,7 @@ $userModel->email = ocService()->filter->addSlashes('newEmail@163".com'); //手�
           安全过滤场景：
               （a）where()、moreWhere()、more()条件参数为数组时
               （b）使用orWhere()、between()、orBetween()、having()、orHaving()条件时；
-              （c）save()、create()和update()保存时，字段值会进行过滤。
+              （c）save()、create()和update()保存时。
               （d）使用limit()时。
 
 <strong>（2）以下情况不做安全过滤，需要开发者自己过滤</strong>
