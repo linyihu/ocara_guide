@@ -508,7 +508,7 @@ $userModel->where(array('type' => 2))
 
 <strong>  12、获取最后一次插入的ID</strong>
       <span class="STYLE1">getInsertId()  </span>
-      函数说明：获取最后一次插入的自增ID。
+      函数说明：获取最后一次插入的自增ID，失败则返回0。
 
 <pre class="brush: php;">
 class CreateAction extends ItemController
