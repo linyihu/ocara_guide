@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>SQL语句生成</title>
+<title>更多数据库查询函数</title>
 <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
 <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
@@ -17,7 +17,7 @@
 -->
 </style>
 </head>
-<body><pre><h2>SQL语句生成</h2>
+<body><pre><h2>更多数据库查询函数</h2>
  
 <strong> 1、联接查询</strong>
       （1）左联接
@@ -227,7 +227,7 @@ $userInfo = $itemModel->where(1)
 	->getRow();
 </pre>
 
-<strong>  4、更多条件</strong>
+<strong>  5、更多条件</strong>
       <span class="STYLE1">moreWhere(where[, sign])</span>
       函数说明：此方法是在已有的整个where语句的最后加上的条件语句。
       参数说明：
@@ -258,7 +258,7 @@ $itemModel->where(array('id'=>1))
 </pre>
              生成的条件结果为“id = '1' AND IF(status = '0', 0, 1)”的条件。
 
-<strong>  5、字段及选项列表</strong>
+<strong>  6、字段及选项列表</strong>
       <span class="STYLE1">fields(fields[, alias])</span>
       函数说明：生成字段列表语句，不会进行引号转义，可以多次使用。默认为“*”。
       如果要添加字段选项，比如Distinct，就用花括号括起来，如：fields('{distinct}')
@@ -292,7 +292,7 @@ $userData = $userModel->where(array('user_name' => 'user1'))
 					  ->getRow();
 </pre>
 
-<strong>  6、排序</strong>
+<strong>  7、排序</strong>
       <span class="STYLE1">orderBy(orderBy)</span>
       函数说明：生成排序语句，只能使用一次。
       参数说明：
@@ -316,7 +316,7 @@ $itemData = $itemModel->where(array('category_id' => $category_id))
 					  ->orderBy('create_time DESC')
 					  ->getAll();
 </pre>
-<strong>  7、分组</strong>
+<strong>  8、分组</strong>
       <span class="STYLE1">groupBy(group)</span>
       函数说明：生成分组语句，只能使用一次。
       参数说明：
@@ -342,7 +342,7 @@ $staticData = $itemModel->fields('count(id)	as num')
 </pre>
 
 
-<strong>  8、分组条件</strong>
+<strong>  9、分组条件</strong>
       <span class="STYLE1">having(whereOrField[, sign, value])</span>
       <span class="STYLE1">orHaving(whereOrField[, sign, value])</span>
       其中having()是AND条件，orHaving()是OR条件。
@@ -410,7 +410,7 @@ $userInfo = $itemModel
 	->getRow();
 </pre>
 
-<strong>  8、分页</strong>
+<strong>  10、分页</strong>
       <span class="STYLE1">page(limitInfo)  </span> 
       函数说明：生成分页语句，只能使用一次。
 <table class="hint">
@@ -456,7 +456,7 @@ class ListAction extends ItemController
 }
 </pre>
 
-<strong>  9、限制数据行数</strong>
+<strong>  11、限制数据行数</strong>
       <span class="STYLE1">limit(limit[, offset])  </span>
       函数说明：用于限制查询的行数。
       它与page()是互相覆盖的，还有不同处在于，page()返回的结果中，包含total和data两个元素，而limit()直接返回data的数组列表。
@@ -495,7 +495,7 @@ class ListAction extends ItemController
 }
 </pre>
 
-<strong>  10、规定使用主库查询</strong>
+<strong>  12、规定使用主库查询</strong>
       <span class="STYLE1">master()  </span> 
       如果设置了读写分离数据库配置，使用该方法则规定使用主库进行查询。
 
@@ -506,7 +506,7 @@ $userModel->where(array('type' => 2))
 	->getAll();
 </pre>
 
-<strong>  12、获取最后一次插入的ID</strong>
+<strong>  13、获取最后一次插入的ID</strong>
       <span class="STYLE1">getInsertId()  </span>
       函数说明：获取最后一次插入的自增ID，失败则返回0。
 
@@ -524,7 +524,7 @@ class CreateAction extends ItemController
 }
 </pre>
 
-<strong>  13、切换数据库</strong>
+<strong>  14、切换数据库</strong>
       <span class="STYLE1">selectDatabase(name)  </span>
       函数说明：选择数据库，可用于切换Model的数据库。
       参数说明：
@@ -556,7 +556,7 @@ class CreateAction extends ItemController
 }
 </pre>
 
-<strong>  14、切换数据表</strong>
+<strong>  15、切换数据表</strong>
       <span class="STYLE1">selectTable(name[, primary])  </span>
       函数说明：选择数据表，可用于切换Model的数据表。
       参数说明：
@@ -592,7 +592,7 @@ class CreateAction extends ItemController
 }
 </pre>
 
-<strong>  15、获取数据表字段</strong>
+<strong>  16、获取数据表字段</strong>
       <span class="STYLE1">getFields()  </span>
       函数说明：返回表的字段数组，如果没有字段，返回空数组array()
 

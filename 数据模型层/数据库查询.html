@@ -50,7 +50,7 @@
 
         （1）单字段主键
                  查询主键id为1记录的username和email字段值
-
+</pre>
 <pre class="brush: php;">
 $userModel = UserEntity::build()->select(1, 'username, email');
 $result = $userModel->getData();
@@ -100,7 +100,7 @@ $entity
 //查询
 $entity = $entity->select(1);
 </pre>
-</pre>
+
 <pre>
 <strong> 2、实体ORM模型条件查询</strong>
        使用Entity的selectFrom()方法按条件查询一条记录：
@@ -122,7 +122,6 @@ $entity = $entity->select(1);
 		<td>可选。快捷选项数组。同上select()</td>
 	</tr>
 </table>
-<pre>
 
                  按create_time降序排列，查询前100条记录的detail_id、line和price。
                  假设detailModel已设置属性$primary为'detail_id,line'：
@@ -251,7 +250,7 @@ $userModel = UserModel::build()
                 <span class="STYLE1">getValue((field, [condition])</span>
          返回字段值，如果没有查到，则返回false。
          参数说明：
-	</pre>
+</pre>
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -268,7 +267,6 @@ $userModel = UserModel::build()
 		</td>
 	</tr>
 </table>
-<pre>
 
 <pre class="brush: php;">
 $userModel = new UserModel();
@@ -322,7 +320,6 @@ $result = UserModel::getRowByStatus(2);
 		</td>
 	</tr>
 </table>
-<pre>
 
 <pre class="brush: php;">
 $userModel = new UserModel();
@@ -377,7 +374,6 @@ $result = $userModel
 		</td>
 	</tr>
 </table>
-<pre>
 
 <pre class="brush: php;">
 $userModel1 = new UserModel();
@@ -469,8 +465,8 @@ $result = $userModel
 	->getAll();
 </pre>
 
-
 <strong>10、更多SQL查询语句的生成方法</strong>
-     更多SQL语句生成函数，请点击进入<a href="SQL语句生成.html">SQL查询语句的生成</a>。
+     更多SQL语句生成函数，请点击进入<a href="更多数据库查询函数.html">更多数据库查询函数</a>。
+
 </pre>
 </body></html>
