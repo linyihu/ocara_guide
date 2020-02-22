@@ -292,7 +292,7 @@ class CreateAction extends Controller
 	//这里写表单提交后的代码...
 	public function submit()
 	{
-		$itemModel = $this->model('app\dal\models\Item');
+		$itemModel = $this->model('app\dal\models\ItemModel', 'item');
 		$item->data($this->getSubmitData()) //使用$this->request->getGet()也是可以的
 			 ->save();
     }
@@ -323,7 +323,7 @@ class CreateAction extends Controller
 
 	    //【必须】判断表单是否提交
 	    if (isset($GET['submit'])) {
-			$itemModel = $this->model('app\dal\models\Item');
+			$itemModel = $this->model('app\dal\models\ItemModel', 'item');
       		$item->data($this->getSubmitData()) //使用$this->request->getGet()也是可以的
 				 ->save();
 		} else {
