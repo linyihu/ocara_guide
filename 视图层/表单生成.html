@@ -24,7 +24,7 @@
 <strong>一、生成表单</strong>
 1、表单新建（自动验证）
       在Action类中，应该在registerForms()方法中新建表单，它是在__action()之前，display()和submit()之后执行。
-      如果action不是独立成类，而是在控制器类中，则在action方法合适位置生成。
+      如果action不是独立成类，而是在控制器类中的方法函数，则要在返回前端或渲染页面之前手动生成。
              <span class="STYLE1">form(name)</span>
 </pre>
 <table>
@@ -38,6 +38,8 @@
 	</tr>
 </table>
 <pre>
+
+      以下示例action作为控制器的方法的：
 
 <pre class="brush: php;">class CreateAction extends ItemController
 {
@@ -55,8 +57,7 @@
 					'class' => 'form-edit', 
 					'onchange' => 'reurn validateForm(this)'
 				)
-			)
-		    ->model('app\dal\models\Item', 'item');  //指定表单验证规则，item是别名
+			);
 	}
 	
 	//这里写页面显示前的逻辑...
@@ -69,9 +70,9 @@
 }
 	</pre>
 <pre>
-2、设置表单的字段配置
-      表单的字段配置一般用它的model()方法指定数据模型配置。
-            <span class="STYLE1">model(class[, alias]) </span>
+2、给表单绑定数据表模型
+      用model()给表单绑定数据模型Model，可以对表单进行提交数据验证，还可在表单中使用表字段别名、多语言配置。
+            <span class="STYLE1">model(class, alias) </span>
       参数说明：
 </pre>
 <table>
@@ -85,7 +86,7 @@
 	</tr>
 	<tr>
 		<td>alias</td>
-		<td>可选。别名。当使用表单的lang()或map()方法时，可以使用“别名.字段名”格式</td>
+		<td>必需。模型别名。当使用表单的lang()或map()方法时，可以使用“别名.字段名”格式</td>
 	</tr>
 </table>
 <pre>
@@ -99,31 +100,22 @@
 	{
 		//新建表单
 		$this->form('form_item_edit') 
-		->init(
-			 ocUrl('/admin/item/edit'), 
-			array(  
-				'class' => 'form-edit', 
-				'onchange' => 'reurn validateForm(this)'
-			)
-		)
-		->upload()  
-		->model('app\dal\models\Item'); //使用类名指定表单验证规则
-
-	    $this->form('form_item_edit2')
 			->init(
-			     ocUrl('/admin/item/edit'),
-				array(  //表单的其他属性设置
+				 ocUrl('/admin/item/edit'),
+				array(
 					'class' => 'form-edit',
 					'onchange' => 'reurn validateForm(this)'
 				)
 			)
-		    ->model('app\dal\models\Item', 'item');  //使用Model对象指定表单验证规则，item是别名
+			->model('app\model\database\ItemModel', 'item'); //增加item表的字段验证规则
 
 		//如果是POST提交，则进行表单填写校验
 		if (Request::isPost()) {
-	        //手动验证表单
-			$this->form('form_item_edit')->validate();
-			//这里写表单提交后的处理逻辑
+	        //校验表单是否过期
+			$this->checkForm();
+			//表单字段验证
+			$this->validator
+				->addForm($this->form('form_item_edit'));
 		} else {
 		    //这里写页面显示前的代码
 		}
@@ -146,7 +138,7 @@
 	</tr>
 	<tr>
 		<td>attributes</td>
-		<td>可选。表单属性关联数组，键名为属性名，键值为属性值。默认地，表单只会添加id或name两个属性。</td>
+		<td>可选。表单属性关联数组，键名为属性名，键值为属性值。如果不指定属性，表单只会添加id或name两个属性。</td>
 	</tr>
 </table>
 <pre>
@@ -154,8 +146,8 @@
 
 <pre class="brush: php;">$action = ocUrl('/user/login');
 $attributes = array(
-  	 'onsubmit' => 'return validateLogin()'
-  );
+ 'onsubmit' => 'return validateLogin()'
+);
 
 $this->form('form_edit')->init($action, $attributes);
 </pre>
@@ -174,58 +166,15 @@ $this->form('form_edit')->init($action, $attributes);
 				'onchange' => 'reurn validateForm(this)'
 			)
 		)
-		->upload()  //让表单具有上传文件的功能
-		->model('app\dal\models\Item', 'item');
+		->upload(); //设置上传文件
 }</pre>
 
-5、设置是否验证表单
-      有时候一个控制器动作页面中显示的表单，要提交到另外的控制器动作去处理，那么两处表单设置的名称要一样。
-      如果提交处理时不想验证这个表单，则可以使用validateForm()来设置，传递参数false。该方法格式如下：
-            <span class="STYLE1">validateForm(validate) </span>
-      参数说明：
-</pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-	<tr>
-		<td>validate</td>
-		<td>可选。设置是否验证表单。
-			如果设置为true则验证，为false时为不验证。<br/>
-			如果不设置或者设置为null，则不做任何设置，只是返回是否验证表单，用于判断是否验证表单。</td>
-	</tr>
-</table>
-<pre>
+5、表单令牌
+      默认的，表单都有一个表单令牌。请参考<a href="表单令牌.html"><strong>表单令牌</strong></a>
 
-
-<pre class="brush: php;">
-class CreateAction extends Controller
-{
-    //初始化代码
-	public function __action()
-	{}
-
-	public function registerForms()
-	{
-		$this->form('form_create')
-			 ->init(ocUrl($this->getRoute()))
-			 ->validateForm(false); //设置不验证该表单
-	}
-
-	public function display()
-	{
-		//检测是否验证该表单
-		$ifValidateForm = $this->form('form_create')->validateForm();
-		print_r($ifValidateForm); //输出false
-	}
-}
-</pre>
-</pre>
 <strong>二、表单的显示</strong>
       一般不建议大家自己在HTML中直接去写&lt;form&gt;标签，因为这样无法自动生成表单令牌。
-      显示表单要使用表单对象的<span class="STYLE1">begin()</span>方法，该方法生成&lt;form&gt;标签，如果开启了表单令牌，会在&lt;form&gt;标签后面换行接
-上一个hidden隐藏域，保存了加密的表单令牌。
+      显示表单要使用表单对象的<span class="STYLE1">begin()</span>方法，该方法生成&lt;form&gt;标签，并加上表单令牌的<hidden>标签，如果开启了表单令牌的话。
       （1）原生PHP模板
            如果模板使用原生的PHP代码，可以这样开始表单：
 <pre class="brush: php;">&lt;?php echo $form_edit->begin();?&gt; </pre>
@@ -240,8 +189,13 @@ class CreateAction extends Controller
 
 <strong>三、表单提交后的处理</strong>
 1、POST方式提交的表单处理
-	表单提交后的处理代码，要在<span class="STYLE1">submit()</span>方法中写。如下示例：
-<pre class="brush: php;">class CreateAction extends Controller
+	如果action独立成类，表单提交后的处理代码，要在<span class="STYLE1">submit()</span>方法中写。如下示例：
+<pre class="brush: php;">
+namespace app\controller\item;
+
+use app\model\entity\database\ItemEntity;
+
+class CreateAction extends Controller
 {
     //初始化代码
 	public function __action()
@@ -252,8 +206,7 @@ class CreateAction extends Controller
 	{
 		$this->form('form_create')
 			 ->init(ocUrl($this->getRoute()))
-	         ->model('app\dal\models\Item', 'item')
-			 ->validateForm(false); //设置不验证该表单
+	         ->model('app\model\database\ItemModel', 'item');
 	}
 	
 	//这里写页面显示前的逻辑...
@@ -263,8 +216,19 @@ class CreateAction extends Controller
 	//表单提交后的处理
 	public function submit()
 	{
-		$itemModel = $this->model('app\dal\models\Item');
-		$item->data()->save();  //自动获取数据并添加到数据库
+		$data = $this->request->getPost();
+
+		//表单验证
+	    $this->validator
+			->addRule('token', 'unEmpty')
+	 		->addForm($this->form('form_create')) //验证表单
+			->validate($data);
+
+		//保存
+		$itemEntity = new ItemEntity();
+		$itemEntity
+			->data($data)
+			->save();
 	}
 }
 </pre>
@@ -286,10 +250,7 @@ class CreateAction extends Controller
 
 	//表单提交后的处理
 	public function submit()
-	{
-		$itemModel = $this->model('app\dal\models\Item');
-		$item->data()->save();
-	}
+	{}
 
 	public function isSubmit()
 	{

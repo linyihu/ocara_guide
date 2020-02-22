@@ -39,35 +39,35 @@
 
 <strong>4、如何修改表单令牌</strong>
       （1）自定义表单令牌隐藏域名称
-               表单令牌隐藏域名称默认为_oc_temp_ocform_token，其中的“_oc_”是自动加上的。
-               默认设置是在system.php文件FORM的token_tag配置选项。
+               表单令牌隐藏域名称默认为_oc_form_token_name，其中的“_oc_”是自动加上的。
+               默认设置是在application/config/system.php文件FORM的token_tag配置选项。
                如下所示：
 <pre class="brush: php;">
-/*
- * 表单配置
- */
-'FORM' => array(
-    'token_tag' 	        => 'form_token_name', //表单令牌隐藏域名称
-    'check_repeat_submit'   => 1, // 表单重复提交检查
-),
-</pre>               注：配置时不需要加上“_oc_”前缀，框架会自动加上。
+    /*
+     * 表单配置
+     */
+    'FORM' => array(
+        'token_tag'             => 'form_token_name', //表单令牌隐藏域名称
+        'check_repeat_submit'   => 1, // 表单重复提交检查
+    ),
+</pre>
 
       （2）自定义表单令牌的加密算法
-               框架对表单令牌的加密一般是md5()函数加密的，其中必须包括<span class="STYLE1">当前路由和随机数</span>，否则会出现验证问题。
-               如果要自定义加密算法，要在resource.php配置文件中配置回调函数。
+               框架对表单令牌的加密一般是md5()函数加密的，其中必须包括<span class="STYLE1">当前路由 + 随机数</span>，否则会出现验证问题。
+               如果要自定义加密算法，要在application/config/resource.php配置文件中配置回调函数。
                默认选项是如下generate_token：
 <pre class="brush: php;">
-/*
- * 表单使用
- */
-'form' => array(
-    'generate_token' => array('MyForm', 'genToken'), //表单令牌加密处理
-),
+        /*
+         * 表单使用
+         */
+        'form' => array(
+            'generate_token' => '', //表单令牌加密事件回调
+        ),
 </pre>
 
       （3） 如何手动控制表单令牌的过期?
                 框架默认是在action类的submit()方法执行以后，删除当前表单令牌，让表单令牌过期。
-                如果想在此之前手动过期，就使用<span class="STYLE1">formManager</span>表单令牌对象的<span class="STYLE1">clear()</span>清除即可。
+                如果想在此之前手动过期，就使用<span class="STYLE1">formManager</span>表单令牌对象的<span class="STYLE1">clearToken()</span>清除即可。
                 代码实例如下：
 <pre class="brush: php;">
 class AddAction extends ItemController
@@ -81,30 +81,41 @@ class AddAction extends ItemController
 
         //手动清除表单令牌
         $this->formManager->clearToken();
-
-        //停止代码前最好加上这句，如果使用setAfter()方法设置过了执行后续程序的话
-        $this->after();
-
-        //停止代码执行，就不会调用框架中的表单令牌clearToken()操作
-        ocDie();
     }
 }
 </pre>
      （4）如何取消表单令牌验证？（仅用于开发测试）
-             如果想取消表单令牌是否合法的验证，只要在生成表单时使用<span class="STYLE1">validateToken(false)</span>方法即可。
+             如果想取消表单令牌是否合法的验证，只要在提交处理时在__action方法中执行控制器的isCheckForm(false)方法即可。
+             <span class="STYLE1">isCheckForm([check])</span>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。同上。</td>
+	</tr><tr>
+		<td>check</td>
+		<td>可选。是否检测表单令牌，为true表示检测，false不检测。如果不传此参数，表示获取是否检测表单令牌的设置值。</td>
+	</tr>
+</table>
              注：表单令牌验证是防止XSS攻击，所以只建议在代码开发测试时取消。
 
 <pre class="brush: php;">
 class AddAction extends ItemController
 {
-    public function __action(){}
+    public function __action()
+    {
+        //取消表单令牌检测
+        $this->isCheckForm(false);
+    }
 
     public function registerForms()
     {
         $url = ocUrl($this->getRoute());
         $this->form('form_add')
              ->init($url)
-             ->validateToken(false)
              ->model('\app\model\database\Item');
     }
 } 
@@ -113,24 +124,7 @@ class AddAction extends ItemController
 <strong>5、跨页表单</strong>
       表单令牌标识Key一般都是“控制器动作路由+表单+随机数”组成的，默认的控制器动作为当前Action。
       所以如果旧的表单令牌中的路由与当前路由不一致，就会导致提交前后的表单令牌不一致而报错。
-      这种情况的表单称为跨页表单，解决方法参见<a href="./跨页表单生成.html">跨页表单生成</a>一节。
-
-<strong>6、自定义非法表单的错误输出</strong>
-      上面表单不存在或非法来源的截图是框架默认的。
-      如果要自定义错误提示的页面。具体步骤如下：
-     （1）新建错误页面
-              其实就是新建一个Action去显示。
-     （2）配置回调事件
-              配置选项是event.php中form的check_error选项。
-              如下所示实例：
-<pre class="brush: php;">
-/*
- * 表单使用事件
- */
-'form' => array(
-    'check_error'    => array('MyForm', 'checkError'), //表单检测失败时的事件
-),
-</pre>
+      这种情况的表单发生在跨多个路由的场景，也就是显示页面的路由和表单提交后的路由不是同一个路由，也称跨页表单，解决方法参见<a href="./跨页表单生成.html">跨页表单生成</a>一节。
 </pre>
 </body>
 </html>
