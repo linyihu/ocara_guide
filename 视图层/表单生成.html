@@ -373,13 +373,9 @@ class CreateAction extends Controller
 <pre class="brush: php;">&lt;?=$form_create->lang('userName2')?&gt;</pre>
           （2）多表字段显示
           表单可以多次使用model()方法指定多个模型的字段。框架会使用array_merge()合并所有的字段文本。
-          所以如果有重复的冲突，可以用“别名或类名.字段”来获取语言文本，如下实例：
+          所以如果有重复的冲突，可以用“别名.字段”来获取语言文本，如下实例：
 
 <pre class="brush: php;">
-	//$this->form('form_create')->model('app\dal\models\User')未指定Model的别名
-	&lt;?=$form_create->lang('app\dal\models\User.userName2')?&gt;
-
-	//$this->form('form_create')->model('app\dal\models\User', 'user')指定了Model的别名
 	&lt;?=$form_create->lang('user.userName2')?&gt;
 </pre>
       4、动态设置字段别名
@@ -392,10 +388,6 @@ $form_create->map('userName3', 'username');
 <pre class="brush: php;">&lt;?=$form_create->map('userName3')?&gt;</pre>
           如果同上所述的多个Model的重复字段冲突，如下实例：
 <pre class="brush: php;">
-	//$this->form('form_create')->model('app\dal\models\User')未指定Model的别名
-	&lt;?=$form_create->map('app\dal\models\User.userName3', 'username')?&gt;
-
-	//$this->form('form_create')->model('app\dal\models\User', 'user')指定了Model的别名
 	&lt;?=$form_create->map('user.userName3', 'username')?&gt;
 </pre>
 
