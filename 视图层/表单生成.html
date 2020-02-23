@@ -5,6 +5,7 @@
 <title>表单生成</title>
 <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
 <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushXml.js"></script>
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
 <link type="text/css" rel="stylesheet" href="../style/function.css" />
 <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
@@ -189,7 +190,7 @@ $this->form('form_edit')->init($action, $attributes);
 
 <strong>三、表单提交后的处理</strong>
 1、POST方式提交的表单处理
-	如果action独立成类，表单提交后的处理代码，要在<span class="STYLE1">submit()</span>方法中写。如下示例：
+      如果action独立成类，表单提交后的处理代码，要在<span class="STYLE1">submit()</span>方法中写。如下示例：
 <pre class="brush: php;">
 namespace app\controller\item;
 
@@ -232,8 +233,8 @@ class CreateAction extends Controller
 	}
 }
 </pre>
-        框架在判断表单是否已提交时默认使用request对象的isPost()判断，如果要自定义呢？
-	只要在<span class="STYLE1">isSubmit()</span>中做修改判断就行了，需要返回true或false。示例如下：
+            框架在判断表单是否已提交时默认使用request对象的isPost()判断，如果要自定义呢？
+            只要在<span class="STYLE1">isSubmit()</span>中做修改判断就行了，需要返回true或false。示例如下：
 <pre class="brush: php;">class CreateAction extends Controller
 {
     //初始化代码
@@ -259,136 +260,145 @@ class CreateAction extends Controller
 	}
 }
 </pre>
-2、修改表单提交的方式
-      我们一般提交数据使用POST，有时候可能会用其他的HTTP提交方式，比如说GET等。
-      当然，一般不建议使用GET方式提交表单。这里只是以GET方式为例说明。
-      （1）两种判断方式
-              GET提交的情形比较少，这种方式提交后，后台要做表单是否提交的判断。有以下两种场景：
-              （a）如果控制器动作是个类的话，需要添加它的isSubmit()方法检测是否是表单提交。
-              （b）如果控制器动作只是所属控制器的一个方法的话，要在其代码中检测。
-      （2）服务端处理时设置表单提交方式
-              控制器动作类中判断表单是否提交的具体实现，分为两步：
-              （a）使用<span class="STYLE1">submitMethod('get')</span>设置表单提交方式为GET方式；
-              （b）设置表示表单提交的条件，比如检测是否用GET方式提交了submit的按钮：isset($_GET('submit'))。
-      （3）怎样获取GET提交的数据
-              那么，怎么获取提交来的数据呢？有两种方法：
-              （a）使用request对象的<span class="STYLE1">getGet()</span>方法
-              （b）使用控制器动作的<span class="STYLE1">getSubmitData()</span>方法，它不管是POST还是GET提交的都能区分。
-      如果Action独立成类的话，如下示例：
-<pre class="brush: php;">class CreateAction extends Controller
-{
-    //初始化代码
-	public function __action()
-	{}
-	
-	//这里新建表单
-    public function registerForms()
-	{}
-	
-	//这里写页面显示前的逻辑...
-	public function display()
-	{}
-	
-	//这里写表单提交后的代码...
-	public function submit()
-	{
-		$itemModel = $this->model('app\dal\models\ItemModel', 'item');
-		$item->data($this->getSubmitData()) //使用$this->request->getGet()也是可以的
-			 ->save();
-    }
-	
-	//是否是表单GET提交的判断
-	public function isSubmit()
-	{
-	    //设置表单的提交方式是GET
-	    $this->submitMethod('get');
 
-	    //【必须】判断表单是否提交
-	    return isset($GET['submit']);
-	}
-}
+<strong>四、表单的显示</strong>
+      <strong>1、表单控件的生成</strong>
+            （1）在模板中直接写控件的HTML代码。
+
+<pre class="brush: html;">
+<div>
+	<input type='text' name=username id=username value="" />
+</div>
 </pre>
-      如果Action没有独立成类的话，如下示例：
-<pre class="brush: php;">class Controller extends Module
-{
-    //控制器初始化代码
-	public function __control()
-	{}
+            （2）在模板中使用Ocara\Core\Html控件生成对象
 
-	//这里新建表单
-    public function CreateAction()
-	{
-		//设置表单的提交方式是GET
-	    $this->submitMethod('get');
-
-	    //【必须】判断表单是否提交
-	    if (isset($GET['submit'])) {
-			$itemModel = $this->model('app\dal\models\ItemModel', 'item');
-      		$item->data($this->getSubmitData()) //使用$this->request->getGet()也是可以的
-				 ->save();
-		} else {
-			//这里写页面显示前的逻辑...
-		}
-	}
-}
+<pre class="brush: html;">
+	<div>
+		<?php echo ocService()->html->text('username', array('placeholder' => '请输入用户名'));?>
+	</div>
 </pre>
-
-<strong>四、表单控件的生成和使用</strong>
-      1、使用表单生成控件
-            在Ocara框架中，表单控件的生成有以下三种方式：
-               （1）在模板源代码中直接写控件的HTML代码。
-               （2）在模板源代码中使用Ocara\Core\Html控件生成对象
-               （3）在模板显示前使用Ocara\Core\Form表单对象，它组合了Html对象的方法。
-           所有的控件生成方法函数，请参见<a href="表单控件的生成.html">表单控件的生成</a>。
-
-      2、表单控制件的输出
-            （1）使用element()获取表单控件
-
-                   （a）在后台生成控件
-<pre class="brush: php;">class CreateAction extends ItemController
-{
-    //初始化代码
-	public function __action()
-	{}
-
-	//这里新建表单
-    public function registerForms()
-	{
-		$this->form('form_create')->init(ocUrl($this->getRoute()));
-	}
-
-	public function display()
-	{
-		$this->form('form_create')->text('userName2');
-	}
-}
-</pre>
-                   （b）在模板中使用表单控件元素
-<pre class="brush: php;">&lt;?=$form_create->element('userName2')?&gt;</pre>
-            （2）直接在模板中显示控件
-<pre class="brush: php;">&lt;?=$form_create->text('userName2')?&gt;</pre>
-      3、字段文本的显示
-          （1）单表字段显示
-          使用表单的lang()方法，可以获取该字段的语言配置。如下实例：
-<pre class="brush: php;">&lt;?=$form_create->lang('userName2')?&gt;</pre>
-          （2）多表字段显示
-          表单可以多次使用model()方法指定多个模型的字段。框架会使用array_merge()合并所有的字段文本。
-          所以如果有重复的冲突，可以用“别名.字段”来获取语言文本，如下实例：
+            （3）使用Ocara\Core\Form表单对象调用HTML类的方法生成控件，然后在模板中用<span class="STYLE1">element()</span>调用。
+                  所有的控件生成方法函数，请参见<a href="表单控件.html">表单控件</a>。
 
 <pre class="brush: php;">
-	&lt;?=$form_create->lang('user.userName2')?&gt;
+class CreateAction extends UserController
+{
+    //初始化代码
+	public function __action()
+	{}
+
+    public function registerForms()
+	{
+		$this->form('form_create')
+			 ->init(ocUrl($this->getRoute()))
+			 ->model('app\model\database\UserModel'); //绑定UserModel，别名自动设置为user
+	}
+
+	public function display()
+	{
+		$this->form('form_create')
+			 ->text('username', array('placeholder' => '请输入用户名')); //生成文本框
+	}
+}
 </pre>
-      4、动态设置字段别名
-          使用表单的map()方法，可以动态设置字段的别名。
+                  然后在模板中用element()显示。
+
+<pre class="brush: html;">
+	<div>
+		<?php echo $form_create->element('username');?>
+	</div>
+</pre>
+
+            <strong>2、字段文本的显示</strong>
+            （1）语言文本的设置
+                  （a）使用表单的<span class="STYLE1">lang(field[, value])</span>方法设置。
+
+<pre class="brush: php;">
+$form_create->lang('username', '用户名');
+</pre>
+
+                  （b）使用Model的语言配置。
+
+                        <img src="../style/images/表单字段语言配置.png" />
+
+            （2）模板中显示字段文本
+                  （a）使用lang()函数设置
+
+<pre class="brush: html;">
+<div>
+	&lt;?=$form_create->lang('username')?&gt;
+</div>
+</pre>
+
+                  （b）使用Model的语言配置
+                        上述表单绑定时没有指定别名，但是别名自动设置为user了。所以可以使用user.username来指定该字段。
+
+<pre class="brush: html;">
+<div>
+	&lt;?=$form_create->lang('user.username')?&gt;
+</div>
+</pre>
+            <strong>3、使用字段别名</strong>
+            （1）Model类的<span class="STYLE1">fieldsMap()</span>设置别名
+
+<pre class="brush: php;">
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class UsersModel extends DatabaseModel
+{
+	protected static $table = 'users';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\UsersEntity';
+
+	public function __model()
+	{}
+
+	/**
+	 * 字段别名映射配置
+	 */
+	public function fieldsMap()
+	{
+		return array(
+			'userName' => 'username'
+		);
+	}
+
+	public function relations()
+	{}
+
+	public function rules()
+	{}
+
+	public function rowFilters()
+	{}
+}
+</pre>
+
+            （2）使用表单的<span class="STYLE1">map(field[, value])</span>方法设置别名
+                  使用表单的map()方法，可以动态设置字段的别名。
+
 <pre class="brush: php;">
 //设置别名映射
-$form_create->map('userName3', 'username');
+$form_create->map('userName', 'username');
 </pre>
-          在模板中获取字段别名时，如下实例：
-<pre class="brush: php;">&lt;?=$form_create->map('userName3')?&gt;</pre>
-          如果同上所述的多个Model的重复字段冲突，如下实例：
-<pre class="brush: php;">
-	&lt;?=$form_create->map('user.userName3', 'username')?&gt;
+
+            （3）模板中使用别名
+                  （a）使用map()函数显示别名
+
+<pre class="brush: html;">
+	<div>
+		<?php echo $form_create->map('userName');?>
+	</div>
+</pre>
+
+                  （b）使用Model的fieldsMap()设置的别名显示
+                        使用user.userName即可。
+
+<pre class="brush: html;">
+	<div>
+		<?php echo $form_create->map('user.userName');?>
+	</div>
 </pre>
 
 </pre>
