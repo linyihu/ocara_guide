@@ -5,6 +5,7 @@
 <title>页面布局</title>
 <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
 <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushXml.js"></script>
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
 <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
 <script type="text/javascript" src="../treeview/base.js"></script>
@@ -18,11 +19,13 @@
 打印页面的各个部分，包括当前模板文件，因为当前模板文件会在layout中使用showTpl()进行加载显示。
 
 <strong>2、 应用实例</strong>
-       一个页面模板，一般分为头部，中间部分，还有底部。那么头部和底部呢，一般是公共的。所以可以新建一个head.php和foot.php文件。
-layout文件只要调用这个文件即可，而模块文件放在中间部分加载。
-     所以可以这样设计我们的页面模板。比如，要做一个用户登录的页面，
-     首先我们新建一个布局layout的文件：layout.php，该文件代码：  
-<pre class="brush: php;">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+       一个页面模板，一般分为头部，中间部分，还有底部。
+       那么头部和底部呢，一般是公共的。所以可以新建一个head.php和foot.php文件。
+       layout文件只要调用这个文件即可，而模块文件放在中间部分加载。
+       所以可以这样设计我们的页面模板。比如，要做一个用户登录的页面，
+       首先我们新建一个布局layout的文件：layout.php，该文件代码：
+
+<pre class="brush: html;">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
 &lt;head&gt;
 &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
@@ -39,10 +42,16 @@ $this->showPart('head'); //加载头部
 ?&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-</pre>      然后，在application/view/template/default/part下面新建head.php，内容为：
-<pre class="brush: php;">&lt;div class=&quot;head&quot;&gt;我是头部内容。&lt;/div&gt;</pre>      同样的，新建foot.php，内容为：
-<pre class="brush: php;">&lt;div class=&quot;foot&quot;&gt;我是尾部内容。&lt;/div&gt;</pre>      最后，新建模板文件test.html，内容为：
-<pre class="brush: php;">&lt;div class=&quot;content&quot;&gt;我是登录模板文件内容。&lt;/div&gt;</pre>
+</pre>
+      然后，在application/view/template/default/part下面新建head.php，内容为：
+
+<pre class="brush: html;">&lt;div class=&quot;head&quot;&gt;我是头部内容。&lt;/div&gt;</pre>
+      同样的，新建foot.php，内容为：
+
+<pre class="brush: html;">&lt;div class=&quot;foot&quot;&gt;我是尾部内容。&lt;/div&gt;</pre>
+      最后，新建模板文件test.html，内容为：
+
+<pre class="brush: html;">&lt;div class=&quot;content&quot;&gt;我是登录模板文件内容。&lt;/div&gt;</pre>
       这样，Ocara执行控制器动作要输出test.html模板时，框架不会直接调用test.html，而是加载layout.php，由layout.php加载模板。便
 完成了整个页面的输出显示，显示的效果：
 
@@ -64,7 +73,7 @@ $this->showPart('head'); //加载头部
 'TEMPLATE' => array(
     'file_type'		 => 'php', //模板文件名
     'engine'		 => '', //模板引擎（如果使用默认的Smarty模板引擎，填Ocara\Service\Smarty）
-    'default'		 => 'default', //默认模板名称
+    'default_style'		 => 'orange', //默认模板名称
     'default_layout' => 'my_layout', //默认的layout名称
 ),
 

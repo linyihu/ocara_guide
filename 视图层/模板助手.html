@@ -42,12 +42,12 @@
 
 <h2>应用实例</h2>
 
-      在application/modules/index/view/default/helper下新建了子目录item，并在其中新建了ShowCategory.php助手文件。
+      假设有一个index模块，在application/modules/index/view/defaults/helper下新建了子目录item，并在其中新建了ShowCategory.php助手文件。
 
 （1）对象类助手
       定义ShowCategory类对象助手：
 <pre class="brush: php;">
-namespace app\modules\index\view\helper\item;
+namespace app\modules\index\view\defaults\helper\item;
 
 class ShowCategory extends Base
 {
@@ -73,7 +73,7 @@ class ShowCategory extends Base
 <pre class="brush: php;">
 <div id="categoryList">
 <?php
-$showCategory = new \app\modules\index\view\helper\item\ShowCategory();
+$showCategory = new \app\modules\index\view\defaults\helper\item\ShowCategory();
 echo $showCategory->getCategoryHtml();
 ?>
 </div>
@@ -81,7 +81,7 @@ echo $showCategory->getCategoryHtml();
 （2）函数助手
       文件中定义ShowCategory函数助手：
 <pre class="brush: php;">
-namespace app\modules\index\view\helper\item;
+namespace app\modules\index\view\defaults\helper\item;
 
 function ShowCategory($category_id)
 {
@@ -98,7 +98,7 @@ function ShowCategory($category_id)
       模板中输出实例如下：
 <pre class="brush: php;">
 <div id="categoryList">
-<?php echo \app\modules\index\view\helper\item\ShowCategory($categoryId);?>
+<?php echo \app\modules\index\view\defaults\helper\item\ShowCategory($categoryId);?>
 </div>
 </pre>
 </pre></body>

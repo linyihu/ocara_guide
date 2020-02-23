@@ -74,6 +74,7 @@
 2、给表单绑定数据表模型
       用model()给表单绑定数据模型Model，可以对表单进行提交数据验证，还可在表单中使用表字段别名、多语言配置。
             <span class="STYLE1">model(class, alias) </span>
+      注：该函数方法会加载模型的语言配置和字段别名配置，所以顺序比较重要。
       参数说明：
 </pre>
 <table>
@@ -83,7 +84,7 @@
 	</tr>
 	<tr>
 		<td>class</td>
-		<td>必需。数据模型的类名，需要命名空间格式。如：app\dal\models\Item</td>
+		<td>必需。数据模型的类名，需要命名空间格式。</td>
 	</tr>
 	<tr>
 		<td>alias</td>
@@ -310,19 +311,21 @@ class CreateAction extends UserController
 </pre>
 
             <strong>2、字段文本的显示</strong>
-            （1）语言文本的设置
-                  （a）使用表单的<span class="STYLE1">lang(field[, value])</span>方法设置。
+            （1）字段语言文本的设置
+                  （a）使用Model的语言配置
+                        表单会首先加载Model的多语言配置。
+
+                        <img src="../style/images/表单字段语言配置.png" />
+
+                  （b）替换语言配置
+                        使用表单的<span class="STYLE1">lang(field[, value])</span>方法可以将语言配置替换掉。
 
 <pre class="brush: php;">
 $form_create->lang('username', '用户名');
 </pre>
 
-                  （b）使用Model的语言配置。
-
-                        <img src="../style/images/表单字段语言配置.png" />
-
             （2）模板中显示字段文本
-                  （a）使用lang()函数设置
+                  （a）使用lang()函数显示
 
 <pre class="brush: html;">
 <div>
@@ -330,8 +333,8 @@ $form_create->lang('username', '用户名');
 </div>
 </pre>
 
-                  （b）使用Model的语言配置
-                        上述表单绑定时没有指定别名，但是别名自动设置为user了。所以可以使用user.username来指定该字段。
+                  （b）多表同名字段冲突显示
+                        如果绑定了多个数据表模型，可能存在同名字段冲突，这时可以使用user.username来指定Model中字段原来的配置。
 
 <pre class="brush: html;">
 <div>
@@ -339,7 +342,8 @@ $form_create->lang('username', '用户名');
 </div>
 </pre>
             <strong>3、使用字段别名</strong>
-            （1）Model类的<span class="STYLE1">fieldsMap()</span>设置别名
+            （1）Model类的<span class="STYLE1">fieldsMap()</span>配置别名
+                  和lang()一样，表单会加载Model的<span class="STYLE1">fieldsMap(field[, value])</span>方法的别名配置。
 
 <pre class="brush: php;">
 namespace app\model\database;
@@ -375,8 +379,8 @@ class UsersModel extends DatabaseModel
 }
 </pre>
 
-            （2）使用表单的<span class="STYLE1">map(field[, value])</span>方法设置别名
-                  使用表单的map()方法，可以动态设置字段的别名。
+            （2）替换别名配置
+                  和lang()一样，使用表单的<span class="STYLE1">map(field[, value])</span>方法可以替换字段别名。
 
 <pre class="brush: php;">
 //设置别名映射
@@ -392,8 +396,8 @@ $form_create->map('userName', 'username');
 	</div>
 </pre>
 
-                  （b）使用Model的fieldsMap()设置的别名显示
-                        使用user.userName即可。
+                  （b）多表同名字段冲突显示
+                        和lang()一样，如果绑定了多个数据表模型，可能存在同名字段冲突。使用user.userName即可。
 
 <pre class="brush: html;">
 	<div>

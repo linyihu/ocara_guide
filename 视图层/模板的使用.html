@@ -21,21 +21,23 @@
 <body><pre><h2>视图模板（View）</h2>
 
 <strong>1、什么是模板</strong>
-      在MVC中，所谓的模板，是视图层的实现，具体的一般是HTML页面，其中HTML中嵌入PHP代码，或者嵌入模板引擎的代码。
+      在MVC中，所谓的模板，是视图层的实现，具体的一般是同步渲染下的HTML页面或者API中的返回数据。
+      本文讲的是同步渲染模式下的模板，非API处理。每个模板文件中HTML嵌入PHP代码，或者嵌入模板引擎的代码。
       每个控制器动作都可以拥有自己的同名模板文件，如果文件存在的话就会输出打印，否则不会输出内容。
 
 <strong>2、模板文件放在哪里?</strong>
 （1）模板目录
-         模板文件是视图层View的实现，放在每个模块目录的view/风格名/template目录中。
+         模板文件是放在每个模块目录的view/风格名/template目录中，全局模块模板文件是在application/view/风格名/template目录。
 （2）模板风格的多样化
          在很多的开源或商业PHP系统中，一般会提供多种网站模板风格，如discuz、phpcms等。
-         本框架也提供了模板格。在template目录中，默认有个默认模板风格目录default。
-         添加新的模板风格可在template下面新建模板目录，然后有选择性的复制default下的文件，如果某个文件没有复制过来，框架会使用default目录中的。
+         本框架也提供了模板风格，在view目录中，默认有个默认模板风格目录defaults。
+         添加新的模板风格可在view下面新建模板目录，然后有选择性的复制defaults下的文件，如果某个文件没有复制过来，框架会在渲染时使用defaults目录中的相应文件。
+
          如何在程序中动态切换默认风格呢？
          比如全局都切换成orange风格，可以如下代码切换：
 <pre class="brush: php;">Ocara::setConfig('TEMPLATE.default', 'orange');</pre>
-         如果当前模块或控制器目录要切换风格，只需使用setTemplate()方法，格式如下：
-                <span class="STYLE1">setTemplate(dir)</span>
+         如果当前模块或控制器目录要切换风格，只需使用setStyle()方法，格式如下：
+                <span class="STYLE1">setStyle(dir)</span>
 <table>
 <tr class="head">
 		<td width="90">名称</td>
@@ -52,7 +54,7 @@ class ListAction extends Controller
 {
      public function __action()
      {
-         $this->setTemplate('orange');
+         $this->setStyle('orange');
      }
      
      protected function display(){}
@@ -61,13 +63,15 @@ class ListAction extends Controller
 <strong>3、新建模板文件</strong>
 （1）新建与控制器动作同名的模板文件
          一般在开发者中心添加动作时新建，点击进入：<a href="../开发者中心/添加动作.html">添加动作</a>。也可以手动新建。
+         比如home/index，其模板默认文在view/defaults/template/home下面的index模板，文件类型默认是php。
+
 （2）新建其他模板文件
          不与控制器动作同名的模板文件，直接手动新建即可。
 
 <strong>4、模板如何打印输出 </strong>
       通常，控制器动作默认使用与其同名的模板文件，如果文件存在自动将其打印输出。
-      如果我们只是想输出不同名的模板文件，则使用控制器动作的render()方法切换即可，格式如下：
-            <span class="STYLE1">render([file, vars])</span>
+      如果我们只是想输出不同名的模板文件，则使用控制器动作的renderFile()方法切换即可，格式如下：
+            <span class="STYLE1">renderFile([file, vars, required])</span>
       参数说明：
 </pre>
 <table>
@@ -87,20 +91,24 @@ class ListAction extends Controller
 		<td>vars</td>
 		<td>可选。要传递给模板的变量数组。</td>
 	</tr>
+    <tr>
+        <td>required</td>
+        <td>可选。是否必须，默认为true，如果文件不存在就会报错；如果设为false，则返回空。</td>
+    </tr>
 </table>
 <pre>
 
       （1）输出当前动作目录下的test.php模板
-<pre class="brush: php;">$this->render('test'); </pre>
+<pre class="brush: php;">$this->renderFile('test'); </pre>
       （2）输出当前动作目录下的test目录的test1.php模板
-<pre class="brush: php;">$this->render('test/test1.php'); </pre>
+<pre class="brush: php;">$this->renderFile('test/test1.php'); </pre>
       （3）输出admin模块item控制器create动作模板目录下的test3模板文件
-<pre class="brush: php;">$this->render('/admin/item/create/test3'); </pre>
+<pre class="brush: php;">$this->renderFile('/admin/item/create/test3'); </pre>
 
 <strong>5、模板中如何调用View的函数</strong>
-（1）使用PHP原生输出模板时
+（1）使用PHP文件模板时
       直接使用$this调用即可。
-      比如，我们要加载模板片段head.php，假设用的是default默认风格，则该文件是view/templdate/default/part/head.php。
+      比如，我们要加载模板片段head.php，假设用的是defaults默认风格，则该文件是view/defaults/template/part/head.php。
       调用方法如下所示：
 <pre class="brush: php;">&lt;div&gt;&lt;?php $this->showPart('head');?&gt;&lt;/div&gt;</pre>
 （2）使用模板引擎时
@@ -120,13 +128,13 @@ class ListAction extends Controller
 	</tr>
 	<tr>
 		<td>file</td>
-		<td>可选。文件路径。如果为空，默认加载显示当前模板文件。同上display()方法。</td>
+		<td>可选。文件路径。如果为空，默认加载显示当前模板文件。同上renderFile()方法。</td>
 	</tr>
 </table>
 <pre>
       <strong>实例如下：</strong>
          比如要调用user控制器的login动作模板。
-         PHP原生模板调用：
+         PHP文件模板调用：
 <pre class="brush: php;">$this->showTpl('/user/login');</pre>         smarty模板调用：
 <pre class="brush: php;">&lt;{$View->showTpl('/user/login')}&gt;</pre>
 </pre>

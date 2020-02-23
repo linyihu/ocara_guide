@@ -25,10 +25,10 @@
 'TEMPLATE' => array(
     'file_type'		 => 'php', //模板文件名
     'engine'		 => 'Ocara\Service\Smarty', //模板引擎（如果使用默认的Smarty模板引擎，填Ocara\Service\Smarty）
-    'default'		 => 'default', //默认模板名称
+    'default_style'  => 'defaults', //默认模板风格目录
     'default_layout' => 'layout', //默认的layout名称
 ),
-</pre>      将其中的engine设置为smarty就可以开启smarty，将extension_name设置为模板文件要使用的文件扩展名，如html或者htm等等。 
+</pre>      将其中的engine设置为smarty就可以开启smarty，将file_type设置为模板文件要使用的文件扩展名，如html或者htm等等。
   
 （2）配置smarty
 <pre class="brush: php;">
