@@ -27,55 +27,96 @@ $(document).ready(function(){
        Ocara目录的特点是清晰统一，不会这里一处那里一处太乱。易于管理和目录权限安全设置，以及团队分工协作。
        应用的目录分为application、publish和required三个。
 	   
-       <strong>（1）业务逻辑目录（application）</strong>
+       <strong>（1）应用目录（application）</strong>
             业务逻辑的所在目录。
             分为controller,model和view三个目录。用来写MVC代码的。上线后设置可读可执行（644）权限。
             目录实例如下：
 </pre>
   <ul id="browser1" class="filetree">
+	  <li><span class="folder">config（配置目录）</span>
+		  <ul>
+			  <li><span class="file">application.php（应用级配置）</span></li>
+			  <li><span class="file">system.php（开发级配置）</span></li>
+			  <li><span class="file">database.php（数据库配置）</span></li>
+			  <li><span class="file">cache.php（缓存配置）</span></li>
+			  <li><span class="file">events.php（事件配置）</span></li>
+			  <li><span class="file">static.php（静态生成配置）</span></li>
+			  <li><span class="folder">env（多环境配置目录）</span>
+				  <ul>
+					  <li><span class="file">local.php（本地环境）</span></li>
+					  <li><span class="file">develop.php（开发环境）</span></li>
+					  <li><span class="file">alpha.php（测试环境）</span></li>
+					  <li><span class="file">production.php（生产环境）</span></li>
+				  </ul>
+			  </li>
+		  </ul>
+	  </li>
+	  <li><span class="folder">console（命令模块目录）</span></li>
+	  <li><span class="folder">lang（语言目录）</span>
+		  <ul>
+			  <li><span class="folder">zh_cn（默认语言，中文简体版目录）</span>
+				  <ul>
+					  <li><span class="folder">database（数据表模型语言目录）</span>
+						  <ul>
+							  <li><span class="file">Users.php（用户表语言文件）</span></li>
+						  </ul>
+					  </li>
+					  <li><span class="folder">base.php（基本语言文件）</span></li>
+				  </ul>
+			  </li>
+		  </ul>
+	  </li>
 		<li><span class="folder">controller（控制器目录）</span>
 			<ul>
-				<li><span class="folder">Usercenter（会员中心模块目录）</span>
+				<li><span class="folder">home（home控制器目录）</span>
 					<ul>
-						<li><span class="folder">Home（会员中心模块home控制器目录）</span>
-						  <ul>
-							<li><span class="file">Home.php（控制器文件）</span></li>
-							<li><span class="folder">Action（控制器动作目录）</span>
-								<ul>
-								  <li><span class="file">Index.php（index动作文件）</span></li>
-								</ul>
-							</li>
-						</ul>
-						</li>
+						<li><span class="file">Controller.php（控制器文件）</span></li>
+						<li><span class="file">IndexAction.php（index动作文件）</span></li>
 					</ul>
 				</li>
-				<li><span class="folder">Home（全局home控制器目录）</span>
-					<ul>
-						<li><span class="file">Home.php（控制器文件）</span></li>
-						<li><span class="folder">Action（控制器动作目录）</span>
-							<ul>
-							  <li><span class="file">Index.php（index动作文件）</span></li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-				<li><span class="file">Controller.php（根控制器Controller文件）</span></li>
+				<li><span class="file">Module.php（全局模块控制器文件）</span></li>
 			</ul>
 		</li>
 		<li><span class="folder">model（数据模型目录）</span>
 			<ul>
-				<li><span class="file">User.php（默认数据库服务器默认数据库的user表模型）</span></li>
-				<li><span class="folder">bbs（bbs数据库服务器的模型）</span>
+				<li><span class="folder">cache（缓存模型目录）</span>
 					<ul>
-						<li><span class="file">user.php（user表模型文件）</span></li>
-						<li><span class="file">thread.php（thread表模型文件）</span></li>
+						<li><span class="file">UserModel.php（user缓存模型文件）</span></li>
+					</ul>
+				</li>
+				<li><span class="folder">database（数据库模型目录）</span>
+					<ul>
+						<li><span class="file">UserModel.php（User表模型文件）</span></li>
+						<li><span class="folder">bbs（bbs数据库目录）</span>
+							<ul>
+								<li><span class="file">UserModel.php（bbs库User表模型文件）</span></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li><span class="folder">entity（实体目录）</span>
+					<ul>
+						<li><span class="folder">database（数据库实体）</span>
+							<ul>
+								<li><span class="file">UserEntity.php（User表实体文件）</span></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li><span class="folder">enums（枚举常量目录）</span>
+					<ul>
+						<li><span class="folder">User（用户表模型枚举常量目录）</span>
+							<ul>
+								<li><span class="file">UserType.php（用户类型枚举常量）</span></li>
+							</ul>
+						</li>
 					</ul>
 				</li>
 			</ul>
 		</li>
 		<li><span class="folder">view（视图目录）</span>
 			<ul>
-				<li><span class="folder">default（默认模板风格目录）</span>
+				<li><span class="folder">defaults（默认模板风格目录）</span>
 					<ul>
 						<li><span class="folder">helper（模板助手目录）</span>
 							<ul><li><span class="file">GetList.php（GetList助手文件）</span></li></ul>
@@ -135,6 +176,26 @@ $(document).ready(function(){
 				</li>
 			</ul>
 		</li>
+	  <li><span class="folder">modules（模块目录）</span>
+		  <ul>
+			  <li><span class="folder">userCenter（会员中心模块目录）</span>
+				  <ul>
+					  <li><span class="folder">controller（控制器目录）</span>
+						  <ul>
+							  <li><span class="file">home（会员中心模块home控制器目录）</span>
+								  <ul>
+									  <li><span class="file">Controller.php（控制器文件）</span></li>
+									  <li><span class="file">IndexAction.php（index动作文件）</span></li>
+								  </ul>
+							  </li>
+							  <li><span class="file">UserCenterModule.php（会员中心模块控制器）</span></li>
+						  </ul>
+					  </li>
+				  </ul>
+			  </li>
+		  </ul>
+	  </li>
+	  <li><span class="folder">service（业务逻辑目录）</span></li>
 </ul>
 <pre>
 
@@ -145,189 +206,86 @@ $(document).ready(function(){
             目录实例如下：
 </pre>
   <ul id="browser2" class="filetree">
+	  <li><span class="folder">src（前端目录）</span>
+		  <ul>
+			  <li><span class="folder">css（css文件所在目录）</span>
+				  <ul>
+					  <li><span class="folder">defaults（默认视图css目录）</span>
+						  <ul>
+							  <li><span class="file">test.css（某个css文件）</span></li>
+							  <li><span class="folder">admin（某admin模块的css目录）</span>
+								  <ul>
+									  <li><span class="file">base.css</span></li>
+									  <li><span class="folder">home（home控制器css目录）</span>
+										  <ul><li><span class="file">home.css</span></li></ul>
+									  </li>
+								  </ul>
+							  </li>
+						  </ul>
+					  </li>
+					  <li><span class="folder">blue（blue视图CSS目录）</span></li>
+				  </ul>
+			  </li>
+			  <li><span class="folder">images（images文件所在目录）</span>
+				  <ul>
+					  <li><span class="folder">defaults（默认视图images目录）</span>
+						  <ul>
+							  <li><span class="file">test.jpg（某个images文件）</span></li>
+							  <li><span class="folder">admin（某admin模块的images目录）</span>
+								  <ul>
+									  <li><span class="file">smaile.png</span></li>
+									  <li><span class="folder">home（home控制器images目录）</span>
+										  <ul><li><span class="file">honey.png</span></li></ul>
+									  </li>
+								  </ul>
+							  </li>
+						  </ul>
+					  </li>
+					  <li><span class="folder">blue（blue视图images目录）</span></li>
+				  </ul>
+			  </li>
+			  <li><span class="folder">js（JS文件目录，注意，JS目录没有视图分目录）</span>
+				  <ul>
+					  <li><span class="file">base.js（某个JS文件）</span></li>
+					  <li><span class="folder">admin（某个admin模块的JS目录）</span>
+						  <ul>
+							  <li><span class="file">test.js</span></li>
+							  <li><span class="folder">home（home控制器JS目录）</span>
+								  <ul><li><span class="file">home1.js</span></li></ul>
+							  </li>
+						  </ul>
+					  </li>
+				  </ul>
+			  </li>
+		  </ul>
+	  </li>
         <li><span class="folder">attachments（附件目录，存放临时文件或可下载的文件）</span></li>
-		<li><span class="folder">css（css文件所在目录）</span>
-			<ul>
-				<li><span class="folder">default（默认视图css目录）</span>
-					<ul>
-						<li><span class="file">test.css（某个css文件）</span></li>
-						<li><span class="folder">admin（某admin模块的css目录）</span>
-						<ul>
-							<li><span class="file">base.css</span></li>
-							<li><span class="folder">home（home控制器css目录）</span>
-								<ul><li><span class="file">home.css</span></li></ul>
-							</li>
-						</ul>
-						</li>
-					</ul>
-				</li>
-				<li><span class="folder">blue（blue视图CSS目录）</span></li>
-			</ul>
-		</li>
-		<li><span class="folder">images（images文件所在目录）</span>
-			<ul>
-				<li><span class="folder">default（默认视图images目录）</span>
-					<ul>
-						<li><span class="file">test.jpg（某个images文件）</span></li>
-						<li><span class="folder">admin（某admin模块的images目录）</span>
-						<ul>
-							<li><span class="file">smaile.png</span></li>
-							<li><span class="folder">home（home控制器images目录）</span>
-								<ul><li><span class="file">honey.png</span></li></ul>
-							</li>
-						</ul>
-						</li>
-					</ul>
-				</li>
-				<li><span class="folder">blue（blue视图images目录）</span></li>
-			</ul>
-		</li>
-		<li><span class="folder">js（JS文件目录，注意，JS目录没有视图分目录）</span>
-			<ul>
-				<li><span class="file">base.js（某个JS文件）</span></li>
-				<li><span class="folder">admin（某个admin模块的JS目录）</span>
-				<ul>
-					<li><span class="file">test.js</span></li>
-					<li><span class="folder">home（home控制器JS目录）</span>
-						<ul><li><span class="file">home1.js</span></li></ul>
-					</li>
-				</ul>
-				</li>
-			</ul>
-		</li>
 		<li><span class="folder">static（静态文件目录，存放静态生成的文件）</span></li>
 </ul>
 <pre>
 
-         <strong> （3）资源目录（resource）</strong>
+         <strong> （3）数据目录（data）</strong>
               存放配置文件、多语言文件和重要数据的所在目录。
               上线后设置可读可执行（644）权限，data目录可以设置755权限。
               目录实例如下：
 </pre>
   <ul id="browser3" class="filetree">
-		<li><span class="folder">conf（配置目录）</span>
-			<ul>
-				<li><span class="file">application.php（应用级配置）</span></li>
-				<li><span class="file">system.php（开发级配置）</span></li>
-				<li><span class="file">database.php（数据库配置）</span></li>
-                <li><span class="file">cache.php（缓存配置）</span></li>
-				<li><span class="file">callback.php（自定义回调配置）</span></li>
-                <li><span class="file">static.php（静态生成配置）</span></li>
-                
-				<li><span class="folder">control（控制器配置）</span>
-					<ul>
-						<li><span class="file">test1.php（某个配置文件，所有控制器都会加载）</span></li>
-						<li><span class="folder">admin（某admin模块配置目录）</span>
-							<ul>
-								<li><span class="file">test.php</span></li>
-								<li><span class="folder">home（home控制器配置目录）</span>
-									<ul>
-									<li><span class="file">test.php</span></li>
-									<li><span class="file">test1.php</span></li>
-									<li><span class="folder">index（index动作配置目录）</span>
-										<ul>
-										<li><span class="file">test2.php</span></li>
-										<li><span class="file">test3.php</span></li>
-										</ul>
-									</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-						<li><span class="folder">home（全局home控制器配置目录）</span>
-							<ul>
-							<li><span class="file">test1.php</span></li>
-							<li><span class="file">test2.php</span></li>
-							<li><span class="folder">create（index动作配置目录）</span>
-								<ul>
-								<li><span class="file">test1.php</span></li>
-								</ul>
-							</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-				<li><span class="folder">model（数据模型配置）</span>
-					<ul>
-						<li><span class="file">user.php（默认数据库服务器默认数据库的某个user表模型）</span></li>
-						<li><span class="folder">bbs（bbs数据库服务器的表模型配置）</span>
-						<ul>
-							<li><span class="file">user.php（user表模型配置）</span></li>
-							<li><span class="file">thread.php（thread表模型配置）</span></li>
-						</ul>
-						</li>
-					</ul>
-				</li>
-				<li><span class="folder">fields（数据表字段数据，自动生成）</span>
-					<ul>
-						<li><span class="file">user.php（默认数据库服务器默认数据库的某个user表字段）</span></li>
-						<li><span class="folder">bbs（bbs数据库服务器的表字段配置）</span>
-							<ul>
-								<li><span class="file">user.php（user表字段配置）</span></li>
-								<li><span class="file">thread.php（thread表字段配置）</span></li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		</li>
-		<li><span class="folder">data（安全数据目录）</span></li>
-		<li><span class="folder">lang（语言目录）</span>
-			<ul>
-				<li><span class="folder">zh_cn（默认语言，中文简体版目录）</span>
-						<ul>
-							<li><span class="folder">control（控制器语言目录）</span>
-						<ul>
-							<li><span class="file">lang1.php（某个语言文件，所有控制器都会加载）</span></li>
-							<li><span class="folder">admin（某admin模块语言目录）</span>
-								<ul>
-									<li><span class="file">test1.php</span></li>
-									<li><span class="folder">home（home控制器语言目录）</span>
-										<ul>
-										<li><span class="file">test.php</span></li>
-										<li><span class="file">test1.php</span></li>
-										<li><span class="folder">index（index动作语言目录）</span>
-											<ul>
-											<li><span class="file">test1.php</span></li>
-											<li><span class="file">test2.php</span></li>
-											</ul>
-										</li>
-										</ul>
-									</li>
-								</ul>
-							</li>
-							<li><span class="folder">home（全局home控制器语言目录）</span>
-								<ul>
-								<li><span class="file">test1.php</span></li>
-								<li><span class="file">test2.php</span></li>
-								<li><span class="folder">create（index动作语言目录）</span>
-									<ul>
-									<li><span class="file">test.php</span></li>
-									</ul>
-								</li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-					<li><span class="folder">model（数据模型字段语言目录）</span>
-						<ul>
-							<li><span class="file">user.php（默认数据库连接的某个user表字段语言文件）</span></li>
-							<li><span class="folder">bbs（bbs数据库连接的表字段语言目录）</span>
-							<ul>
-								<li><span class="file">user.php（user表模型字段语言目录）</span></li>
-								<li><span class="file">thread.php（thread表模型字段语言目录）</span></li>
-							</ul>
-							</li>
-						</ul>
-					</li>
-					</ul>
-				</li>
-			</ul>
-		</li>
+	  <li><span class="folder">docs（文档目录）</span>
+	  <li><span class="folder">fields（数据表字段数据，自动生成）</span></li>
+		  <ul>
+			  <li><span class="file">user.php（默认数据库服务器默认数据库的某个user表字段）</span></li>
+			  <li><span class="folder">bbs（bbs数据库服务器的表字段配置）</span>
+				  <ul>
+					  <li><span class="file">user.php（user表字段配置）</span></li>
+					  <li><span class="file">thread.php（thread表字段配置）</span></li>
+				  </ul>
+			  </li>
+		  </ul>
+	  </li>
 </ul>
 <pre>
 
-         <strong> （4）服务程序目录（service）</strong>
+         <strong> （4）扩展类库目录（support）</strong>
               存放函数、类、接口、第三方的API或插件的所在目录。
               上线后设置可读可执行（644）权限。
               目录实例如下：

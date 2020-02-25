@@ -40,11 +40,6 @@ Ocara的应用系统的系统模式分为开发模式和运营模式。
 		<td>启用</td>
 		<td>关闭，无法进入</td>
 	</tr>
-	<tr>
-		<td>SQL语句调试</td>
-		<td>可以调试</td>
-		<td>无法调试</td>
-	</tr>
 </table>
 
 <h2>修改方法</h2>
@@ -52,12 +47,12 @@ Ocara的应用系统的系统模式分为开发模式和运营模式。
 修改系统模式类型，是在application/config/system.php中修改相应的配置：
 
 <pre class="brush: php;">/*
- * 系统模式 
- * 开发模式时,系统会自动新建开发入口
- * 异常提示中不会显示Trace
- * 提供给开发者自动生成controller、model和view的友好界面
- */
-$CONF['SYS_MODEL'] 	= 'develop'; 	//develop为开发模式,其他为运营模式
+    /*
+     * 系统模式配置
+     * 分为开发模式和运营模式两种
+     * 配置为develop时是开发模式，其他均为运营模式
+     */
+    'SYS_MODEL' => 'develop',
 </pre>
   将SYS_MODEL修改为'develop'时是开发者模式，如果是其他任何值，都是运营模式。
 

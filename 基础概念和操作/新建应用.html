@@ -18,33 +18,39 @@
         实际上就是指您的PHP项目，一般是一个网站或者移动端后台，由多个模块和控制器组成。例如，我们要开发一个电商网站或进销存系统，那么它就是一个应用。
 
 <strong>2、应用的生成</strong>
-      下载下来的Ocara框架包括了demo目录，其中存在着应用的实例。最少有一个实例目录newapp。
-      newapp目录内部只包括一个index.php。该文件只要执行一下，自动会在myapp下面构建应用目录，比如在浏览器中打开http://localhost/myapp/index.php。
+      下载下来的Ocara框架包括了demo目录，其中存在着应用的实例。最少有一个项目。
+      未例目录内部只包括一个index.php。该文件只要执行一下，自动会在当前项目目录下面添加所有的目录和文件，比如在浏览器中打开http://localhost/myApp/index.php。
 
 <strong>3、新增应用</strong>
       如果想增加应用，主要分为三步：
-     （1）确定好应用的根目录。
-             假设应用的根目录是在网站根目录下面的newapp，那么它就是该应用的根目录。假设当前是本地开发环境，则访问的URL为http://localhost/newapp。
+     （1）确定好网站根目录。
+             假设项目目录是newApp，那么newApp/public即为浏览器访问网站的根目录。
+             假设当前是本地开发环境，则访问的URL为http://localhost/newApp。
      （2）新建index.php。
-              在应用根目录下添加一个index.php。代码内容如下：<pre class="brush: php;">
+              在应用根目录下添加一个index.php。代码内容如下：
+<pre class="brush: php;">
 /**
- * 程序执行开始时间
+ * 应用首页
  */
+use Ocara\Core\Ocara;
+
+//程序执行开始时间
 define('OC_EXECUTE_START_TIME', microtime(true));
 
-/*
- * 加载框架或自动加载
+/**
+ * 加载框架
+ * 请修改和确定以下路径
  */
-//require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
-require_once dirname(dirname(__DIR__)) . '/ocara/system/library/Core/Ocara.php';
+//require_once dirname(dirname(__DIR__)) . '/ocara/system/library/Core/Ocara.php';
+require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
 
-/*
+/**
  * 运行应用
  */
-Ocara\Core\Ocara::create();
+Ocara::create();
 </pre>
-              只要指定好上面代码中Ocara框架所在目录OC_PATH即可，这个框架目录一定要写对。
-              请保证当前应用目录myapp有可读写权限。
+              只要指定好上面代码中Ocara.php文件路径，或者如果是composer安装的，指定好autoload.php文件。。
+              请保证当前项目目录有可读写权限。
      （3）执行该index.php新建应用目录。
               在浏览器中打开http://localhost/index.php。
               如果新建成功，会输出：Application create Success!否则，如果是权限问题，PHP会提示目录没有可写权限。</p>
