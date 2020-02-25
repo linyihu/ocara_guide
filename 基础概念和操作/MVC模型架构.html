@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>MVC模型架构</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>MVC模型架构</h2>
+
+        Ocara采用MVC架构模型，即控制层（Controller）、数据模型层（Model）和视图显示层（View）。
+
+        什么是MVC？
+
+        MVC分层，将业务系统区分为业务逻辑控制层、数据处理层和前端展示层三层，将三者独出来开发和维护，达到解耦的目的。
+        增强了系统可维护和可扩展性，从而提高了效率、安全和稳定性。
+        MVC即三层的简称，分别对应Model、View和Controller。
+                （1）控制器层（Controller），接受用户输入后，结合数据库模型层进行业务逻辑处理，并将结果数据交给视图层输出。是整个系统处理的控制大脑。
+                （2）数据模型层（Model）， 处理数据库、缓存等数据存储系统的连接、数据操作和查询等。
+                （3）视图展现层（View），返回或输出处理结果。
+        <!--<img src="../style/images/MVC.jpg"/>-->
+</pre></body>
+</html>
