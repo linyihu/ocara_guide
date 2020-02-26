@@ -12,10 +12,10 @@
 
 <body><pre><h2>控制反转和依赖注入</h2>
 
-     控制反转是以解耦为目的的设计原则，可以依赖注入来实现。
-     控制反转和依赖注入解决问题的场景是：类之间的相互依赖，即一个类内部要新建并使用另外一个类（一种依赖）。
+     控制反转是最为明显地以解耦为目的的设计模式，可以使用依赖注入模式来实现。
+     控制反转和依赖注入解决问题的场景更多的是：类之间的相互依赖，即一个类内部要新建并使用另外一个类（一种依赖）。
      对于解耦，我们可以先去了解一下“松散耦合性”的概念。
-    为了解释得容易懂点，本文将说得比较通俗一点。
+     为了解释得容易懂点，本文将说得比较通俗一点。
   <table class="hint">
       <tr class="head">
           <td><h2>总结：</h2>用依赖注入来实现控制反转，达到解耦的目的。</td>
@@ -23,14 +23,20 @@
   </table>
 
 <strong>一、控制反转</strong>
-       通俗地说，控制反转，是在类内部要调用一个类对象时，将传统地在内部新建对象的方式，换成从外部新建或配置，然后注入进来用。
-       为什么要这样做呢？
-              就是为了将类对象的新建权交给外部，这样可以自由控制该对象的实例来源，而不用去修改类内部代码来改变来源，增加维护性和扩展性！
+       （1）目的
+              通俗地说，控制反转，是在类内部要调用一个类对象时，将传统地在内部新建对象的方式，换成从外部新建或配置，然后注入进来用。
+              为什么要这样做呢？
+              就是为了将类对象的新建权交给外部，这样可以自由控制该对象实例的来源，而不用去修改类内部代码，增加维护性和扩展性！
               其实就是相当于程序代码中的变量。有了变量，我们在程序中的数据才有了可变的可能，而且不用换个数据就去改代码。
-              下面是一个例子：
-                     假设我们有一个组装一台电脑，使用三星显示器，我们一般会在电脑类内部新建一个三星显示器类。
-                     我们先定义一个显示器类，如下所示：
+
+       （2）实例说明
+              假设我们有一个组装一台电脑，使用三星显示器，我们一般会在电脑类内部新建一个三星显示器类。
+              我们先定义一个显示器类，如下所示：
+
 <pre class="brush: php;">
+/**
+ * 显示器
+ */
 class Monitor
 {
 
@@ -40,8 +46,12 @@ class Monitor
 	}
 }
 </pre>
-                     再新建一个电脑类，代码如下：
+                     再新建一个电脑类，实现三星显示器的新建。代码如下：
+
 <pre class="brush: php;">
+/**
+ * 电脑
+ */
 class Computer
 {
 	private $monitor;
@@ -52,7 +62,8 @@ class Computer
 	}
 }
 </pre>
-                     此时，是可以实现三星显示器的新建。但是如果我们要换一个Philips显示器，则需要改代码为：
+                     但是如果我们要换一个Philips显示器，则需要改代码为：
+
 <pre class="brush: php;">
 class computer
 {
@@ -64,15 +75,18 @@ class computer
 	}
 }
 </pre>
-                     每次都要改代码，不利于维护。
+                     如果再换个其他的显示器还要改代码，每次都要改代码太麻烦，不利于维护。
                      为了利于维护和扩展，我们可能会有以下两种方式解决：
-                     （1）使用配置或函数方法指定名称
+
+                     <strong>（1）使用配置或函数方法指定名称</strong>
+
                               比如我们在外面添加一个配置，如下所示：
 
 <pre class="brush: php;">
 $CONF['computer']['monitor'] = 'Philips';
 </pre>
                               然后修改电脑类，如下所示：
+
 <pre class="brush: php;">
 class computer
 {
@@ -88,6 +102,7 @@ class computer
 $computer = new Computer();
 </pre>
                              也可新建一个方法函数传递参数，如下所示：
+
 <pre class="brush: php;">
 class computer
 {
@@ -104,6 +119,7 @@ $computer = new Computer();
 $computer->setMonitor('Philips');
 </pre>
                               当然，还可以在构造函数时传递显示器名称，如下所示：
+
 <pre class="brush: php;">
 class computer
 {
@@ -118,8 +134,10 @@ class computer
 //使用实例：
 $computer = new Computer('Philips');
 </pre>
-                     （2）传递参数注入对象
+                     <strong>（2）传递参数注入对象</strong>
+
                               也就是在构造函数中传递一个显示器对象，如下所示：
+
 <pre class="brush: php;">
 class computer
 {
@@ -136,6 +154,7 @@ $monitor = new Monitor('Philips');
 $computer = new Computer($monitor);
 </pre>
                               也可新建一个方法函数传递参数，如下所示：
+
 <pre class="brush: php;">
 class computer
 {
@@ -161,8 +180,8 @@ $computer->setMonitor($monitor);
 <strong>二、依赖注入</strong>
        上面讲到了两种实现控制反转的方式。其中第二点就是依赖注入。
        其中第一种方法有一个缺点：
-              假如我们不想用Monitor类来新建显示器，而是采用别的比如NewMonitor类。此时必须修改Computer类内部的显示器类名。还是不够自由！
-              如下代码：
+       假如我们不想用Monitor类来新建显示器，而是采用别的比如NewMonitor类。此时必须修改Computer类内部的显示器类名。还是不够自由！
+
 <pre class="brush: php;">
 class computer
 {
@@ -178,6 +197,7 @@ class computer
 $computer = new Computer();
 </pre>
               使用setMonitor()方法时也一样：
+
 <pre class="brush: php;">
 class computer
 {
@@ -194,7 +214,7 @@ $computer = new Computer();
 $computer->setMonitor('Philips');
 </pre>
               而第二种方式，就没有这个缺点。因为只要在外面改变类名就行了，只不过它要继承同一个Monitor基类或接口。
-              如下所示：
+
 <pre class="brush: php;">
 class computer
 {
@@ -211,6 +231,7 @@ $monitor = new NewMonitor('Philips'); //在外面换一个类名NewMonitor就行
 $computer = new Computer($monitor);
 </pre>
               或者，使用setMonitory()方法：
+
 <pre class="brush: php;">
 class computer
 {
@@ -282,9 +303,11 @@ class computer
         ... ...
 	}
 }
-</pre>              看到了吧，定义这么多属性， 传递这么多的参数，再初始化这么多。这只是写法上的繁锁。
+</pre>              看到了吧，定义这么多属性，传递这么多的参数，再初始化这么多。这只是写法上的繁锁。
               假如能够只传递一个参数集合多好。那么这一个参数集合不管是数组还是对象，都必须能够管理这些部件对象。
-              比如数组：     <pre class="brush: php;">
+              比如数组：
+
+<pre class="brush: php;">
 class computer
 {
 	private $monitor;
@@ -300,7 +323,10 @@ class computer
             }
         }
 	}
-}</pre>              再比如对象:<pre class="brush: php;">
+}</pre>
+              再比如对象:
+
+<pre class="brush: php;">
 class computer
 {
 	private $monitor;
@@ -316,9 +342,11 @@ class computer
             }
         }
 	}
-}</pre>              再看以上代码，是可以实现了，但是属性还是有多个。如果属性也才一个多好。这是可以实现的。
+}</pre>
+              再看以上代码，是可以实现了，但是属性还是有多个。如果属性也才一个多好。这是可以实现的。
               这便产生了对象类型的依赖注入容器的概念。
               用了依赖注入对象容器，我们就可以这样简便使用：
+
 <pre class="brush: php;">
 class computer
 {
@@ -328,8 +356,10 @@ class computer
 	{
         $this->container = $container;
 	}
-}</pre>              在使用时很简单。
+}</pre>
+              在使用时很简单。
               假如容器是个数组的话：
+
 <pre class="brush: php;">
 class computer
 {
@@ -391,7 +421,9 @@ class Desk
     }
 }
 </pre>
+
               电脑可以有台式电脑和笔记本电脑两种：
+
 <pre class="brush: php;">
 namespace Computers;
 
@@ -414,39 +446,51 @@ class Laptops implements \Interface\Computer
     }
 }
 </pre>
+
               假如我们想配的是台式电脑，添加一台办公桌，则自动配一台台式电脑：
+
 <pre class="brush: php;">
-$container = new \Ocara\Container();
+$container = new \Ocara\Core\Container();
+
+//声明办公桌用哪个类新建。
 $container->bind('desk', '\Desk');
 
-//指定电脑类型为台式电脑
+//声明电脑用哪个类新建。这里是台式电脑类
 $container->bind('\Interface\Computer', '\Computers\Desktops');
 
 //添加办公桌，自动配一台电脑
+//什么类型的电脑呢？就是台式电脑，因为上面声明过了
 $desk = $container->get('desk');
 </pre>
               说明：
                      办公桌Desk的构造函数规定了参数$computer电脑的接口类为\Interface\Computer。
-                     在新建Desk时，容器会自动创建电脑类\Computers\Desktops实现该接口，添加了一台台式电脑。
+                     在新建Desk时，依赖注入容器会自动创建电脑类\Computers\Desktops实现该接口，添加了一台台式电脑。
 
               因此，$desk = $container->get('desk')相当于以下代码：
+
 <pre class="brush: php;">
-//新建一台台式电脑
+//先新建一台台式电脑A
 $computer = $container->get('\Interface\Computer');
-//添加办公桌，配台式电脑
+
+//然后新建办公桌，配台式电脑A
 $desk = $desk = $container->get('desk', array($computer));
 </pre>
+
               如果有一个办公桌，不想配台式机，而是想配一台笔记本电脑\Computers\Laptops，则只要修改该接口的实现：
+
 <pre class="brush: php;">
-/指定电脑类型为笔记本电脑
-$container->bind('\Interface\Computer', '\Computers\Laptops'); /
+//指定电脑类型为笔记本电脑
+$container->bind('\Interface\Computer', '\Computers\Laptops');
 </pre>
-              或者在添加办公桌时指定：
+              或者在添加办公桌时指定（属性注入的方式）：
+
 <pre class="brush: php;">
 //新建一台笔记本电脑
 $computer = new \Computers\Laptops();
+
 //添加办公桌，配笔记本电脑
-$desk = $container->get('desk', array($computer));
+//第三个参数数组使用的是容器提供的属性注入的方式，具体代码这里没有写，请参考本手册的依赖注入容器文章
+$desk = $container->get('desk', array(), array($computer));
 </pre>
               注：
                      上例中，台式电脑（\Computers\Desktops）和笔记本电脑（\Computers\Laptops）必须继承电脑接口类\Interface\Computer。
