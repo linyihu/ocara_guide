@@ -28,9 +28,9 @@ $(document).ready(function(){
        应用的目录分为application、publish和required三个。
 	   
        <strong>（1）应用目录（application）</strong>
-            业务逻辑的所在目录。
-            分为controller,model和view三个目录。用来写MVC代码的。上线后设置可读可执行（644）权限。
-            目录实例如下：
+              业务逻辑的所在目录。
+              其中的controller,model和view三个目录用来写MVC代码的。
+              子目录如下：
 </pre>
   <ul id="browser1" class="filetree">
 	  <li><span class="folder">config（配置目录）</span>
@@ -197,15 +197,37 @@ $(document).ready(function(){
 	  </li>
 	  <li><span class="folder">service（业务逻辑目录）</span></li>
 </ul>
+
 <pre>
 
-        <strong>（2）前端目录（public）</strong>
-            前端文件的所在目录。
-            用来存放网站的图片、javascript、CSS样式和临时文件的目录。这个目录可以放开权限的。
-            上线后可以设置为可读可执行（755）权限，attachments可以设置为可读写执行（777）权限。
-            目录实例如下：
+         <strong> （2）数据目录（data）</strong>
+              存放系统要使用的不可泄露数据文件，比如字段配置数据等。
+              子目录如下：
+</pre>
+<ul id="browser3" class="filetree">
+	<li><span class="folder">docs（文档目录）</span>
+	<li><span class="folder">fields（数据表字段数据，自动生成）</span></li>
+	<ul>
+		<li><span class="file">user.php（默认数据库的user表字段配置）</span></li>
+		<li><span class="folder">bbs（bbs数据库的表字段配置）</span>
+			<ul>
+				<li><span class="file">user.php（bbs数据库的user表字段配置）</span></li>
+				<li><span class="file">thread.php（bbs数据库的thread表字段配置）</span></li>
+			</ul>
+		</li>
+	</ul>
+	</li>
+</ul>
+
+<pre>
+
+        <strong>（3）网站根目录（public）</strong>
+              网站根目录，用于浏览器或客户端访问网站。
+              用来存放访问主文件index.php，以及可下载附件文件、网站的图片、javascript、CSS样式等前端资源文件的目录。
+              子目录和文件如下：
 </pre>
   <ul id="browser2" class="filetree">
+	  <li><span class="folder">index.php（默认首页文件）</span></li>
 	  <li><span class="folder">src（前端目录）</span>
 		  <ul>
 			  <li><span class="folder">css（css文件所在目录）</span>
@@ -262,44 +284,62 @@ $(document).ready(function(){
         <li><span class="folder">attachments（附件目录，存放临时文件或可下载的文件）</span></li>
 		<li><span class="folder">static（静态文件目录，存放静态生成的文件）</span></li>
 </ul>
+
 <pre>
 
-         <strong> （3）数据目录（data）</strong>
-              存放配置文件、多语言文件和重要数据的所在目录。
-              上线后设置可读可执行（644）权限，data目录可以设置755权限。
-              目录实例如下：
+         <strong> （4）运行目录（runtime）</strong>
+              存放应用运行时生成的日志、临时文件等。
+              上线后设置可读可写可执行（0777）权限。
+              子目录如下：
 </pre>
-  <ul id="browser3" class="filetree">
-	  <li><span class="folder">docs（文档目录）</span>
-	  <li><span class="folder">fields（数据表字段数据，自动生成）</span></li>
-		  <ul>
-			  <li><span class="file">user.php（默认数据库服务器默认数据库的某个user表字段）</span></li>
-			  <li><span class="folder">bbs（bbs数据库服务器的表字段配置）</span>
-				  <ul>
-					  <li><span class="file">user.php（user表字段配置）</span></li>
-					  <li><span class="file">thread.php（thread表字段配置）</span></li>
-				  </ul>
-			  </li>
-		  </ul>
-	  </li>
+<ul id="browser4" class="filetree">
+	<li><span class="folder">logs（日志目录）</span></li>
+	<li><span class="folder">temp（临时文件目录）</span></li>
 </ul>
+
 <pre>
 
-         <strong> （4）扩展类库目录（support）</strong>
-              存放函数、类、接口、第三方的API或插件的所在目录。
-              上线后设置可读可执行（644）权限。
-              目录实例如下：
+         <strong> （5）扩展类库目录（support）</strong>
+                  存放类、接口、第三方的API或插件的所在目录。
+                  子目录如下：
 </pre>
-  <ul id="browser4" class="filetree">
-		<li><span class="folder">functions（函数目录）</span></li>
-		<li><span class="folder">library（类或接口目录）</span></li>
-		<li><span class="folder">support（第三方的API或插件目录）</span></li>
+<ul id="browser6" class="filetree">
+	<li><span class="folder">Base（基类目录）</span>
+		<ul>
+			<li><span class="folder">Controller（控制器基类目录）</span>
+				<ul>
+					<li><span class="file">ApiController.php（API控制器基类）</span></li>
+					<li><span class="file">CommonController.php（同步控制器基类）</span></li>
+					<li><span class="file">RestController.php（Restful控制器基类）</span></li>
+					<li><span class="file">TaskController.php（命令任务控制器基类）</span></li>
+				</ul>
+			</li>
+			<li><span class="folder">Model（数据模型基类目录）</span></li>
+			<li><span class="folder">Service（业务逻辑基类目录）</span></li>
+		</ul>
+	</li>
 </ul>
+
+<pre>
+
+         <strong> （6）单元测试目录（tests）</strong>
+                  子目录或文件如下：
+</pre>
+<ul id="browser7" class="filetree">
+	<li><span class="folder">bootstrap.php（单元测试启动文件）</span></li>
+</ul>
+
+<pre>
+
+         <strong> （7）工具模块目录（tools）</strong>
+
+</pre>
+
 <pre>
 
 <h2>文件加载说明</h2>
 
-conf目录中的配置文件会自动按照模块、控制器和动作的目录顺序在系统初始化时自动加载。
-lang目录是按需自动加载的，执行顺序和conf一样，一般在第一次调用语言配置时加载。
+       config目录中的配置文件会先加载其下配置文件，然后按照模块、控制器和动作的目录顺序加载配置文件，运行过程中可以通过ocService()->config->set()修改配置。
+       lang目录是按需自动加载的，加载顺序和config一样，只是在第一次调用语言配置时加载。
 
 </pre></body></html>
