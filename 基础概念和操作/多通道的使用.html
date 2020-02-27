@@ -33,10 +33,20 @@
     <strong>3、调用控制器动作</strong>
         如果要在通道中的PHP文件调用某个控制器动作，可使用Invoke类。
         具体步骤如下：
-           （1）正确加载Invoke类文件
-           （2）调用<span class="STYLE1">Invoke::init()</span>初始化框架
-                 <span class="STYLE1">init(rootPath, fileSelf)</span>
-      参数说明：
+               （1）定义好OC_ROOT项目根目录
+
+<pre class="brush: php;">
+define('OC_ROOT', dirname(dirname(__DIR__)));
+</pre>
+               （2）正确加载Invoke类文件
+                      Invoke是单例模式，使用它的getInstance()方法来调用。
+
+<pre class="brush: php;">
+    Invoke::getInstance();
+</pre>
+               （3）调用Invoke的run方法执行控制器动作初始化框架
+                         <span class="STYLE1">init([bootstrap])</span>
+                    参数说明：
 </pre>
 <table>
     <tr class="head">
@@ -44,41 +54,71 @@
         <td width="400">描述</td>
     </tr>
     <tr>
-        <td>rootPath</td>
-        <td>必填。当前Web应用目录。即public的上层目录。</td>
-    </tr>
-    <tr>
-        <td>fileSelf</td>
-        <td>必填。当前文件路径，一般只要传递“__FILE__”即可。</td>
+        <td>bootstrap</td>
+        <td>可选。应用启动类名，一般不用传。默认为常用的启动文件，即Ocara\Bootstraps\Common。</td>
     </tr>
 </table>
+
+<pre class="brush: php;">
+    Invoke::getInstance()->init();
+</pre>
+
 <pre>
-           （3）调用<span class="STYLE1">Invoke::run()</span>方法执行控制器动作
-                  其中，根目录的路径尽量使用<span class="STYLE1">dirname()</span>生成的相对路径，考虑到兼容性。
+               （4）调用Invoke的run方法执行控制器动作
+                         <span class="STYLE1">run(route[, params, requestMethod])</span>
+                    参数说明：
+</pre>
 
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>route</td>
+        <td>必须。控制器路由，如：admin/home/index、user/create。</td>
+    </tr>
+    <tr>
+        <td>params</td>
+        <td>可选。要传递的参数数组。如：array('id' => 1)。</td>
+    </tr>
+    <tr>
+        <td>bootstrap</td>
+        <td>可选。参数传递和HTTP请求方式，只支持GET和POST两种。默认为GET。</td>
+    </tr>
+</table>
+
+<pre class="brush: php;">
+    Invoke::getInstance()
+        ->init()
+        ->run('home/index', array('id' => 1), 'POST');
+</pre>
+
+<pre>
     <strong>4、实例</strong>
-                  如下实例，在pass目录中的test.php中调用user/view控制器动作，并传递id=13参数，
-                  （a）文件路径截图
-                  <img src="../style/images/通道使用实例.png" alt="通道使用实例"/>
+        如下实例，在pass目录中的test.php中调用user/view控制器动作，并传递id=13参数。
 
-                  （b）pass/test.php中调用代码：
+                <img src="../style/images/通道使用实例.png" alt="通道使用实例"/>
+
+        （1）pass/test.php中调用代码：
+
 <pre class="brush: php;">
 /**
- * User: Administrator
- * Date: 16-4-27
+ * Invoke调用实例
  */
+use Ocara\Core\Invoke;
+
+define('OC_ROOT', dirname(dirname(__DIR__)));
 
 //加载Invoke文件
-require_once dirname(__DIR__) . '/ocara/system/library/Core/Invoke.php';
-
-//初始化框架
-Ocara\Invoke::init(dirname(dirname(__DIR__)), __FILE__);
+require_once dirname(OC_ROOT) . '/ocara/system/library/Core/Invoke.php';
 
 //执行控制器动作
-Ocara\Invoke::run('/user/view', array('id' => 13));
-
+Invoke::getInstance()
+    ->init()
+    ->run('/user/view', array('id' => 13));
 </pre>
-                  （b）执行文件
-                         浏览器中执行文件：http://localhost/ocapp/pass/test.php。
-                         如果要用PHP命令执行，参见<a href="./PHP命令执行.html">PHP命令执行</a>中的实例。
+                  （2）浏览器访问文件
+                         浏览器中执行文件：http://localhost/pass/test.php。
+
 </pre></body></html>
