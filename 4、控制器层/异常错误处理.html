@@ -156,8 +156,8 @@ class ErrorReport extends Middleware
     public function handle(\Exception $exception, $event, $eventTarget)
     {
         //示例
-        echo $exception->getMessage();
-        die;
+        $message = $exception->getMessage();
+        ocService()->response->setBody($message);
     }
 }
 </pre>
