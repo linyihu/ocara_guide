@@ -9,84 +9,43 @@
 <link type="text/css" rel="stylesheet" href="../style/function.css" />
 <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
 <script type="text/javascript" src="../treeview/base.js"></script>
-</head><body><pre><h2>Restful模块的使用</h2>
+</head><body><pre><h2>Api控制器模块</h2>
 
-        应用生成时默认在application/library/Base目录中生成了Base\Controller\RestController.php控制器文件。
-        Rest控制器都要继承Ocara\Controllers\Rest。
+        应用生成时默认在application/library/Base目录中生成了Base\Controller\ApiController.php控制器文件。
 
-<strong>1、如何添加Rest模块</strong>
-        只要在开发者中心添加模块时，选择Restful控制器即可。
+<strong>1、如何添加Api模块</strong>
+        只要在开发者中心添加模块时，选择Api控制器类即可。
+        注意：命令模块（console）不需要建立Api控制器。
 
-<strong>2、如何配置路由</strong>
-        （1）配置说明
-                框架默认的rest路由配置如下：
+<strong>2、Api控制器动作说明</strong>
+        （1）Action动作类
+                因为控制器本身就是API，类似于Ajax调用，所以api()方法无效。
+        （2）执行结果使用return返回。
+
 <pre class="brush: php;">
-/*
- * Restful路由规则
- */
-'CONTROLLERS' => array(
-    'rest' => array(
+namespace app\controller\test;
 
-        'id_param'     => 'id', //ID参数名称
-        'content_type' => 'json', //返回数据类型
-
-        //路由映射
-        'action_map' => array(
-            'GET' 			=> 'index', //获取记录列表
-            'GET/id' 		=> 'view', //获取记录详情
-            'POST' 			=> 'create', //添加记录
-            'PUT/id' 		=> 'update', //更新记录
-            'PATCH/id' 		=> 'update', //更新记录
-            'HEAD' 			=> 'index', //获取记录列表
-            'HEAD/id' 		=> 'view', //获取记录详情
-            'DELETE/id'		=> 'delete', //删除记录
-        ),
-        //请求成功返回状态码
-        'success_code_map' => array(
-            'index' 	=> 200, //获取记录列表成功
-            'create' 	=> 201, //添加记录成功
-            'view' 		=> 200, //获取记录详情成功
-            'update' 	=> 200, //更新记录成功
-            'delete' 	=> 204, //删除记录成功
-        ),
-    )
-),
-</pre>
-                详细说明：
-                        （1）id_param，指定传递的ID参数名称。
-                        （2）content_type，指定RESTFUL返回结果的数据类型，小写，默认为json。
-                        （3）action_map，指定路由映射方式。带“/id”表示需要带上ID参数。
-                        （4）success_code_map，指定请求成功后返回的HTTP状态码。
-        （2）修改配置
-                如果要修改Rest路由，只要在system.php中修改相关KEY即可。
-
-<strong>3、如何自定义返回数据格式</strong>
-        框架提供了自定义返回格式的方式，就是修改控制器动作的beforeRender()事件方法。
-        Rest返回数据，使用的是Ajax方式，Ajax返回结果数组包括以下键值。
-                （1）status，处理状态，一般包括success和failed两个值，这个不需要修改。
-                （2）code，处理错误码，如果处理成功时为0。
-                （3）message，处理结果描述。
-                （4）body，处理后的结果数据。
-
-        假设要设置item控制器的返回数据格式，那么beforeRender()代码格式，应该如下：
-<pre class="brush: php;">
-namespace app\modules\index\item;
-
-use app\modules\index\Module;
-use dal\models\main\Item;
-
-class Controller extends Module
+class TestAction extends Controller
 {
-    public function beforeRender($message, $status)
-    {
-        //先继承父类的事件处理器
-        parent::beforeRender($data, $message, $status);
+	/**
+	 * 初始化
+	 */
+	protected function __action()
+	{}
 
-        if ($this->result['status'] == 'success') {
-            //这里修改请求成功时返回的数据格式
-        } else {
-            //这里修改请求失败时返回的数据格式
-        }
+	/**
+	 * 表单注册
+	 */
+	public function registerForms()
+	{}
+
+	/**
+	 * 提交后处理
+	 */
+	public function submit()
+	{
+	    $result = 'test';
+	    return $result;
     }
 }
 </pre>
