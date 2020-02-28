@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Socket处理</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>Ocara\Service\SocketServer、Ocara\Service\SocketClient</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       Socket插件，实现了Socket的各种常用操作。</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>Socket服务端和客户端都写好了，使用方便了。</td>
+	</tr>
+</table>
+<p><strong>二、应用实例</strong></p>
+<p>1、服务端</p><pre class="brush: php;">
+ 		error_reporting(E_ALL & ~E_NOTICE);
+		$socket = new SocketServer();
+		$conn = $socket->start('127.0.0.1', 1994);
+		
+		if ($conn) {
+			$flag = 1;
+			do {
+				$socket->accept();
+				$msg = "Send Message:Hello,World";
+				if ($socket->send($msg)) {
+					echo "T{$flag}:send Success\n";
+				}
+				
+				if ($flag == 5) {
+					echo "stop";
+					break;
+				}
+				$flag++;
+				$socket->close();
+			}
+			while (True);
+			
+		} </pre><p>2、客户端</p>
+<pre class="brush: php;">error_reporting(E_ALL & ~E_NOTICE);
+		
+$socket = new SocketClient();
+$socket->connect('127.0.0.1', 1994);
+
+$content = $socket->read(256));
+echo $content . "\n";
+
+$socket->close();
+</pre><pre>3、运行
+运行服务端,要cli模式运行，也就是cmd命令窗口中。
+
+D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/server  (服务端代码写在在tools/test/server动作路由中)
+ 
+重新打开一个CMD窗口运行客户端如下:
+
+ D:\web> D:/phpStudy/php53/php.exe ./index.php /tools/test/client (服务端代码写在在tools/test/client动作路由中)</pre><p><strong>三、方法函数介绍</strong></p>
+<div class="function">
+<p><span class="bold">（一）、服务端插件SocketServer</p><pre>
+<strong>1、start(host, port[, timeout])</strong>
+  该函数自动做了三步操作，分别是生成服务端、绑定端口和监听端口。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>host</td>
+		<td>必需。客户端IP或域名。</td>
+	</tr>
+		<tr>
+		<td>port</td>
+		<td>必需。端口号。</td>
+	</tr>
+		<tr>
+		<td>timeout</td>
+		<td>可选。设置程序执行超时间，作为超时时间，其实使用的是	set_limit_time($timeout)函数。。</td>
+	</tr>
+	</table>  
+<pre><strong>2、accept()</strong>
+  接收客户端请求。 </pre>
+<pre><strong>3、read([length, type])</strong>
+  读取指定长度的数据。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>length</td>
+		<td>可选。要读取的字数，默认512个字符</td>
+	</tr>
+		<tr>
+		<td>type</td>
+		<td>可选。有PHP_BINARY_READ和PHP_NORMAL_READ。默认为PHP_BINARY_READ</td>
+	</tr>
+	</table>  
+<pre><strong>4、send(content[, length])</strong>
+  发送数据。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>content</td>
+		<td>必需。要发送的内容</td>
+	</tr>
+		<tr>
+		<td>length</td>
+		<td>可选。要发送的字符长度，默认512个字符</td>
+	</tr>
+	</table>  
+<pre><strong>5、close()</strong>
+  关闭连接。 </pre>
+<p><span class="bold">
+（二）、客户端插件SocketClient
+</p><pre>
+	<strong>6、connect(host, port[, limitTime, receiveTimeout, sendTimeout])</strong>
+  接收客户端请求。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>host</td>
+		<td>必需。同服务端的start()。</td>
+	</tr>
+		<tr>
+		<td>port</td>
+		<td>必需。同服务端的start()。</td>
+	</tr>
+		<tr>
+		<td>limitTime</td>
+		<td>可选。限制时间。</td>
+	</tr>
+	</tr>
+	<tr>
+		<td>receiveTimeout</td>
+		<td>可选。接受超时时间。默认为3秒。</td>
+	</tr>
+	</tr>
+	<tr>
+		<td>sendTimeout</td>
+		<td>可选。发送超时时间。默认为2秒。</td>
+	</tr>
+	</table>  
+<pre><strong>7、read([length, type])</strong>
+  读取指定长度的数据。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>length</td>
+		<td>可选。同服务端</td>
+	</tr>
+		<tr>
+		<td>type</td>
+		<td>可选。同服务端</td>
+	</tr>
+	</table>  
+<pre><strong>8、send(content[, length])</strong>
+  发送数据。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>content</td>
+		<td>必需。同服务端</td>
+	</tr>
+		<tr>
+		<td>length</td>
+		<td>必需。同服务端</td>
+	</tr>
+</table>
+<strong>9、shutdown([how])</strong>
+	优雅安全地关闭连接。
+	参数说明：
+	</pre>
+	<table>
+		<tr class="head">
+			<td width="90">名称</td>
+			<td width="400">描述</td>
+		</tr>
+		<tr>
+			<td>how</td>
+			<td>关闭方式。默认为2。0关闭读，1关闭写，2关闭读写。</td>
+		</tr>
+</table>
+
+<strong>10、close()</strong>
+	强制关闭连接。
+</div>
+</body>
+</html>

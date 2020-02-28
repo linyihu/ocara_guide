@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.21、角色权限控制</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body><pre><h2>角色权限控制</h2>
+
+       角色权限操作类是Ocara\Service\Auth，可以使用ocService()->auth调用。
+
+<strong>一、权限分配</strong>
+
+<strong>1、新建权限设置对象</strong>
+     注意：Ocara\Service\Auth是非单例绑定方式绑定的服务，所以操作前要新建一个对象实例。
+
+<pre class="brush: php;">
+ $auth = ocService()->auth; //实例化一个新的Auth操作对象
+</pre>
+
+<strong>2、设置角色</strong>
+        角色信息一般保存在数据库中。
+        大多情况下，角色一般是会员组，管理员组等。这里的角色组是为了设置权限用，需要先从数据库中查出来，这里就不用说明了。
+        （1）添加角色
+                角色的分配使用Auth的setRole()方法，格式如下：
+                        <span class="STYLE1">setRole(roleList)</span>
+                参数说明：
+</pre>
+<table>
+<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr> 
+		<td>roleList</td>
+		<td>必需。角色列表。数字型数组。</td>
+	</tr>
+</table>
+<pre>
+
+<pre class="brush: php;">
+//添加角色ID
+$auth->setRole(123);
+
+//多角色
+$auth->setRole(array('role1', 'role2'));
+</pre>
+                （2）获取角色的权限信息
+                        获取角色只要使用getRole()方法，格式如下：
+                              <span class="STYLE1">getRole(roleList)</span>
+
+<pre class="brush: php;">
+//角色ID
+$data = $auth->getRole(123);
+
+//多角色
+$data = $auth->getRole(array('role1', 'role2'));
+</pre>
+                （3）删除角色
+                        删除角色只要使用delRole()方法，格式如下：
+                                <span class="STYLE1">delRole(roleList)</span>
+
+<pre class="brush: php;">
+//角色ID
+$auth->delRole(123);
+
+//多角色
+$auth->delRole(array('role1', 'role2'));
+</pre>
+<strong>3、添加权限</strong>
+          设置权限时，可以使用<span class="STYLE1">路由数组</span>，还可以使用<span class="STYLE1">保存在数据库路由表中的记录ID</span>。
+          权限的设置使用Auth的setAuth()方法，格式如下：
+                 <span class="STYLE1"> setAuth(roleList, routeList[, allowed])</span>
+           参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr> 
+		<td>roleList</td>
+		<td>必需。同上。</td>
+	</tr>
+	<tr> 
+		<td>routeList</td>
+		<td>必需。要设置的权取。一般是权限路由列表，或者数据表的权限ID。如果是权限路由列表，即模块/控制器/动作路由，多层级之间也用英文半角状态下的圆点“.”分隔，或者直接用数字型数组。</td>
+	</tr>
+	<tr>
+		<td>allowed</td>
+		<td>可选。设置是否有权限，默认为true，表示该角色对该路由有权限，可以省略。<br/>
+			注：必须是boolean类型值。但数据保存的是1和0，分别表示true和false。
+		</td>
+	</tr>
+</table>
+<pre>
+
+
+                （1）使用路由数组保存权限
+                        如下设置role1的role2拥有bbs模块的forum控制器的index权限：
+<pre class="brush: php;">
+//设置允许权限
+$auth->setAuth(123, array('bbs', 'forum', 'index')); //单角色
+$auth->setAuth(array('role1', 'role2'), array('bbs', 'forum', 'index')); //多角色
+
+//设置禁止权限：
+$auth->setAuth(123, array('bbs', 'forum', 'index'), false); //单角色
+$auth->setAuth(array('role1', 'role2'), array('bbs', 'forum', 'index'), false); //多角色
+
+</pre>
+                （2）使用路由记录ID保存权限
+                        如下示例，假设bbs/forum/index路由ID为1：
+<pre class="brush: php;">
+//设置允许权限
+$auth->setAuth(123, '1', true);
+$auth->setAuth(array('role1', 'role2'), '1', true);
+
+//设置禁止权限
+$auth->setAuth(123, '1', false);
+$auth->setAuth(array('role1', 'role2'), '1', false);
+</pre>
+<strong>3、删除权限</strong>
+        删除权限只要使用delAuth()方法，格式如下：
+                <span class="STYLE1">delAuth(roleList, routeList)</span>
+        参数同上。
+
+<pre class="brush: php;">
+//使用路由数组保存权限
+$auth->delAuth(123, array('bbs', 'forum', 'index')); //单角色
+$auth->delAuth(array('role1', 'role2'), array('bbs', 'forum', 'index')); //多角色
+
+//使用路由记录ID保存权限
+$auth->delAuth(123, 1);
+$auth->delAuth(array('role1', 'role2'), 1);
+</pre>
+
+<strong>4、获取权限</strong>
+        获取权限使用Auth的getAuth()方法，格式如下：
+                <span class="STYLE1">getAuth([roleList, routeList])</span>
+        参数同上。
+
+<pre class="brush: php;">//获取所有权限
+$allAuthData = $auth->getAuth();
+
+//获取role1的role2角色的所有权限
+$authData = $auth->getAuth(array('role1', 'role2'));
+
+//获取role1的role2角色的bbs/forum/index权限
+$authData = $auth->getAuth(array('role1', 'role2'), array('bbs', 'forum', 'index'));
+
+</pre>
+
+<strong>5、初始化权限数据</strong>
+        不仅可以使用上述方法设置权限，我们也可以使用setData()方法直接设置好自定义的权限数组，格式如下：
+                <span class="STYLE1">setData([data])</span>
+        参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr> 
+		<td>data</td>
+		<td>必需。权限数组。一般都是通过本插件Auth的getAuth()方法缓存的数组修改后再设置回去，或者如果了解数组格式的话，就自定义该数组。</td>
+	</tr>
+</table>
+<pre>
+
+<pre class="brush: php;">
+//自定义权限数组
+$data = ocSet(array('123', 'bbs', 'forum', 'index'), 1); //设置允许权限
+$data = ocSet(array('123', 'bbs', 'forum', 'index'), 0); //设置禁止权限
+
+$data = ocSet(array('role1', 'role2', 'bbs', 'forum', 'index'), 1); //设置允许权限
+$data = ocSet(array('role1', 'role2', 'bbs', 'forum', 'index'), 0); //设置禁止权限
+
+//设置权限数据
+$auth = ocService()->auth;
+$auth->setData($data);
+
+</pre>
+
+<strong>6、检测权限</strong>
+        要检测权限，使用Auth的check()方法，格式如下：
+                <span class="STYLE1">check(roleList, routeList))</span>
+        参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>roleList</td>
+		<td>必需。同上setAuth()。</td>
+	</tr>
+	<tr>
+		<td>routeList</td>
+		<td>必需。同上setAuth()。</td>
+	</tr>
+</table>
+<pre>
+
+
+                        检测role1的role2角色是否拥有bbs模块的forum控制器下面的index动作的权限，如下：
+                        （a）使用路由数组保存权限
+<pre class="brush: php;">
+$result = $auth->check('123',array('bbs', 'forum', 'index')); //单角色
+$result = $auth->check(array('role1', 'role2'), array('bbs', 'forum','index')); //多角色
+</pre>                        （b）使用路由记录ID保存权限
+<pre class="brush: php;">
+$result = $auth->check('123', 1); //角色ID方式
+$result = $auth->check(array('role1', 'role2'), 1); //1为路由记录ID
+</pre>
+
+<strong>二、权限检测步骤</strong>
+
+1、设计权限数据
+       一般权限相关数据不会直接写在代码，而是存在数据库。
+       可能包含以下三个表：
+              角色表，保存角色信息，比如role_id表示角色ID。
+              权限表，保存路由信息，比如action_id表示路由ID。
+              角色权限对应表，保存角色和路由的权限对应关系，比如包含role_id和action_id联合主键，还有一个字段has_auth表示是否有权限。
+
+2、事件配置
+      检测权限时，需要在路由分发前置事件回调函数中进行。
+      具体配置在event.php中修改before_dispatch选项。
+</pre>
+<pre class="brush: php;">
+	/*
+	 * 路由分发事件
+	 */
+	'dispatch' => array(
+		'before_dispatch' => 'Events\BeforeDispatch', //路由分发前回调
+		'after_dispatch' => 'Events\AfterDispatch', //路由分发后回调
+	),
+</pre>
+<pre>
+3、编写检测函数
+        上面配置好了检测路由，就可以编写该检测回调函数。
+        比如上述实例在根目录下support新建Events/BeforeDispatch类。
+        内容如下：
+<pre class="brush: php;">
+namespace Events;
+
+class BeforeDispatch extends Base
+{
+	public $auth;
+
+	public function __construct()
+	{
+		$this->auth = ocService()->auth;
+	}
+
+	/**
+	 * 事件处理
+	 */
+	public function handler($route, $event, $object)
+	{
+	    //获取角色ID
+		$roleId = ocService()->session->get(array('loginInfo', 'roleId')); //获取当前的角色
+
+	    //获取路由ID
+	    $model = new \app\model\database\AuthRoute();
+	    $actionId = $model->getActionId($route['module'], $route['controller'], $route['action']);
+
+	    //检测权限
+	    $result = $this->checkRole($route, $roleId, $actionId);
+	    if (!$result) {
+	        ocService()->response->redirect();
+	    }
+
+	    return $result;
+	}
+
+	/**
+	 * 检测权限
+	 */
+	protected function checkRole($route, $roleId, $actionId)
+	{
+	    //排除登录控制器
+	    if ($route['controller'] == 'login') return true;
+
+	    //获取权限数据
+		$authData = $this->getAuthData();
+
+		//检测权限
+		$result = $this->auth->check($roleId, $actionId);
+
+		return $result;
+	}
+
+	/**
+	 * 获取所有权限数据
+	 */
+    protected function getAuthData()
+    {
+        //从保存有权限数据的文件中获取
+	    $authPath = ocPath('data', 'authData.php');
+		$authData = ocService()->file->readFile($authPath);
+
+	    //或者，从数据库或缓存中获取
+		$authModel = new \app\model\database\Auths();
+		$authData = $authModel->getAuthData(); //getAuthData()是自定义方法
+
+		$return $authData;
+    }
+}
+</pre>
+</pre>
+</body></html>

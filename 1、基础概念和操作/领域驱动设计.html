@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>1.3、领域驱动设计</title>
+    <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <link type="text/css" rel="stylesheet" href="../style/base.css" />
+    <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+    <script type="text/javascript" src="../treeview/base.js"></script>
+    <style type="text/css">
+        <!--
+        .STYLE1 {
+            color: #0000FF;
+            font-weight: bold;
+        }
+        -->
+    </style>
+</head>
+<body alink=#ff0000>
+<pre><h2>领域驱动设计的简单理解</h2>
+
+     对于领域驱动设计的理论概念网上有很多不错的文章，也有相关书籍。本文不做描述。
+     简单地说，领域驱动设计是将业务需求从技术角度转变为从领域角度去理解、划分和实现。
+     在这当中，最为核心地有实体和值对象的概念。
+
+     <strong>实体和值对象的不同点：</strong>
+
+          （1）实体可读可写，可以持久化，但不是必须；每个具体的实体都有一个唯一的标识，类似数据表中的主键ID。
+          （2）值对象只读不写，不能持久化；每个具体的值对象没有唯一的标识。因为它只作为一个对象类型的值，不需要关心它的编号。
+
+<h2>本框架中的领域设计</h2>
+
+     <strong>1、实体</strong>
+          根据实体的特点，本框架特将实体分为物理实体和逻辑实体。
+          （1）物理实体
+               就是需要持久化的实体。既然要持久化，所以大多保存到数据库或缓存。正好对应数据库表中的一行，类似于ORM模型。
+               所以本框架的ORM模型作为物理实体模型，并且它必须继承自相应的模型类。这样可以实现代码复用，并且他们都属于模型层（Model）。
+               用户表实体模型类：
+
+<pre class="brush: php;">
+namespace app\model\entity\database;
+
+use Base\Model\DatabaseEntity;
+
+class UserEntity extends DatabaseEntity
+{
+    protected function beforeCreate()
+    {
+        $this->create_time = time();
+    }
+
+    protected function afterUpdate()
+    {
+        if ($this->hasChange('user_type')) { //有更新用户类型字段user_type
+            if ($this->user_type == 3) {
+                $this->remark = '代理商';
+            } elseif ($this->user_type == 2) {
+                $this->remark = '企业';
+            } else {
+                $this->remark = '个人';
+            }
+        }
+    }
+}
+</pre>
+          具体使用时，原则上：
+               （1）批量查询和操作，使用数据库模型Model；
+               （2）单记录查询操作，使用ORM实体模型Entity。因为实体附加了一些CRUD的事件。
+
+<pre class="brush: php;">
+//批量查询
+$userEntity = new \app\model\database\UserModel;
+$userList = $useModel
+    ->where(array('status' => 1))
+    ->getAll(); //查询多行
+
+
+$userList = $useModel
+    ->where(array('status' => 1))
+    ->selectAll(); //查询多行，返回Entity实体对象列表
+
+//批量更新
+$data = array('status' => 3);
+
+$userModel
+    ->where('id', '>=', 20)
+    ->where('id', '<=', 30)
+    ->update($data, false); //一次性全部更新
+
+$userModel
+    ->where('id', '>=', 20)
+    ->where('id', '<=', 30)
+    ->update($data, 1000); //每次1000条，每条是一个实体Entity
+
+//单记录查询（实体）
+$userEntity = \app\model\entity\database\UserEntity::select(1);
+
+//单记录更新（实体）
+$userEntity->status = 1;
+$userEntity->save();
+
+</pre>
+
+          （2）逻辑实体
+               不需要持久化的实体，有唯一标识。一般作为临时使用，有点类似于数据传输对象DTO，只不过我们用实体来表示，而不用DTO。
+               本框架仅提供一个逻辑实体的基类Ocara\Core\BaseEntity，它提供了fill()和toArray()两个函数方法。
+<pre class="brush: php;">
+namespace AliPay;
+
+use Ocara\Core\BaseEntity;
+
+class AliOrderEntity extends BaseEntity
+{
+    public $orderSn;
+    public $payType;
+    public $notifyUrl;
+
+    /*... ...*/
+
+    public function setNotifyUrl($url) {
+        $this->notifyUrl = $url . '/pay/notify';
+    }
+
+    public function getPayType() {
+        /*... ...*/
+    }
+}
+
+$data = array(
+    'orderSn' => '230003248945',
+    'payType' => 3
+);
+
+$aliOrderEntity = new AliOrderEntity();
+$aliOrderEntity->fill($data); //填充数据
+
+return $aliOrderData = $aliOrderEntity->toArray(); //返回数组
+
+</pre>
+
+     <strong>2、值对象</strong>
+          根据值对象的概念和特点，值对象在本框架中只用来作一个枚类型字段或状态字段的常量配置。
+          好处时，这些配置统一管理，还能共享使用。
+          比如订单状态字段：
+<pre class="brush: php;">
+namespace app\model\enums\orders;
+
+class OrderStatus
+{
+    const NEW = 0; //新订单
+    const PAID = 10; //已支付
+    const CANCEL = 20; //已取消
+    const FINISHED = 30; //已完成
+    const SENT = 40; //已发货
+    const BACKING = 50; //退货中
+    /*... ...*/
+
+    //状态描述配置
+    protected static $statusDesc = array(
+        self::NEW => '新订单',
+        self::PAID => '已支付',
+        /*... ...*/
+    );
+
+    /**
+     * 获取状态描述
+     */
+    public static function getStatusDesc($name = null)
+    {
+        if (func_num_args()) {
+            return !empty(self::$statusDesc[$name]) ? self::$statusDesc[$name] : '未知状态';
+        }
+        return self::$statusDesc; //获取所有描述
+    }
+}
+</pre>
+
+          比如枚举类型user_type用户类型字段:
+
+<pre class="brush: php;">
+namespace app\model\enums;
+
+class UserType
+{
+    const PERSON = 1; //个人
+    const ENTERPRISE = 2; //企业
+    const AGENT = 3; //代理商
+    /*...*/
+
+    /**
+     * 获取用户类型描述
+     */
+    pubic static function getTypeDesc()
+    {
+        //使用多语言配置
+        return array(
+            self::PERSON => ocLang('user_type_person'), //个人
+            self::ENTERPRISE => ocLang('user_type_enterprise'), //企业
+            self::AGENT => ocLang('user_type_agent'), //代理商
+        );
+    }
+}
+</pre>
+
+     <strong>3、服务</strong>
+          通过服务提供器可以实现领域驱动设计中的服务。
+
+</pre></body></html>

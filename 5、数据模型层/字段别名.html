@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>5.10、字段别名</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre>
+<h2>字段别名介绍</h2>
+      
+     使用字段别名，有以下用处：
+          （1）可以避免字段真名直接暴露在前端；
+          （2）能在不同的业务场景给字段设置容易理解的名称。
+      
+<h2>如何指定字段别名</h2>
+
+      主要是在Model的fieldsMap()函数中的别名映射数组指定，键名是别名，键值是字段真实名称。
+      因此，可以为字段设置多个别名。
+
+<pre class="brush: php;">
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class UserModel extends DatabaseModel
+{
+	protected static $table = 'call_orders';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\UserEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+	/**
+	 * 字段别名映射配置
+	 */
+	public function fieldsMap()
+	{
+        'userName' => 'user_name',
+        'password_alias' => 'password',
+    }
+}
+</pre>
+
+<h2>字段别名的应用</h2>
+
+      <strong>（1）别名可以返回给前端使用</strong>
+              查询结果会把字段名转成别名。
+ <pre class="brush: php;">
+$user = new \app\dal\models\Users();
+$result = $user->where(array('user_name' => 'Jim'))
+     ->fields('user_name') //会自动变成：user_name AS userName
+     ->fields(array('password'))
+     ->getRow();
+
+//会输出：Array ( [userName] => Jim [password_alias] => e10adc3949ba59abbe56e057f20f883e )
+print_r($result);
+</pre>
+
+     <strong> （2）别名作为数据保存</strong>
+              保存时会自动把别名转换成字段真名。
+
+<pre class="brush: php;">
+$data = array(
+      'userName' => 'Jim', //使用别名userName，会自动变成user_name
+      'password_alias' => md5('123456'), //使用别名userName，会自动变成password
+);
+
+//会成功保存为用户和密码
+$userEntity = new UserEntity();
+$userEntity
+    ->data($data)
+    ->save();
+</pre>
+              这跟以下代码是同样的效果：
+
+<pre class="brush: php;">
+$data = array(
+      'user_name' => 'Jim',
+      'password' => '123456'
+);
+
+$user = new \app\dal\models\Users();
+$user->data($data)->save();
+</pre>
+      <strong>（3）别名作为查询条件</strong>
+              查询时会自动把别名转换成字段真名。
+
+<pre class="brush: php;">
+//别名作为条件
+$where = array(
+    'userName' => 'Jim', //使用别名userName，会自动变成user_name
+);
+
+$userModel = new UserModel();
+
+$result = $userModel
+     ->where($where)
+     ->fields('user_name')
+     ->fields(array('password'))
+     ->getRow();
+
+//打印结果：Array ( [userName] => Jim [password_alias] => e10adc3949ba59abbe56e057f20f883e )
+print_r($result);
+</pre>
+
+      <strong>（4）生成表单时匹配字段文本</strong>
+              如果设置了别名，在registerForms()中使用表单的model()方法关联Model后，那么表单中Model的字段如果没有配置语言文本，则会自动显示成别名。
+              同时，在提交设定的表单时，表单参数的格式验证也会能匹配到别名，和字段真名一样的效果。
+</pre></body>
+</html>

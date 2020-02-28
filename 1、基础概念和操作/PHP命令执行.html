@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>1.12、PHP命令执行</title>
+    <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <link type="text/css" rel="stylesheet" href="../style/base.css" />
+    <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+    <script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body alink=#ff0000>
+<pre><h2>PHP命令执行</h2>
+
+<strong>1、PHP命令执行</strong>
+        PHP命令执行，是在cli模式下执行PHP文件。
+        本框架生成的应用项目目录下有一个Ocara文件，便是命令执行脚本主文件。
+
+                <img src="../style/images/命令脚本文件.png" alt="命令脚本文件"/>
+
+        执行步骤：
+              （1）编写控制器动作
+                      命令控制器需要在application/console添加模块，在开发者中心模块添加时选择命令模块（console），参见<a href="../2、开发者中心/添加模块.html">添加模块</a>。
+
+             （2）执行命令
+                     （a）切换到网站根目录
+                              <img src="../style/images/切换到根目录.png" alt="切换到根目录"/>
+                     （b）执行命令
+                             <img src="../style/images/命令执行应用.png" alt="命令执行应用"/>
+
+<strong>2、传递参数</strong>
+        如果要传递参数，可以在路由后面加上，以斜杠“/”分隔。
+    （1）可与路由参数连在一起：main/home/index/id/1
+    （2）可与路由参数分开：main/home/index id/1
+
+                 <img src="../style/images/命令执行加参数.png" alt="命令执行加参数"/>
+
+</pre></body></html>

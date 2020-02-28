@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>日期时间</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>Date</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       日期时间插件，可以对某日期时间进行各种操作。</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>
+		任意地加减日期时间，参数用日期字符串、时间戳、或规定键值的数组都可以。</td>
+	</tr>
+</table>
+<p><strong>二、方法函数介绍</strong></p>
+<div class="function">
+<pre><strong>1、add(time, number, type[, format])</strong>
+  增加时间参数。返回日期型字符串。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>time</td>
+		<td>必需。日期时间参数。可以是字符串、时间戳或规定键名的数组（可以直接给出或通过getDateInfo()获取得到）</td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td>必需。增减数量。正数表示增加，负数表示减少。</td>
+	</tr>
+	<tr>
+		<td>type</td>
+		<td>必需。增加参数类型，包括年year、月month、日day、时hour、分minute和秒second。</td>
+	</tr>
+	<tr>
+		<td>format</td>
+		<td>可选。时间格式，'ymd'表示年月日，'mdy'表示月日年。默认为'ymd'年月日。</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+echo ocService()->date->add('2015-02-28 12:02:00', 3, 'month');
+//输出2015-05-28 12:02:00 </pre>
+<pre><strong>2、set(time, number, type)</strong>
+  设置时间参数。返回日期型字符串。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>time</td>
+		<td>必需。同上</td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td>必需。同上</td>
+	</tr>
+	<tr>
+		<td>type</td>
+		<td>必需。同上</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+echo ocService()->date->set('2015-02-28 12:02:00', 3, 'month'); 
+//输出2015-03-28 12:02:00 </pre>
+<pre><strong>3、get(time, type)</strong>
+   获取时间参数。返回日期型字符串。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>time</td>
+		<td>必需。同上</td>
+	</tr>
+		<tr>
+		<td>type</td>
+		<td>必需。同上</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+echo ocService()->date->get('2015-02-28 12:02:00', 'month'); 
+//输出02 </pre>
+<pre><strong>4、getDate(time[, format])</strong>
+  获取日期时间格式。返回日期型字符串。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>time</td>
+		<td>必需。同上</td>
+	</tr>
+		<tr>
+		<td>format</td>
+		<td>可选。同上add()</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+//时间戳
+echo ocService()->date->getDate(time(), 'mdy'); 
+//输出当前月日年格式的时间字符串，比如：04-05-2013 13:13:24 
+
+//规定键名的数组
+$dateArray = ocService()->date->getDateInfo(time());
+echo ocService()->date->getDate($dateArray, 'mdy'); 
+//也输出月日年格式的当前时间字符串
+
+//时间字符串
+$dateStr = '2013-05-04 13:13:24';
+echo ocService()->date->getDate($dateStr); 
+//没有指定输出格式，默认输出年月日格式：2013-05-04 13:13:24
+</pre>
+<pre><strong>5、getInterval(startTime, endTime[, type])</strong>
+获取时间间隔。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>startTime</td>
+		<td>必需。开始时间，字符串或时间戳。</td>
+	</tr>
+		<tr>
+		<td>endTime</td>
+		<td>必需。结束时间，字符串或时间戳。</td>
+	</tr>
+		<tr>
+		<td>type</td>
+		<td>可选。获取类型，可以是days、hours、minutes或seconds。默认为空，会返回这四个情况的键值数组。</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+<pre class="brush: php;">
+//时间字符串
+$result = ocService()->date->getInterval('2015-02-28 12:15:13', '2015-03-05 13:25:13', 'hours');
+echo $result; 
+//输出1
+
+//时间戳
+$result = ocService()->date->getInterval('2015-02-28 12:15:13', time());
+print_r($result); 
+//没有指定type参数，输出类似于Array ( [days] => 36 [hours] => 1 [minutes] => 10 [seconds] => 2 ) 
+
+//规定键名的数组
+$dateArray = ocService()->date->getDateInfo('2015-02-28 12:15:13');
+$result = ocService()->date->getInterval($dateArray, time());
+print_r($result); 
+//没有指定type参数，输出类似于上数组 </pre>
+  <pre><strong>6、getDateInfo(time)</strong>
+  获取日期信息。返回数组，日期格式不正确时，返回空数组。  
+  参数说明：
+ </pre>
+  <table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td><strong>time</strong></td>
+		<td>必需。字符串或时间戳。注：不能是数组！</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+//时间字符串
+print_r(ocService()->date->getDateInfo('2015-02-28 12:02:00'));
+//输出Array ( [hour] => 12 [minute] => 02 [second] => 00 [month] => 02 [day] => 28 [year] => 2015 )
+
+//时间戳
+print_r(ocService()->date->getDateInfo(time()));
+//输出类似
+</pre>
+<pre><strong>7、isYun(year)</strong>
+  检测是否是闰年。返回true或false。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>year</td>
+		<td>必需。数字型年份。</td>
+	</tr>
+  </table>  
+  <p>实例如下：</p>
+ <pre class="brush: php;">
+//1953非闰年
+echo ocService()->date->isYun(1953); 
+//输出false 
+ 
+//2008是闰年
+echo ocService()->date->isYun(2008);
+//输出1</pre>
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>随机码生成</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>随机码生成</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       随机码生成插件，对应类名Ocara\Service\Code。</pre>
+
+<p><strong>二、函数介绍</strong></p>
+
+<pre>
+
+<strong>4、getRandCode(type, length[, filter])</strong>
+  生成由数字和大小写英文字母组成的随机验证码。
+  该函数是静态函数，外部可以随时调用，如下所示：
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>type</td>
+		<td>必需。字符类型。同上面drawText的format参数中的type一致。即有number、letter和both三种。默认为both。</td>
+	</tr>
+	<tr>
+		<td>length</td>
+		<td>必需。返回的字符长度。</td>
+	</tr>
+	<tr>
+		<td>filter</td>
+		<td>可选。要忽略的字符。同上面drawText的format参数中的filter一致。<br/>一般情况下，0、小写o和大小写O不容易区分，可以在生成时忽略它。可以是字符串或数组。例如，'0oo'和array('0,'o', 'O')等效。</td>
+	</tr>
+</table>
+<pre class="brush: php;">
+//获取随机验证码，忽略0、小写o和大写O
+$randCode = ocService()->code->getRandCode('number', 5, array('0', 'o', 'O'));
+
+//filter参数也可以是字符串
+$randCode = ocService()->code->getRandCode('number', 5, array('0oO'));
+</pre>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.7、异常错误处理</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    .STYLE2 {
+        color: #FF0000;
+        font-weight: bold;
+    }
+    -->
+</style>
+</head>
+
+<body><pre><h2>异常错误处理</h2>
+<strong></strong>
+
+<strong>一、区分程序错误和异常错误</strong>
+        程序错误与异常错误是不同的，主要区别介绍如下：
+        1、程序错误
+               主要是指PHP所抛出的错误。
+             （1）触发方式
+                      主要有以下两种触发方式：
+                      （a）PHP代码错误
+                               在PHP中，主要有以下3种错误类型。请查看PHP手册的错误处理。
+                             （a1） 注意（Notices）
+                                        是一些比较小而且不严重的错误，通常这类的错误是不提示的，但有时会影响到运行的结果。比如去访问一个未被定义的变量。
+                              （a2）警告（Warnings）
+                                        是一些稍微严重的错误，PHP也会输出错误，但不会导致程序终止运行。比如想要包含include()一个本身不存在的文件。
+                              （a3）致命错误（Fatal errors）
+                                        是一些严重的错误，会导致程序停止运行，PHP也会输出错误。比如你想要初始化一个根本不存在的类对象，或调用一个不存在的函数。
+                      （b）自定义程序错误
+                               主要是通过PHP的<span class="STYLE1">trigger_error(error_message[, error_types])</span>函数有意抛出的如上所述的三种PHP代码错误，参见PHP手册。
+            （2）错误处理方式
+                      （a）自定义错误处理
+                               使用PHP的set_error_handler()函数指定自定义的函数进行处理。
+                               但是，该函数无法处理以下错误类型：E_ERROR、 E_PARSE、 E_CORE_ERROR、 E_CORE_WARNING、 
+                               E_COMPILE_ERROR、 E_COMPILE_WARNING，和在 调用 set_error_handler() 函数所在文件中产生的大多数 E_STRICT。
+                      （b）PHP自动处理
+                               如果没有使用上述函数指定处理，则会按照PHP的处理方式处理。其中致命错误会停止执行代码。三种错误是否显示，取决于PHP
+                               和代码里面的相应设置。
+      2、异常错误
+               其实是开发者有意抛出的错误，一般用于业务逻辑的错误提示。
+               所以异常错误的触发方式是throw new Exception()，抛出后不再执行代码。
+               目前框架已经自定义了\Ocara\Core\Exception类，它已经继承了Exception。
+               对它抛出的异常错误，处理方式有以下三种：
+                    （a）捕获处理方式
+                             外层可以使用了try（检测）和catch（捕获）的语句结构捕获异常进行处理。
+                    （b）自定义处理方式
+                             通过set_exception_handler() 指定了异常处理的类或函数，会调用该类或函数进行处理。
+                    （c）PHP自动处理
+                             如果上述方式都没有，则PHP自行抛出&quot;Fatal error: Uncaught exception 'Exception' with messag ... ...&quot;的错误。
+<strong>二、设置哪些错误类型要输出</strong>
+        异常抛出的错误都会输出错误。
+        但是程序错误需要配置system.php文件中ERROR_HANDLER的except_error_list选项排除一些不想让框架输出的错误，而使用PHP原生的方法输出。
+        假设要取消显示E_USER_WARNING错误，则如下配置：
+<pre class="brush: php;">
+/*
+ * 自定义错误处理
+ */
+'ERROR_HANDLER' => array(
+    'except_error_list' => array(
+        E_USER_WARNING
+    ),
+)
+</pre>
+        此时，trigger_error()或ocService()->error->trigger()抛出的错误会交由PHP默认方式处理（不停止代码执行）
+
+<strong>三、如何抛出错误？</strong>
+        1、错误处理类
+                错误处理使用的是Ocara\Core\Error类。
+                可以使用ocService()->error调用。
+        2、错误语言配置
+                错误配置一般是在config目录下面的control下面控制器目录下面。请参考<a href="/多语言功能.html">多语言功能</a>
+        3、使用Exception抛出异常
+                框架提供了Ocara\Exceptions\Exception、Ocara\Exceptions\ErrorException和Ocara\Exceptions\ReflectionException。可以继承这些异常类定义自己的异常。
+        4、错误处理函数
+
+<pre>
+                <strong><span class="function"><strong>1、show(error[params])</strong></span>
+</strong>                抛出异常。
+                参数说明：<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>error</td>
+		<td>必需。错误内容或配置名称。</td>
+	</tr>
+	<tr>
+		<td>params</td>
+		<td>可选。错误文本中要替换的变量数组。</td>
+	</tr>
+</table>
+</pre>
+                假设有以下语言配置：
+<pre class="brush: php;">
+    'invalid_path' => array(1900, '文件路径非法：%s。{resolve_way}'),
+</pre>
+                显示错误如下：
+<pre class="brush: php;">
+//报错显示为：“文件路径非法：a./ext.txt。请检查路径！”
+ocService()->error->writeLog('invalid_path'，array('a./ext.txt', 'resolve_way' => '请检查路径！'));
+
+//报错显示为：显示“路径检查出错！”
+ocService()->error->show('路径检查出错！');
+</pre>
+<pre>
+                <strong><span class="function"><strong>2、writeLog(error[params])</strong></span>
+</strong>                只记录日志。
+                参数同上，实例类似。
+</pre>
+<pre>
+                <strong><span class="function"><strong>3、trigger(error[params])</strong></span></strong>                抛出自定义错误，类似原生函数trigger_error()。
+                参数同上，实例类似。
+</pre>
+<strong>四、错误输出处理</strong>
+        框架使用set_exception_handler()和set_error_handler()将错误输出都进行了自定义处理，并且提供了一些调用事件方便开发者自定义回调。
+        具体是修改application/config/events.php中EVENTS的error配置。
+<pre class="brush: php;">
+        /*
+         * 错误输出事件
+         */
+        'error' => array(
+            'report' => 'Events\Callbacks\ErrorReport', //日志打印回调
+            'before_output' => '', //打印错误前回调
+            'output' => '', //打印错误回调
+            'after_output' => '', //打印错误后回调
+        ),
+</pre>
+        看以上代码释应该可以明白每个事件回调使用场景。
+        都会传递<strong><span class="function"><strong>$exception</strong></span></strong>参数。
+<pre class="brush: php;">
+namespace Events\Callbacks;
+
+use Ocara\Core\Middleware;
+
+class ErrorReport extends Middleware
+{
+    /**
+     * 事件回调处理
+     */
+    public function handle(\Exception $exception, $event, $eventTarget)
+    {
+        //示例
+        echo $exception->getMessage();
+        die;
+    }
+}
+</pre>
+        （1）report事件回调
+                用于打印日志。框架默认打印在/runtime/logs/common目录下面。
+                对应事件名称为Ocara\Core\ExceptionHandler::EVENT_REPORT常量。
+
+        （2）before_output事件回调
+                用户在输出错误前的一些操作，比如修改内容和格式。
+                对应事件名称为Ocara\Core\ExceptionHandler::EVENT_BEFORE_OUTPUT常量。
+
+        （3）output事件回调
+                这里替换掉框架底层提供的错误输出操作，开发者可以将期跳转到某个控制器动作或者直接回调某个类方法执行。
+                对应事件名称为Ocara\Core\ExceptionHandler::EVENT_OUTPUT常量。
+
+        （2）after_output事件回调
+                用户在输出错误结束以后的一些操作。
+                对应事件名称为Ocara\Core\ExceptionHandler::EVENT_AFTER_OUTPUT常量。
+
+</pre>
+</body>
+</html>

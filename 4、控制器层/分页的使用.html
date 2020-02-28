@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>4.19、分页的使用</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body><pre>
+<h2>分页的使用</h2>
+
+<strong>1、分页配置</strong>
+      框架默认的分页类是Ocara\Service\Pager。
+      目前，在application/config/system.php中分页配置有4个选项，如下所示：
+<pre class="brush: php;">
+/*
+ * 分页配置
+ */
+'PAGE' => array(
+    'class_name' => '', //分页类名称，默认是Ocara\Service\Pager
+    'page_param' => 'page', //URL查询字符串中分页参数名称
+    'per_page'	 => 10, //每页显示多少条记录
+    'per_show'   => 10, //一次显示多少页
+),
+</pre>
+<strong>2、默认分页插件的使用</strong>
+      如果没有配置分页类名，则框架会使用Pager类。该分页插件的方法介绍，可以参见<a href="../7、扩展插件/分页.html">扩展插件/分页</a>。
+      这里介绍一下它的使用步骤：
+      （1）获取分页类对象
+              一般使用控制器的pager()方法来获取当前分页对象，即上面所述配置class_name指定的分页类，如果没有配置，则默认是Pager。
+      （2）设置分页参数
+               可以使用分页类的config()方法来设置分页参数名称、每页显示多少条记录和一次显示多少个页码。也可以使用相应的独立方法，分别
+               是setPageParam()、setPage()、setPerge()三个方法。
+      （3）进行数据库分页
+              分页一般用于数据库记录查询。数据库查询分页，主要是通过数据模型Model的page()方法分设置分页信息，类似于Mysql的limit语句
+              的值，即起始索引和偏移值：limit $start, $number。
+      （4）生成分页HTML并显示
+              分页HTML生成，一般使用分页类的setHtml()方法。显示时，只要将当前分页对象用模板变量使用。
+              Pager的属性基本上都是公有属性（public）， 可以自由使用，包括上一页、下一页等等页码。
+	  		  
+      具体实例如下：
+<pre class="brush: php;">
+namespace app\modules\index\item;
+use app\dal\models\Item;
+
+class ListAction extends Controller
+{
+     public function __action()
+	 {
+	    //获取分页对象  
+		$pager = $this->pager;
+        
+        //设置分页参数
+		$pager->config('page', 10, 10);
+		
+		//进行数据库分页查询
+		$itemModel = new Item();
+		$where = array('category_id' => 2);
+		
+		$result = $itemModel->where($where)
+			->page($pager->getInfo())
+			->getAll();
+		
+		$total = $result['total'];
+		$data = $result['data'];
+		
+		//生成分页HTML
+		$pager->setHtml($total);
+		
+        //作为模板变量使用
+		$this->assign(
+			'data' => $data,
+			'pager' => $pager
+		);
+	}
+}
+</pre>
+       模板输出分页HTML代码，如下所示：
+<pre class="brush: php;">
+<div id="page"><?php echo $pager->html;?></div>
+</pre>	   
+
+<strong>3、自定义分页插件</strong>
+      如果要使用自己的分页插件，只要配置好class_name等选项。
+      请注意，通过模型的page()方法进行分页的数据查询结果会包含total和data两个元素，其中data才是记录结果数组。
+
+</pre>
+</body>
+</html>

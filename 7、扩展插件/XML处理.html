@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>XML处理</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body><pre>
+<h1>XML处理</h1>
+
+<p><strong>一、插件介绍</strong></p>
+       XML处理插件，对应类名Ocara\Service\XML。
+
+</pre>
+<pre>
+<strong>二、函数介绍</strong>
+
+</pre>
+<div class="function">
+<pre><strong>1、loadString(xmlString)</strong>
+       新建URL。
+       特色：统一的URL生成函数，自动使用静态生成过的静态页面。
+       参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>xmlString</td>
+		<td>必需。XML字符串。</td>
+	</tr>
+</table>
+</pre>
+<pre class="brush: php;">
+$xmlString = '<?xml version="1.0" encoding="utf-8"?>
+	<users>
+             <total>1</total>
+             <list>
+	              <user_name>小明</user_name>
+                  <user_id>12</user_id>
+             </list>
+       </users>';
+
+$xml = ocService()->xml;
+$xml->loadString($xmlString);
+</pre>
+
+<pre><strong>2、loadArray(xmlArray)</strong>
+       导入XML数组数据。
+       参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>xmlArray</td>
+		<td>必需。XML数组。</td>
+	</tr>
+</table>
+</pre>
+<pre class="brush: php;">
+$xmlArray = array(
+   'users',
+	array(
+		'total' => 1,
+		'list' => array(
+			'user_name' => '小明',
+			'user_id' => '12'
+		)
+	)
+);
+
+$xml = ocService()->xml;
+$xml->loadArray($xmlArray);
+</pre>
+
+<pre><strong>3、loadFile(xmlFile)</strong>
+       导入XML文件。
+       特色：统一的URL生成函数，自动使用静态生成过的静态页面。
+       参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>xmlFile</td>
+		<td>必需。XML文件路径。</td>
+	</tr>
+</table>
+</pre>
+<pre class="brush: php;">
+$xml= ocService()->xml;
+$xml->setData('file', ocPath('data', 'source.xml'));
+</pre>
+<pre><strong>4、toArray()</strong>
+       转换成数组。
+</pre>
+<pre class="brush: php;">
+$xmlString = '<?xml version="1.0" encoding="utf-8"?>
+	<users>
+             <total>1</total>
+             <list>
+	              <user_name>小明</user_name>
+                  <user_id>12</user_id>
+             </list>
+       </users>';
+
+$xml = ocService()->xml;
+$xml->loadString($xmlString);
+$xmlArray = $xml->toArray();
+</pre>
+
+<pre><strong>5、getResult()</strong>
+       获取XML字符串数据。
+</pre>
+	<pre class="brush: php;">
+$xmlArray = array(
+   'users',
+	array(
+		'total' => 1,
+		'list' => array(
+			'user_name' => '小明',
+			'user_id' => '12'
+		)
+	)
+);
+
+$xml = ocService()->xml;
+$xml->loadArray($xmlArray);
+
+//获取XML格式字符串
+$result = $xml->getContent();
+</pre>
+
+<pre><strong>6、export(fileName)</strong>
+       导出XML数据。
+       参数说明：
+	<table>
+		<tr class="head">
+			<td width="90">名称</td>
+			<td width="400">描述</td>
+		</tr>
+		<tr>
+			<td>fileName</td>
+			<td>必需。导出文件名。</td>
+		</tr>
+	</table>
+
+</pre>
+<pre class="brush: php;">
+$xmlString = '<?xml version="1.0" encoding="utf-8"?>
+	<users>
+             <total>1</total>
+             <list>
+	              <user_name>小明</user_name>
+                  <user_id>12</user_id>
+             </list>
+       </users>';
+
+$xml = ocService()->xml;
+$xml->loadString($xmlString);
+
+//导出
+$xml->export();
+</pre>
+
+<pre><strong>7、save(filePath[, perm])</strong>
+       导出XML数据。
+       参数说明：
+	<table>
+		<tr class="head">
+			<td width="90">名称</td>
+			<td width="400">描述</td>
+		</tr>
+		<tr>
+			<td>fileName</td>
+			<td>必需。导出文件名。</td>
+		</tr>
+		<tr>
+			<td>perm</td>
+			<td>可选。文件权限。默认0755。</td>
+		</tr>
+	</table>
+
+</pre>
+<pre class="brush: php;">
+$xmlString = '<?xml version="1.0" encoding="utf-8"?>
+		<users>
+             <total>1</total>
+             <list>
+	              <user_name>小明</user_name>
+                  <user_id>12</user_id>
+             </list>
+       </users>';
+
+$xml = ocService()->xml;
+$xml->loadString($xmlString);
+
+//保存
+$xml->save(ocPath('temp', 'test.xml'));
+</pre>
+</div>
+</body>
+</html>

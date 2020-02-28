@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>5.12、SQL安全防范</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
+</head>
+
+<body>
+<pre>
+<h2>SQL注入安全防范</h2>
+
+       对于SQL注入的防范，框架默认对SQL进行保存和条件等参数做了预处理处理，安全性比手动更好。可以通过修改数据库配置项"prepare"开启或关闭。
+
+<pre class="brush: php;">
+        //默认服务器
+        'defaults' => array(
+            'type' 		=> 'mysql',
+            'host' 		=> '127.0.0.1',
+            'username' 	=> '',
+            'password' 	=> '',
+            'name' 		=> '',
+            'charset' 	=> '',
+            'prefix' 	=> '',
+            'keywords'  => array(),
+            'prepare'   => true, //预处理开关
+        )
+</pre>
+<h2>SQL关键字过滤</h2>
+
+       框架为了安全起见，在使用数据模型Model的<a href="更多数据库查询函数.html">更多数据库查询函数</a>生成SQL语句时，会对SQL语句自动进行安全过滤。
+
+<strong>（1）如何过滤？</strong>
+         对于SQL语句关键部分，框架会执行以下两种处理：
+        （a）SQL关键字过滤
+                 对于条件数组或者要保存的数据数组，框架可对一些关键字过滤，过滤方法是在关键字首尾加上'#'字符。不区分大小写。
+                具体的关键字，需要在数据库配置中配置。
+<pre class="brush: php;">
+    /*
+     * 数据库连接配置
+     * 如果是大型分布式数据库，请配置回调函数动态生成配置
+     */
+    'DATABASE' => array(
+        //默认服务器
+        'defaults' => array(
+            'type' 		=> 'mysql',
+            'host' 		=> '127.0.0.1',
+            'username' 	=> '',
+            'password' 	=> '',
+            'name' 		=> '',
+            'charset' 	=> '',
+            'prefix' 	=> '',
+            'keywords'  => array('insert ', 'update ', 'delete ', 'select ', 'drop '), //要过滤的SQL关键字
+        )
+    )
+</pre>
+                 如果要加上其他字符，可以修改application/config/system.php中FILTERS的sql_keyword_add_char配置。
+
+<pre class="brush: php;">
+    /*
+     * 安全过滤配置
+     */
+    'FILTERS' => array(
+        'sql_keyword_add_char' => '@', //SQL关键字首尾增加字符
+        'script_keyword_add_char' => '', //Javascript等关键字首尾增加字符
+    ),
+</pre>
+                 如果不希望只是首尾加上字符，可以使用Ocara\Core\Filter类的SQL过滤事件。
+                 需要配置application/config/events.php的EVENTS的filters的sql_keywords_filter项。
+
+<pre class="brush: php;">
+        /**
+         * 安全过滤事件
+         */
+        'filters' => array(
+            'sql_keywords_filter' => 'EVENTS\SqlFilter', //SQL关键字过滤回调，必须返回值
+            'script_keywords_filter' => '', //前端脚本关键字过滤回调，必须返回值
+        ),
+</pre>
+                 下面是示例代码：
+
+<pre class="brush: php;">
+/**
+ * SQL过滤事件处理器
+ */
+namespace EVENTS;
+
+use Ocara\Core\Middleware;
+
+class SqlFilter extends Middleware
+{
+    /**
+     * 事件处理
+     * @param $content
+     * @param $keywords
+     * @return string|string[]|null
+     * @throws Exception
+     */
+    public function handle($content, $keywords, $event, $eventTarget)
+    {
+        foreach ($keywords as $key => $value) {
+            $keywords[$key] = "/{$value}/i"; //i表示不区分大小写
+        }
+
+        //关键字首尾加上#字符
+        $content = preg_replace($keywords, "#\${0}#" , $content);
+        return $content;
+    }
+}
+</pre>
+       （b）转义字符
+                对英文单引号、双引号、反斜杠等都进行转义。
+                Mysql数据库，会默认调用mysql_real_escape_string()进行转义，如果失败返回false就会调用addslashes()手动转义。
+
+<strong>（2）手动进行安全过滤</strong>
+         如果要手动进行SQL过滤，也可以使用Ocara\Core\Filter的sql()做关键字过滤，用addSlashes()做转义。
+         （a）关键字过滤
+                  <span class="STYLE1">sql(content[, addSlashes, keywords])</span>
+                  参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+    <tr>
+		<td>content</td>
+		<td>必需。sql字符串。</td>
+	</tr>
+    <tr>
+        <td>addSlashes</td>
+        <td>必需。是否做特殊字符转义。默认为true。</td>
+    </tr>
+    <tr>
+        <td>keywords</td>
+        <td>必需。指定要过滤的关键字。默认使用配置的关键字。</td>
+    </tr>
+</table>
+<pre class="brush: php;">
+$userModel= new \app\dal\models\User();
+$userModel->select(1); //获取主键为1的记录数据
+$userModel->email = ocService()->filter->sql('newEmail@163".com'); //手动过滤，修改email
+
+$extraData = array(
+    'create_time' => time(),
+);
+
+$userModel->save($extraData); //更新记录，会合并属性设置和$extraData的数据
+</pre>
+
+<pre>
+         （b）转义字符
+                  <span class="STYLE1">addSlashes(content)</span>
+                  参数说明：
+</pre>
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>content</td>
+        <td>必需。sql字符串。</td>
+    </tr>
+</table>
+<pre class="brush: php;">
+$userModel->email = ocService()->filter->addSlashes('newEmail@163".com'); //手动过滤，修改email
+</pre>
+
+<pre>
+
+<strong>（3）忽略安全过滤</strong>
+         某些时候，可能SQL数据值不可以进行安全过滤，比如“count = count + 1”这种。
+         此时，我们可以使用ocSql()函数取消安全过滤，可参考<a href="/忽略SQL安全过滤.html">忽略SQL安全过滤</a>。
+</pre>
+
+<pre>
+
+<h2>哪些情形会过滤</h2> 
+
+<strong>（1）进行安全过滤的情况</strong>
+          安全过滤方式：
+              （a）字段名只做字符转义
+              （b）字段值做关键字过滤和转义。
+          安全过滤场景：
+              （a）where()、moreWhere()、more()条件参数为数组时
+              （b）使用orWhere()、between()、orBetween()、having()、orHaving()条件时；
+              （c）save()、create()和update()保存时。
+              （d）使用limit()时。
+
+<strong>（2）以下情况不做安全过滤，需要开发者自己过滤</strong>
+          由于以下情况是不确定性的语句，框架无法做过滤。需要开发者手动自己过滤。
+              （a）where()、moreWhere()、more()的条件参数为字符串时；
+              （b）使用orderBy()时；
+              （c）使用groupBy()时。
+
+</pre>
+</body>
+</html>
