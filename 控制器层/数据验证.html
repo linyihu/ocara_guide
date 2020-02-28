@@ -73,11 +73,11 @@ class EditAction extends Controller
         $data = $this->request->getPost();
 
         $rules = array(
-            'mobile' => 'unempty|mobile',
+            'mobile' => 'notEmpty|mobile',
         );
 
         $this->validator
-            ->addRule('username', 'unempty|maxLength:30') //增加单个参数验证规则
+            ->addRule('username', 'notEmpty|maxLength:30') //增加单个参数验证规则
             ->addRule($rules) //批量增加参数验证
             ->validate($data);
     }
@@ -116,8 +116,8 @@ class UsersModel extends DatabaseModel
     public function rules()
     {
         return array(
-            'username' => 'unempty|maxLength:30',
-            'mobile' => 'unempty|mobile',
+            'username' => 'notEmpty|maxLength:30',
+            'mobile' => 'notEmpty|mobile',
         );
     }
 }

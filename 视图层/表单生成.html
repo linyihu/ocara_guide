@@ -222,7 +222,7 @@ class CreateAction extends Controller
 
 		//表单验证
 	    $this->validator
-			->addRule('token', 'unEmpty')
+			->addRule('token', 'notEmpty')
 	 		->addForm($this->form('form_create')) //验证表单
 			->validate($data);
 
