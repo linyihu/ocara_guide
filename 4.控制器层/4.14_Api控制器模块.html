@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.14 Api控制器模块</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head><body><pre><h2>4.14 Api控制器模块</h2>
+
+        应用生成时默认在application/library/Base目录中生成了Base\Controller\ApiController.php控制器文件。
+
+<strong>1、如何添加Api模块</strong>
+        只要在开发者中心添加模块时，选择Api控制器类即可。
+        注意：命令模块（console）不需要建立Api控制器。
+
+<strong>2、Api控制器动作说明</strong>
+        （1）Action动作类
+                因为控制器本身就是API，类似于Ajax调用，所以api()方法无效。
+        （2）执行结果使用return返回。
+
+<pre class="brush: php;">
+namespace app\controller\test;
+
+class TestAction extends Controller
+{
+	/**
+	 * 初始化
+	 */
+	protected function __action()
+	{}
+
+	/**
+	 * 表单注册
+	 */
+	public function registerForms()
+	{}
+
+	/**
+	 * 提交后处理
+	 */
+	public function submit()
+	{
+	    $result = 'test';
+	    return $result;
+    }
+}
+</pre>
+
+
+
+</pre>
+</body></html>

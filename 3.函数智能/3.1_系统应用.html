@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>3.1 系统应用</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE4 {
+	color: #333333;
+	font-weight: bold;
+}
+.STYLE5 {
+	color: #000000;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body><pre>
+<h1>3.1 系统应用函数</h1>
+
+</pre>
+<div class="function">
+<pre><strong>1、ocEmpty(content)</strong>
+      检查是否为非0的空值。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>content</td>
+		<td>必需。要检测的变量</td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+echo ocEmpty(array()); //结果为true 
+echo ocEmpty(0);       //结果为false 
+echo ocEmpty('0');     //结果为false 
+echo ocEmpty(null);    //结果为true
+echo ocEmpty(false);   //结果为true 
+echo ocEmpty('');      //结果为true
+</pre>
+<pre><strong>2、ocSql(sql)</strong>
+       封装SQL语句。
+       由于Model要对sql语句参数进行Sql过滤处理，所以如果不希望当前SQL语句被过滤处理，而是保持原样，就用此函数。
+       参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>sql</td>
+		<td>必需。SQL语句字符串</td>
+	</tr>
+</table>
+
+</pre>
+<p>修改商品的点击数字段hits</p>
+<pre class="brush: php;">
+$where = array('item_id' => 2); 
+$data = array(
+    'hits'=> ocSql('hits+1')
+);
+
+$itemEntity = new \app\model\entity\database\ItemEntity::build()->select(2);
+$itemEntity->hits = 'hits+1';
+$itemEntity->save();
+
+//生成的SQL语句中set语句为：set `hits` = hits+1。
+</pre> 
+<p>然而，没有使用ocSql()函数时，</p>
+<pre class="brush: php;">
+$data = array(
+    'hits' => 'hits+1'
+);
+
+$itemEntity = new \app\model\entity\database\Item::build()->select(2);
+$itemEntity->hits = 'hits+1';
+$itemEntity->save();
+
+//生成的SQL语句中set语句为：set `hits` = 'hits+1'
+//hits+1两边加上了单引号，这样就item_id字段就直接用字符串“hits+1”保存处理而没有执行加1。
+</pre>
+
+<pre><strong>3、ocGlobal(name[, value])</strong>
+     设置或获取框架虚拟的全局变量。调用的是Ocara\Core\Globals类。
+     只是虚构的全局变量，不是真正的全局变量。
+     为了防止全局变量的不良使用习惯，导致安全问题，所以虚构了全局变量。建议使用。
+     <span class="STYLE5">如果设置了value参数，则表示设置全局变量，否则表示获取全局变量值。</span>
+     参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。全局变量名称。</td>
+	</tr>
+	<tr>
+		<td>value</td> 
+		<td>可选。如果是设置全局变量，则需传递该参数作为值。 </td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+//设置全局变量
+ocGlobal('username', 'Jim');
+
+//获取全局变量值
+$username = ocGlobal('username');
+</pre>
+<pre><strong>4、ocLang(name[, params, default])</strong>
+      获取多语言变量的配置。调用的是Ocara\Core\Lang类。
+      这些语言配置文件都在Web应用目录的application/lang目录下。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。多语言变量名称。</td>
+	</tr>
+	<tr>
+		<td>params</td> 
+		<td>可选。参数数组。</td>
+	</tr>
+	<tr>
+		<td>default</td> 
+		<td>可选。设置默认值。如果不存在该变量配置，则可传递该参数来返回默认值。</td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+//假设已经设置了username为用户名
+$usernameDesc = ocLang('username'); //返回“用户名”
+
+//如果没有设置username的语言配置
+$usernameDesc = ocLang('username', array(), '登录用户名'); //因为不存在配置，所以返回默认值“登录用户名”
+
+//如果设置了not_exists_username变量，其语言配置成：用户名%s不存在。
+$username = 'Jim';
+$error = ocLang('not_exists_username', array($username)); //返回：用户名Jim不存在
+
+//如果设置了not_exists_username变量，其语言配置成：用户名{username}不存在。
+$username = 'Jim';
+$error = ocLang('not_exists_username', array('username' => $username)); //依然返回：用户名Jim不存在
+
+</pre>
+<pre><strong>5、ocConfig(name[, default, unEmpty])</strong>
+      获取配置。除了语言配置，其他所有的配置文件在当前应用的application/config下面。
+      总结：<strong>如果指定了默认值则返回默认值，如果0不算空值就将第三个参数设为true。</strong>
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。配置名称。如果是多级键名，可以为键名数组或圆点分隔的键名字符串。</td>
+	</tr>
+		<tr>
+		<td>default</td>
+		<td>可选。配置不存在或非空时返回的默认值。<br/>
+			（1）配置键名不存在时：若指定了默认值，则返回默认值；若没有指定默认值，则会抛出错误提示。<br/>
+			（2）配置值为空时：若指定了默认值，则返回默认值；若没有指定默认值，一般原样返回，当指定了unEmpty参数时则例外。
+		</td>
+	</tr>
+		<tr>
+		<td>unEmpty</td>
+		<td>可选。表示0是否作为非空值。默认为false。如果为true，0也作为非空返回。此时规则如下：<br/>
+			若配置值为0，则直接返回0；<br/>
+			若配置值为非0的空值（空字符串、false或null），则返回默认值。<br/>
+		</td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+//不指定默认值
+echo ocConfig('COOKIE.path'); //若存在path的配置，返回其值
+echo ocConfig('COOKIE.path_test'); //若不存在path_test的配置，不返回值，而是抛出错误提示
+
+//指定默认值
+echo ocConfig('COOKIE.path', '/'); //若存在配置path，配置值非空(包括非0）则直接返回，否则返回默认值'/'
+echo ocConfig('COOKIE.path_test', '/'); //若不存在path_test的配置，不报错，而是返回默认值'/'
+
+//提定默认值和非空参数
+echo ocConfig('COOKIE.path_test', '/', true); //若存在path_test的配置，配置值非空或0则直接返回，否则返回默认值'/'
+
+</pre> 
+
+<pre><strong>6、ocReplaceSpace(string[, replace])</strong>
+      替换空白字符，如回车或换行、制表符或空格等。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>string</td>
+		<td>必需。原字符串。</td>
+	</tr>
+		<tr>
+		<td>replace</td>
+		<td>可选。要替换的字符。如果不指定，则替换为空串，相当于去除掉了空白字符。</td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+echo ocReplaceSpace("aa|t\t", "<br/>"); //将结尾的制表符“\t”替换成“<br/>”，变成“aa|t<br/>”
+
+echo ocReplaceSpace("aa|t\t"); //去掉结尾的制表符“\t”，变成"aa|t"
+</pre> 
+</div>
+</body>
+</html>

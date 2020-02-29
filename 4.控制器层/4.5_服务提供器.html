@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.5 服务提供器</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<script src="../treeview/lib/jquery.js" type="text/javascript"></script>
+<script src="../treeview/lib/jquery.cookie.js" type="text/javascript"></script>
+<script src="../treeview/jquery.treeview.js" type="text/javascript"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<link rel="stylesheet" href="../treeview/jquery.treeview.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  
+ $("#browser").treeview({
+  persist: "location",
+  collapsed: false,
+  unique: true
+ });
+});
+</script>
+</head>
+<body>
+<pre><h2>4.5 服务提供器</h2>
+
+  1、服务提供器可以作为两种角色来使用：
+    （1）服务组件
+    就是提供一种服务功能。是为了实现一种服务功能，组合了多个服务类进行业务处理的一种组件。
+    它对内封装了自己的依赖注入容器，对外保持业务逻辑和类依赖管理的透明。
+    （a）组合使用多个服务类处理业务。
+    （b）通过依赖注入容器进行类的依赖管理。
+    （c）对外提供一种服务功能。
+     比如我们的控制器Controller实际上就是一个服务提供器。
+
+    （2）服务定位器
+    它只是封装了依赖注入容器，用来提供类的调用和绑定。
+    （a）对依赖注入容器的封装，进行类的依赖管理。
+    （b）对外提供服务的调用和绑定。
+    比如整个应用有一个全局默认的服务定位器，可以使用ocService()来调用。例如调用Request类，可以通过ocService()->request或者ServiceProvider::getDefault()->request。
+
+  2、服务提供器与容器IOC的关系和区别：
+    （1）服务提供器是通过容器进行类对象的依赖注入和管理，每个服务提供器都有一个<strong>私有的容器，即私有属性$container</strong>；
+    （2）服务提供器是对容器的封装。
+    （3）绑定的服务类和回调函数保存在容器而不在服务提供器中，它只保存了调用容器生成的已实例过的对象。
+
+<pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+//通过ServiceProvider类来调用
+$username = ServiceProvider::getDefault()->request->getPost('username');
+
+//通过ocService()函数来调用
+$username = ocService()->request->getPost('username');
+</pre>
+
+<strong>一、服务提供器的初始化和服务注册</strong>
+1、初始化过程
+     新建一个服务提供器时，会进行如下几步：
+    （a）设置属性数据setProperty()，即属性注入；
+    （b）新建一个依赖注入容器setContainer()；
+    （c）注册服务register()；
+    （d）初始化init()。
+
+    请看服务提供器的源代码便明白了：
+<pre class="brush: php;">
+        /**
+     * 初始化
+     * ServiceProvider constructor.
+     * @param array $data
+     * @param \Ocara\Core\Container|null $container
+     */
+    public function __construct(array $data = array(), Container $container = null)
+    {
+        $this->setProperty($data);
+        $this->setContainer($container ? : new Container());
+        $this->register();
+        $this->init();
+    }
+</pre>
+    2、服务提供器类的生成
+（1） 新建一个服务提供器
+    新建一个服务提供器时，要继承Ocara\Core\ServiceProvider.
+<pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+class UserRoleManager extends ServiceProvider
+{
+}
+
+</pre>
+    （2）注册服务
+    每个服务提供器都提供了一个register()函数入口进行服务注册，它会在类的初始化函数init()之前就执行。
+
+<pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+class UserRoleManager extends ServiceProvider
+{
+    /**
+     * 注册服务
+     */
+    public function register()
+    {
+        $this->container->bindSingleton('userRole', '\Providers\User\Role');
+    }
+}
+
+</pre>
+    （3）初始化
+    要写初始化代码请使用init()方法，不要使用__construct()。
+    <pre class="brush: php;">
+use Ocara\Core\ServiceProvider;
+
+class UserRoleManager extends ServiceProvider
+{
+    public function register()
+    {
+        $this->container->bindSingleton('userRole', '\Providers\User\Role'); //单例模式
+        $this->container->bind('userInfo', '\Providers\User\UserInfo'); //非单例模式
+    }
+
+    /**
+     * 初始化
+     */
+    public function init()
+    {
+         $userRole = $this->userRole;
+    }
+}
+</pre>
+
+<strong>二、服务提供器的使用</strong>
+    全局默认服务提供器可通过ocService()获取。
+<div class="function">
+<pre><strong>（1）用属性获取服务对象</strong>
+    使用服务提供器的属性可以获取一个服务类对象。
+    只会新建一次。
+    （1）不管是单例还是动态对象，服务提供器第一次新建后都会存储起来供下次调用。
+    （2）如果有同名的属性。
+    在服务提供器的外部调用对象时，只表示调用该对象。
+    在内部调用时，优先获取属性值，不存在属性值时，才调用该对象。
+</pre>
+ <pre class="brush: php;">
+//全局默认服务提供器实例
+ $request = ocService()->request;
+
+//UserRoleManager实例
+$manager = new UserRoleManager();
+$userRole = $manager->userRole;
+
+ </pre>
+<pre><strong>（2）loadService(name[, params, deps])</strong>
+  加载并获取服务实例，如果没有该实例并且私有容器或全局容器已注册过，则从容器中生成该类例并缓存；否则返回null。
+  如果容器注册为单例模式，则获取的永远是同一个实例对象。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+	</table>
+ <pre class="brush: php;">
+//全局默认服务提供器实例
+$request = ocService()->loadService('request');
+
+//UserRoleManager获取实例
+$manager = new UserRoleManager();
+$userRole = $manager->loadService('userRole');
+
+ </pre>
+
+<pre><strong>（3）getService(name[, params, deps])</strong>
+  获取服务实例，如果没有则返回null。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+	</table>
+ <pre class="brush: php;">
+//全局默认服务提供器实例
+$request = ocService()->loadService('request');
+
+//UserRoleManager实例
+$manager = new UserRoleManager();
+$userRole = $manager->loadService('userRole');
+
+ </pre>
+
+<pre><strong>（4）createService(name[, params, deps])</strong>
+        新建一个非单例的服务类实例。如果容器将其注册为单例模式加载，则不会被新建。
+        新建成功后会被缓存起来，getService()或属性调用的都是同一个对象。
+        所以要生成一个新的非单例对象可以使用createService().
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+</table>
+<pre class="brush: php;">
+//全局默认服务提供器实例
+$request = ocService()->createService('request');
+
+//UserRoleManager实例
+$manager = new UserRoleManager();
+$params = array('user_status' => 1);
+$userRole = $manager->createService('userRole', $params);
+
+</pre>
+
+<pre><strong>（5）canService(name)</strong>
+   检测是否可提供服务组件。如果服务对象已生成过一次，或者当前容器或者全局容器中绑定过该类时，返回true。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+</table>
+<pre class="brush: php;">
+//返回true，因为全局容器已经配置注册过
+echo ocService()->canService('request');
+
+//如果UserRoleManager生成了userRole类实例，或者所属容器或者全局容器已绑定过该类，返回true
+$manager = new UserRoleManager();
+echo $manager->canService('userRole');
+
+//如果UserRoleManager没有生成userInfo类实例，并且所属容器和全局容器都没有绑定过该类，返回false
+$manager = new UserRoleManager();
+echo $manager->canService('userInfo');
+</pre>
+
+<pre><strong>（6）hasService(name)</strong>
+   检测服务组件是否存在。如果服务实例已生成返回true。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+</table>
+<pre class="brush: php;">
+//返回true，因为全局容器已经配置注册过
+echo ocService()->hasService('request');
+
+$manager = new UserRoleManager();
+
+//还没有生成userRole实例，返回false
+echo $manager->hasService('userRole');
+
+//调用实例，会自动生成并缓存
+$userRole = $manager->userRole;
+
+//已生成userRole，返回true
+echo $manager->hasService('userRole');
+</pre>
+
+<pre><strong>（7）setService(name, service)</strong>
+   手动设置服务对象实例。可以用来替换掉在服务提供器第一次新建的对象。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>name</td>
+		<td>必需。变量名称，如果为空，则返回$_SESSION整个数组。</td>
+	</tr>
+</table>
+ <pre class="brush: php;">
+//全局默认服务提供器手动设置request实例
+$myRequest = new Base\Request();
+ocService()->setService('request', $myRequest);
+
+//UserRoleManager服务提供器手动设置userRole实例
+$manager = new UserRoleManager();
+$userRole = new \Base\UserRole;
+echo $manager->setService('userRole', $userRole);
+ </pre>
+
+</div>
+</pre>
+</body></html>

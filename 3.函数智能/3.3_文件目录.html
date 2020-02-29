@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>3.3 文件目录</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body><pre>
+<h1>3.3 文件目录函数</h1>
+
+</pre>
+<div class="function">
+<pre><strong>1、ocImport(path[, required, once, vars])</strong>
+     使用include加载php文件。加载成功会有返回。
+     参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>必需。文件路径</td>
+	</tr>
+	<tr>
+		<td>required</td>
+		<td>可选。是否必需。默认为true，如果文件不存在，则提示错误。</td>
+	</tr>
+	<tr>
+		<td>once</td>
+		<td>可选。是否使用include_once函数加载。默认为true。</td>
+	</tr>
+	<tr>
+	  <td>vars</td>
+	  <td>可选。变量数组。这个数组是传递到加载文件的一些自定义变量，类似于模板变量。</td>
+  </tr>
+</table>
+
+      假设required/functions目录下只存在test.php，则可以：
+</pre>
+<pre class="brush: php;">
+ocImport(ocPath('function', 'test.php')); //加载成功，默认用include_once函数加载
+
+ocImport(ocPath('function', 'test2.php')); //文件不存在加载失败，会抛出错误提示
+
+ocImport(ocPath('function', 'test3.php'), false); //文件不存在加载失败，但是不会抛出错误提示
+
+ocImport(ocPath('function', 'test.php'), true, false, array('name' => 'test')); //用include函数加载成功，传递了一个$name变量
+</pre>
+<pre><strong>2、 ocDir(path)</strong>
+      给文件或目录路径末尾加上“/”。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>必需。文件或目录路径。</td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+//单个目录
+$path = ocDir('required/data'); 
+echo ($path); 
+//输出required/data/
+
+//多个目录
+$path = ocDir('required', 'data'); 
+echo ($path);
+//仍然输出required/data/
+</pre>
+<pre><strong>3、 ocNamespace(path)</strong>
+      类似于ocDir，只不过是在末尾加上命名空间的符号反斜杠“\”。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>必需。命名空间的路径目录。</td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+//单个目录
+$namespace = ocNamespace('Model') . 'User;
+echo ($namespace);
+//输出Model\User
+
+//多个目录
+$path = ocDir('Model', 'Bbs') . 'User';
+echo ($path);
+//输出Model\Bbs\User
+</pre>
+<pre><strong>3、ocFileExists(filePath[, check])</strong>
+       检测文件是否存在，解决Windows系统不区分大小写问题。由于windows对于文件名不区分大小写，所以如果不能确定程序是否使用Windows系统服务
+器的话，为了文件是否存在的检测函数兼容，建议使用本函数判断。
+       如果文件存在，则返回其路径；否则返回false;
+       参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>filePath</td>
+		<td>必需。文件路径</td>
+	</tr>
+	<tr>
+		<td>check</td>
+		<td>可选。是否优化文件名。默认为false，如果为true，会进行乱码处理，并且可以返回优化处理后的路径名。<br/>如果您的Ocara框架使用的是UTF-8版本，由于中文文件名可能乱码，所以在UTF-8的编码下需要进行乱码处理。所以如果文件路径filePath中可能存在中文，请将该参数置为true，由该函数自行处理乱码，从而准确判断是否存在文件。</td>
+	</tr>
+</table>
+
+     如果服务器为windows系统，文件名是不区分大小写的，如：
+</pre>
+<pre class="brush: php;">
+//新建文件
+File::createFile(ocPath('data', 'tEst.txt'));
+
+/*
+ * 1. 检测文件是否存在-兼容Windows
+ */
+$path = ocPath('data', 'test.txt'); 
+
+echo file_exists($path); //Windows中检测文件存在，结果为true；而Linux中检测文件不存在，结果为False
+
+echo ocFileExists($path); //Windows和Linux中都检测文件不存在，结果为false
+
+/*
+ * 2. 检测含有中文文件名的文件是否存在（UTF—8编码）
+ */
+$path = ocPath('data', '测试的文件test.txt');
+
+//在data目录下面新建该中文文件 
+File::createFile($path);
+
+//因为含有中文，Windows环境下可能因为乱码无法检测文件存在
+//所以传递第2个参数为true，并且要使用返回的路径
+if ($path = ocFileExists($path, true)) { 
+	File::writeFile($path, 'test');
+	echo File::readFile($path);
+} else {
+	die(basename($path) . '不存在');
+}
+//输出test
+</pre>
+<pre><strong>4、ocCheckPath(path[, mode])</strong>
+      路径检查并新建。不存在的路径，会自动新建。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>必需。文件或目录路径</td>
+	</tr>
+	<tr>
+	  <td>mode</td>
+	  <td>可选。新建目录的权限，默认为0755。</td>
+  </tr>
+</table>
+
+     假设，required/data下不存在test目录，如果data有写权限的话，
+</pre>
+
+<pre class="brush: php;">
+$path = ocPath('data', 'test/test1');
+$result = ocCheckPath($path);
+
+echo $result; 
+//结果：如果成功输出true。required/data下面会生成test/test1两级子目录。
+</pre>
+<pre><strong>5、ocPath(type[, path])</strong>
+      获取完整的文件或目录路径。
+      具体的配置是APP_PATH_INFO的belongs配置项。
+      配置如下，键名为空表示根目录：
+<pre class="brush: php;">
+array(
+	'config'        => 'application',
+	'console'  	    => 'application',
+	'controller'  	=> 'application',
+	'lang'          => 'application',
+	'model'         => 'application',
+	'modules'  	    => 'application',
+	'service'  	    => 'application',
+	'view'  	  	=> 'application',
+
+	'entity'        => 'application/model',
+	'enums'         => 'application/model',
+	'cache'         => 'application/cache',
+	'database'      => 'application/database',
+
+	'tools'  	    => '', //根目录
+	'data'          => '', //根目录
+	'doc'           => 'data',
+	'fields'        => 'data',
+
+	'runtime'       => '', //根目录
+	'temp'          => 'data/runtime',
+	'logs'          => 'data/runtime',
+	'sessions'      => 'data/runtime',
+
+	'support'	    => '', //根目录
+	'functions'	    => '', //根目录
+	'pass'			=> '', //根目录
+
+	'attachments' 	=> 'public',
+	'src'           => 'public',
+	'static'  	  	=> 'public',
+	'css'  		  	=> 'public/src',
+	'images'  	  	=> 'public/src',
+	'js'  		  	=> 'public/src'
+)
+</pre>
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>type</td>
+		<td>要获取的类型。该参数可以取上面配置中的键名。<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>path</td>
+		<td>具体的路径</td>
+	</tr>
+</table>
+
+
+<pre class="brush: php;">
+/*
+ * 会输出当前web应用目录下的required/data/test/test1/test.txt的完整路径
+ * Linux服务器类似于/var/www/html/myapp/required/data/test/test1/test.txt
+ */
+echo ocPath('data', 'test/test1/test.txt');   
+
+</pre>
+<pre><strong>6、ocFile(dir[, path])</strong>
+      获取完整文件路径，并且检查文件是否存在。
+      参数同上ocPath()。
+</pre>
+<pre>
+
+</pre>
+<pre class="brush: php;">
+//文件存在，输出路径
+echo ocFile('data', 'test/d.txt');   
+
+//文件不存在，抛出错误提示
+echo ocFile('data', 'test/test1/test.txt');   
+</pre>
+<pre><strong>7、ocBasename(filePath)</strong>
+      类似PHP的basename()函数，不同的是它支持中文文件名。
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>filePath</td>
+		<td>必需。文件路径。</td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+$path = ocPath('data', 'test/d.txt');
+
+//输出主文件名d.txt
+echo ocBasename($path);
+</pre>
+<pre><strong>8、ocFunc(filePath)</strong>
+      加载函数文件。框架会从以下目录中按照优先级寻找并加载文件：
+	  （1）当前应用根目录的functions下面的函数库或文件，没有functions目录请自动添加。
+	  （2）框架系统目录system/service/functions下面的函数文件，这是框架提供的扩展函数库。
+	  （3）框架扩展目录extension/service/functions下面的函数文件，这是我们自己放入的可供多个应用调用的公共函数库目录。
+      参数同上ocFile()。
+
+</pre>
+<pre class="brush: php;">
+/*
+ * 假设/service/functions/base下面有一个函数库文件test_functions.php
+ * 其中有一个函数getName()函数
+ * 则以下代码可以输出这个函数返回的结果
+ */
+ocFunc('base/test_functions.php');
+
+//假设加载函数库文件成功，则可调用其中的函数
+$ret = getName(array('name' => '123'));
+</pre>
+</div>
+</body>
+</html>

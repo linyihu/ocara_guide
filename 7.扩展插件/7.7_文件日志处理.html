@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>7.7 文件日志处理</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h1>7.7 文件日志处理</h1>
+  
+<p><strong>一、插件介绍</strong></p>
+       日志处理插件，对应类名Ocara\Service\FileLog。可以有系统有组织地生成错误日志。</pre>
+<table class="hint">
+	<tr class="head">
+		<td><h2>特色：</h2>可以自行对日志进行目录分类，并可以递归删除和清理日志。</td>
+	</tr>
+</table>
+<p><strong>二、方法函数介绍</strong></p>
+<div class="function">
+<pre><strong>1、setOption([logRoot, maxLogSize, extensionName])</strong>
+  设置日志根目录和最大日志文件大小。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>logRoot</td>
+		<td>可选。日志根目录。</td>
+	</tr>
+	<tr>
+		<td>maxLogSize</td>
+		<td>可选。最大日志文件大小，单位为M。</td>
+	</tr>
+	<tr>
+		<td>extensionName</td>
+		<td>可选。文件扩展名。</td>
+	</tr>
+  </table>  
+  
+ <pre class="brush: php;">
+ $this->setOption('logs/apache', 5); </pre>
+<pre><strong>2、create(logName)</strong>
+  新建日志目录。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>logName</td>
+		<td>必需。日志名称。新建的是日志目录，而不是文件。</td>
+	</tr>
+  </table>  
+  
+ <pre class="brush: php;">
+ $this->create('pay'); //会在日志目录下面新建一个pay目录。 </pre>
+
+<pre><strong>3、has(logName)</strong>
+  是否存在日志目录。
+  参数说明：
+ </pre>
+	<table>
+		<tr class="head">
+			<td width="90">名称</td>
+			<td width="400">描述</td>
+		</tr>
+		<tr>
+			<td>logName</td>
+			<td>必需。同上。</td>
+		</tr>
+	</table>
+	
+<pre class="brush: php;">
+ echo $this->has('pay');
+</pre>
+
+<pre><strong>3、write(logName, content)</strong>
+  按动作action生成HTML。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>logName</td>
+		<td>必需。同上。</td>
+	</tr>
+		<tr>
+		<td>content</td>
+		<td>必需。内容。必须是字符串或数字。</td>
+	</tr>
+  </table>  
+  
+ <pre class="brush: php;">
+ $this->write('pay', 'php error test'); //会在pay目录下面最新的日志文件后面追加'php error test'的一行。 </pre>
+<pre><strong>4、read(logName)</strong>
+  读取日志内容。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>logName</td>
+		<td>必需。同上。</td>
+	</tr>
+  </table>  
+  
+ <pre class="brush: php;">
+ $content = $this->read('pay'); 
+print_r($content); //会输出pay目录下面最新的日志文件的内容。 </pre>
+<pre><strong>5、clear(logName)</strong>
+  清理日志目录下面的日志文件。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>logName</td>
+		<td>必需。同上。</td>
+	</tr>
+  </table>  
+  
+ <pre class="brush: php;">
+ $this->clear('pay'); //会清理pay目录下面的所有的日志文件 </pre>
+<pre><strong>6、delete(logName)</strong>
+  删除日志目录。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>logName</td>
+		<td>必需。同上。</td>
+	</tr>
+  </table>  
+  
+ <pre class="brush: php;">
+ $this->del('pay'); //会删除pay日志目录 </pre>
+<pre><strong>7、flush(logName)</strong>
+  清空最近日志文件内容。  
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>logName</td>
+		<td>必需。同上</td>
+	</tr>
+  </table>  
+  
+ <pre class="brush: php;">
+  $this->flush('pay'); //会清除掉pay目录下面的最新日志文件内容。 </pre>
+</div>
+</body>
+</html>

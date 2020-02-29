@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.4 依赖注入容器</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
+</head><body><pre><h2>4.4 依赖注入容器</h2>
+
+      依赖注入容器，可以实现类或接口的绑定、实例化或实现，以及依赖管理。
+
+<strong>1、容器的使用</strong>
+      （1）全局容器
+            容器类为\Ocara\Core\Container。
+            框架开始时默认生成了一个全局容器，可以通过以下方式获取:
+            （a）Container::getDefault()。
+            （b）使用ocContainer()函数。
+            （c）使用ocService()->container获取。
+
+<pre class="brush: php;">
+$container = Container::getDefault();
+$container = ocContainer();
+$container = ocService()->container;
+
+$response = ocService()->container->response;
+</pre>
+     （2）私有容器
+            <a href="/服务提供器.html" title="服务提供器">ServiceProvider服务提供器</a>包含自己的私有容器。
+            在其内部可以使用“$this->属性名”方式获取私有容器对象，如果没有该对象，则去找全局容器中找。
+            控制器动作也继承于ServiceProvider，所以也可以这样获取服务对象。
+
+<pre class="brush: php;">
+class EditAction extends ItemController
+{
+    /**
+     * 注册对象
+     */
+    public function register()
+    {
+       $this->container->bindSingleTon('response', '\Base\MyResponse'); //私有容器中注册对象
+    }
+
+	/**
+	 * 初始化
+	 */
+	public function __action()
+	{}
+
+	public function registerForms()
+	{}
+
+	public function display()
+	{
+        $id = $this->request->getGet('id'); //使用全局容器的request对象
+    }
+
+	public function submit()
+	{
+        $data = $this->response->setStatusCode(400); //优先使用当前控制器私有容器$this->container的response对象
+    }
+}
+</pre>
+      （2）生成新的容器
+            除了使用全局容器，我们还可以新建一个容器，只要新建\Ocara\Core\Container类即可。
+            如下所示：
+<pre class="brush: php;">
+//使用new 关键字新建容器
+$container = new \Ocara\Core\Container();
+
+//使用build()方法新建容器
+$container = \Ocara\Core\Container::build();
+</pre>
+
+<strong>2、类或接口的绑定</strong>
+      （1）动态绑定
+            动态绑定使用容器的bind()方法，也可以使用容器的属性来操作。
+                  <span class="STYLE1">bind(name, source[, params, deps])</span>
+            参数说明：
+</pre>
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>必需。绑定名称或类名、接口名。</td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td>必需。实例化来源。可以是类和方法的数组、回调函数或类名字符串。</td>
+    </tr>
+    <tr>
+        <td>params</td>
+        <td>可选。类的构造函数的前面部分参数。会与get()方法中传递的后面函数合并。</td>
+    </tr>
+    <tr>
+        <td>deps</td>
+        <td>可选。属性注入数组。键名是属性名称，键值是注入的对象。<br/>
+            使用前提是类中必须包含该属性名称的set和get方法。<br/>
+            比如，Computer类中要使用属性注入的方式向它的mouse属性为一个Mouse类，需要在它内部定义一个setMouse()和getMouse()方法。
+        </td>
+    </tr>
+</table>
+<pre>
+
+            （a）绑定
+</pre>
+<pre class="brush: php;">
+//方法数组
+ocContainer()->bind('userChecker', array('User', 'getChecker'));
+
+//回调匿名函数
+ocContainer()->bind('userChecker', function(){
+    return User::getChecker();
+});
+
+//获取类名
+ocContainer()->bind('userChecker', '\User\Checker');
+
+//用类实现接口
+ocContainer()->bind('\Interface\User\Checker', '\User\Checker');
+
+//用新类替换被绑定的类（新类须继承旧类，或者与旧类继承同一个父类）
+ocContainer()->bind('\User\Checker', '\User\NewChecker');
+</pre>
+<pre>
+            （b）传递参数
+                    在bind()绑定或者get()获取都可以传递参数，在调用对象时会合并使用所有参数，注意：绑定的参数合并在前。
+</pre>
+<pre class="brush: php;">
+class Computer
+{
+    protected $mouse;
+
+    public function __construction(\Mouse $mouse, $name, $config = array())
+    {
+        $this->mouse = $mouse;
+    }
+}
+</pre>
+<pre>
+                    使用时代码如下实例：
+</pre>
+<pre class="brush: php;">
+//绑定时传递前面的参数（注入鼠标对象）
+$container = new \Ocara\Core\Container();
+$mouse = new \Mouse();
+$container->bind('computer', '\Computer', array($mouse));
+
+//获取对象时传递后面的参数（注入键盘对象）
+$keyboardObj = new \Keyboard();
+$name = 'computer1';
+$config = array();
+$computer = $container->get('computer', array($name, $config));
+</pre>
+<pre>
+                    上述实例中，$mouse参数是通过传参传过去的，但是也可以不传而在对象调用时让容器自动重新建一个\Mouse类，这称为依赖管理。
+                    但是前提是容器中也指定了该类的实现，而参数数组中该参数使用null即可。如下所示：
+</pre>
+<pre class="brush: php;">
+$container->bind('computer', '\Computer', array(null)); //这里传null
+</pre>
+<pre>
+
+</pre>
+<pre>
+            （c）属性注入
+                     对于第4个参数deps，它是一个属性注入数组，被注入的类必须包含set和get方法，如下所示：
+</pre>
+<pre class="brush: php;">
+class Computer
+{
+    protected $mouse;
+    protected $keyboard;
+    protected $container;
+
+    public function __construction($container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * 鼠标
+     */
+    public function setMouse($mouseObj)
+    {
+        $this->_mouse = $mouseObj;
+    }
+
+    public function getMouse()
+    {
+        return $this->_mouse;
+    }
+
+    /**
+     * 键盘
+     */
+    public function setKeyboard($keyboardObj)
+    {
+        $this->keyboard = $keyboardObj;
+    }
+
+    public function getKeyboard()
+    {
+        return $this->keyboard;
+    }
+}
+</pre>
+<pre>
+                     注入代码如下实例：
+</pre>
+<pre class="brush: php;">
+//绑定时属性注入（注入鼠标对象）
+$mouseObj = new \Mouse();
+$container->bind('computer', '\Computer', array($container), array('mouse' => $mouseObj));
+
+//获取对象时属性注入（注入键盘对象）
+$keyboardObj = new \Keyboard();
+$computer = $container->get('computer', array(), array('keyboard' => $keyboardObj));
+
+</pre>
+<pre>
+      （2）单例模式绑定
+            与动态绑定区别在于：动态绑定的类可以通过容器的create()方法多次新建一个实例，但是单例模式绑定的则不能，只会在第一次使用时自动create()一次。
+                  <span class="STYLE1">bindSingleton(name, source[, params, deps])</span>
+            参数和实例同上。
+</pre>
+<pre>
+
+<strong>3、绑定类的使用</strong>
+      使用容器的get()方法，或者使用容器绑定过的名称属性，就可以获取实例化后的绑定类。不同在于，get()可以附加传递参数和属性注入。
+      （1）使用get()方法
+                  <span class="STYLE1">get(name[, params, deps])</span>
+            参数说明：
+</pre>
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>必需。绑定名称或类名。</td>
+    </tr>
+    <tr>
+        <td>params</td>
+        <td>可选。类的构造函数的后面部分参数。会与bind()或bindSingleton()中指定的前面参数合并</td>
+    </tr>
+    <tr>
+        <td>deps</td>
+        <td>可选。属性注入数组。同上bind()或bindSingleton()中的deps参数，最后会将两者进行合并使用。</td>
+    </tr>
+</table>
+<pre>
+
+</pre>
+<pre class="brush: php;">
+$params = array('user_id' => 1);
+$deps = array('sex' => ['0' => '未知', '1' => '男', '2' => '女']);
+$userChecker = ocContainer()->get('userChecker', $params, $deps);
+</pre>
+<pre>
+      （2）使用未定义的属性
+            使用容器中未定义的绑定名称属性， 也可以实现在同样的效果。
+            上述实例等同于：
+</pre>
+<pre class="brush: php;">
+$userChecker = ocContainer()->userChecker;
+</pre>
+
+</pre>
+</body></html>

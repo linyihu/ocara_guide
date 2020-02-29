@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>1.8 动态行为绑定</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+        <!--
+        .STYLE1 {
+                color: #0000FF;
+                font-weight: bold;
+        }
+        -->
+</style>
+</head>
+
+<body><pre><h2>1.8 动态行为绑定</h2>
+
+        自PHP5.4.0起，PHP实现了一种代码复用的方法，称为trait。
+        动态行为绑定类似于trait。但是不同在于：
+        （1）trait在类新建对象初始化时就已经组合到类中了。
+        （2）动态行为绑定是类新建对象实例以后，动态绑定到对象中的。
+
+一、行为绑定
+        与事件类似，任何继承自Ocara\Core\Base的类对象，都默认有动态绑定行为的特性。
+        使用它的traits()方法便可以绑定。
+        <span class="STYLE1">traits(name[, function])</span>
+
+        其中name为绑定的方法函数的别名，function是可以回调的函数或方法。
+
+<pre class="brush: php;">
+$users = new \app\dal\models\Users;
+
+$userModel = $users->traits('getList', array('\app\services\BBsUsers', 'getList'))
+                   ->traits('getDetail', array('\app\services\BlogUsers', 'getDetail'));
+</pre>
+
+二、调用行为
+<pre class="brush: php;">
+//调用行为
+$list = $userModel->getList(array('status' => 2));
+$detail = $userModel->getList(array('user_id' => 20));
+</pre>
+
+</pre>
+
+</body>
+</html>

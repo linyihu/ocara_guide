@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>1.5 系统模式</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body>
+<pre><h2>1.5 系统模式类型</h2>
+
+Ocara的应用系统的系统模式分为开发模式和运营模式。
+
+<strong>  1、开发模式</strong>
+       在项目开发期使用。不仅显示所有的PHP错误和警告提示，以及Ocara错误提示，还会列出代码追踪轨迹。另外，在该模式下开
+发者中心可以进入使用，并且可以打印SQL语句。
+	   
+<strong>  2、运营模式</strong>
+       项目上线了，放在生产环境中，这时候我们一定要把系统模式改为运营模式。
+       
+       两种模式的不同，如下列表所示：
+	   
+<table>
+	<tr class="head">
+		<td width="150">项目</td>
+		<td width="150">开发模式</td>
+		<td width="150">运营模式</td>
+	</tr>
+	<tr>
+		<td>PHP错误和Ocara错误</td>
+		<td>显示提示内容和代码追踪信息</td>
+		<td>仅显示提示内容</td>
+	</tr>
+	<tr>
+		<td>开发者中心</td>
+		<td>启用</td>
+		<td>关闭，无法进入</td>
+	</tr>
+</table>
+
+<h2>修改方法</h2>
+
+修改系统模式类型，是在application/config/system.php中修改相应的配置：
+
+<pre class="brush: php;">
+    /*
+     * 系统运行模式配置
+     * 分为开发模式和运营模式两种
+     * 配置为develop时是开发模式，其他均为运营模式
+     */
+    'SYSTEM_RUN_MODE' => 'develop',
+</pre>
+  将SYSTEM_RUN_MODE修改为'develop'时是开发者模式，如果是其他任何值，都是运营模式。
+
+</pre>
+</body>
+</html>

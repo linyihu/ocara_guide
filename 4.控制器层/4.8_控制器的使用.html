@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.8 控制器的使用</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<script src="../treeview/lib/jquery.js" type="text/javascript"></script>
+<script src="../treeview/lib/jquery.cookie.js" type="text/javascript"></script>
+<script src="../treeview/jquery.treeview.js" type="text/javascript"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<link rel="stylesheet" href="../treeview/jquery.treeview.css" />
+<link type="text/css" rel="stylesheet" href="../style/plugin.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#browser1").treeview({
+  persist: "location",
+  collapsed: false,
+  unique: true
+ });
+ $("#browser2").treeview({
+  persist: "location",
+  collapsed: false,
+  unique: true
+ });
+$("#browser_module").treeview({
+    persist: "location",
+    collapsed: false,
+    unique: true
+});
+});
+</script>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
+</head>
+<body>
+<pre><h2>4.8 控制器（Controller）</h2>
+
+<pre>
+ <strong>1、控制器介绍</strong>
+     （1）控制器分类
+            控制器可以分为普通控制器、API控制器、Restful控制器、命令任务控制器等。
+     （2）控制器继承
+            控制器由根控制器、模块和具体的控制器从上到下继承。
+</pre>
+<strong>2、根控制器</strong>
+     根控制器为support/Base/Controller下面的以Controller结尾的文件，所有application下面的全局控制器或模块都继承于它们，规定控制器类型。
+     其中：
+         （1）CommonController，同步渲染模式的普通控制器。
+         （2）ApiController，异步API调用的控制器。
+         （3）RestController，Restful根控制器。引入了Rest架构的控制器。请参考<a href="Restful控制器.html">Rest控制器</a>。
+         （4）TaskController，命令行定时任务控制器。
+</pre>
+<ul id="browser1" class="filetree">
+    <li><span class="folder">library</span>
+        <ul>
+            <li><span class="folder">Base</span>
+                <ul>
+                    <li><span class="file">ApiController.php（异步API调用根控制器）</span></li>
+                    <li><span class="file">CommonController.php（同步渲染根控制器）</span></li>
+                    <li><span class="file">RestController.php（Restful根控制器）</span></li>
+                    <li><span class="file">TaskController.php（命令行定时任务根控制器）</span></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+<pre>
+         如下代码：
+<pre class="brush: php;">
+/**
+ * 异步API调用根控制器
+ */
+namespace Base\Controller;
+
+use Ocara\Controllers\Api;
+
+class ApiController extends Api
+{
+    /**
+     * 初始化函数
+     */
+	public function __start()
+	{
+	}
+}
+</pre>
+         其中，<span class="STYLE1">__start()</span>方法是初始化函数，建议不要用__construct()。这里写根控制器的初始化代码。
+
+<strong>3、模块</strong>
+    （1）模块类
+           模块在Ocara中也视为一个控制器，所以也要继承根控制器。
+           整个应用全局也算是一个模块，它的控制器都在application/controller目录，其中的Module文件就是模块类。
+           其他普通模块的控制器都在application/modules/模块名/controller目录，其中也存在模块名+Module的模块类。
+           请参见<a href="模块的使用.html">模块的使用</a>
+<pre>
+    <ul id="browser_module" class="filetree">
+	<li><span class="folder">application</span>
+	<ul>
+		<li><span class="folder">modules</span>
+		<ul>
+		<li><span class="folder">admin（admin模块目录）</span>
+			  <ul>
+					<li><span class="folder">controller</span>
+						<ul>
+							<li><span class="folder">item（item控制器目录）</span></li>
+                            <li><span class="folder">order（order控制器目录）</span></li>
+                            <li><span class="folder">user（user控制器目录）</span></li>
+							<li><span class="file">AdminModule.php（模块文件）</span></li>
+						</ul>
+					</li>
+                  <li><span class="folder">privates</span>
+                    <ul>
+                        <li><span class="folder">config（config控制器目录）</span></li>
+                        <li><span class="folder">lang（lang控制器目录）</span></li>
+                        <li><span class="folder">model（model控制器目录）</span></li>
+                        <li><span class="folder">entities（entities控制器目录）</span></li>
+                        <li><span class="folder">values（values控制器目录）</span></li>
+                    </ul>
+                  </li>
+                  <li><span class="folder">services</span></li>
+                  <li><span class="folder">view</span>
+                    <ul>
+                        <li><span class="folder">defaults（默认模板风格目录）</span></li>
+                    </ul>
+                  </li>
+			  </ul>
+		</li>
+		</ul>
+	</ul>
+    </li>
+    </ul>
+</pre>
+           以下是模块类AdminModule类的示例：
+<pre class="brush: php;">
+namespace app\modules\admin\controller;
+
+use Base\Controller\CommonController;
+
+class AdminModule extends CommonController
+{
+    /**
+     * 初始化模块
+     */
+    public function __module()
+    {
+        $this->response->setHeader("Content-type: text/html; charset=utf-8");
+        $this->setLayout('admin'); //切换成admin.php布局文件
+    }
+}
+</pre>
+        其中，<span class="STYLE1">__module()</span>是模块的初始化函数，建议不要用__construct()。这里写模块的初始化代码。
+
+<strong>4、具体的控制器</strong>
+         （1）全局控制器
+                  全局控制器和它的Action都放在appalication/controller目录，都继承于其中的Module模块类。
+                  目录结构如下实例：
+</pre>
+<ul id="browser2" class="filetree">
+    <li><span class="folder">controller（controller目录）</span>
+        <ul>
+            <li><span class="file">Module.php（全局模块文件）</span></li>
+            <li><span class="folder">Home（home控制器目录）</span>
+                <ul>
+                    <li><span class="file">Controller.php（home控制器主文件）</span></li>
+                    <li><span class="file">IndexAction.php（index动作文件）</span></li>
+                </ul>
+            </li>
+            <li><span class="folder">Order（order控制器目录）</span></li>
+            <li><span class="folder">User（user控制器目录）</span></li>
+            <li><span class="folder">Admin（admin模块目录）</span></li>
+        </ul>
+    </li>
+</ul>
+<pre>
+         （2）模块子控制器
+                  模块的子控制器和它的Action都放在application/modules/模块名/controller目录名，都继承于其中的模块名+Module模块类，如AdminModule。
+
+         （3）控制器类
+                  控制器文件定义了控制器类，并且必须继承于模块类。
+                      （a）初始化方法__control()
+                                该方法是控制器的初始化函数，控制器的所有动作执行前执行。
+                      （b）控制器动作方法
+                                控制器动作可以独立成类如IndexController，也可以直接写在控制器中，格式为动作名+Action，如indexAction，请参考<a href="动作Action的使用.html">动作Action的使用</a>。
+                      （c）实例
+                                home控制器类定义如下：
+<pre class="brush: php;">
+/**
+ * 普通的控制器
+ */
+namespace app\controller\home;
+
+use app\controller\Module;
+
+class HomeController extends Module
+{
+    //初始化函数
+	public function __control()
+	{
+        //这里填写home控制器的初始化代码，其下的所有动作都会执行
+    }
+}
+</pre>
+                  其中，<span class="STYLE1">__control()</span>是控制器的初始化函数，建议不要用__construct()。
+</pre>
+</body></html>

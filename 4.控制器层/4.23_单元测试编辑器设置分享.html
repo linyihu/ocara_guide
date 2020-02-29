@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.23 单元测试编辑器设置分享</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushBash.js"></script>
+<script src="../treeview/lib/jquery.js" type="text/javascript"></script>
+<script src="../treeview/lib/jquery.cookie.js" type="text/javascript"></script>
+<script src="../treeview/jquery.treeview.js" type="text/javascript"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<link rel="stylesheet" href="../treeview/jquery.treeview.css" />
+<link type="text/css" rel="stylesheet" href="../style/plugin.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $("#browser").treeview({
+        persist: "location",
+        collapsed: false,
+        unique: true
+    });
+});
+</script>
+</head><body><pre><h2>4.23 单元测试编辑器配置方法分享</h2>
+
+        这里分享phpstorm编辑器下载和设置phpunit的方法。
+        主要分两步：
+                首先，下载phpunit.phar文件。没有下载也可以在配置时点击链接下载。
+                然后，要指定php执行脚本路径。
+                最后，下载phpunit并配置启动文件。
+
+<strong>一、下载phpunit.phar</strong>
+        1、点击<a href="http://www.phpunit.cn/manual/current/zh_cn/index.html" target="_blank" >http://www.phpunit.cn/manual/current/zh_cn/index.html</a>文档安装教程下载php版本的phar文件。
+
+<strong>二、指定php执行脚本路径</strong>
+        1、打开设置对话框，选择Language & Frameworks - PHP。选择语言版本，并点击CLI Interpreter右边的三点按钮。
+
+                <img src="../style/images/单元测试一.png" alt="单元测试一" height="700"/>
+
+        2、进入对话框中，点击左上角+号，选择Local Path to Interpreter。
+
+                <img src="../style/images/单元测试二.png" alt="单元测试二" height="700"/>
+
+        3、在PHP executable点击右侧文件夹按钮，在弹出框中找到需要使用的PHP版本脚本的执行文件php.exe。
+
+                <img src="../style/images/单元测试三.png" alt="单元测试三" height="700"/>
+
+        4、选中结果如下图。不要有报错，有报错说明选中的文件或版本不对。然后点击确定。
+
+                <img src="../style/images/单元测试四.png" alt="单元测试四" height="700"/>
+
+<strong>三、下载phpunit并配置启动文件</strong>
+        1、在设置对话框中，进行Language & Frameworks - PHP - Test Frameworks。然后点击左上角+号，选择PHPUnit Local。
+                <img src="../style/images/单元测试五.png" alt="单元测试五" height="700"/>
+        2、选择PHPUnit library为Path to phpunit.phar，并在弹出的对话框中选择下载的phpunit.phar路径，没有手动下载时点击Download phpunit.phar from https://phar.phpunit.de/phpunit.phar下载也行。
+                <img src="../style/images/单元测试六.png" alt="单元测试六" height="700"/>
+        3、选好以后，再在下面的Test Runner选中Default bootstrap file为当前应用根目录中的bootstrap.php文件。然后点击确定。
+
+                <img src="../style/images/单元测试七.png" alt="单元测试七" height="700"/>
+
+        4、顺利的话便可以在单元测试文件中的某个函数内部右击选择Run或Debug进行测试。
+
+                <img src="../style/images/单元测试编辑器执行.png" alt="单元测试编辑器执行" height="700"/>
+</pre>
+</body></html>

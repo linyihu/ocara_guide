@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>6.3 模板区块</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>6.3 模板区块（Part）</h2>
+
+<strong>1、什么是模板区块</strong>
+      模板区块就是多个模板文件复用的代码块。
+</pre>
+
+<pre>
+      
+<strong>2、如何新建模板区块</strong>
+      新建模板区块，只要模板目录下part目录新建区块文件即可，也可以分目录保存，在调用的时候注意路径即可。
+
+            <img src="../style/images/模板区块目录.png" />
+
+<strong>3、如何调用模板区块</strong>
+      调用模板区块，要使用视图的showPart()方法。
+      格式如下：
+            <span class="STYLE1">showPart(path[, template])</span>
+      参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr> 
+		<td>path</td>
+		<td>必需。文件路径。是part目录下的相对路径。</td>
+	</tr>
+	<tr>
+		<td>template</td>
+		<td>可选。模板风格目录，默认为default。</td>
+	</tr>
+</table>
+<pre>
+
+<h2>应用实例</h2>
+     
+       实例参见<a href="页面布局.html"><strong>页面布局应用实例  </strong></a>
+</pre>
+</body>
+</html>
