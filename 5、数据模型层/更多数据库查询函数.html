@@ -253,7 +253,7 @@ $userInfo = $itemModel->where(1)
 <pre class="brush: php;">
 $itemModel = new \app\model\database\Item();
 $itemModel->where(array('id'=>1))
-		  ->moreWhere(&quot;IF(status = '0', 0, 1)&quot;, 'AND')
+		  ->moreWhere(&quot;IF(status = '0', 0, 1)&quot;, 'OR')
 	 	  ->getRow();
 </pre>
              生成的条件结果为“id = '1' AND IF(status = '0', 0, 1)”的条件。
