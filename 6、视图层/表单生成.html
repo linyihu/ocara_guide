@@ -112,7 +112,7 @@
 			->model('app\model\database\ItemModel', 'item'); //增加item表的字段验证规则
 
 		//如果是POST提交，则进行表单填写校验
-		if (Request::isPost()) {
+		if ($this->request->isPost()) {
 	        //校验表单是否过期
 			$this->checkForm();
 			//表单字段验证

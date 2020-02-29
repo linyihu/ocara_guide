@@ -103,7 +103,7 @@ class IndexAction extends UserController
 	public function display()
 	{
         //获取用户组ID
-        $userGroupId = Request::getGet('user_group_id');
+        $userGroupId = $this->request->getGet('user_group_id');
 
         //分库分表规则数据
 		$shardingData = array(

@@ -2,26 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>2.4-ÁôÑÔÉ¾³ı</title>
+<title>2.4-ç•™è¨€åˆ é™¤</title>
 <script type="text/javascript" src="../../syntax/scripts/shCore.js"></script>
 <script type="text/javascript" src="../../syntax/scripts/shBrushPhp.js"></script>
 <link type="text/css" rel="stylesheet" href="../../style/base.css" />
 <link type="text/css" rel="stylesheet" href="../../syntax/styles/shCoreDefault.css"/>
 <script type="text/javascript">SyntaxHighlighter.all();</script>
 </head>
-<body><pre><h2>2.3-ºóÌ¨¹ÜÀíÁôÑÔ</h2>
-       ÉÏÒ»½ÚºóÌ¨¹ÜÀíÁôÑÔµÄÁĞ±íÒ³ÃæÖĞ£¬Ã¿ÌõÁôÑÔÓÒ±ß¶¼ÓĞÒ»¸öÉ¾³ıµÄ³¬Á´½Ó¡£
-ÒªÉ¾³ıÁôÑÔ£¬µã»÷¸ÃÁ´½Ó£¬Í¨¹ıAJAXºóÌ¨É¾³ıÕâÌõ¼ÇÂ¼£¬È»ºóË¢ĞÂµ±Ç°ÁĞ±íÒ³¡£
+<body><pre><h2>2.3-åå°ç®¡ç†ç•™è¨€</h2>
+       ä¸Šä¸€èŠ‚åå°ç®¡ç†ç•™è¨€çš„åˆ—è¡¨é¡µé¢ä¸­ï¼Œæ¯æ¡ç•™è¨€å³è¾¹éƒ½æœ‰ä¸€ä¸ªåˆ é™¤çš„è¶…é“¾æ¥ã€‚
+è¦åˆ é™¤ç•™è¨€ï¼Œç‚¹å‡»è¯¥é“¾æ¥ï¼Œé€šè¿‡AJAXåå°åˆ é™¤è¿™æ¡è®°å½•ï¼Œç„¶ååˆ·æ–°å½“å‰åˆ—è¡¨é¡µã€‚
   
-<strong>1¡¢Ìí¼ÓJS</strong>
-      ÔÚJS¸ùÄ¿Â¼/public/jsÏÂÃæÌí¼Ójquery¿ò¼ÜÎÄ¼ş£¬±¾ÀıÖĞÌí¼ÓÁËjquery-1.8.3.js¡£
-      ÔÙÌí¼Óbase.js£¬ÔÚÆäÖĞÌí¼Ó±¾¿ò¼ÜËùÌá¹©µÄocUrl()µÄJSº¯Êı£¬ÒÔ·½±ãÔÚJSÖĞÉú³ÉURL£¬ÈçÏÂ´úÂë£º
+<strong>1ã€æ·»åŠ JS</strong>
+      åœ¨JSæ ¹ç›®å½•/public/jsä¸‹é¢æ·»åŠ jqueryæ¡†æ¶æ–‡ä»¶ï¼Œæœ¬ä¾‹ä¸­æ·»åŠ äº†jquery-1.8.3.jsã€‚
+      å†æ·»åŠ base.jsï¼Œåœ¨å…¶ä¸­æ·»åŠ æœ¬æ¡†æ¶æ‰€æä¾›çš„ocUrl()çš„JSå‡½æ•°ï¼Œä»¥æ–¹ä¾¿åœ¨JSä¸­ç”ŸæˆURLï¼Œå¦‚ä¸‹ä»£ç ï¼š
 <pre class="brush: php;">
 /*
-  * Ocara-JavascriptĞÂ½¨URL
-  * @param integer 		  url_type URLÀàĞÍ£¬¶ÔÓ¦ÅäÖÃÎÄ¼şÖĞµÄÉèÖÃ
-  * @param string or array controller ¿ØÖÆÆ÷Ãû³Æ£¬Èç¹ûÓĞmodule,Ê¹ÓÃÊı×énew Array(moduleÃû, controllerÃû)
-  * @param string 		  action ¶¯×÷Ãû³Æ
+  * Ocara-Javascriptæ–°å»ºURL
+  * @param integer 		  url_type URLç±»å‹ï¼Œå¯¹åº”é…ç½®æ–‡ä»¶ä¸­çš„è®¾ç½®
+  * @param string or array controller æ§åˆ¶å™¨åç§°ï¼Œå¦‚æœæœ‰module,ä½¿ç”¨æ•°ç»„new Array(moduleå, controllerå)
+  * @param string 		  action åŠ¨ä½œåç§°
   * @param array			  param 
   */
 function ocUrl(url_type, controller, action, param){
@@ -41,7 +41,7 @@ function ocUrl(url_type, controller, action, param){
         url = '/' + str + mstr + c + '/' + action;
     } else {
         var mstr = m ? &quot;m=&quot; + m + &quot;&amp;&quot; : '';
-        url = &quot;/index.php?&quot; + mstr + &quot;c=&quot; + c +¡¡&quot;&amp;a=&quot; + action;
+        url = &quot;/index.php?&quot; + mstr + &quot;c=&quot; + c +ã€€&quot;&amp;a=&quot; + action;
     }
 	
     if(typeof param == 'object') {
@@ -54,11 +54,11 @@ function ocUrl(url_type, controller, action, param){
     return url;
 }
 </pre>
-       ÔÚJSÄ¿Â¼admin/guestbookÏÂÃæÌí¼Óindex.js£¬ÔÚÆäÖĞÌí¼ÓdeleteRecord()º¯Êı£¬ÓÃÓÚÉ¾³ıÁ´½Óµ÷ÓÃAJAXÌá½»É¾³ıÁôÑÔ£¬´úÂëÈçÏÂ£º
+       åœ¨JSç›®å½•admin/guestbookä¸‹é¢æ·»åŠ index.jsï¼Œåœ¨å…¶ä¸­æ·»åŠ deleteRecord()å‡½æ•°ï¼Œç”¨äºåˆ é™¤é“¾æ¥è°ƒç”¨AJAXæäº¤åˆ é™¤ç•™è¨€ï¼Œä»£ç å¦‚ä¸‹ï¼š
 <pre class="brush: php;">
 function deleteRecord(delId)
 {
-	if (confirm('È·¶¨ÒªÉ¾³ıÂğ£¿')) {
+	if (confirm('ç¡®å®šè¦åˆ é™¤å—ï¼Ÿ')) {
 		var url = ocUrl(2, new Array('admin', 'guestbook'), 'delete');
 
 		$.post(
@@ -66,10 +66,10 @@ function deleteRecord(delId)
 			{id: delId},
 			function(data){
 				if (data.status == 'success') {
-					alert('²Ù×÷³É¹¦£¡');
+					alert('æ“ä½œæˆåŠŸï¼');
 					location.reload();
 				} else {
-					alert('¡¾'+data.data.code+'¡¿' + data.message);
+					alert('ã€'+data.data.code+'ã€‘' + data.message);
 				}
 				return false;
 			}
@@ -77,33 +77,33 @@ function deleteRecord(delId)
 	}
 }
 </pre>
-        È»ºó£¬ÔÚ²¼¾ÖÎÄ¼şadmin.phpÖĞµ÷ÓÃjquery-1.8.3.jsºÍbase.jsÎÄ¼ş£¬ÈçÏÂ£º
+        ç„¶åï¼Œåœ¨å¸ƒå±€æ–‡ä»¶admin.phpä¸­è°ƒç”¨jquery-1.8.3.jså’Œbase.jsæ–‡ä»¶ï¼Œå¦‚ä¸‹ï¼š
 <pre class="brush: php;">
 $this->load(array('jquery-1.8.3.min.js', 'base.js'));
-</pre>        ÔÚindex¶¯×÷µÄÄ£°åÎÄ¼şÖĞµ÷ÓÃindex.js£¬ÈçÏÂ£º
+</pre>        åœ¨indexåŠ¨ä½œçš„æ¨¡æ¿æ–‡ä»¶ä¸­è°ƒç”¨index.jsï¼Œå¦‚ä¸‹ï¼š
 <pre class="brush: php;">
 $this->load(array('admin/guestbook/index.js'));
 </pre>
-<strong>2¡¢ÔÚÉ¾³ıÁ´½ÓÌí¼Óµ÷ÓÃº¯Êı</strong>
-      ÉÏ½ÚÖĞÒÑ¾­Ìí¼ÓÁËÉ¾³ıÁ´½Ó£¬Ò²Ìí¼ÓÁËº¯Êıµ÷ÓÃ¡£
+<strong>2ã€åœ¨åˆ é™¤é“¾æ¥æ·»åŠ è°ƒç”¨å‡½æ•°</strong>
+      ä¸ŠèŠ‚ä¸­å·²ç»æ·»åŠ äº†åˆ é™¤é“¾æ¥ï¼Œä¹Ÿæ·»åŠ äº†å‡½æ•°è°ƒç”¨ã€‚
   
-<strong>3¡¢±àĞ´AJAXºóÌ¨´úÂë</strong>
-      ÔÚ¿ª·¢ÕßÖĞĞÄÌí¼Ódelete¶¯×÷£¬²¢ÔÚÆäÖĞÌí¼Óajax()·½·¨£¬ÔÚÆäÖĞ±àĞ´ºóÌ¨´úÂë£¬ÈçÏÂ£º
+<strong>3ã€ç¼–å†™AJAXåå°ä»£ç </strong>
+      åœ¨å¼€å‘è€…ä¸­å¿ƒæ·»åŠ deleteåŠ¨ä½œï¼Œå¹¶åœ¨å…¶ä¸­æ·»åŠ api()æ–¹æ³•ï¼Œåœ¨å…¶ä¸­ç¼–å†™åå°ä»£ç ï¼Œå¦‚ä¸‹ï¼š
 <pre class="brush: php;">
 class DeleteAction extends GuestbookController
 {
 	/**
-	 * ³õÊ¼»¯
+	 * åˆå§‹åŒ–
 	 */
 	public function __action(){}
 
-	public function ajax()
+	public function api()
 	{
-		$id = Request::getPost('id');
+		$id = $this->request->getPost('id');
 		$model = \app\model\database\Guestbook::build()->select($id);
 
 		if (empty($ret)) {
-			$this->ajaxReturn('error', 'ÕÒ²»µ½¸Ã¼ÇÂ¼£¡', '255');
+			$this->ajaxReturn('error', 'æ‰¾ä¸åˆ°è¯¥è®°å½•ï¼', '255');
 		} else {
 			$model->delete();
 			$this->ajaxReturn('success');
