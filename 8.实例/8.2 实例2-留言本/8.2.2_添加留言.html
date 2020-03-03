@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>8.2.2 添加留言</title>
+	<script type="text/javascript" src="../../syntax/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../syntax/scripts/shBrushPhp.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../style/base.css" />
+	<link type="text/css" rel="stylesheet" href="../../syntax/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+<body><pre><h2>8.2.2 添加留言</h2>
+
+       上节已经说到新建控制器guestbook，其中自动生成的index动作，我们就作为添加留言的页面。
+
+<strong>1、 生成表单和模板变量</strong>
+       在indexAction中添加registerForms()方法生成表单，同时设置模板变量title为“添加留言”，使页面标题栏显示为添加留言。
+
+<pre class="brush: php;">
+namespace app\controller\guestbook;
+
+class IndexAction extends Controller
+{
+	/**
+	 * 初始化
+	 */
+	protected function __action()
+	{}
+
+	/**
+	 * 表单注册
+	 */
+	public function registerForms()
+	{
+        $this->form('form_edit')
+             ->init(ocUrl('/guestbook/index'));
+    }
+
+	/**
+	 * GET输出
+	 */
+	public function display()
+	{
+	    $vars = array('title' => '添加留言');
+	    $this->assign($vars);
+	}
+
+	/**
+	 * 提交后处理
+	 */
+	public function submit()
+	{}
+
+	/**
+	 * Ajax处理
+	 */
+	public function api()
+	{}
+}
+</pre>
+
+<strong>2、 新建表单HTML</strong>
+       在模板文件中添加HTML代码，使用$form_edit调用表单对象。
+<pre class="brush: php;">
+&lt;?php echo $form_edit-&gt;begin();?&gt;
+  &lt;table width=&quot;798&quot; border=&quot;0&quot;&gt;
+    &lt;tr&gt;
+      &lt;td height=&quot;42&quot; colspan=&quot;2&quot;&gt;请留言：&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td width=&quot;119&quot; height=&quot;46&quot;&gt;您的联系方式：&lt;/td&gt;
+      &lt;td width=&quot;669&quot;&gt;
+        &lt;label&gt;
+          &lt;?php echo $form_edit-&gt;text(&#x27;telephone&#x27;);?&gt;&lt;/label&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td height=&quot;48&quot;&gt;留言：&lt;/td&gt;
+      &lt;td&gt;
+        &lt;label&gt;
+          &lt;?php echo $form_edit-&gt;textarea(&#x27;content&#x27;);?&gt;&lt;/label&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td height=&quot;48&quot;&gt;&amp;nbsp;&lt;/td&gt;
+      &lt;td&gt;
+        &lt;label&gt;
+          &lt;input type=&quot;submit&quot; name=&quot;Submit&quot; value=&quot;提交&quot; /&gt;
+          &lt;input type=&quot;reset&quot; name=&quot;Submit2&quot; value=&quot;重置&quot; /&gt;&lt;/label&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+  &lt;?php echo $form_edit-&gt;end();?&gt;
+</pre>
+
+	       打开页面可以看到：
+
+              <img src="../../style/images/example2/添加留言页面.png"/>
+
+<strong>3、提交保存</strong>
+
+      在表单中添加联系方式和内容，然后点提交按钮可以保存数据。
+
+      （1）在application/service目录手动添加一个GuestbookService类来处理业务逻辑；
+
+<pre class="brush: php;">
+namespace app\service;
+
+use app\model\entity\database\GuestbookEntity;
+
+class GuestbookService extends BaseService
+{
+    /**
+     * 添加一行
+     * @param $data
+     * @return mixed
+     */
+    public function addRow($data)
+    {
+        $entity = GuestbookEntity::build();
+        $entity->data($data);
+        return $entity->save();
+    }
+}
+</pre>
+
+	（2）在indexAction中添加submit()方法，保存数据。
+
+<pre class="brush: php;">
+namespace app\controller\guestbook;
+
+use app\service\GuestbookService;
+
+class IndexAction extends Controller
+{
+	/**
+	 * 初始化
+	 */
+	protected function __action()
+	{}
+
+	/**
+	 * 表单注册
+	 */
+	public function registerForms()
+	{
+        $this->form('form_edit')
+             ->init(ocUrl('/guestbook/index'));
+    }
+
+	/**
+	 * GET输出
+	 */
+	public function display()
+	{
+	    $vars = array('title' => '添加留言');
+	    $this->assign($vars);
+    }
+
+	/**
+	 * 提交后处理
+	 */
+	public function submit()
+	{
+        $data = $this->request->getPost();
+        $this->validator
+            ->addRule('telephone', 'notEmpty') //校验联系电话
+            ->addRule('content', 'notEmpty') //校验留言内容
+            ->validate($data);
+
+        $result = GuestbookService::build()->addRow($data);
+        return $result;
+    }
+
+	/**
+	 * Ajax处理
+	 */
+	public function ajax()
+	{}
+}
+</pre>
+</pre>
+</body>
+</html>

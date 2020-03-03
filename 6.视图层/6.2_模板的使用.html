@@ -105,7 +105,56 @@ class ListAction extends Controller
       （3）输出admin模块item控制器create动作模板目录下的test3模板文件
 <pre class="brush: php;">$this->renderFile('/admin/item/create/test3'); </pre>
 
-<strong>5、模板中如何调用View的函数</strong>
+<pre>
+<strong>5、设置模板变量</strong>
+      PHP要向模板传递变量时，需要用控制器动作或者view()的assign()方法来设置。
+              <span class="STYLE1">assign(name[, value])</span>
+      参数说明：
+</pre>
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>必填。变量名称或者变量关联数组。</td>
+    </tr>
+    <tr>
+        <td>value</td>
+        <td>可选。变量值。如果name参数是一个变量名，这个value有效；否则如果name是一个变量数组，value无效。</td>
+    </tr>
+</table>
+
+<pre class="brush: php;">
+namespace app\controller\guestbook;
+
+use app\service\GuestbookService;
+
+class IndexAction extends Controller
+{
+	/**
+	 * 初始化
+	 */
+	protected function __action()
+	{}
+
+	/**
+	 * GET输出
+	 */
+	public function display()
+	{
+        //使用键值设置
+        $this->assign('telephone_desc', '手机号');
+
+        //使用变量数组设置
+	    $vars = array('title' => '添加留言');
+	    $this->assign($vars);
+    }
+}
+</pre>
+
+<strong>6、模板中如何调用View的函数</strong>
 （1）使用PHP文件模板时
       直接使用$this调用即可。
       比如，我们要加载模板片段head.php，假设用的是defaults默认风格，则该文件是view/defaults/template/part/head.php。
@@ -116,7 +165,7 @@ class ListAction extends Controller
       比如我们使用smarty模板引擎时，则调用如下：
 <pre class="brush: php;">&lt;div&gt;&lt;{$View->showPart('head')}&gt;&lt;/div&gt;</pre>
 
-<strong>6、模板文件的嵌套</strong>
+<strong>7、模板文件的嵌套</strong>
       有时候在某个模板文件中，我们要嵌套使用别的模板文件，要使用View的showTpl()方法，格式如下：
              <span class="STYLE1">showTpl([file])</span>
       参数说明：

@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>8.2.3 后台管理留言</title>
+<script type="text/javascript" src="../../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../../syntax/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="../../syntax/scripts/shBrushXml.js"></script>
+<link type="text/css" rel="stylesheet" href="../../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+<body><pre><h2>8.2.3 后台管理留言</h2>
+
+<strong>1、新建后台模块</strong>
+      进入开发者中心，选择“普通模块（modules）”，“普通控制器”，添加名称为admin的模块，请参考<a href="../../2.开发者中心/2.2_添加模块.html">添加模块</a>。
+
+            <img src="../../style/images/example2/新建admin模块目录.png"/>
+
+<strong>2、添加控制器</strong>
+      进入开发者中心，选择“普通模块（modules）”，添加名称为admin/guestbook的控制器。会在application/modules/admin/controller新建guestbook控制器目录。
+
+            <img src="../../style/images/example2/添加后台控制器.png"/>
+
+<strong>3、新建布局</strong>
+      添加留言是在前台，使用的是layout.php作为布局文件。
+      后台管理这里，要在模块目录的view下面手动新建一个布局文件，我们定名为admin.php。
+      只要在application/view/layout手动添加admin.php文件。
+
+<pre class="brush: html;">
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+    &lt;title&gt;后台管理&lt;/title&gt;
+    &lt;?php
+    $this-&gt;load(array(&#x27;jquery-1.8.3.min.js&#x27;, &#x27;base.js&#x27;));
+    ?&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div class=&quot;header&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;main&quot;&gt;
+    &lt;?php
+    $this-&gt;showTpl();
+    ?&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;footer&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+      然后在admin模块文件中的__module()初始化函数中添加如下代码，修改layout为admin。
+
+<pre class="brush: php;">
+namespace app\modules\admin\controller;
+
+use Base\Controller\CommonController;
+
+class AdminModule extends CommonController
+{
+	/**
+	 * 初始化模块
+	 */
+	public function __module()
+	{
+        $this->setLayout('admin');
+    }
+}
+</pre>
+  
+<strong>4、查询并处理数据</strong>
+      （1）在模块目录的service目录手动添加BaseService和GuestbookService
+            BaseService代码：
+
+<pre class="brush: php;">
+namespace app\modules\admin\service;
+
+use Base\Service\CommonService;
+
+class BaseService extends CommonService
+{}
+</pre>
+
+            GuestbookService代码：
+
+<pre class="brush: php;">
+namespace app\modules\admin\service;
+
+use app\model\database\GuestbookModel;
+
+class GuestbookService extends BaseService
+{
+    /**
+     * 搜索
+     * @param array $search
+     * @return mixed
+     */
+    public function getList($search = array())
+    {
+        $condition = array();
+        $model = GuestbookModel::build();
+
+        //手机号搜索
+        if (!empty($search['telephone'])) {
+            $condition['telephone'] = $search['telephone'];
+        }
+
+        //分页设置
+        $pageInfo = $this->pager->getInfo();
+
+        //查询数据
+        $result = $model
+            ->where($condition)
+            ->page($pageInfo)
+            ->getAll();
+
+        return $result;
+    }
+}
+</pre>
+      （2）添加搜索动作类
+
+            新建一个form_search的搜索表单，因为该表单可以多次刷新使用不需要验表单，所以要加上checkForm(false)禁掉验证表单令牌。
+
+<pre class="brush: php;">
+namespace app\modules\admin\controller\guestbook;
+
+use app\modules\admin\service\GuestbookService;
+
+class IndexAction extends Controller
+{
+	/**
+	 * 初始化
+	 */
+	protected function __action()
+	{
+        //搜索列表不需要验证表单
+        $this->isCheckForm(false);
+    }
+
+	/**
+	 * 表单注册
+	 */
+	public function registerForms()
+	{
+        $this->form('form_search')
+             ->init(ocUrl('/admin/guestbook/index'));
+    }
+
+	/**
+	 * GET输出
+	 */
+	public function display()
+	{
+        $result = GuestbookService::build()->getList();
+        $data 	= $result['data'];
+        $total 	= $result['total'];
+
+        $curRoute = $this->getRoute();
+        $curGet   = $this->request->getGet();
+
+        //生成分页HTML
+        $this->pager->setHtml($total, array($curRoute, $curGet));
+
+        //设置模板变量
+        $pager = $this->pager;
+        $this->assign(compact('pager', 'data'));
+    }
+
+	/**
+	 * Ajax处理
+	 */
+	public function api()
+	{
+        $result = $this->getList();
+        $data 	= $result['data'];
+        $total 	= $result['total'];
+        return $data;
+    }
+</pre>
+
+<strong>5、模板内容</strong>
+      在application/modules/admin/defaults/template/guestbook下面会自动新建index.php模板文件。
+
+<pre class="brush: php;">
+ &lt;?php
+$this-&gt;load(array(&#x27;admin/guestbook/index.js&#x27;));
+?&gt;
+ &lt;div class=&quot;search&quot;&gt;
+ &lt;?php echo $form_search-&gt;begin();?&gt;联系电话：
+	  &lt;input type=&quot;text&quot; name=&quot;telphone&quot; /&gt;&amp;nbsp;
+	  &lt;input type=&quot;submit&quot; name=&quot;Submit&quot; value=&quot;搜索&quot; /&gt;
+	 &lt;?php echo $form_search-&gt;end();?&gt;
+  &lt;/div&gt;
+  &lt;table width=&quot;100%&quot; border=&quot;0&quot;&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;ID&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;联系手机&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;留言内容&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;操作&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+
+	  &lt;?php foreach ($data as $row) {?&gt;
+	  &lt;tr&gt;
+      &lt;td&gt;&lt;?=$row[&#x27;id&#x27;]?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?=$row[&#x27;telephone&#x27;]?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?=$row[&#x27;content&#x27;]?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;javascript:;&quot; onclick=&quot;deleteRecord(&lt;?=$row[&#x27;id&#x27;]?&gt;)&quot;&gt;删除&lt;/a&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+	  &lt;?php } ?&gt;
+
+	  &lt;tr&gt;
+      &lt;td colspan=&quot;4&quot; align=&quot;right&quot;&gt;&lt;?php echo $pager-&gt;html;?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+</pre>
+
+      在浏览器访问：
+
+            <img src="../../style/images/example2/后台列表.png"/>
+</pre>
+</body>
+</html>
