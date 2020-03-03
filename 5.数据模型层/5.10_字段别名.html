@@ -54,7 +54,7 @@ class UserModel extends DatabaseModel
       <strong>（1）别名可以返回给前端使用</strong>
               查询结果会把字段名转成别名。
  <pre class="brush: php;">
-$user = new \app\dal\models\Users();
+$user = new UsersModel();
 $result = $user->where(array('user_name' => 'Jim'))
      ->fields('user_name') //会自动变成：user_name AS userName
      ->fields(array('password'))
@@ -87,7 +87,7 @@ $data = array(
       'password' => '123456'
 );
 
-$user = new \app\dal\models\Users();
+$user = new UsersModel();
 $user->data($data)->save();
 </pre>
       <strong>（3）别名作为查询条件</strong>

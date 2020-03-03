@@ -76,10 +76,10 @@ $userEntity = \app\model\entity\database\UserEntity::build()->selectFrom($where)
 </pre>
       （2）新建实体模型，导入POST数据
              使用data()方法不传参数，框架会自动查表获取POST数据。
-<pre class="brush: php;">$userModel= new \app\dal\models\User();
+<pre class="brush: php;">$userModel= new UsersModel();
 $userModel->data();</pre>
        （3）新建实体模型，导入指定数组数据
-<pre class="brush: php;">$userEntity= new \app\model\entity\database\UserEntity();
+<pre class="brush: php;">$userEntity= new UsersEntity();
 $data = array(
      'user_name' => 'test',
      'email'  =>   'test@163.com'

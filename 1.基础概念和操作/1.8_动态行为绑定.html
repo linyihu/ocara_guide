@@ -33,7 +33,7 @@
         其中name为绑定的方法函数的别名，function是可以回调的函数或方法。
 
 <pre class="brush: php;">
-$users = new \app\dal\models\Users;
+$users = new UsersModel;
 
 $userModel = $users->traits('getList', array('\app\services\BBsUsers', 'getList'))
                    ->traits('getDetail', array('\app\services\BlogUsers', 'getDetail'));

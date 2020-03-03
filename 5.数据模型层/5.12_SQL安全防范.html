@@ -149,7 +149,7 @@ class SqlFilter extends Middleware
     </tr>
 </table>
 <pre class="brush: php;">
-$userModel= new \app\dal\models\User();
+$userModel= new UsersModel();
 $userModel->select(1); //获取主键为1的记录数据
 $userModel->email = ocService()->filter->sql('newEmail@163".com'); //手动过滤，修改email
 

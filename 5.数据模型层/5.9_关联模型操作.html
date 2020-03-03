@@ -56,7 +56,7 @@ class UsersModel extends DatabaseModel
             //用户实名认证表关联
             'userVerify' => array(
                'hasOne', //关联关系类。一对一关联
-                '\app\dal\models\UserVerify', //关联表模型类名
+                '\app\model\database\UserVerifyModel', //关联表模型类名
                 'user_id', //关联字段
                 array('verify_status' => 2) //附加关联条件
             )
@@ -74,7 +74,7 @@ class UsersModel extends DatabaseModel
             （1）关联配置的键名userVerify为关联名，在使用时用于代替类名。
             （2）配置数组中有4个参数，分别介绍如下：
                   （a）hasOne，是关联关系类，一般包括一对一（hasOne）、一对多（hasMany）、多对一（belongsTo）。
-                  （b）\app\dal\models\UserVerify，是关联表模型类名。必需是命名空间，并且第一位必须是带根命名空间“\”。
+                  （b）\app\model\database\UserVerifyModel，是关联表模型类名。必需是命名空间，并且第一位必须是带根命名空间“\”。
                   （c）user_id, 是关联字段。如果关联的两个表都是同一个字段，可以写成一个字段。如果是两个字段，只要用英文逗号分开，比如：'user_id, uid'。
                   （d）array('verify_status' => 2)，是附加的关联条件数组或字符串，其实就是调用了Model类的where()方法并作为条件传入第一个参数。
 
@@ -90,7 +90,7 @@ class UsersModel extends DatabaseModel
             //用户实名认证表关联
             'userVerify' => array(
                'hasOne', //一对一关联
-                '\app\dal\models\UserVerify',
+                '\app\model\database\UserVerifyModel',
                 'user_id',
                 array(
                     'verify_status' => array('in', array(1, 3))
@@ -162,10 +162,10 @@ $userEntity->save(); //也可以用create()
 	{
         return array(
             'userVerify' => array(
-                'hasOne', '\app\dal\models\UserVerify', 'user_id', array('verify_status' => 2)
+                'hasOne', '\app\model\database\UserVerifyModel', 'user_id', array('verify_status' => 2)
             ),
             'userMoney' => array(
-                'hasMany', '\app\dal\models\UserMoney', 'user_id'
+                'hasMany', '\app\model\database\UserMoneyModel', 'user_id'
             ),
         );
 	}
