@@ -40,7 +40,7 @@
 </pre>
 <h2>SQL关键字过滤</h2>
 
-       框架为了安全起见，在使用数据模型Model的<a href="更多数据库查询函数.html">更多数据库查询函数</a>生成SQL语句时，会对SQL语句自动进行安全过滤。
+       框架为了安全起见，在使用数据模型Model的<a href="./5.7_更多数据库查询函数.html">更多数据库查询函数</a>生成SQL语句时，会对SQL语句自动进行安全过滤。
 
 <strong>（1）如何过滤？</strong>
          对于SQL语句关键部分，框架会执行以下两种处理：
@@ -183,7 +183,7 @@ $userModel->email = ocService()->filter->addSlashes('newEmail@163".com'); //手�
 
 <strong>（3）忽略安全过滤</strong>
          某些时候，可能SQL数据值不可以进行安全过滤，比如“count = count + 1”这种。
-         此时，我们可以使用ocSql()函数取消安全过滤，可参考<a href="/忽略SQL安全过滤.html">忽略SQL安全过滤</a>。
+         此时，我们可以使用ocSql()函数取消安全过滤，可参考<a href="./5.13_忽略SQL安全过滤.html">5.13_忽略SQL安全过滤</a>。
 </pre>
 
 <pre>

@@ -37,7 +37,7 @@ $container = ocService()->container;
 $response = ocService()->container->response;
 </pre>
      （2）私有容器
-            <a href="/服务提供器.html" title="服务提供器">ServiceProvider服务提供器</a>包含自己的私有容器。
+            <a href="4.5_服务提供器.html" title="4.5_服务提供器">服务提供器</a>包含自己的私有容器。
             在其内部可以使用“$this->属性名”方式获取私有容器对象，如果没有该对象，则去找全局容器中找。
             控制器动作也继承于ServiceProvider，所以也可以这样获取服务对象。
 

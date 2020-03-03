@@ -57,7 +57,7 @@ $("#browser_module").treeview({
      其中：
          （1）CommonController，同步渲染模式的普通控制器。
          （2）ApiController，异步API调用的控制器。
-         （3）RestController，Restful根控制器。引入了Rest架构的控制器。请参考<a href="Restful控制器.html">Rest控制器</a>。
+         （3）RestController，Restful根控制器。引入了Rest架构的控制器。请参考<a href="./4.15_Rest控制器模块.html">4.15_Rest控制器模块</a>。
          （4）TaskController，命令行定时任务控制器。
 </pre>
 <ul id="browser1" class="filetree">
@@ -101,7 +101,6 @@ class ApiController extends Api
            模块在Ocara中也视为一个控制器，所以也要继承根控制器。
            整个应用全局也算是一个模块，它的控制器都在application/controller目录，其中的Module文件就是模块类。
            其他普通模块的控制器都在application/modules/模块名/controller目录，其中也存在模块名+Module的模块类。
-           请参见<a href="模块的使用.html">模块的使用</a>
 <pre>
     <ul id="browser_module" class="filetree">
 	<li><span class="folder">application</span>
@@ -190,7 +189,7 @@ class AdminModule extends CommonController
                       （a）初始化方法__control()
                                 该方法是控制器的初始化函数，控制器的所有动作执行前执行。
                       （b）控制器动作方法
-                                控制器动作可以独立成类如IndexController，也可以直接写在控制器中，格式为动作名+Action，如indexAction，请参考<a href="动作Action的使用.html">动作Action的使用</a>。
+                                控制器动作可以独立成类如IndexController，也可以直接写在控制器中，格式为动作名+Action，如indexAction，请参考<a href="./4.9_动作Action的使用.html">4.9_动作Action的使用</a>。
                       （c）实例
                                 home控制器类定义如下：
 <pre class="brush: php;">
