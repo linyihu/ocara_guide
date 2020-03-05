@@ -1,0 +1,472 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>5.7 数据库查询</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body>
+<pre><h2>5.7 数据库查询</h2>
+
+<pre>
+<strong> 1、实体ORM模型主键查询</strong>
+       使用Entity的select()方法查询一条记录：
+            <span class="STYLE1">select([values, options])</span>
+       返回的是实体模型Entity对象。
+       参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>values</td>
+		<td>可选。主键值。如果是单字段主键，则直接传递该这字段值。如果是复合主键，以英文半解状态下的逗号“,”分隔。 
+		</td>
+	</tr>
+	<tr>
+		<td>options</td>
+		<td>可选。快捷选项数组。<br/>
+			可以是orderBy、groupBy、limit、having和more，分别对应Model类的同名方法函数。fields在这里是不允许的。<br/>
+			除此以处，实体模型可以直接调用Model的函数来设置条件，或者使用getModel()设置。
+	    </td>
+	</tr>
+</table>
+<pre>
+
+
+        （1）单字段主键
+                 查询主键id为1记录的username和email字段值
+</pre>
+<pre class="brush: php;">
+$userModel = UserEntity::build()->select(1, 'username, email');
+$result = $userModel->getData();
+</pre>
+        （2）复合主键
+                 DetailModel的主键$primary设置为'detail_id,line'。
+
+<pre class="brush: php;">
+	protected static $entity = 'app\model\entity\database\CallOrdersEntity';
+</pre>
+                 查询detail表中的复合主键detail_id为1、line为2的记录
+
+<pre class="brush: php;">
+//查询
+$result = DetailEntity::build()->select('1,2');
+</pre>
+        （3）查询选项
+                 按create_time降序排列，查询前100条记录的detail_id、line和price。
+                 假设detailModel已设置属性$primary为'detail_id,line'：
+
+<pre class="brush: php;">
+//查询选项
+$option = array(
+	'order' => 'create_time DESC',
+	'limit  => 100,
+);
+
+//查询结果
+$result = DetailEntity::build()->select('1,2', $option);
+</pre>
+        （4）使用Model的函数设置选项
+                 上例可以这样写：
+<pre class="brush: php;">
+$entity = DetailEntity::build();
+
+//直接调用Model的方法函数
+$entity
+	->orderBy('create_time DESC')
+	->limit(100);
+
+//也可以使用getModel()
+$entity
+	->getModel()
+	->orderBy('create_time DESC')
+	->limit(100);
+
+//查询
+$entity = $entity->select(1);
+</pre>
+
+<pre>
+<strong> 2、实体ORM模型条件查询</strong>
+       使用Entity的selectFrom()方法按条件查询一条记录：
+            <span class="STYLE1">selectFrom([condition, options])</span>
+       返回的是实体模型Entity对象。
+       参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>condition</td>
+		<td>可选。查询条件字符串或数组。对应Model的where()方法第一个参数，但不作为字段名。</td>
+	</tr>
+	<tr>
+		<td>options</td>
+		<td>可选。快捷选项数组。同上select()</td>
+	</tr>
+</table>
+
+                 按create_time降序排列，查询前100条记录的detail_id、line和price。
+                 假设detailModel已设置属性$primary为'detail_id,line'：
+
+<pre class="brush: php;">
+$where = array(
+	'detail_id' => 1,
+	'line' => 2
+);
+
+//查询选项
+$option = array(
+	'order' => 'create_time DESC',
+	'limit  => 100,
+);
+
+$result = DetailEntity::build()
+	->select($where, $option);
+</pre>
+
+<strong>2、查询多条记录</strong>
+     使用Model的getAll()或selectAll方法可以查询多行记录。
+            <span class="STYLE1">getAll([condition, option])</span>
+            <span class="STYLE1">selectAll([condition, option])</span>
+
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>condition</td>
+		<td>可选。快捷查询条件，字符串或键值数组。也可以用where()方法，这里只是在查询的时候再追加新的条件。 <br/>
+		</td>
+	</tr>
+	<tr>
+		<td>option</td>
+		<td>可选。可以是fields、orderBy、groupBy、limit、having和more，分别对应Model类的同名方法函数。</td>
+	</tr>
+</table>
+
+     两者的区别是：
+          （1）getAll返回的列表中每一条都是array数组或object对象列表。
+	           框架提供了以下函数设置返回类型：
+	           （a）asArray()：返回数组。默认是这个。
+	           （a）asObject()：返回简单对象。
+	           （a）asEntity()：返回与Model同名的Entity实例。
+
+<pre class="brush: php;">
+$userModel = UserModel::build()
+	->fields('user_id, status, sex')
+	->orderBy('create_time DESC')
+	->where('status', '=', 1);
+
+//返回简单object对象列表
+$userModel
+	->asObject()
+	->getAll();
+
+//返回简单array数组列表
+$userModel
+	//->asArray() //默认就是asArray()，也可以加上
+	->getAll();
+
+//返回同名的实体UserEntity列表
+$userModel
+	->asEntity()
+	->getAll();
+</pre>
+          （2）selectAll返回的列表中每一条都是与Model同名的实体模型Entity实例列表。
+
+<pre class="brush: php;">
+//返回同名的实体UserEntity列表
+$userModel = UserModel::build()
+	->fields('user_id, status, sex')
+	->orderBy('create_time DESC')
+	->where('status', '=', 1);
+	->selectAll();
+</pre>
+
+<strong>3、查询一条记录</strong>
+        使用Model的getRow()方法可以查询一条记录：
+               <span class="STYLE1">getRow([condition，option, debug])</span>
+               <span class="STYLE1">selectRow([condition，option, debug])</span>
+        两者的区别同上，只不过只返回一条记录。
+        参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>condition</td>
+		<td>可选。查询条件，同上。				
+		</td>
+	</tr>
+	<tr>
+		<td>option</td>
+		<td>可选。查询选项，同上。
+	    </td>
+	</tr>
+</table>
+
+<pre class="brush: php;">
+//返回object对象列表
+$userModel = UserModel::build()
+	->fields('user_id, status, sex')
+	->orderBy('create_time DESC')
+	->where('status', '=', 1);
+	->asObject()
+	->getRow();
+</pre>
+<pre class="brush: php;">
+//返回同名的实体UserEntity列表
+$userModel = UserModel::build()
+	->fields('user_id, status, sex')
+	->orderBy('create_time DESC')
+	->where('status', '=', 1);
+	->selectAll();
+</pre>
+
+<pre>
+
+<strong>4、查询某个字段值</strong>
+         使用Model的getValue(()方法可以按条件查询第一条记录的某个字段的值：
+                <span class="STYLE1">getValue((field, [condition])</span>
+         返回字段值，如果没有查到，则返回false。
+         参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>field</td>
+		<td>必需。字段名称。
+	    </td>
+	</tr>
+	<tr>
+		<td>condition</td>
+		<td>可选。快捷查询条件，同上。
+		</td>
+	</tr>
+</table>
+
+<pre class="brush: php;">
+$userModel = new UserModel();
+
+$where = array(
+    'user_id' => 1
+);
+
+//方式1.使用getValue(()的参数
+$result = $userModel
+	->getValue('username', $where);
+
+//方式2.SQL查询的生成方法函数
+$result = $userModel
+	->where($where)
+	->getValue(('username');
+</pre>
+
+
+<strong>5、动态查询</strong>
+     使用Model静态调用<span class="STYLE1">selectAllBy+字段名、selectOneBy+字段、getAllBy+字段名、getRowBy+字段名</span>可以按照某个字段进行查询。
+
+<pre class="brush: php;">
+//查询多个Entity实例
+$result = UserModel::selectAllByStatus(2);
+
+//查询一个Entity实例
+$result = UserModel::selectOneByStatus(2);
+
+//查询多条记录数组
+$result = UserModel::getAllByStatus(2);
+
+//查询一条记录数组
+$result = UserModel::getRowByStatus(2);
+</pre>
+
+<strong>6、原生SQL查询</strong>
+         使用Model的query()方法用原生的SQL进行查询，不会做预处理和安全过滤：
+                <span class="STYLE1">query(sql)</span>
+         返回所有行的关联数组列表，失败返回false。
+         参数说明：
+
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>sql</td>
+		<td>必需。原生SQL语句。
+		</td>
+	</tr>
+</table>
+
+<pre class="brush: php;">
+$userModel = new UserModel();
+$userModel->query('select * from user limit 10');
+</pre>
+
+<strong>7、原生SQL查询一行</strong>
+         使用Model的queryRow()方法可以按条件查询一条记录的某个字段的值：
+                <span class="STYLE1">queryRow(sql, [debug])</span>
+         成功时关联数组，如果没有查到，失败返回false。
+         参数同上。
+
+<pre class="brush: php;">
+/*
+ * 查询一行
+ */
+$userModel = new UsersModel();
+$userModel->queryRow('select * from user');
+</pre>
+
+<strong>8、多表联接查询</strong>
+         使用<span class="STYLE1">leftJoin()、rightJoin()或innerJoin()</span>分别进行左联接、右联接和全联接的查询。
+<pre class="brush: php;">
+//查询结果
+$userModel = new UserModel();
+$result = $userModel
+	->innerJoin('threads','b','a.user_id=b.user_id')//相当于INNER JOIN forum AS b ON a.user_id = b.user_id
+    ->leftJoin('posts', 'c', 'b.tid=c.tid')		//相当于LEFT JOIN posts AS c ON b.tid = c.tid
+    ->fields('b.title, b.content, a.username,a.email,c.content AS post_content')	//字段列表
+    ->where('a.user_id=1 AND b.status=1') //查询条件
+    ->limit('1,100')		//limit语句
+    ->orderBy('c.create_time DESC') //排序
+    ->getAll();
+</pre>
+
+
+<strong>9、合并查询（可分页）</strong>
+         （1）合并查询函数
+                  使用union()和unionAll方法可以合并多个查询，格式如下:
+                         <span class="STYLE1">union(model)</span>
+                         <span class="STYLE1">unionAll(model)</span>
+                  注：两个方法可以多次使用，union()与unionAll()的区别在于，union()会去除重复数据。
+                  参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>model</td>
+		<td>必需。数据模型类名。
+		</td>
+	</tr>
+</table>
+
+<pre class="brush: php;">
+$userModel1 = new UserModel();
+$userModel1
+	->fields('user_Id, user_name')
+	->where(array('status' => 1))
+	->limit('0, 10');
+
+$userModel2 = new UserModel();
+$userModel2
+	->fields('user_Id, user_name')
+	->where(array('status' => 2))
+	->limit('0, 10');
+
+//假设查询论坛bbs模块模型
+$bbsUserModel = new \app\model\database\bbs\UserModel();
+$bbsUserModel
+	->fields('uid as user_id, uname as user_name')
+	->where(array('status' => 1))
+	->limit('0, 5');
+
+$result = $model
+	->union($userModel1)
+	->unionAll($userModel1)
+	->getAll();
+
+print_r($result);
+</pre>
+         （2）分页合并查询
+                  （a）每个合并函数要进行分页
+                  （b）最后查询时使用unionOrderBy()进行汇总排序。
+
+                           <span class="STYLE1">unionOrderBy(orderBy)</span>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>orderBy</td>
+		<td>必需。排序语句。
+		</td>
+	</tr>
+</table>
+
+	    （c）最后查询时使用unionLimit()进行汇总分页
+
+	            <span class="STYLE1">unionLimit(offset[, rows]</span>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>offset</td>
+		<td>必需。查询开始位置。
+		</td>
+	</tr>
+	<tr>
+		<td>rows</td>
+		<td>可选。查询行数。
+		</td>
+	</tr>
+</table>
+
+<pre class="brush: php;">
+//分页
+$pageInfo = $this->pager->getInfo();
+
+//合并查询
+$userModel = new UserModel();
+
+$userModel
+	->page($pageInfo)
+	->union($userModel); //可以合并自身
+
+$a = clone $model;
+$a->limit(30);
+$model->unionAll($a);
+
+$b = clone $model;
+$b->limit(20, 20);
+$model->unionAll($b);
+
+//汇总分页并查询
+$result = $userModel
+	->unionOrderBy('id dESC')
+	->unionLimit($pageInfo['offset'], $pageInfo['rows'])
+	->getAll();
+</pre>
+
+<strong>10、更多SQL查询语句的生成方法</strong>
+     更多SQL语句生成函数，请点击进入<a href="5.8_更多数据库查询函数.html">5.7_更多数据库查询函数</a>。
+
+</pre>
+</body></html>

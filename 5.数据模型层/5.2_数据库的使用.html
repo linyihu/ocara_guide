@@ -27,9 +27,9 @@
 </table>
 
 <strong>1、数据库的新建</strong>
-      数据库都是通过工厂类Ocara\Core\DatabaseFactory的create()方法来实例化服务器连接对象。
+      数据库都是通过工厂类Ocara\Core\DatabaseFactory的getInstance()方法来实例化服务器连接对象。
       同一个服务器名仅在第一次实例化时才新建对象，工厂类会将其缓存起来。
-              <span class="STYLE1">create([server])</span>
+              <span class="STYLE1">getInstance([connectName, master, required])</span>
       参数说明：
 </pre>
 <table>
@@ -38,13 +38,21 @@
 		<td width="400">描述</td>
 	</tr>
 	<tr>
-		<td>server</td>
-		<td>可选。数据库服务器名，默认为default。</td>
+		<td>connectName</td>
+		<td>可选。数据库服务器名，默认为defaults。</td>
 	</tr>
+    <tr>
+        <td>master</td>
+        <td>可选。是否主库，默认true。</td>
+    </tr>
+    <tr>
+        <td>required</td>
+        <td>可选。必须，如果出错会显示错误。</td>
+    </tr>
 </table>
 <pre>
       实例如下；
-<pre class="brush: php;">$dbObj = \Ocara\Core\DatabaseFactory::create('bbs');
+<pre class="brush: php;">$dbObj = \Ocara\Core\DatabaseFactory::getInstance('bbs');
 </pre>
 
 <strong>2、数据库的连接</strong>

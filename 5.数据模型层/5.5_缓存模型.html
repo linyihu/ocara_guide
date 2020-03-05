@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>5.5 缓存模型</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>5.5 缓存模型</h2>
+
+<strong>1、什么是缓存模型</strong>
+      一般，像内存缓存Memcache、Redis等都是直接使用。 而本框架将其也作为数据模型。
+
+<strong>2、使用缓存模型</strong>
+      要添加一个缓存模型，请在开发者中心进行操作。
+      在模型中，可以使用plugin()获取当前缓存对象并调用它的方法函数，或者直接调用，系统会自动调用plugin()然后调用它的方法函数，这是框架本身的一个方法组合机制。
+
+<pre class="brush: php;">
+namespace app\model\cache;
+use Base\Model\CacheModel;
+
+class VerifyCodeModel extends CacheModel
+{
+	protected $connectName = 'defaults';
+	protected $prefix = 'mydemo:';
+	protected $database = '0';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+    /**
+     * 获取KEY
+     * @param $type
+     * @param $mobile
+     * @return string
+     */
+	public function getKey($type, $mobile)
+    {
+        return $this->prefix . 'verifyCode:' . $type . ':' . $mobile;
+    }
+
+    /**
+     * 保存验证码
+     * @param $type
+     * @param $mobile
+     * @param $value
+     * @param int $expireTime
+     */
+	public function save($type, $mobile, $value, $expireTime = 60)
+    {
+        $key = $this->getKey($type, $mobile);
+        $this->set($key, $value, $expireTime);
+    }
+
+    /**
+     * 获取验证码
+     * @param $type
+     * @param $mobile
+     * @return mixed
+     */
+    public function getCode($type, $mobile)
+    {
+        $key = $this->getKey($type, $mobile);
+        return $this->get($key);
+    }
+}
+</pre>
+
+<strong>3、直接使用缓存</strong>
+     直接使用缓存时，可以使用CacheFactory::getInstance()来调用一个redis连接，默认是defaults。
+           <span class="STYLE1"><strong>getInstance(connectName)</strong></span>
+     该方法只会在第一次调用时生成连接，以后每次调用都是同一个连接对象。
+     参数说明：
+
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>connectName</td>
+		<td>可选。缓存服务器连接名。默认是defaults。
+		</td>
+	</tr>
+    <tr>
+        <td>required</td>
+        <td>可选。必须，如果出错会显示错误。</td>
+    </tr>
+</table>
+
+    比如我们缓存配置如下：
+
+<pre class="brush: php;">
+/*
+ * 缓存配置
+ */
+return array(
+    'CACHE' => array(
+        /*
+         * 默认缓存（名称不可更改）
+         */
+        'defaults' => array(
+            'open' 		=> 1, //是否启用
+            'type' 		=> 'redis',
+            'host'		=> '127.0.0.1',
+        ),
+
+        /*
+         * Redis缓存
+         */
+        'redis_server1' => array(
+            'open' 		=> 0, //是否启用
+            'type' 		=> 'redis',
+            'host'		=> '127.0.0.1',
+            'password'	=> ''
+        )
+    ),
+);
+</pre>
+
+    那么调用缓存时，如下示例：
+
+<pre class="brush: php;">
+//默认缓存
+$defaultCache = CacheFactory::getInstance();
+
+//redis_server1服务器
+$redisCache = CacheFactory::getInstance('redis_server1');
+</pre>
+
+</pre></body>
+</html>
