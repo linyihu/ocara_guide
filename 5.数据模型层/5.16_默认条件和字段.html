@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>5.16 默认条件和字段</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>5.16 默认条件和字段</h2>
+
+<pre>
+<strong>1、默认字段</strong>
+      在数据查询时，有许多常用字段，每次查询都要去指定特别麻烦，比如用户表的username、status等等常用字段。
+      所以框架增加了默认字段功能，不需要每次都写。
+      主要是使用<span class="STYLE1">__fields()</span>来指定默认字段，由<span class="STYLE1">defaultFields()</span>来开启默认字段，相当于调用了一次fields()函数。
+</pre>
+
+<pre class="brush: php;">
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class GoodsModel extends DatabaseModel
+{
+	protected static $table = 'goods';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\GoodsEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+	/**
+	 * 设置默认字段
+	 */
+	public function __fields()
+    {
+        return array(
+            'name', 'price', 'create_time'
+        );
+    }
+
+	/**
+	 * 获取列表
+	 */
+    public function getList()
+    {
+        $this->defaultFields() //开启默认字段
+            ->where(array('status' => 1))
+            ->limit(10)
+            ->getAll();
+    }
+}
+</pre>
+
+<pre>
+
+<strong>3、默认条件</strong>
+      我们经常有一些常用的条件，比哪商品一般是希望已上架的状态才能查出来，如果每次都要指定也麻烦。
+      当然我们也可以在底层做一个统一的查询方法getList()或getInfo()来减少这种问题。
+      但是还是免不了有一些地方有这个条件重复条件，所以框架也增加了默认条件功能。
+      主要是使用<span class="STYLE1">__condition()</span>来指定默认字段，由<span class="STYLE1">defaultCondition()</span>来开启默认条件，相当于调用了一次where()函数。
+</pre>
+<pre class="brush: php;">
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class GoodsModel extends DatabaseModel
+{
+	protected static $table = 'goods';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\GoodsEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+	/**
+	 * 设置默认条件
+	 */
+	public function __condition()
+    {
+        return array(
+            'status' => 1
+        );
+    }
+
+	/**
+	 * 获取列表
+	 */
+    public function getList()
+    {
+        $this->defaultCondition() //开启默认条件
+            ->limit(10)
+            ->getAll();
+    }
+}
+</pre>
+
+</pre>
+</body>
+</html>

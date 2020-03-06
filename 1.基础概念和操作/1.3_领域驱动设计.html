@@ -104,13 +104,14 @@ $userEntity->save();
 
           （2）逻辑实体
                不需要持久化的实体，有唯一标识。一般作为临时使用，有点类似于数据传输对象DTO，只不过我们用实体来表示，而不用DTO。
-               本框架仅提供一个逻辑实体的基类Ocara\Core\BaseEntity，它提供了fill()和toArray()两个函数方法。
+               本框架仅提供一个逻辑实体基类Base\Model\LogicEntity，它继承了Ocara\Core\BaseEntity的data()、toArray()和toObject()等函数方法。
+
 <pre class="brush: php;">
 namespace AliPay;
 
-use Ocara\Core\BaseEntity;
+Base\Model\LogicEntity;
 
-class AliOrderEntity extends BaseEntity
+class AliOrderEntity extends LogicEntity
 {
     public $orderSn;
     public $payType;
@@ -133,7 +134,7 @@ $data = array(
 );
 
 $aliOrderEntity = new AliOrderEntity();
-$aliOrderEntity->fill($data); //填充数据
+$aliOrderEntity->data($data); //填充数据
 
 return $aliOrderData = $aliOrderEntity->toArray(); //返回数组
 
@@ -141,12 +142,15 @@ return $aliOrderData = $aliOrderEntity->toArray(); //返回数组
 
      <strong>2、值对象</strong>
           根据值对象的概念和特点，值对象在本框架中只用来作一个枚类型字段或状态字段的常量配置。
-          好处时，这些配置统一管理，还能共享使用。
+          对于数据表枚举字段，建议尽量用枚举常量类，方便统一管理和共享。
+          写在Model或Entity有一定局限性，比如几个数据模型要使用相同的常量配置时。
           比如订单状态字段：
 <pre class="brush: php;">
 namespace app\model\enums\orders;
 
-class OrderStatus
+use Base\Model\BaseEnum;
+
+class OrderStatus extends BaseEnum
 {
     const NEW = 0; //新订单
     const PAID = 10; //已支付
@@ -181,7 +185,9 @@ class OrderStatus
 <pre class="brush: php;">
 namespace app\model\enums;
 
-class UserType
+use Base\Model\BaseEnum;
+
+class UserType extends BaseEnum
 {
     const PERSON = 1; //个人
     const ENTERPRISE = 2; //企业

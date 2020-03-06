@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>5.15 逻辑实体和枚举常量对象</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+
+<body><pre><h2>5.15 逻辑实体和枚举常量对象</h2>
+
+      在<a href="../1.基础概念和操作/1.3_领域驱动设计.html">1.3_领域驱动设计</a>介绍了逻辑实体和常量值对象。这里再说明一下它们的使用。
+
+<strong>1、逻辑实体的使用</strong>
+      要添加逻辑实体，需要手动在application/model/entity/logic目录手动添加，类名要以Entity结尾，要继承Base\Model\LogicEntity。
+</strong>
+<pre class="brush: php;">
+namespace app\model\entity\database;
+
+use Base\Model\LogicEntity;
+
+class AddressEntity extends LogicEntity
+{
+	public $id;
+	public $receiver_name;
+	public $receiver_mobile;
+    public $province;
+    public $city;
+    public $county;
+	public $address;
+
+    public function getAddressDetail()
+    {
+        return $this->province . $this->city . $county . $this->address;
+    }
+}
+</pre>
+<strong>2、常量对象的使用</strong>
+      要添加常量对象类，需要手动在application/model/entity/enums目录手动添加，类名要以Enum结尾，要继承Base\Model\BaseEnum。
+    </strong>
+<pre class="brush: php;">
+namespace app\model\enums\orders;
+
+use Base\Model\BaseEnum;
+
+/**
+ * 订单流转状态
+ * Class StatusEnum
+ * @package app\model\enums\orders
+ */
+class StatusEnum extends BaseEnum
+{
+    const NEW = 0; //新订单
+    const PAID = 10; //已支付
+    const SENT = 20; //已发货
+    const RECEIVED = 30; //已签收
+    const COMPLETED = 40; //已完成
+    const CANCELED = 50; //已取消
+
+    public static function getOptions()
+    {
+        return [
+            self::NEW => '待支付',
+            self::PAID => '已支付',
+            self::SENT => '已发货',
+            self::RECEIVED => '已签收',
+            self::COMPLETED => '已完成',
+            self::CANCELED => '已取消',
+        ];
+    }
+}
+</pre>
+</pre></body>
+</html>

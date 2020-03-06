@@ -76,12 +76,27 @@ class IndexController extends Module
     }
 }
 </pre>
-
+<pre>
 <strong>三、添加事件回调函数</strong>
         1、单个添加回调函数或对象
                 使用append()方法注册回调函数，可以注册多次。
                         <span class="STYLE1">append(callback[, args])</span>
-                其中,callback是回调函数，和call_user_func_array()类似，指定的是函数名、方法数组，还可以是类名或对象。
+                参数说明：
+</pre>
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>callback</td>
+        <td>必填。回调函数，和call_user_func_array()类似，指定的是函数名、方法数组，还可以是类名或对象。</td>
+    </tr>
+    <tr>
+        <td>args</td>
+        <td>可选。这是一个动态参数。可用来设置名称和优先级。</td>
+    </tr>
+</table>
                 （1）回调函数
 
 <pre class="brush: php;">
@@ -119,6 +134,7 @@ class UserLog extend Base
 </pre>
                 （2）回调类或对象
                         除此以外，框架还支持直接指定一个类或对象，然后回调它的handle()方法。
+
 <pre class="brush: php;">
     public function registerEvents()
     {
@@ -132,6 +148,7 @@ class UserLog extend Base
                                 <span class="STYLE1">handle(params, ... [,event , eventTarget])</span>
                         前面参数是每个事件调用时传递的自定义参数。
                         最后的两个参数必是evnet和eventTarget，分别是事件对象和触发事件的源对象，可选参数。
+
 <pre class="brush: php;">
 namespace Events\Callback;
 
@@ -151,6 +168,20 @@ class OrderStatusLog extends Middleware
     }
 }
 </pre>
+                    （3）设置名称和优先级
+                        如果append()有3个参数，第2个参数表示名称，第3个参数表示优先级；如果只有2个参数，第2个参数表示优先级。
+                        注意：<strong>事件处理器会按照优先级降序，然后按添加顺序升序执行。</strong>
+
+<pre class="brush: php;">
+    public function registerEvents()
+    {
+        //注册事件和处理器
+        $this->event('afterUpdateStatus')
+             ->append('\app\services\OrderStatusLog', 1) //仅指定优先级
+             ->append(new \app\services\OrderStatusLog(), 'order_status_log', 2); //指定名称order_status_log和优先级2
+    }
+</pre>
+
         2、批量绑定回调函数
                 还可以用bindEventHandler()绑定一个对象，它包含了与事件名称相同的方法函数，可以批量添加回调函数。
                 注：append()和bindEventHandler()可以同时使用，会按先后顺序添加回调函数。
@@ -211,7 +242,86 @@ $user->show('user1');
                 user1
                 afterShow
 
-<strong>四、事件触发</strong>
+        2、设置默认处理器
+                还可以用setDefault()来设置一个默认处理器，当调用append()方法时会被覆盖掉。
+                注：append()和bindEventHandler()可以同时使用，会按先后顺序添加回调函数。
+                        <span class="STYLE1">setDefault(callback)</span>
+                其中callback是回调函数、类或对象，同append()方法。
+
+<pre class="brush: php;">
+    public function registerEvents()
+    {
+        //注册事件和处理器
+        $this->event('afterUpdateStatus')
+             ->setDefault('\app\services\OrderStatusLog'); //设置默认处理器
+    }
+</pre>
+
+<strong>四、修改、删除处理器</strong>
+        上述介绍了添加处理器，还可以修改、删除处理器。可以使用名称和序号来指定处理器。
+        有以下方法：
+                （1）get(name)：获取某个处理器。其中name是定义的名称或者序号；
+
+<pre class="brush: php;">
+    public function registerEvents()
+    {
+        //添加处理器
+        $this->event('afterUpdateStatus')
+             ->append('\app\services\OrderStatusLog', 'order_status_log')
+             ->append('\app\services\SendSms');
+
+        //获取第1个处理器
+        $logHandler = $this
+             ->event('afterUpdateStatus')
+             ->get('order_status_log');
+
+        //获取第2个处理器
+        $smsHandler = $this
+             ->event('afterUpdateStatus')
+             ->get(2); //获取第2个处理器
+    }
+</pre>
+                （2）has(name)：检测是否存在某个处理器。name参数类似；
+
+<pre class="brush: php;">
+//检测是否存在处理器order_status_log
+$exists = $this
+     ->event('afterUpdateStatus')
+     ->has('order_status_log');
+
+//返回存在第2个处理器的指针
+$index = $this
+     ->event('afterUpdateStatus')
+     ->has(2);
+</pre>
+                （3）modify(name, callback)：修改处理器。name参数类似，callback参数与append()一样；
+
+<pre class="brush: php;">
+//修改处理器order_status_log的回调类
+//也可以使用modify(2, 'app\service\NewOrderStatusLog')
+$exists = $this
+     ->event('afterUpdateStatus')
+     ->modify('order_status_log', 'app\service\NewOrderStatusLog');
+</pre>
+                （4）setPriority(name, priority)：修改优先级。name参数类似，priority为优先级。
+
+<pre class="brush: php;">
+//修改处理器order_status_log的回调类
+$exists = $this
+     ->event('afterUpdateStatus')
+     ->setPriority('order_status_log', 15); //也可以使用setPriority(2, 15)
+</pre>
+                （5）delete(name)：删除处理器。name参数类似。
+
+<pre class="brush: php;">
+//修改处理器order_status_log的回调类
+$exists = $this
+     ->event('afterUpdateStatus')
+     ->delete('order_status_log'); //也可以使用delete(2)
+</pre>
+
+
+<strong>五、事件触发</strong>
         <span class="STYLE1">fire(eventName[, params])</span>
         其中，eventName是事件名称，params是触发时传递给回调函数的参数。
 
@@ -240,7 +350,7 @@ class OrdersService extends DatabaseModel
 }
 </pre>
 
-<strong>五、事件中断</strong>
+<strong>六、事件中断</strong>
         在事件的多个处理器中，可以使用stop()来中断事件的执行。
                 <span class="STYLE1">stop()</span>
 
