@@ -29,7 +29,7 @@
                   （3）事件回调函数：按钮的单击事件触发后要执行的每个操作，可以添加多个回调函数来执行。
 
 <strong>二、注册和获取事件</strong>
-        使用本框架时，任何一个类必须继承自<span class="STYLE1">Ocara\Core\Base</span>，才添加事件处理。
+        使用本框架时，任何一个类必须继承自<span class="STYLE1">Ocara\Core\Base</span>，都可以使用本文说明的事件处理。
 <pre class="brush: php;">
 class Test extends Ocara\Core\Base
 {}
@@ -250,7 +250,9 @@ class OrdersService extends DatabaseModel
 <pre class="brush: php;">
 namespace app\services;
 
-class OrderStatusLog
+use Ocara\Core\Middleware;
+
+class OrderStatusLog extends Middleware;
 {
     public function handle($order, $oldStatus, $event)
     {
