@@ -19,15 +19,9 @@
 </style>
 </head>
 <body>
-<pre><h2>5.3 数据模型（Model）</h2>
+<pre><h2>5.3 数据模型的使用（Model）</h2>
 
 <strong>1、新建模型</strong>
-      新建模型有两种方法：
-      （1）直接新建Model类。
-      （2）使用Model类的build()方法。
-      （3）使用控制器动作的model()方法，用于建立默认的Model。
-
-<strong>2、详细说明</strong>
       （1）直接新建Model类
 
 <pre class="brush: php;">
@@ -38,7 +32,7 @@ $userModel = new \app\model\database\UserModel();
 $userModel = new \app\model\database\BBS\UserModel();
 
 </pre>
-      （2）使用build()方法
+    （2）使用<span class="function"><strong>build()</strong></span>方法
           本框架所有的类，都继随自\Ocara\Base基类，该基类定义了build()方法，可以新增当前对象。
 
 <pre class="brush: php;">
@@ -107,6 +101,106 @@ class UpdateAction extends Controller
      */
 	public function submit()
 	{}
+}
+</pre>
+
+ <strong>2、字段缓存</strong>
+    数据模型在查询和保存时都要查出表字段进行一些处理，所以增加了字段缓存，以免经常查库。
+
+     <strong>（1）更新字段缓存</strong>
+            所以修改了字段，要更新一下缓存才行，只要在开发者中心更新字段。请参考。
+
+     <strong>（2）默认缓存方式</strong>
+            字段默认缓存在data/fields目录中与模型同名的文件中。
+
+                 <img src="../style/images/字段数据文件.png" alt="添加控制器"/>
+
+     <strong>（3）自定义缓存方式</strong>
+            如果要修改缓存方式，比如缓存在Redis，只要使用事件。
+            可以在基类Base\Model\DatabaseModel中修改<span class="STYLE1">onGetCacheFields()</span>和<span class="STYLE1">onSaveCacheFields()</span>事件处理函数。
+
+            实例如下：
+
+            （a）我们首先在开发者中心建立一个Redis缓存模型。
+
+<pre class="brush: php;">
+namespace app\model\cache;
+use Base\Model\CacheModel;
+
+class TableFieldsModel extends CacheModel
+{
+	protected $connectName = 'defaults';
+	protected $prefix = 'databaseModel:';
+	protected $database = '0';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+    /**
+     * 获取数据
+     */
+    public function getData($name)
+    {
+        $key = $this->getKey($name);
+        $data = $this->get($key);
+
+        if ($data) {
+            $data = json_decode($data, true) ? : array();
+        }
+
+        return $data;
+    }
+
+    /**
+     * 保存数据
+     */
+    public function saveData($name, $fieldsConfig)
+    {
+        $key = $this->getKey($name);
+        $data = $fieldsConfig ? json_encode($fieldsConfig) : OC_EMPTY;
+        $this->set($key, $data, 3600 * 24 * 30);
+    }
+}
+</pre>
+
+            （b）修改基类Base\Model\DatabaseModel的字段缓存事件。
+
+<pre class="brush: php;">
+/**
+ * 数据库模型基类
+ */
+namespace Base\Model;
+
+use Ocara\Models\DatabaseModel as BaseDatabaseModel;
+use app\model\cache\TableFieldsModel;
+
+class DatabaseModel extends BaseDatabaseModel
+{
+
+    /**
+     * 获取字段缓存事件处理
+     * @param $event
+     * @param $eventTarget
+     * @return array|mixed
+     */
+    public function onGetCacheFields($event, $eventTarget)
+    {
+        TableFieldsModel::build()->getData(self::getClass());
+    }
+
+    /**
+     * 保存字段缓存事件处理
+     * @param $fieldsConfig
+     * @param $event
+     * @param $eventTarget
+     */
+    public function onSaveCacheFields($fieldsConfig, $event, $eventTarget)
+    {
+        TableFieldsModel::build()->saveData(self::getClass(), $fieldsConfig);
+    }
 }
 </pre>
 
