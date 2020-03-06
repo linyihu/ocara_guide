@@ -22,20 +22,12 @@
 <h2>5.12 分库分表</h2>
 
       大型Web应用由于访问量和数据量很大，一般要进行分库分表，分库分表有一定的规则。
-      本框架以数据表模型为单位，提供了十分灵活的分库分表方法，规则自由设定。
+      虽然分库分表可以使用一些中间件在运维层面去操作，但是很多开发者在代码层面做分库分表比较多。
+      本框架以数据表模型为单位，提供了分库分表的代码层支持，规则自由设定。
       只需用_sharding()来设置规则，用sharding()指定规则数据来进行分库分表，还可以通过事件进行自动化设置分表。
       具体步骤请看下文。
 
 <strong>1、设置数据表模型的分库分表规则</strong>
-    （1）数据库切换
-            对于切换数据库，要使用setDatabase()和selectDatabase()两种。
-                 <span class="STYLE1">setDatabase(databaseName)</span>
-                 <span class="STYLE1">selectDatabase($databaseName)</span>
-            两函数的区别：
-                  （1）selectDatabase()会执行“SELECT 数据库”语句；
-                  （2）setDatabase仅设置当前数据模型的数据库名，即SELECT FROM语句后面的“数据库名.表名”，但是不会执行“select 数据库”语句。
-
-    （2）设置规则
             设置规则只需添加数据表模型的_sharding()方法，在其中设置数据库名和表名即可。该方法格式如下：
                  <span class="STYLE1">__sharding([data])</span>
             参数说明：
@@ -81,13 +73,13 @@ class UserLogsModel extends Model
         $dbName = $this->hashGetDBName($groupId); //自定义方法hashGetDBName()
 
         /**
-         * 切换数据库
+         * 设置数据库
          */
         $this->setDatabase($dbName); //设置数据库名，或$this->selectDatabase($dbName); //切换数据库连接
 
-        //切换表名
+        //设置表名
         $tableName = $this->hashGetTableName($userId, $dateNum); //自定义方法hashGetTableName()
-		$this->selectTable($tableName);
+		$this->setTable($tableName);
 	}
 }
 </pre>
@@ -242,19 +234,12 @@ class UserLogsModel extends DatabaseModel
         //查出user_id
         $userId = 0;
         $where = ocGet(array('option', 'where'), $this->sql, array());
+        $moreWhere = ocGet(array('option', 'moreWhere'), $this->sql, array());
+        $where = array_merge($where, $moreWhere);
 
         foreach ($where as $row) {
             if (is_array($row) && isset($row['user_id'])
                 $userId = $row['user_id'];
-            }
-        }
-
-        if (!$userId) {
-            $moreWhere = ocGet(array('option', 'moreWhere'), $this->sql, array());
-            foreach ($where as $row) {
-                if (is_array($row) && isset($row['user_id'])
-                    $userId = $row['user_id'];
-                }
             }
         }
 

@@ -9,6 +9,14 @@
 <link type="text/css" rel="stylesheet" href="../style/function.css" />
 <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
 <script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
 </head>
 <body>
 <pre><h2>5.3 数据模型（Model）</h2>
@@ -101,10 +109,86 @@ class UpdateAction extends Controller
 	{}
 }
 </pre>
- <strong>3、如何切换数据库和数据表（分库分表）？</strong>
-      如果数据库要进行分库，方法如下：
-      首先在Model类内部使用用_sharding()定义分库规则，然后外部调用sharing()方法传递分库规则要使用的具体数据，就可以进行分库。
-      而在_sharding()中，可以使用selectDatabase()和selectTable()切换数据库和表。
-      请参考<a href="5.12_分库分表.html">5.12_分库分表</a>。
+
+ <strong>3、切换数据库</strong>
+      切换数据库有两种：
+      （1）软切换
+            只是设置数据模型的数据库名称，不会执行“SELECT 数据库名”语句。
+            所以只影响当前数据模型。常用于分库规则设置。
+            需要使用数据模型Model的setDatabase()方法。
+                  <span class="STYLE1">setDatabase(databaseName)</span>
+            参数说明：
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>databaseName</td>
+        <td>必填。数据库名称。</td>
+    </tr>
+</table>
+<pre class="brush: php;">
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class GoodsModel extends DatabaseModel
+{
+	protected static $table = 'goods';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\GoodsEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{
+        $this->plugin()->setDatabase('db_goods');
+    }
+}
+</pre>
+
+    （2）硬切换<strong>（不建议使用）</strong>
+        会执行“SELECT 数据库名”语句。
+        它改动的是当前数据库连接，会影响当前所有连接该数据库的数据模型。
+        需要在数据模型的<span class="STYLE1">afterConnect()</span>事件处理器中，调用数据库连接对象的selectDatabase()方法。
+                  <span class="STYLE1">selectDatabase(databaseName)</span>
+        参数说明：
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>databaseName</td>
+        <td>必填。数据库名称。</td>
+    </tr>
+</table>
+
+<pre class="brush: php;">
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class GoodsModel extends DatabaseModel
+{
+	protected static $table = 'goods';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\GoodsEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+    /**
+     * 连接后置事件
+     */
+    public function afterConnect($connect, $isMaster, $event, $eventTarget)
+    {
+        $connect->selectDatabase('db_goods');
+    }
+}
+</pre>
 
 </pre></body></html>

@@ -556,8 +556,8 @@ class CreateAction extends ItemController
 }
 </pre>
 
-<strong>  15、切换数据表</strong>
-      <span class="STYLE1">selectTable(name[, primary])  </span>
+<strong>  15、修改数据表名称</strong>
+      <span class="STYLE1">setTable(name[, primary])  </span>
       函数说明：选择数据表，可用于切换Model的数据表。
       参数说明：
 <table>
@@ -582,11 +582,11 @@ class CreateAction extends ItemController
 	 {
 	    //数据模型Model切换数据表
 	    $itemModel = $this->model(); //获取与控制器同名的模型类
-	    $itemModel->selectTable('item_201702');
+	    $itemModel->setTable('item_201702');
 
 	    //实体模型Entity切换数据表（直接调用的是Model的函数方法）
 	    $itemEntity = \app\model\entity\database\ItemEntity::build()
-			->selectTable('item_201702')
+			->setTable('item_201702')
 			->select(1);
 	}
 }
