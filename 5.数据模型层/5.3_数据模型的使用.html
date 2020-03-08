@@ -105,7 +105,7 @@ class UpdateAction extends Controller
 </pre>
 
  <strong>2、字段缓存</strong>
-    数据模型在查询和保存时都要查出表字段进行一些处理，所以增加了字段缓存，以免经常查库。
+     数据模型在查询和保存时都要查出表字段进行一些处理，所以增加了字段缓存，以免经常查库。
 
      <strong>（1）更新字段缓存</strong>
             所以修改了字段，要更新一下缓存才行，只要在开发者中心更新字段。请参考。
@@ -207,6 +207,36 @@ class DatabaseModel extends BaseDatabaseModel
     }
 }
 </pre>
+            （c）增加缓存更新脚本
+
+                     我们不应在线上使用开发者中心，所以上线后应该将系统运模式改成非develop。
+                     这样，我们更新redis缓存只能使用命令行脚本了，只要使用数据模型的<span class="STYLE1">loadFields(false)</span>就可以更新缓存，其中的false就表示不使用缓存。
+
+<pre class="brush: php;">
+namespace app\console\main\controller\common;
+
+use app\service\CarCodesService;
+
+class RefreshFieldsCacheAction extends Controller
+{
+	/**
+	 * 初始化
+	 */
+	protected function __action()
+	{
+	    $data = $this->request->getGet();
+
+	    $this->validator
+            ->addRule('modelClass', 'notEmpty') //modelClass就类名
+            ->validate($data);
+
+        $model = new $data['modelClass']();
+        $model->loadFields(false); //传递false表示不使用缓存
+    }
+}
+</pre>
+
+                     <strong>然后，执行脚本：</strong>php ocara main/common/refreshFieldsCache modelClass/app\model\database\OrdersModel
 
  <strong>3、切换数据库</strong>
       切换数据库有两种：
