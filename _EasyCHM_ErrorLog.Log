@@ -1,6 +1,6 @@
 Microsoft HTML Help Compiler 4.74.8702
 
-Compiling d:\wwwroot\ocara 2.0手册.CHM
+Compiling d:\wwwroot\Ocara 2.0手册.CHM
 
 1.基础概念和操作\1.1_MVC模型架构.html
 1.基础概念和操作\1.10_伪静态.html
@@ -28,6 +28,7 @@ HHC3004: Warning: 1.3_领域驱动设计.html : The HTML tag "=', 30)    -" is not a v
 HHC3002: Warning: 2.6_添加缓存模型.html : The HTML tag "img" is missing a closing angle bracket.
 2.开发者中心\2.6_添加缓存模型.html
 2.开发者中心\2.7_账号管理.html
+2.开发者中心\2.8_更新字段缓存.html
 3.函数智能\3.1_系统应用.html
 3.函数智能\3.2_转换.html
 3.函数智能\3.3_文件目录.html
@@ -66,6 +67,8 @@ HHC3004: Warning: 5.10_关联模型操作.html : The HTML tag "=2; $i ++) {    $moneyE
 5.数据模型层\5.12_分库分表.html
 5.数据模型层\5.13_SQL安全防范.html
 5.数据模型层\5.14_忽略SQL安全过滤.html
+5.数据模型层\5.15_逻辑实体和枚举常量对象.html
+5.数据模型层\5.16_默认条件和字段.html
 5.数据模型层\5.2_数据库的使用.html
 5.数据模型层\5.3_数据模型的使用.html
 5.数据模型层\5.4_实体模型（ORM）.html
@@ -188,6 +191,7 @@ style\images\通道使用实例.png
 style\images\系统插件多语言实例.png
 style\images\显示文本的语言配置.png
 style\images\自定义类路径.png
+style\images\字段数据文件.png
 style\images\字符串配置.png
 style\plugin.css
 syntax\scripts\shAutoloader.js
@@ -267,11 +271,11 @@ TOC-Created-By-Easy-CHM.HHC
 Index-Created-By-Easy-CHM.HHK
 
 Compile time: 0 minutes, 4 seconds
-101	Topics
-407	Local links
+104	Topics
+419	Local links
 1	Internet link
 0	Graphics
 
 
-Created d:\wwwroot\ocara 2.0手册.CHM, 1,812,415 bytes
-Compression decreased file by 900,688 bytes.
+Created d:\wwwroot\Ocara 2.0手册.CHM, 1,883,189 bytes
+Compression decreased file by 912,083 bytes.
