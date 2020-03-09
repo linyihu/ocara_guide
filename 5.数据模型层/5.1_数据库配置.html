@@ -118,7 +118,7 @@
              <span class="STYLE1">master()</span>
        如下示例：
 <pre class="brush: php;">
-$userModel = new \app\model\database\UserModel();
+$userModel = new UsersModel();
 $userModel->where(array('type' => 2))
 	->master() //规定使用主库查询
 	->getAll();

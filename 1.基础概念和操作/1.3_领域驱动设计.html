@@ -70,7 +70,7 @@ class UserEntity extends DatabaseEntity
 
 <pre class="brush: php;">
 //批量查询
-$userEntity = new \app\model\database\UserModel;
+$userEntity = new UserModel();
 $userList = $useModel
     ->where(array('status' => 1))
     ->getAll(); //查询多行
@@ -94,7 +94,7 @@ $userModel
     ->update($data, 1000); //每次1000条，每条是一个实体Entity
 
 //单记录查询（实体）
-$userEntity = \app\model\entity\database\UserEntity::select(1);
+$userEntity = UserEntity::select(1);
 
 //单记录更新（实体）
 $userEntity->status = 1;
@@ -150,7 +150,7 @@ namespace app\model\enums\orders;
 
 use Base\Model\BaseEnum;
 
-class OrderStatus extends BaseEnum
+class OrderStatusEnum extends BaseEnum
 {
     const NEW = 0; //新订单
     const PAID = 10; //已支付
@@ -187,7 +187,7 @@ namespace app\model\enums;
 
 use Base\Model\BaseEnum;
 
-class UserType extends BaseEnum
+class UserTypeEnum extends BaseEnum
 {
     const PERSON = 1; //个人
     const ENTERPRISE = 2; //企业

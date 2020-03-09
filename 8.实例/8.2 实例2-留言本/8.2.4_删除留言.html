@@ -123,7 +123,7 @@ class DeleteAction extends GuestbookController
 	public function api()
 	{
 		$id = $this->request->getPost('id');
-		$model = \app\model\database\Guestbook::build()->select($id);
+		$model = GuestbookModel::build()->select($id);
 
 		if (empty($ret)) {
 			$this->ajaxReturn('error', '找不到该记录！', '255');

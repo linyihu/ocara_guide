@@ -153,6 +153,7 @@ class UserLog extend Base
 namespace Events\Callback;
 
 use Ocara\Core\Middleware;
+use app\model\database\OrderStatusLog;
 
 class OrderStatusLog extends Middleware
 {
@@ -162,7 +163,7 @@ class OrderStatusLog extends Middleware
     public function handle($order, $oldStatus, $event)
     {
          /*存入订单状态日志表*/
-         $orderStatus = new \app\model\database\OrderStatusLog();
+         $orderStatus = new OrderStatusLog();
          $orderStatus->oldStatus = $oldStatus;
          $orderStatus->newStatus = $order->status;
     }
@@ -329,12 +330,13 @@ $exists = $this
 namespace app\services;
 
 use Base\DatabaseModel;
+use app\model\database\OrdersModel;
 
 class OrdersService extends DatabaseModel
 {
     public function updateStatus($orderId, $extraData)
     {
-        $order = new \app\model\database\Orders();
+        $order = new OrdersModel();
         $order->select($orderId);
 
         $oldStatus = $order->status;

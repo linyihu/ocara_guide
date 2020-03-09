@@ -39,7 +39,7 @@
 	<tr>
 		<td>class</td>
 		<td>必需。数据表模型类名或关联配置名。<br/>
-			（1）数据表模型类名，如\app\model\database\User;<br/>
+			（1）数据表模型类名，如\app\model\database\UsersModel;<br/>
 			（2）关联配置名，在relations()中配置。
 		</td>
 	</tr>
@@ -56,21 +56,21 @@
 
 <pre class="brush: php;">
 //使用类名
-$itemModel = new \app\model\database\Item();
-$result = $itemModel->leftJoin('\app\model\database\Category', 'b', 'a.category_id=b.id')
+$itemModel = new ItemModel();
+$result = $itemModel->leftJoin('\app\model\database\CategoryModel', 'b', 'a.category_id=b.id')
       				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('b.name as category_name')
       				->getAll();
 
 //使用关联配置名（使用别名）
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $result = $itemModel->leftJoin('itemCategory', 'b') //在relations()配置
       				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('b.name as category_name')
       				->getAll();
 
 //使用关联配置名（不使用别名）
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $result = $itemModel->leftJoin('itemCategory') //在relations()配置
       				->fields('a.item_id,a.name,a.category_id')
 	                ->fields('item_category.name as category_name') //没设置别名，只能用表名
@@ -115,7 +115,7 @@ $where = array(
 );
 
 //查询结果
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel
 	->where($where)
 	->getRow();
@@ -125,7 +125,7 @@ $userInfo = $itemModel
 $username = ocService()->request->getGet('username');
 
 //查询结果
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel
 	->where('user_name', '=', $username)
 	->getRow();
@@ -138,7 +138,7 @@ $userName = ocService()->request->getGet('username');
 $userName = ocService()->filter->sql($userName);
 
 //查询结果
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel
 	->where(&quot;user_name='{$userName}'&quot;)
 	->getRow();
@@ -149,7 +149,7 @@ $userInfo = $itemModel
 $userName = ocService()->request->getGet('username');
 
 //查询
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel->where(1)
 	->orWhere('user_name', '=', $userName)
 	->getRow();
@@ -162,19 +162,19 @@ $userInfo = $itemModel->where(1)
 
       （1）查出ID大于或等于53的商品
 <pre class="brush: php;">
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $itemData = $itemModel->where('id', '>=', 53)
 					  ->getAll();
 </pre>
       （2）查出数组ID值为1,5,33的商品
 <pre class="brush: php;">
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $itemData = $itemModel->where('id', 'in', array(1,5,33))
 					  ->getAll();
 </pre>
       （2）查出出ID大于或等于53，或者数组ID值为1,5,33的商品
 <pre class="brush: php;">
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $itemData = $itemModel->where('id', '>=', 53)
 		->orWhere('id', 'in', array(1,5,33))
 		->getAll();
@@ -213,14 +213,14 @@ $itemData = $itemModel->where('id', '>=', 53)
       （1）键值数组条件（系统自动进行安全过滤）
 <pre class="brush: php;">
 //查询结果
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel->between('id', 1, 10)
 					  ->getRow();
 </pre>
       （2）OR条件（对变量进行SQL安全过滤）
 <pre class="brush: php;">
 //查询
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel->where(1)
     ->where(array('id' => 29))
 	->orBetween('id', 1, 10)
@@ -251,7 +251,7 @@ $userInfo = $itemModel->where(1)
              查出ID为1的商品，如果商品的状态为0则不查询，可以使用status &lt;&gt; '0'，也可以使用IF(status = '0', 0, 1)条件。
 
 <pre class="brush: php;">
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $itemModel->where(array('id'=>1))
 		  ->moreWhere(&quot;IF(status = '0', 0, 1)&quot;, 'OR')
 	 	  ->getRow();
@@ -282,7 +282,7 @@ $itemModel->where(array('id'=>1))
 
             查出用户user1的用户和邮箱信息。
 <pre class="brush: php;">
-$userModel = new \app\model\database\User();
+$userModel = new UsersModel();
 $userData = $userModel->where(array('user_name' => 'user1'))
 					  ->leftJoin('user_group', 'b', 'a.gid=b.id')
 	 				  ->fields('{distinct}') // 字段选项
@@ -311,7 +311,7 @@ $userData = $userModel->where(array('user_name' => 'user1'))
 
             查出分类ID的商品，按照添加时间降序排序：
 <pre class="brush: php;">
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $itemData = $itemModel->where(array('category_id' => $category_id))
 					  ->orderBy('create_time DESC')
 					  ->getAll();
@@ -335,7 +335,7 @@ $itemData = $itemModel->where(array('category_id' => $category_id))
 
             统计商品分类的商品数：
 <pre class="brush: php;">
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $staticData = $itemModel->fields('count(id)	as num')
 						->groupBy('category_id')
 						->getAll();
@@ -375,7 +375,7 @@ $where = array(
 );
 
 //查询结果
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel
 	->groupBy('user_id')
 	->having($where)
@@ -388,7 +388,7 @@ $userInfo = $itemModel
 $userName = ocService()->request->getPost('username');
 
 //查询结果
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel
 	->groupBy('user_id')
 	->having('status', '=', 1)
@@ -403,7 +403,7 @@ $status = ocService()->request->getPost('status');
 $status = Filter::sql($status);
 
 //查询结果
-$itemModel = new \app\model\database\Item();
+$itemModel = new ItemModel();
 $userInfo = $itemModel
 	->groupBy('user_id')
 	->having(&quot;status='{$status}}'&quot;)
@@ -441,7 +441,7 @@ class ListAction extends ItemController
 	    //设置分页
 		$this->pager()->config('page', 10, 10);
 		
-		$itemModel = new \app\model\database\Item();
+		$itemModel = new ItemModel();
 		$where = array('category_id' => 2);
 		
 		$result = $itemModel
@@ -500,7 +500,7 @@ class ListAction extends ItemController
       如果设置了读写分离数据库配置，使用该方法则规定使用主库进行查询。
 
 <pre class="brush: php;">
-$userModel = new \app\model\database\User();
+$userModel = new UsersModel();
 $userModel->where(array('type' => 2))
 	->master() //规定使用主库查询
 	->getAll();
@@ -515,7 +515,7 @@ class CreateAction extends ItemController
 {
      public function __action()
 	 {
-	    $itemEntity = new \app\model\entity\database\ItemEntity();
+	    $itemEntity = new ItemEntity();
 	    $itemEntity->data();
 	    $itemEntity->create();
 
@@ -549,7 +549,7 @@ class CreateAction extends ItemController
 	    $itemModel->selectDatabase('bbs');
 
 	    //实体模型Entity切换数据库（直接调用的是Model的函数方法）
-	    $itemEntity = \app\model\entity\database\ItemEntity::build()
+	    $itemEntity = ItemEntity::build()
 			->selectDatabase('bbs')
 			->select(1);
 	}
@@ -585,7 +585,7 @@ class CreateAction extends ItemController
 	    $itemModel->setTable('item_201702');
 
 	    //实体模型Entity切换数据表（直接调用的是Model的函数方法）
-	    $itemEntity = \app\model\entity\database\ItemEntity::build()
+	    $itemEntity = ItemEntity::build()
 			->setTable('item_201702')
 			->select(1);
 	}

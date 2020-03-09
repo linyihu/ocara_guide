@@ -38,14 +38,14 @@
             实体模型操作数据库是调用模型Model进行的，一般可以通过实体的<span class="STYLE1">getModel()</span>来获取当前Model对象。
 
 <pre class="brush: php;">
-$userEntity = new app\model\entity\database\UserEntity();
+$userEntity = new UsersEntity();
 $userModel = $userEntity->getModel();
 </pre>
     （2）Entity可以调用Model的方法
             Entity不存在而Model存在的方法函数，Entity是可以直接调用的。
 
 <pre class="brush: php;">
-$userEntity = new app\model\entity\database\UserEntity();
+$userEntity = new UsersEntity();
 $fields1 = $userEntity->getModel()->getFields(); //通过Model获取字段
 $fields2 = $userEntity->getFields(); //通过Entity获取字段
 
@@ -63,7 +63,7 @@ echo $fields1 === $fields2;
       （1）获取已存在记录的实体模型
 <pre class="brush: php;">
 //查询主键为1的的记录
-$userEntity = \app\model\entity\database\UserEntity::build()->select(1);
+$userEntity = UsersEntity::build()->select(1);
 
 //按条件查询一条记录
 $where = array(
@@ -71,7 +71,7 @@ $where = array(
     'sex' => '1',
     'status' => 1
 );
-$userEntity = \app\model\entity\database\UserEntity::build()->selectFrom($where);
+$userEntity = UsersEntity::build()->selectFrom($where);
 
 </pre>
       （2）新建实体模型，导入POST数据

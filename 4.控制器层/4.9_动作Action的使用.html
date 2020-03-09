@@ -120,7 +120,7 @@ class ItemController extends Module
  */
 namespace app\controller\item;
 
-use app\model\database\User;
+use app\model\entity\database\UsersEntity;
 
 class EditAction extends Controller
 {
@@ -137,7 +137,7 @@ class EditAction extends Controller
 	 	$userId = $this->request->getGet('user_id');
 
 	    //获取用户信息
-	    $userEntity = UserEntity::build()->select($userId);
+	    $userEntity = UsersEntity::build()->select($userId);
 
 	    if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
@@ -182,7 +182,7 @@ class EditAction extends Controller
 namespace service;
 
 use Base\Service\BaseService;
-use app\model\entity\database\UserEntity; //引入User模型类
+use app\model\entity\database\UsersEntity; //引入User模型类
 
 class UserService extends BaseService
 {
@@ -191,7 +191,7 @@ class UserService extends BaseService
 	 */
 	public function getUserInfo($userId)
 	{
-		$userEntity = UserEntity::build()->select($userId);
+		$userEntity = UsersEntity::build()->select($userId);
 
 	    if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');
@@ -206,7 +206,7 @@ class UserService extends BaseService
 	 */
 	public function editUser($request)
 	{
-		$userEntity = UserEntity::build()->select($request['user_id']);
+		$userEntity = UsersEntity::build()->select($request['user_id']);
 
 		if (empty($userEntity->id)) {
 	        ocError('用户不存在或已删除！');

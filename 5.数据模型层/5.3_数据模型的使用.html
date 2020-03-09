@@ -37,10 +37,10 @@ $userModel = new \app\model\database\BBS\UserModel();
 
 <pre class="brush: php;">
 //会新建application/model下面的User模型类实例
-$userModel = \app\model\database\User::build();
+$userModel = \app\model\database\UsersModel::build();
 
 //会新建application/model/BBS下面的User模型类实例
-$userModel = \app\model\database\BBS\User::build();
+$userModel = \app\model\database\BBS\UsersModel::build();
 </pre>
       （3）使用控制器动作的model()方法
            使用model()方法建立的模型，后面都可以用该方法函数直接获取。默认是当前控制器同名的模型。

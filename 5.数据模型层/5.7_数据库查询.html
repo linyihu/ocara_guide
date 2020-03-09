@@ -376,20 +376,20 @@ $result = $userModel
 </table>
 
 <pre class="brush: php;">
-$userModel1 = new UserModel();
+$userModel1 = new \app\model\database\UserModel();
 $userModel1
 	->fields('user_Id, user_name')
 	->where(array('status' => 1))
 	->limit('0, 10');
 
-$userModel2 = new UserModel();
+$userModel2 = new \app\model\database\UserModel();
 $userModel2
 	->fields('user_Id, user_name')
 	->where(array('status' => 2))
 	->limit('0, 10');
 
 //假设查询论坛bbs模块模型
-$bbsUserModel = new \app\model\database\bbs\UserModel();
+$bbsUserModel = new \app\model\database\bbs\UsersModel();
 $bbsUserModel
 	->fields('uid as user_id, uname as user_name')
 	->where(array('status' => 1))

@@ -256,6 +256,9 @@ $result = $auth->check(array('role1', 'role2'), 1); //1为路由记录ID
 <pre class="brush: php;">
 namespace Events;
 
+use app\model\database\AuthRouteModel;
+use app\model\database\AuthsModel;
+
 class BeforeDispatch extends Base
 {
 	public $auth;
@@ -274,7 +277,7 @@ class BeforeDispatch extends Base
 		$roleId = ocService()->session->get(array('loginInfo', 'roleId')); //获取当前的角色
 
 	    //获取路由ID
-	    $model = new \app\model\database\AuthRoute();
+	    $model = new AuthRouteModel();
 	    $actionId = $model->getActionId($route['module'], $route['controller'], $route['action']);
 
 	    //检测权限
@@ -313,7 +316,7 @@ class BeforeDispatch extends Base
 		$authData = ocService()->file->readFile($authPath);
 
 	    //或者，从数据库或缓存中获取
-		$authModel = new \app\model\database\Auths();
+		$authModel = new AuthsModel();
 		$authData = $authModel->getAuthData(); //getAuthData()是自定义方法
 
 		$return $authData;
