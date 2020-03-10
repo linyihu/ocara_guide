@@ -76,7 +76,10 @@ define('OC_ROOT', dirname(dirname(__DIR__)));
     </tr>
     <tr>
         <td>route</td>
-        <td>必须。控制器路由，如：admin/home/index、user/create。</td>
+        <td>必须。控制器路由。<br/>
+            （1）比如：admin/home/index，表示admin模块home控制器的index动作。<br/>
+            （2）比如：user/create，则表示全局模块或者当前所在模块的user控制器create动作。<br/>
+            （2）如果是以“/”开头，则强制表示全局模块。比如：/user/create，表示user控制器的create动作，不管当前是哪个所在模块。</td>
     </tr>
     <tr>
         <td>params</td>
@@ -108,7 +111,7 @@ define('OC_ROOT', dirname(dirname(__DIR__)));
  */
 use Ocara\Core\Invoke;
 
-define('OC_ROOT', dirname(dirname(__DIR__)));
+define('OC_ROOT', dirname(dirname(dirname(dirname(__FILE__)))) . '/');
 
 //加载Invoke文件
 require_once dirname(OC_ROOT) . '/ocara/system/library/Core/Invoke.php';
@@ -116,7 +119,7 @@ require_once dirname(OC_ROOT) . '/ocara/system/library/Core/Invoke.php';
 //执行控制器动作
 Invoke::getInstance()
     ->init()
-    ->run('/user/view', array('id' => 13));
+    ->run('/home/index', array('id' => 13), 'POST');
 </pre>
                   （2）浏览器访问文件
                          浏览器中执行文件：http://localhost/pass/test.php。
