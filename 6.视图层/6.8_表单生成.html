@@ -84,7 +84,12 @@
 	</tr>
 	<tr>
 		<td>class</td>
-		<td>必需。数据模型的类名，需要命名空间格式。</td>
+		<td>必需。数据模型的类名，如果类名不存在，会自动加上app\model\database\前缀。<br/>
+			所以有下面写法：<br/>
+			（1）类名全名：比如app\model\database\ItemModel，默认数据库下面的item表模型<br/>
+			（2）简写：比如ItemModel，默认数据库下面的item表模型<br/>
+			（3）分库子目录简写：比如bbs\ItemModel，表示bbs数据库下面的item表模型
+		</td>
 	</tr>
 	<tr>
 		<td>alias</td>
@@ -105,11 +110,13 @@
 			->init(
 				 ocUrl('/admin/item/edit'),
 				array(
-					'class' => 'form-edit',
+					'class' => 'form-edit', //css类设置
 					'onchange' => 'reurn validateForm(this)'
 				)
 			)
-			->model('app\model\database\ItemModel', 'item'); //增加item表的字段验证规则
+			->model('app\model\database\ItemModel', 'item') //类名全名写法
+			->model('ItemAttributesModel', 'item_attributes') //类名简写
+			->model('bbs\ItemModel', 'bbs_model'); //分库简写
 
 		//如果是POST提交，则进行表单填写校验
 		if ($this->request->isPost()) {
@@ -208,7 +215,7 @@ class CreateAction extends Controller
 	{
 		$this->form('form_create')
 			 ->init(ocUrl($this->getRoute()))
-	         ->model('app\model\database\ItemModel', 'item');
+	         ->model('ItemModel', 'item');
 	}
 	
 	//这里写页面显示前的逻辑...
@@ -292,7 +299,7 @@ class CreateAction extends UserController
 	{
 		$this->form('form_create')
 			 ->init(ocUrl($this->getRoute()))
-			 ->model('app\model\database\UserModel'); //绑定UserModel，别名自动设置为user
+			 ->model('UserModel'); //绑定UserModel，别名自动设置为user
 	}
 
 	public function display()

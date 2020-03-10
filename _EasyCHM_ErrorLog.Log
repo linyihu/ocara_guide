@@ -10,6 +10,7 @@ HHC3002: Warning: 1.12_PHP命令执行.html : The HTML tag "img" is missing a closin
 1.基础概念和操作\1.13_单入口多通道.html
 1.基础概念和操作\1.14_多通道的使用.html
 1.基础概念和操作\1.15_新建应用.html
+1.基础概念和操作\1.16_插件委托机制.html
 1.基础概念和操作\1.2_控制反转和依赖注入.html
 HHC3004: Warning: 1.3_领域驱动设计.html : The HTML tag "=', 30)    -" is not a valid HTML tag (it does not begin with an alphanumeric character).
 HHC3004: Warning: 1.3_领域驱动设计.html : The HTML tag "=', 30)    -" is not a valid HTML tag (it does not begin with an alphanumeric character).
@@ -271,12 +272,12 @@ treeview\ready.js
 TOC-Created-By-Easy-CHM.HHC
 Index-Created-By-Easy-CHM.HHK
 
-Compile time: 0 minutes, 6 seconds
-104	Topics
-419	Local links
+Compile time: 0 minutes, 4 seconds
+105	Topics
+423	Local links
 1	Internet link
 0	Graphics
 
 
-Created d:\wwwroot\Ocara 2.0手册.CHM, 1,900,931 bytes
-Compression decreased file by 913,945 bytes.
+Created d:\wwwroot\Ocara 2.0手册.CHM, 1,902,139 bytes
+Compression decreased file by 915,803 bytes.
