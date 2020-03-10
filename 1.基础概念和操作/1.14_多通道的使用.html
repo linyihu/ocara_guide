@@ -96,6 +96,13 @@ define('OC_ROOT', dirname(dirname(__DIR__)));
         ->init()
         ->run('home/index', array('id' => 1), 'POST');
 </pre>
+<pre>
+                    注意：如果是单元测试或命令行，则不需要执行init()方法。
+</pre>
+<pre class="brush: php;">
+    Invoke::getInstance()
+        ->run('home/index', array('id' => 1), 'POST');
+</pre>
 
 <pre>
     <strong>4、实例</strong>
@@ -115,6 +122,7 @@ define('OC_ROOT', dirname(dirname(dirname(dirname(__FILE__)))) . '/');
 
 //加载Invoke文件
 require_once dirname(OC_ROOT) . '/ocara/system/library/Core/Invoke.php';
+//require_once dirname(OC_ROOT) . '/../vendor/autoload.php';
 
 //执行控制器动作
 Invoke::getInstance()
