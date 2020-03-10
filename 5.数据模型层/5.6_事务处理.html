@@ -158,8 +158,12 @@ if (!$result) {
 
     （2）跨服务器事务原理
              事务管理器保存了数据库服务器连接，因此支持跨服务器事务处理。
-    
+
+    （3）每个事务begin()必须匹配一个commit()
+             由于采用计数器，所以每个begin()必须对应一个commit()。
+
       使用很简单，直接嵌套使用即可。
+
 <pre class="brush: php;">
 namespace app\service;
 
