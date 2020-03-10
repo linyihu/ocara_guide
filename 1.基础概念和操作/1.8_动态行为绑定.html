@@ -20,7 +20,7 @@
 
 <body><pre><h2>1.8 动态行为绑定</h2>
 
-        自PHP5.4.0起，PHP实现了一种代码复用的方法，称为trait。
+        自PHP5.4.0起，PHP实现了一种代码复用的方法，称为trait。不存在的方法函数，会调用绑定的同名方法函数。
         动态行为绑定类似于trait。但是不同在于：
         （1）trait在类新建对象初始化时就已经组合到类中了。
         （2）动态行为绑定是类新建对象实例以后，动态绑定到对象中的。
@@ -28,15 +28,36 @@
 一、行为绑定
         与事件类似，任何继承自Ocara\Core\Base的类对象，都默认有动态绑定行为的特性。
         使用它的traits()方法便可以绑定。
-        <span class="STYLE1">traits(name[, function])</span>
-
-        其中name为绑定的方法函数的别名，function是可以回调的函数或方法。
+                <span class="STYLE1">traits(name[, function])</span>
+        参数说明：
+</pre>
+<table>
+        <tr class="head">
+                <td width="90">名称</td>
+                <td width="400">描述</td>
+        </tr>
+        <tr>
+                <td>name</td>
+                <td>必填。方法函数别名，或绑定的对象。</td>
+        </tr>
+        <tr>
+                <td>function</td>
+                <td>可选。<br/>
+                        （1）如果name是字符串，则这里是回调函数，类似于call_user_func_array()第1个参数；<br/>
+                        （2）如果name是对象，则这里是要注入的属性数组。
+                </td>
+        </tr>
+</table>
 
 <pre class="brush: php;">
-$users = new UsersModel;
+$userModel = new UsersModel;
 
-$userModel = $users->traits('getList', array('\app\services\BBsUsers', 'getList'))
-                   ->traits('getDetail', array('\app\services\BlogUsers', 'getDetail'));
+//绑定某个方法函数
+$userModel->traits('getList', array('\app\services\BbsUsers', 'getList'));
+
+//绑定对象所有的方法函数
+$userModel->traits(new \app\services\BlogUsers());
+
 </pre>
 
 二、调用行为
