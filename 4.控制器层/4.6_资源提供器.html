@@ -21,17 +21,19 @@
 <body><pre><h2>4.6 资源提供器</h2>
 
 <strong>一、资源提供器介绍</strong>
-          Ocara不仅提供了事件机制进行业务回调处理，用于解耦。
-          但是有时候我们可能还需要通过回调函数返回一些数据。所以资源提供器派上用场了。
-        （1）资源提供器与服务提供器的区别
-                服务提供器是一种服务组件类对处提供服务，资源提供器是一种一般用于事件回调的中间件处理器，重在返回数据。
-        （2）资源提供器与事件的关系
-                资源提供器一般是通过事件触发的。
-        （3）资源提供器与中间件的关系
-                资源提供器的父类Ocara\Core\Resource继承于中间件类，所以它也是一种中间件。
+       Ocara不仅提供了事件机制进行业务回调处理，用于解耦。
+       但是有时候我们可能还需要通过回调函数返回一些数据。所以资源提供器派上用场了。
+       （1）资源提供器与服务提供器的区别
+              服务提供器是一种服务组件类对处提供服务，资源提供器是一种一般用于事件回调的中间件处理器，重在返回数据。
+       （2）资源提供器与事件的关系
+              资源提供器一般是通过事件触发的。
+       （3）资源提供器与中间件的关系
+              资源提供器的父类Ocara\Core\Resource继承于中间件类，所以它也是一种中间件。
+
 <strong>二、使用方法</strong>
-        首先要新建一个资源提供器类，它需继承Ocara\Core\Resource，必须提供handler()处理函数。
-        上面已说明资源提供器也是中间件，所以必须实现handler()函数，并在事件触发时会自动调用。
+        首先要新建一个资源提供器类，它需继承Ocara\Core\Resource，必须提供handle()处理函数。
+        上面已说明资源提供器也是中间件，所以必须实现handle()函数，并在事件触发时回调。
+
 <pre class="brush: php;">
 namespace Resource;
 
@@ -54,16 +56,19 @@ class CacheGetConfig extends Resource
 }
 
 </pre>
-    然后在使用的地方调用：
+
+        然后在使用的地方调用：
+
 <pre class="brush: php;">
 use Ocara\Core\Base;
 
 class CacheFactory extends Base
 {
+    const EVENT_GET_CONFIG = 'getConfig';
     //事件注册
     public function registerEvents()
     {
-        $this->event('get_config')
+        $this->event(self::EVENT_GET_CONFIG)
              ->append('\services\resources\CacheGetConfig', array('type' => 'redis')));
     }
 
@@ -73,11 +78,14 @@ class CacheFactory extends Base
     //事件触发
     public function getConfig()
     {
-        $cacheConfig = $this->fire('get_config'); //会自动调用handler方法
+        $cacheConfig = $this->fire(self::EVENT_GET_CONFIG); //会自动调用handler方法
     }
 }
 </pre>
-    或者有的是在resource.php中配置，比如框架默认提供的缓存配置获取资源提供器的配置：
+<strong>三、资源提供器配置</strong>
+        类似于事件配置。资源提供器可以在resource.php中配置。目前框架默认提供了几个配置。
+        比如缓存配置获取资源提供器的配置：
+
 <pre class="brush: php;">
         /*
          * 缓存相关
