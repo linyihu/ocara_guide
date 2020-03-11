@@ -77,10 +77,10 @@ use dal\models\main\Item;
 
 class Controller extends Module
 {
-    public function beforeRender($message, $status)
+    public function beforeRender()
     {
         //先继承父类的事件处理器
-        parent::beforeRender($data, $message, $status);
+        parent::beforeRender();
 
         if ($this->result['status'] == 'success') {
             //这里修改请求成功时返回的数据格式
