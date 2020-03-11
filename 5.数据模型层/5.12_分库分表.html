@@ -28,9 +28,9 @@
       具体步骤请看下文。
 
 <strong>1、设置数据表模型的分库分表规则</strong>
-            设置规则只需添加数据表模型的_sharding()方法，在其中设置数据库名和表名即可。该方法格式如下：
-                 <span class="STYLE1">__sharding([data])</span>
-            参数说明：
+       设置规则只需添加数据表模型的_sharding()方法，在其中设置数据库名和表名即可。该方法格式如下：
+              <span class="STYLE1">__sharding([data])</span>
+       参数说明：
 <table>
     <tr class="head">
         <td width="90">名称</td>
@@ -86,9 +86,9 @@ class UserLogsModel extends Model
 <pre>
 
 <strong>2、数据操作时执行分库分表</strong>
-      设置规则只需添加数据表模型的_sharding()方法，在其中设置数据库名和表名即可。该方法格式如下：
-           <span class="STYLE1">sharding([data])</span>
-      参数说明：
+       设置规则只需添加数据表模型的_sharding()方法，在其中设置数据库名和表名即可。该方法格式如下：
+              <span class="STYLE1">sharding([data, relationModel])</span>
+       参数说明：
 <table>
     <tr class="head">
         <td width="90">名称</td>
@@ -98,9 +98,13 @@ class UserLogsModel extends Model
         <td>data</td>
         <td>可选。上述_sharding()方法规定要传入的数据数组。上述_sharding()要求传什么数据，这里就传什么数据。</td>
     </tr>
+    <tr>
+        <td>relationModel</td>
+        <td>可选。关联模型别名或类名。用于指定关联模型的分库分表数据。请参考下面第2点。</td>
+    </tr>
 </table>
 
-           比如上例设置了规则后，我们就可以如下示例执行分库分表使用数据表模型了。
+       比如上例设置了规则后，我们就可以如下示例执行分库分表使用数据表模型了。
 </pre>
 <pre class="brush: php;">
 use app\controller\users;
@@ -138,12 +142,64 @@ class LogIndexAction extends Controller
 	}
 }
 </pre>
+<pre>
+<strong>3、关联模型查询分库分表</strong>
+       数据模型查询时不仅支持当前表，还支持关联查询时的关联表的分库分表，只要设置sharding()第2个参数relationModel。
+       假设UsersModel设置了WechatUsersModel模型关联。如下代码：
+</pre>
+<pre class="brush: php;">
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class UsersModel extends DatabaseModel
+{
+	protected static $table = 'users';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\UsersEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+    /**
+     * 关联设置
+     */
+    public function relations()
+    {
+        return array(
+            //一对一关联
+            'userWechat' => array(
+                'hasOne', 'app\model\database\WechatUsersModel', 'id,user_id'
+            )
+        );
+    }
+}
+</pre>
+<pre>
+       分库分表查询如下：
+</pre>
+<pre class="brush: php;">
+//查询用户列表，执行分库分表
+$usersLogModel = new UsersLogModel();
+$usersLogList = $userLogModel
+    ->sharding($shardingData)
+    ->leftJoin('userWechat', 'b', 'b.user_id=a.id')
+    ->sharding(array('group_id' => 23), 'b') //使用关联表别名
+    //->sharding(array('group_id' => 23), 'app\model\database\WechatUsersModel') //使用关联表类名
+    ->orderBy('create_time DESC')
+    ->limit(0, 100)
+    ->getAll();
+</pre>
 
 <pre>
-<strong>3、用事件进行自动化分表</strong>
-      通过上面提到的sharding()方法可以在模型外面使用时传递分表参数，但是这样维护起来就麻烦，太多地方要改。
-      所以框架提供了几个事件可以实现自动化设置分库分表数据。
-      （1）单条记录：使用实体模型Entity的beforeCreate()、beforeUpdate()、beforeDelete()。
+<strong>4、用事件进行自动化分表</strong>
+       通过上面提到的sharding()方法可以在模型外面使用时传递分表参数，但是这样维护起来就麻烦，太多地方要改。
+       所以框架提供了几个事件可以实现自动化设置分库分表数据。
+       （1）单条记录增删改
+              使用实体模型Entity的beforeCreate()、beforeUpdate()、beforeDelete()。
+</pre>
 
 <pre class="brush: php;">
 namespace app\model\entity\database;
@@ -200,19 +256,78 @@ class UsersLogEntity extends DatabaseEntity
     }
 }
 </pre>
-
-      （2）查询：使用数据模型Model的beforeSelectQuery()和beforeQuery()。
+<pre>
+       （2）单表查询
+              使用数据模型Model的beforeSelectQuery()和beforeQuery()。
+              使用<span class="STYLE1">getExtract()</span>可以获取where()和moreWhere()条件数组中的字段数据。
+</pre>
 
 <pre class="brush: php;">
 namespace app\model\database;
 
 use Base\Model\DatabaseModel;
 
-class UserLogsModel extends DatabaseModel
+class UsersModel extends DatabaseModel
 {
-	protected static $table = 'user_logs';
+	protected static $table = 'users';
 	protected static $primary = 'id';
-	protected static $entity = 'app\model\entity\database\UserLogsEntity';
+	protected static $entity = 'app\model\entity\database\UsersEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+    /**
+     * 设置分库分表规则
+     */
+    public function __sharding($data)
+    {
+        $groupId = $data['group_id'];
+        $this->setDatabase('mytest_' . $groupId);
+        $this->setTable('user_' . $groupId);
+    }
+
+    /*
+     * 组装SQL查询前置事件
+     * @param $isQueryRow
+     * @param $isCount
+     * @param $event
+     * @param $eventTarget
+     */
+	public function beforeSelectQuery($isQueryRow, $isCount, $event, $eventTarget)
+    {
+        //查出user_id
+        $extracts = $this->getExtracts();
+        $data = array_merge($extracts['where'], $extracts['moreWhere']);
+        $userId = ocGet('user_id', $data);
+        $groupId = ocGet('group_id', $data);
+
+        //使用sharding()传入分表数据
+        $shardingData = array(
+            'user_id' => $userId,
+            'group_id' => $groupId
+        );
+
+        $this->sharding($shardingData);
+    }
+}
+</pre>
+<pre>
+       （3）联表查询
+              也可以在主表的beforeSelectQuery()方法中进行。
+</pre>
+<pre class="brush: php;">
+namespace app\model\database;
+
+use Base\Model\DatabaseModel;
+
+class UsersModel extends DatabaseModel
+{
+	protected static $table = 'users';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\UsersEntity';
 
 	/**
 	 * 初始化模型
@@ -226,32 +341,54 @@ class UserLogsModel extends DatabaseModel
 	public function beforeQuery($sql, $event, $eventTarget)
     {}
 
-    /**
-	 * 组装SQL查询前置事件
-	 */
+    /*
+     * 组装SQL查询前置事件
+     * @param $isQueryRow
+     * @param $isCount
+     * @param $event
+     * @param $eventTarget
+     */
 	public function beforeSelectQuery($isQueryRow, $isCount, $event, $eventTarget)
     {
         //查出user_id
-        $userId = 0;
-        $where = ocGet(array('option', 'where'), $this->sql, array());
-        $moreWhere = ocGet(array('option', 'moreWhere'), $this->sql, array());
-        $where = array_merge($where, $moreWhere);
+        //... ...
 
-        foreach ($where as $row) {
-            if (is_array($row) && isset($row['user_id'])
-                $userId = $row['user_id'];
-            }
-        }
-
-        //使用user_id分表
-        if ($userId) {
-            $shardingData = array('user_id' => $userId);
-            $this->sharding($shardingData); //使用sharding()传入分表数据
-        }
+        $this->sharding($shardingData);
+        $this->sharding($shardingData, 'app\model\database\WechatUsersModel');
     }
 }
 </pre>
-      （3）批量更新和删除：同上第（2）点，可以在查询事件中设置。
 
+<pre>
+              然后，在关联模型中也要加上__sharding()方法函数设置分表规则。
+</pre>
+<pre class="brush: php;">
+namespace app\model\database;
+use Base\Model\DatabaseModel;
+
+class WechatUsersModel extends DatabaseModel
+{
+	protected static $table = 'wechat_users';
+	protected static $primary = 'id';
+	protected static $entity = 'app\model\entity\database\WechatUsersEntity';
+
+	/**
+	 * 初始化模型
+	 */
+	public function __model()
+	{}
+
+    public function __sharding($data)
+    {
+        $groupId = $data['group_id'];
+        $this->setDatabase('mytest_' . $groupId);
+        $this->setTable('wechat_users_' . $groupId);
+    }
+}
+</pre>
+<pre>
+       （4）批量更新和删除
+              同上第（2）点，可以在查询事件中设置。
+</pre>
 </pre></body>
 </html>
