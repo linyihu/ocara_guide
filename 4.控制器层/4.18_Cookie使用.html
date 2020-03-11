@@ -29,9 +29,11 @@
 
 <strong style="color:#1b2426">一、Cookie类</strong>
        框架中使用ocService()->cookie可以进行Cookie操作，它对应Ocara\Core\Cookie类。
+
 <strong style="color:#1b2426">二、Cookie操作</strong>
-    Cookie类包括了create、get、set、delete、has五种操作。
-<pre><strong>1、create(name, value[, expire, path, domain, secure, httponly])</strong>
+
+<pre><span class="STYLE5">1、添加Cookie变量</span>
+            <strong>create(name, value[, expire, path, domain, secure, httponly])</strong>
       设置cookie。参数跟PHP原生的setcookie函数一致，请看PHP的setcookie函数的介绍。
       只不过，默认值可以在application/config/system.php中<span class="STYLE5">配置COOKIE的相关选项</span>，如下是Web应用刚生成时框架默认的配置：
 <pre class="brush: php;">
@@ -94,6 +96,13 @@ $this->cookie->create('username', 'Jim');
 //设置username，其他参数自定义，在未来一天内的ocara.cn根目录下有效
 ocService()->cookie->create('username', 'Tom', 86400, '/', '.ocara.cn');
 </pre>
+
+<span class="STYLE5">2.更多方法函数</span>
+      （1）<strong>get(key)</strong>：获取名称为key的cookie变量值；
+      （2）<strong>set(key, value)</strong>：修改名称为key的cookie变量值；
+      （3）<strong>delete(key)</strong>：删除名称为key的cookie变量值；
+      （4）<strong>has(key)</strong>：检测是否存在名称为key的cookie变量。
+
 </div>
 </pre>
 </body>
