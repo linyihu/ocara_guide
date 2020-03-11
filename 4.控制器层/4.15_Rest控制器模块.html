@@ -33,13 +33,11 @@
         //路由映射
         'action_map' => array(
             'GET' 			=> 'index', //获取记录列表
-            'GET/id' 		=> 'read', //获取记录详情
+            'GET/id' 		=> 'read', //获取记录详情，如http://localhost/user/123
             'POST' 			=> 'create', //添加记录
-            'PUT/id' 		=> 'update', //更新记录
-            'PATCH/id' 		=> 'update', //更新记录
-            'HEAD' 			=> 'index', //获取记录列表
-            'HEAD/id' 		=> 'read', //获取记录详情
-            'DELETE/id'		=> 'delete', //删除记录
+            'PUT/id' 		=> 'update', //更新记录，如http://localhost/user/123
+            'PATCH/id' 		=> 'update', //更新记录，如http://localhost/user/123
+            'DELETE/id'		=> 'delete', //删除记录，如http://localhost/user/123
         ),
         //请求成功返回状态码
         'success_code_map' => array(
