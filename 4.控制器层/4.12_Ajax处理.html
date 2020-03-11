@@ -131,39 +131,18 @@ class Controller extends Module
 }
 </pre>
 
-      （1）返回成功结果
-            返回Ajax数据，可以使用控制器动作的ajaxReturn()方法。格式如下：
-               <span class="STYLE1">ajaxReturn(data[, message])</span>
-            参数说明：
-</pre>
-<table>
-    <tr class="head">
-        <td width="90">名称</td>
-        <td width="400">描述</td>
-    </tr>
-    <tr>
-        <td>data</td>
-        <td>可选。要返回的数据。</td>
-    </tr>
-    <tr>
-        <td>message</td>
-        <td>可选。处理结果的文字描述，为空时默认为“success”。数组提示或字符串提示。如果是数组，格式为array(提示代码，提示消息键名或文字）</td>
-    </tr>
-</table>
-
 <pre>
 
-<strong>二、后端Ajax返回错误</strong>
+<strong>三、后端Ajax返回错误</strong>
 
       如果抛出错误异常，框架会按上述第一点说的不同情况判断为是否是Ajax请求，如果是就有Ajax返回结果。
       抛出异常有以下几种，建议第2种，因为它可以翻译多语言配置。
             （1）使用PHP原生的throw new Exception()格式抛出异常。
             （2）使用<span class="STYLE1">Ocara::services()->error->show()</span>，强烈建议使用！如果要求多语言，必须使用这个。
-
 </pre>
 <pre>
 
-<strong>二、设置Ajax返回的文档格式</strong>
+<strong>四、设置Ajax返回的文档格式</strong>
 
       Ajax返回的文档格式，目前支持Json、XML和html格式。
       （1）设置Ajax文档类型
@@ -174,8 +153,12 @@ class Controller extends Module
 </pre>
 
       （2）调整返回格式
-                一般是在模块类中修改渲染前置事件。
-                （a）普通的模板渲染模式控制器模块CommonController修改beforeRenderApi()事件。
+            AJAX返回数据包含以下字段：
+                （1）status，处理状态，一般包括success和failed两个值，这个不需要修改。
+                （2）code，处理错误码，如果处理成功时为0。
+                （3）message，处理结果描述。
+                （4）body，处理后的结果数据。
+            通过在模块类中编写渲染前置事件beforeRenderApi()来修改格式。
 
 <pre class="brush: php;">
 /**
@@ -198,73 +181,15 @@ class Module extends CommonController
     {
         parent::beforeRenderApi(); //这一步必须
 
-        if (!$this->response->getHeaderOption('statusCode')) {
-            if ($this->result['status'] == 'success') {
-                $this->response->setStatusCode(Response::STATUS_OK);
-            } else {
-                $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
-            }
-        }
-
-        if (!ocConfig(array('API', 'send_header_code'), 0)) {
-            $this->response->setStatusCode(Response::STATUS_OK);
-            $this->result['status'] = $this->response->getHeaderOption('statusCode');
-        }
-
         $this->result = array(
              'code' => $this->result['code'],
              'message' => $this->result['message'],
-             'result' => $this->result['data'],
+             'result' => $this->result['body'],
              'status' => $this->result['status'],
         );
     }
 }
 </pre>
 
-                （b）API控制器模块ApiController、Restful控制器模块RestController修改beforeRender()事件处理方法。
-
-<pre class="brush: php;">
-/**
- * Default module class Module
- */
-namespace app\controller;
-
-use Base\Controller\ApiController;
-use Ocara\Core\Response;
-
-class Module extends ApiController
-{
-    /**
-     * 模块初始化函数
-     */
-    public function __module()
-    {}
-
-    public function beforeRender()
-    {
-        parent::beforeRender(); //这一步必须
-
-        if (!$this->response->getHeaderOption('statusCode')) {
-            if ($this->result['status'] == 'success') {
-                $this->response->setStatusCode(Response::STATUS_OK);
-            } else {
-                $this->response->setStatusCode(Response::STATUS_SERVER_ERROR);
-            }
-        }
-
-        if (!ocConfig(array('API', 'send_header_code'), 0)) {
-            $this->response->setStatusCode(Response::STATUS_OK);
-            $this->result['status'] = $this->response->getHeaderOption('statusCode');
-        }
-
-        $this->result = array(
-             'code' => $this->result['code'],
-             'message' => $this->result['message'],
-             'result' => $this->result['data'],
-             'status' => $this->result['status'],
-        );
-    }
-}
-</pre>
 </pre></body>
 </html>
