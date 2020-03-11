@@ -8,6 +8,14 @@
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
 <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
 <script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+    <!--
+    .STYLE1 {
+        color: #0000FF;
+        font-weight: bold;
+    }
+    -->
+</style>
 </head>
 <body alink=#ff0000>
 <pre><h2>1.15 新建应用</h2>
@@ -47,13 +55,21 @@ require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';
  */
 Ocara::create();
 </pre>
-    （3）修改Ocara框架路径
-              只要指定好上面代码中Ocara.php文件路径，或者如果是composer安装的，指定好autoload.php文件。
-              请保证当前项目目录有可读写权限。
+        （3）修改控制器类型
+                可以在<span class="STYLE1">Ocara::create()</span>中传递控制器类型参数，来设置是何种控制器，比如：Ocara::create('Api')。
+                目前支持以下参数值：
+                        （a）同步渲染模式控制器：Common；
+                        （b）API控制器：Api；
+                        （c）Rest控制器：Rest；
+                        （d）命令控制器：Task
 
-     （4）执行index.php生成应用
-              在浏览器中打开入口文件index.php即可生成应用所有的目录和文件。
-              比如当前本地环境配置域名为localhost，则打开http://localhost/index.php。
-              如果新建成功，会输出：Application create Success！否则，如果是权限问题，PHP会提示目录没有可写权限。</p>
+        （4）修改Ocara框架路径
+                只要指定好上面代码中Ocara.php文件路径，或者如果是composer安装的，指定好autoload.php文件。
+                请保证当前项目目录有可读写权限。
+
+        （5）执行index.php生成应用
+                在浏览器中打开入口文件index.php即可生成应用所有的目录和文件。
+                比如当前本地环境配置域名为localhost，则打开http://localhost/index.php。
+                如果新建成功，会输出：Application create Success！否则，如果是权限问题，PHP会提示目录没有可写权限。</p>
 </pre>
 </body></html>
