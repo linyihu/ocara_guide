@@ -87,6 +87,13 @@ class Controller extends Module
         } else {
             //这里修改请求失败时返回的数据格式
         }
+
+        $this->result = array(
+             'code' => $this->result['code'],
+             'message' => $this->result['message'],
+             'result' => $this->result['data'],
+             'status' => $this->result['status'],
+        );
     }
 }
 </pre>
