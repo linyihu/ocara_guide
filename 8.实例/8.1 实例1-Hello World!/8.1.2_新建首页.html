@@ -34,7 +34,7 @@
 
 <strong>3、打印输出</strong>
       上一点显示的内容是模板方式显示的。
-      我们还可以改成直接在php代码中进行显示，而不显示模板内容，通过response服务来操作。
+      我们还可以改成直接在php代码中进行显示，而不显示模板内容，使用send()方法。
 
 <pre class="brush: php;">class IndexAction extends HomeController
 {
@@ -43,8 +43,7 @@
       */
       public function __action()
       {
-          $this->response->setBody('Hello World!');
-          $this->response->send();
+          return $this->send('Hello World!');
       }
 }
 </pre>
