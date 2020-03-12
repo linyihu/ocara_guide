@@ -208,7 +208,7 @@ $userModel = new UserModel();
 $userEntityList = $userModel
 	->where('id', '>=', 20)
 	->where('id', '<=', 30)
-	->update(1000); //自动批量更新
+	->update($data, 1000); //自动批量更新
 </pre>
 
 <pre>
