@@ -71,17 +71,17 @@ HHC3004: Warning: 5.10_关联模型操作.html : The HTML tag "=2; $i ++) {    $moneyE
 5.数据模型层\5.15_逻辑实体和枚举常量对象.html
 5.数据模型层\5.16_默认条件和字段.html
 5.数据模型层\5.2_数据库的使用.html
-5.数据模型层\5.3_数据模型的使用.html
+5.数据模型层\5.3_数据模型.html
 5.数据模型层\5.4_实体模型（ORM）.html
 5.数据模型层\5.5_缓存模型.html
 5.数据模型层\5.6_事务处理.html
-5.数据模型层\5.7_数据库查询.html
+5.数据模型层\5.7_数据查询.html
 5.数据模型层\5.8_更多数据库查询函数.html
-HHC3004: Warning: 5.9_数据库操作.html : The HTML tag "=', 30)	-" is not a valid HTML tag (it does not begin with an alphanumeric character).
-HHC3004: Warning: 5.9_数据库操作.html : The HTML tag "=', 30)	-" is not a valid HTML tag (it does not begin with an alphanumeric character).
-HHC3004: Warning: 5.9_数据库操作.html : The HTML tag "=', 30);//鎵嬪姩涓�鏉℃潯鍒犻櫎foreach ($use..." is not a valid HTML tag (it does not begin with an alphanumeric character).
-HHC3004: Warning: 5.9_数据库操作.html : The HTML tag "=', 30)	-" is not a valid HTML tag (it does not begin with an alphanumeric character).
-5.数据模型层\5.9_数据库操作.html
+HHC3004: Warning: 5.9_数据操作.html : The HTML tag "=', 30)	-" is not a valid HTML tag (it does not begin with an alphanumeric character).
+HHC3004: Warning: 5.9_数据操作.html : The HTML tag "=', 30)	-" is not a valid HTML tag (it does not begin with an alphanumeric character).
+HHC3004: Warning: 5.9_数据操作.html : The HTML tag "=', 30);//鎵嬪姩涓�鏉℃潯鍒犻櫎foreach ($use..." is not a valid HTML tag (it does not begin with an alphanumeric character).
+HHC3004: Warning: 5.9_数据操作.html : The HTML tag "=', 30)	-" is not a valid HTML tag (it does not begin with an alphanumeric character).
+5.数据模型层\5.9_数据操作.html
 6.视图层\6.1_页面布局.html
 6.视图层\6.2_模板的使用.html
 6.视图层\6.3_模板区块.html
@@ -280,5 +280,5 @@ Compile time: 0 minutes, 4 seconds
 0	Graphics
 
 
-Created d:\wwwroot\Ocara 2.0手册.CHM, 1,903,989 bytes
-Compression decreased file by 920,007 bytes.
+Created d:\wwwroot\Ocara 2.0手册.CHM, 1,904,539 bytes
+Compression decreased file by 927,347 bytes.
