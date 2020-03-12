@@ -34,7 +34,7 @@
 	</tr>
 		<tr>
 		<td>time</td>
-		<td>必需。日期时间参数。可以是字符串、时间戳或规定键名的数组（可以直接给出或通过getDateInfo()获取得到）</td>
+		<td>必需。日期时间参数。可以是字符串、时间戳或时间数组（可以直接给出或通过getDateInfo()获取得到）</td>
 	</tr>
 	<tr>
 		<td>number</td>
@@ -125,7 +125,7 @@ echo ocService()->date->get('2015-02-28 12:02:00', 'month');
 echo ocService()->date->getDate(time(), 'mdy'); 
 //输出当前月日年格式的时间字符串，比如：04-05-2013 13:13:24 
 
-//规定键名的数组
+//时间数组
 $dateArray = ocService()->date->getDateInfo(time());
 echo ocService()->date->getDate($dateArray, 'mdy'); 
 //也输出月日年格式的当前时间字符串
@@ -169,7 +169,7 @@ $result = ocService()->date->getInterval('2015-02-28 12:15:13', time());
 print_r($result); 
 //没有指定type参数，输出类似于Array ( [days] => 36 [hours] => 1 [minutes] => 10 [seconds] => 2 ) 
 
-//规定键名的数组
+//时间数组
 $dateArray = ocService()->date->getDateInfo('2015-02-28 12:15:13');
 $result = ocService()->date->getInterval($dateArray, time());
 print_r($result); 
