@@ -39,7 +39,7 @@
 <p>实例如下：</p>
  <pre class="brush: php;">
   		$imageFile = ocPath('attachments', 'default/red.jpg');
-		$imageObj = new Image();
+		$imageObj = ocService()->image
 		$imageObj->setSrcImage($imageFile);
 </pre>
 <pre><strong>2、setDstImage(dstPath, mode)</strong>
@@ -63,7 +63,7 @@
 <p>实例如下：</p>
  <pre class="brush: php;">
 $imageFile = ocPath('attachments', 'default/red2.jpg');
-$imageObj = new Image();
+$imageObj = ocService()->image
 $imageObj->setDstImage($imageFile);
 </pre>
 <pre><strong>3、clipImage(clipWidth, clipHeight, clipLx, clipLy, dstWidth, dstHeight, dstLx, dstLy)</strong>
@@ -118,7 +118,7 @@ $imageObj->setDstImage($imageFile);
 </pre></p>
 <pre class="brush: php;">
 /*保存为30*35的新图*/
-$imageObj = new Image();
+$imageObj = ocService()->image
 $imageObj->setSrcImage(ocPath('attachments', 'default/red.jpg'));
 $imageObj->setDstImage(ocPath('attachments', 'default/red_small.jpg'));
 
@@ -139,7 +139,7 @@ $imageObj->clipImage(80, 85, 5, 10);
  * 保存为me_clip.gif，保存起点是(5,10)，保存宽度50像素，高度55像素
  * 注：如果裁切后的图像宽高不够50*55，比如是40*46，则保存也只会取实际的宽高40*46
  */
-$imageObj = new Image();
+$imageObj = ocService()->image
 $imageObj->setSrcImage(ocPath('attachments', 'default/me.gif'));
 $imageObj->setDstImage(ocPath('attachments', 'default/me_clip.gif'));
 
@@ -171,7 +171,7 @@ $imageObj->clipImage(80, 85, 5, 10, 50, 55, 5, 10);
 <p>实例如下：</p>
 <p>假设test.gif图片的宽高分别是100和110像素。</p>
  <pre class="brush: php;">
-$imageObj = new Image();
+$imageObj = ocService()->image
 $imageObj->zoomImage(
 	array(
 		array('_small', 50, 50),
@@ -247,7 +247,7 @@ $imageObj->addMark($markImage, array(
   </table>  
 <p>实例如下：</p>
 <p>假设test.gif图片的宽高分别是100和110像素。</p>
- <pre class="brush: php;">		$imageObj = new Image();
+ <pre class="brush: php;">		$imageObj = ocService()->image
 		$imageObj->setSrcImage(ocPath('attachments', 'default/logo.gif'));
 		$imageObj->setDstImage(ocPath('attachments', 'default/test.gif'));
 		$imageObj->flipH('src'); //水平翻转logo.gif
@@ -268,7 +268,7 @@ $imageObj->addMark($markImage, array(
   </table>  
 <p>实例如下：</p>
 <p>假设test.gif图片的宽高分别是100和110像素。</p>
- <pre class="brush: php;">		$imageObj = new Image();
+ <pre class="brush: php;">		$imageObj = ocService()->image
 		$imageObj->setSrcImage(ocPath('attachments', 'default/logo.gif'));
 		$imageObj->setDstImage(ocPath('attachments', 'default/test.gif'));
 		$imageObj->flipV('dst'); //垂直翻转test.gif

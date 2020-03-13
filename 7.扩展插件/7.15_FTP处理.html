@@ -58,8 +58,7 @@
 </table>  
   <p>实例如下：</p>
  <pre class="brush: php;">
-$ftp = new Ftp();
- 
+$ftp = ocService()->createService('ftp');
 $ftp->connect('85.134.120.16', 'myhost001', '123456@dlyg');
 
 </pre>
