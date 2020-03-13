@@ -20,24 +20,28 @@
 		<td><h2>特色：</h2>颜色背景，图片背景都可以，画线条也可以。</td>
 	</tr>
 </table>
+<pre>
 <p><strong>二、应用实例</strong></p>
-<p>（１）生成验证码</p>
-（a）纯色背景验证码
-<pre class="brush: php;">$vcode = new VerifyCode();
+<p>       （1）生成验证码</p>
+              （a）纯色背景验证码
+</pre>
+<pre class="brush: php;">
+$verifyCode = ocService()->createService('verifyCode');
 		
 //画背景
 //黑色，宽130px，高30px
-$vcode->drawBack(130, 30, '#000000'); 
+$verifyCode->drawBack(130, 30, '#000000');
 
 //画线条，指定结束点位置(13, 19)，看起来向下悬挂
-$vcode->drawLine('#ff0330', 2, 15, 13, 19); 
+$verifyCode->drawLine('#ff0330', 2, 15, 13, 19);
+
 //画线条，没有指定结点位置，默认水平垂直居中
-$vcode->drawLine('#343245', 0, 13); 
+$verifyCode->drawLine('#343245', 0, 13);
 
 //添加3个字符
 //第2个参数用字符串，则指定字体颜色
 //第3个参数指定左上角位置(0,14)
-$vcode->drawText(3, '#ff00ff', array(0,14)); 
+$verifyCode->drawText(3, '#ff00ff', array(0,14));
 
 //添加2个字符
 //第2个参数用数组指定格式
@@ -50,34 +54,68 @@ $format = array(
    'font'	=> 'Verdana', //字体文件名，这里不加扩展名，所以表示Verdana.ttf字体
 );
 
-$vcode->drawText(2, $format); 
+$verifyCode->drawText(2, $format);
 
 //输出验证码
-$vcode->output(); 
+$verifyCode->output();
 </pre>
-（b）背景图片验证码
-<pre class="brush: php;">$vcode = new VerifyCode();
+<pre>
+              （b）背景图片验证码
+</pre>
+
+<pre class="brush: php;">
+$verifyCode = ocService()->createService('verifyCode');
 		
 //画背景
 //宽130px，高30px
-//背景图片路径为/public/attachments/default/bg_code.jpg
-$path = ocPath('attachments', 'default/bg_code.jpg');
-$vcode->drawBack(130, 30, $path); 
+//背景图片路径为/public/attachments/bg_verify_code.jpg
+$path = ocPath('attachments', 'bg_verify_code.jpg');
+$verifyCode->drawBack(130, 30, $path);
 
 //其他同上
 </pre>
 <p>
-<pre>（２）验证码检测
-　　　表单提交了验证码后，后台检测，如：</pre></p><pre class="brush: php;">$verifyCodeObj = new Validate();
-$code = ocService()->request->etPost('verify_code');
+<pre>
+       （2）验证码检测
+              表单提交了验证码后，后台检测，如：
+</pre></p>
+<pre class="brush: php;">
+$verifyCode = ocService()->createService('verifyCode');
+$code = ocService()->request->getPost('verify_code');
 
-if (false == $verifyCodeObj->checkCode($code)) {
-    die('验证码不正确');
-}</pre><p><strong>三、方法函数介绍</strong></p>
+if (false == $verifyCode->checkCode($code)) {
+    ocService()->error->show('验证码不正确');
+}
+</pre>
+
+<p>
+
+	<strong>三、字体配置</strong></p>
+<pre>
+       1、新增新的字体
+              目前系统支持Verdana和simhei两种字体，默认为Verdana。
+              如果要新增新的字体，将ttf字体文件放到data/fonts目录。
+
+       2、修改默认字体配置
+
+              修改application/config/system.php中的默认字体。
+
+</pre>
+<pre class="brush: php;">
+	/*
+	 * 默认字体（用于图片处理等）
+	 */
+	'DEFAULT_FONT' => 'Verdana',
+</pre>
+
+<p>
+
+<strong>四、方法函数介绍</strong></p>
 <div class="function">
-<pre><strong>1、drawBack(width, height[, source])</strong>
-  画背景。此方法必须先执行。可以画纯色背景或背景图片。
-  参数说明：
+<pre>
+       <strong>1、drawBack(width, height[, source])</strong>
+              画背景。此方法必须先执行。可以画纯色背景或背景图片。
+              参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -96,12 +134,12 @@ if (false == $verifyCodeObj->checkCode($code)) {
 		<td>source</td>
 		<td>可选。背景来源。可以是颜色值或背景图片的路径。默认是黑色（#000000）背景。</td>
 	</tr>
-  </table>  
+  </table>
 <pre>
 
-<strong>2、drawLine(color, startX, startY[, endX, endY])</strong>
-  画线条。  
-  参数说明：
+       <strong>2、drawLine(color, startX, startY[, endX, endY])</strong>
+              画线条。
+              参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -132,9 +170,9 @@ if (false == $verifyCodeObj->checkCode($code)) {
   </table>  
 <pre>
 
-<strong>3、drawText(length[, format, location])</strong>
-  画验证码文字。可以多次使用。
-  参数说明：
+       <strong>3、drawText(length[, format, location])</strong>
+              画验证码文字。可以多次使用。
+              参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -163,14 +201,14 @@ if (false == $verifyCodeObj->checkCode($code)) {
   
 <pre>
 
-<strong>4、getCode()</strong>
-  获取生成的验证码，保存在Session当中。 </pre>
+       <strong>4、getCode()</strong>
+              获取生成的验证码，保存在Session当中。 </pre>
   
 <pre>
 
-<strong>5、checkCode(code)</strong>
-   检测用户输入的验证码是否正确。  
-  参数说明：
+       <strong>5、checkCode(code)</strong>
+              检测用户输入的验证码是否正确。
+              参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -184,14 +222,14 @@ if (false == $verifyCodeObj->checkCode($code)) {
   </table>  
 <pre>
 
-<strong>6、output()</strong>
-  在页面中输出验证码图片。 </pre>
+       <strong>6、output()</strong>
+              在页面中输出验证码图片。 </pre>
 
 <pre>
 
-<strong>7、clear()</strong>
-  清除验证码以及session中保存的验证码数据。  
-  参数说明：
+       <strong>7、clear()</strong>
+              清除验证码以及session中保存的验证码数据。
+              参数说明：
  </pre>
 <table>
 	<tr class="head">

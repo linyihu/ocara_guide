@@ -17,13 +17,11 @@
        随机码生成插件，对应类名Ocara\Service\Code。</pre>
 
 <p><strong>二、函数介绍</strong></p>
-
+<div class="function">
 <pre>
-
-<strong>4、getRandCode(type, length[, filter])</strong>
-  生成由数字和大小写英文字母组成的随机验证码。
-  该函数是静态函数，外部可以随时调用，如下所示：
-  参数说明：
+<strong>1、getRandCode(type, length[, filter])</strong>
+       生成由数字或英文大小写字母组成的随机验证码。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -45,12 +43,22 @@
 </table>
 <pre class="brush: php;">
 //获取随机验证码，忽略0、小写o和大写O
-$randCode = ocService()->code->getRandCode('number', 5, array('0', 'o', 'O'));
+$randCode = ocService()->code->getRandCode('both', 5, array('0', 'o', 'O')); //输出类似：k2Xy7
 
 //filter参数也可以是字符串
-$randCode = ocService()->code->getRandCode('number', 5, array('0oO'));
+$randCode = ocService()->code->getRandCode('both', 5, array('0oO'));//输出类似
+</pre>
+
+<pre>
+<strong>2、getRandNumber(length)</strong>
+       生成包括一些符号在内的随机码，字符Ascii码值从33到126。
+       框架中的表单令牌用到这个了。
+</pre>
+<pre class="brush: php;">
+$randCode = ocService()->code->getRandNumber(5); //输出类似：F;RJ~
 </pre>
 
 </div>
+</pre>
 </body>
 </html>
