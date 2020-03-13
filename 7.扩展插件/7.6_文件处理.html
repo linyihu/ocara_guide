@@ -23,9 +23,9 @@
 <p><strong>二、方法函数介绍</strong></p>
 <div class="function">
 <pre><strong>1、createFile(filepath[, perm, openMode])</strong>
-  新建文件。返回文件路径。  
-  参数说明：
- </pre>Temporary parking
+       新建文件。返回文件路径。
+       参数说明：
+ </pre>
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -44,13 +44,12 @@
 		<td>可选。文件打开模式。默认为wb。</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 ocService()->file->createFile($path, 0777); </pre>
 <pre><strong>2、openFile(filepath, openMode[, perm, createDir])</strong>
-  打开文件，如果文件不存在，在允许自动新建不存在的目录的前提下（createDir参为true），会自动新建文件。
-  参数说明：
+       打开文件，如果文件不存在，在允许自动新建不存在的目录的前提下（createDir参为true），会自动新建文件。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -74,13 +73,12 @@ ocService()->file->createFile($path, 0777); </pre>
 		<td>可选。文件目录不存在时，是否自动新建目录。默认为true.</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 ocService()->file->openFile($path); //不存在时，自动新建 </pre>
 <pre><strong>3、closeFile(source)</strong>
-  关闭打开的文件。返回true或false。  
-  参数说明：
+       关闭打开的文件。返回true或false。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -92,13 +90,12 @@ ocService()->file->openFile($path); //不存在时，自动新建 </pre>
 		<td>必需。文件打开句柄</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $fopen = ocService()->file->openFile($path);
 ocService()->file->closeFile($fopen); </pre>
 <pre><strong>4、rename(filePath, newName)</strong>
-  重命名文件或目录。返回true或false。  
-  参数说明：
+       重命名文件或目录。返回true或false。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -114,13 +111,12 @@ ocService()->file->closeFile($fopen); </pre>
 		<td>必需。新文件名或路径</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 ocService()->file->rename($path, ocPath('data','test.txt')); </pre>
 <pre><strong>5、delFile(filepath)</strong>
-  删除文件
-  参数说明：
+       删除文件
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -131,15 +127,18 @@ ocService()->file->rename($path, ocPath('data','test.txt')); </pre>
 		<td>filepath</td>
 		<td>必需。同上</td>
 	</tr>
-	</table>  
-  <p>实例如下：</p>
-<p> 如果存在required/data/test.txt：</p>
+	</table>
+
+<pre>
+       如果存在required/data/test.txt：
+</pre>
+
 <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 ocService()->file->delFile($path); </pre>
   <pre><strong>6、readFile(filepath)</strong>
-  读取文件所有内容。返回字符串。  
-  参数说明：
+       读取文件所有内容。返回字符串。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -151,14 +150,13 @@ ocService()->file->delFile($path); </pre>
 		<td>必需。同上</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 $content = ocService()->file->readFile($path);
 print_r($content); </pre>
 <pre><strong>7、writeFile(path, content[, perm, trim])</strong>
-  向文件写入内容。返回true或false。  
-  参数说明：
+       向文件写入内容。返回true或false。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -179,10 +177,9 @@ print_r($content); </pre>
 	</tr>
 	<tr>
 		<td>trim</td>
-		<td>可选。是否删除内容前后空白字符。默认为true,表示删除</td>
+		<td>可选。要删除的前后字符。</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 ocService()->file->writeFile($path, '新写入的内容'); // 在文件中添加内容，覆盖原有内容。
@@ -191,8 +188,8 @@ $path = ocPath('data', 'test/test.txt');
 ocService()->file->writeFile($path, '新写入的内容2', 0777); // 目录不存在，会自动新建，并且添加0777权限
  </pre>
 <pre><strong>8、appendFile(path, content[, perm, trim])</strong>
-  向文件追加内容，添加在原文件内容之后。返回true或false。  
-  参数说明：
+       向文件追加内容，添加在原文件内容之后。返回true或false。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -216,13 +213,12 @@ ocService()->file->writeFile($path, '新写入的内容2', 0777); // 目录不�
 		<td>可选。是否删除内容前后空白字符。默认为true,表示删除</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 ocService()->file->appendFile($path, '增加的内容');// 在文件后面追加内容，而不是覆盖原内容。 </pre>
 <pre><strong>9、copyFile(source, destination)</strong>
-  复制文件。返回true或false。  
-  参数说明：
+       复制文件。返回true或false。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -237,15 +233,17 @@ ocService()->file->appendFile($path, '增加的内容');// 在文件后面追加
 		<td>destination</td>
 		<td>必需。目标文件路径</td>
 	</tr>
-	</table>  
-  <p>实例如下：</p>
+	</table>
+
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
-ocService()->file->moveFile($path, ocPath('data', 'test2.txt')); </pre>
-<pre><strong>10、moveFile(filepath, destination)</strong>
-  移动文件。返回true或false。注:原生的PHP删除目录函数无法递归删除其下子目录，本函数可实现该递归功能。
+ocService()->file->copyFile($path, ocPath('data', 'test2.txt'));
+ </pre>
+
+<pre><strong>10、moveFile(source, destination)</strong>
+       移动文件。返回true或false。
 			  
-  参数说明：
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -261,19 +259,20 @@ ocService()->file->moveFile($path, ocPath('data', 'test2.txt')); </pre>
 		<td>必需。同上</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test.txt');
 ocService()->file->moveFile($path, ocPath('data', 'test2.txt')); </pre>
 <pre><strong>11、fileInfo(filePath)</strong>
-  <pre>获取文件信息，返回文件信息数组。返回数组中包括如下键名：
-'atime' ：文件的上次访问时间。
-'ctime' ：文件的上次 inode 修改时间。
-'mtime' ：文件内容上次的修改时间。
-'perms' ：文件或目录的权限。
-'size' ：文件大小；
-'type' ：文件类型。</pre>  
-  参数说明：
+<pre>
+       获取文件信息，返回文件信息数组。返回数组中包括如下键名：
+              atime ：文件的上次访问时间。
+              ctime ：文件的上次 inode 修改时间。
+              mtime ：文件内容上次的修改时间。
+              perms ：文件或目录的权限。
+              size ：文件大小；
+              type ：文件类型。
+</pre>
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -285,7 +284,6 @@ ocService()->file->moveFile($path, ocPath('data', 'test2.txt')); </pre>
 		<td>必需。同上</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
  <pre class="brush: php;">
 $path = ocPath('data', 'test3.txt');
 print_r(ocService()->file->fileInfo($path));
@@ -301,8 +299,8 @@ Array (
 )
 </pre>
 <pre><strong>12、createDir(path, perm)</strong>
-  新建目录。返回true或false。  
-  参数说明：
+       新建目录。返回true或false。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -317,14 +315,16 @@ Array (
 		<td>perm</td>
 		<td>必需。如果目录存在新建目录时的读写权限</td>
 	</tr>
-	</table>  
-  <p>实例如下：</p>
- <pre class="brush: php;">
+	</table>
+
+<pre class="brush: php;">
 $path = ocPath('data', 'test');
-ocService()->file->createDir($path); </pre>
+ocService()->file->createDir($path);
+</pre>
+
 <pre><strong>13、delDir(path[, recursive])</strong>
-  删除目录。返回true或false。  
-  参数说明：
+       删除目录。返回true或false。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -337,10 +337,9 @@ ocService()->file->createDir($path); </pre>
 	</tr>
 		<tr>
 		<td>recursive</td>
-		<td>必需。是否递归删除，默认为true,表示删除</td>
+		<td>必需。是否递归删除，默认为false。</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
 <p></p>
 <pre class="brush: php;">
 $path = ocPath('data', 'test');
@@ -354,16 +353,26 @@ ocService()->file->createFile(ocPath('data', 'test/test2/test.txt'));
 
 ocService()->file->delDir($path);
 				 </pre>
- <p>结果：显示出错（错误信息：Directory not empty）。原因是里面还有没有删除的文件，解决方法如下：</p>
- <p><p>（１）清理所有子目录和文件后，然后删除其本身。</p>
-                  <pre class="brush: php;">ocService()->file->clearDir($path, true);
-
+<pre>
+       结果没有删除， 原因是里面还有没有删除的文件，解决方法如下：
+       （1）清理所有子目录和文件后，然后删除其本身。
+</pre>
+<pre class="brush: php;">
+ocService()->file->clearDir($path, true);
 ocService()->file->delDir($path);
-</pre><p>（２）递归删除所有子目录和文件</p>
-                  <pre class="brush: php;">ocService()->file->delDir($path, true);</pre></p>
+</pre>
+
+<pre>
+       （2）递归删除所有子目录和文件
+</pre>
+
+<pre class="brush: php;">
+ocService()->file->delDir($path, true);
+</pre>
+
   <pre><strong>14、clearDir(path, recursive)</strong>
-  清理目录。与delDir()不同的时，当前目录不会被删除，其子目录和文件都会被删除。返回true或false。  
-  参数说明：
+       清理目录。与delDir()不同的是，当前目录本身不会被删除。返回true或false。
+       参数说明：
  </pre>
 <table>
 	<tr class="head">
@@ -379,7 +388,6 @@ ocService()->file->delDir($path);
 		<td>必需。同上</td>
 	</tr>
 	</table>  
-  <p>实例如下：</p>
 <p></p>
 <pre class="brush: php;">
 $path = ocPath('data', 'test');
@@ -391,13 +399,21 @@ ocService()->file->createFile(ocPath('data', 'test/test.txt'));
 ocService()->file->createDir(ocPath('data', 'test/test2'));
 ocService()->file->createFile(ocPath('data', 'test/test2/test.txt'));
  </pre>
- <p>结果：显示出错（错误信息：Directory not empty）。解决方案：</p>
- <p>
-（1）仅清理文件，不清理子目录。</p>
+<pre>
+       结果没有删除， 原因是里面还有没有删除的文件，解决方法如下：
+       （1）仅清理文件，不清理子目录。
+</pre>
 
 <pre class="brush: php;">ocService()->file->clearDir($path);</pre>
-<p>（2）递归清理所有子目录和文件</p>
-<pre class="brush: php;">ocService()->file->clearDir($path, true);</pre></p>
-  </div>
+
+<pre>
+       （2）递归清理所有子目录和文件
+</pre>
+
+<pre class="brush: php;">
+ocService()->file->clearDir($path, true);
+</pre>
+
+</div>
 </body>
 </html>
