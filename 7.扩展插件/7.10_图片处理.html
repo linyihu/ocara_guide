@@ -38,8 +38,9 @@
   </table>  
 <p>实例如下：</p>
  <pre class="brush: php;">
+  		$imageObj = ocService()->createService('image');;
+
   		$imageFile = ocPath('attachments', 'default/red.jpg');
-		$imageObj = ocService()->image
 		$imageObj->setSrcImage($imageFile);
 </pre>
 <pre><strong>2、setDstImage(dstPath, mode)</strong>
@@ -63,7 +64,6 @@
 <p>实例如下：</p>
  <pre class="brush: php;">
 $imageFile = ocPath('attachments', 'default/red2.jpg');
-$imageObj = ocService()->image
 $imageObj->setDstImage($imageFile);
 </pre>
 <pre><strong>3、clipImage(clipWidth, clipHeight, clipLx, clipLy, dstWidth, dstHeight, dstLx, dstLy)</strong>
@@ -93,42 +93,48 @@ $imageObj->setDstImage($imageFile);
 	</tr>
 		<tr>
 		<td>dstWidth</td>
-		<td>可选。裁切之后保存宽度（决定新图本身的缩放宽度）<br />
+		<td>可选。裁切之后保存宽度（决定新图本身的缩放宽度），默认到最后。<br />
 		  注：如果这个裁切宽度大于源图片本身的宽度，只会取源图片本身的宽度。</td>
 	</tr>
 		<tr>
 		<td>dstHeight</td>
-		<td>可选。裁切之后保存高度（决定新图本身的缩放高度）<br />
+		<td>可选。裁切之后保存高度（决定新图本身的缩放高度），默认到最后。<br />
 		  注：如果这个裁切宽度大于源图片本身的高度，只会取源图片本身的高度。</td>
 	</tr>
 		<tr>
 		<td>dstLx</td>
-		<td>可选。裁切之后保存的起点横坐标（决定了新图本身相对于背景的水平偏移量）</td>
+		<td>可选。裁切之后保存的起点横坐标（决定了新图本身相对于背景的水平偏移量），默认为0。</td>
 	</tr>
 		<tr>
 		<td>dstLy</td>
-		<td>可选。裁切之后保存的起点纵坐标（决定了新图本身相对于背景的垂直偏移量）</td>
+		<td>可选。裁切之后保存的起点纵坐标（决定了新图本身相对于背景的垂直偏移量），默认为0。</td>
 	</tr>
   </table>  
 <p>实例如下：</p>
 
 <p>1、图片裁切实例<br/>
 <pre>
-         从源图片的(5, 10)处开始，裁切掉宽80像素和高85像素。
+         从源图片的(5, 10)处开始，裁切掉部分。
 </pre></p>
 <pre class="brush: php;">
 /*保存为30*35的新图*/
-$imageObj = ocService()->image
-$imageObj->setSrcImage(ocPath('attachments', 'default/red.jpg'));
-$imageObj->setDstImage(ocPath('attachments', 'default/red_small.jpg'));
+$srcImage = $imageObj->setSrcImage(ocPath('attachments', 'default/red.jpg'));
 
+//原图大小再裁切，从原图开始位置(5, 10)
+$width = $imageObj->getInfo($srcImage, 'W'); //原图宽度
+$height = $imageObj->getInfo($srcImage, 'H'); //原图高度
+
+$imageObj->setDstImage(ocPath('attachments', 'default/red_strong.jpg'));
+$imageObj->clipImage($width, $height, 5, 10);
+
+//裁切30*35大小
+$imageObj->setDstImage(ocPath('attachments', 'default/red_small.jpg'));
 $imageObj->clipImage(80, 85, 5, 10, 30, 35);
 
-/*保存为80*85的新图*/
-$imageObj->setSrcImage(ocPath('attachments', 'default/red.jpg'));
+//裁切为80*85
 $imageObj->setDstImage(ocPath('attachments', 'default/red_big.jpg'));
-
 $imageObj->clipImage(80, 85, 5, 10);
+
 </pre>
 <pre>
 <p>2、位移裁切实例（用于头像裁切）
@@ -139,14 +145,15 @@ $imageObj->clipImage(80, 85, 5, 10);
  * 保存为me_clip.gif，保存起点是(5,10)，保存宽度50像素，高度55像素
  * 注：如果裁切后的图像宽高不够50*55，比如是40*46，则保存也只会取实际的宽高40*46
  */
-$imageObj = ocService()->image
+$imageObj = ocService()->createService('image');
 $imageObj->setSrcImage(ocPath('attachments', 'default/me.gif'));
 $imageObj->setDstImage(ocPath('attachments', 'default/me_clip.gif'));
 
 $imageObj->clipImage(80, 85, 5, 10, 50, 55, 5, 10);
 </pre>
-<pre><strong>4、zoomImage(proportion, dstPath)</strong>
-  新建缩略图。注:如果缩略图指定的宽度或高度大于图像本身的宽或高度，则只  
+<pre><strong>4、zoomImage(proportion[, dstDir])</strong>
+  新建缩略图。
+  注：如果缩略图指定的宽度或高度大于图像本身的宽或高度，则只取图片本身的宽高。
   参数说明：
  </pre>
 <table>
@@ -154,35 +161,36 @@ $imageObj->clipImage(80, 85, 5, 10, 50, 55, 5, 10);
 		<td width="120">名称</td>
 		<td width="400">描述</td>
 	</tr>
-		<tr>
+	<tr>
 		<td>proportion</td>
-		<td>必需。类似于以下：
-  array(
-  array('_small', 100, 200),  //新建以_small结尾的缩略图
-  array('_big', 420, 500), //新建以_big结尾的大缩略图
-  )；
-		  </td>
+		<td>必需。缩略图配置数组。类似于以下：<br/>
+  array(<br/>
+       array('_small', 100, 200),  //新建以_small结尾的缩略图<br/>
+       array('_big', 420, 500), //新建以_big结尾的大缩略图<br/>
+  )；<br/>
+	   </td>
 	</tr>
-		<tr>
-		<td>dstPath</td>
-		<td>必需。保存的图片路径。</td>
+	<tr>
+		<td>dstDir</td>
+		<td>可选。要保存新图片的目录路径，默认为原图当前目录。</td>
 	</tr>
   </table>  
-<p>实例如下：</p>
 <p>假设test.gif图片的宽高分别是100和110像素。</p>
  <pre class="brush: php;">
-$imageObj = ocService()->image
+$imageObj = ocService()->createService('image');;
+$imageObj->setSrcImage(ocPath('attachments', 'default/test.gif'));
+
 $imageObj->zoomImage(
-	array(
-		array('_small', 50, 50),
+	 array(
+	    array('_small', 50, 50),
 		array('_big', 60, 70),
-     array('_over', 400, 500), //由于图片宽度不够，400和500都无效，只会取图片本身的宽100像素和高110像素
-	), 
-	ocPath('attachments', 'default/test.gif')
+        array('_over', 400, 500), //因为图片大小不够，400和500都无效，只会取图片本身的宽100像素和高110像素
+	 ),
+	 ocPath('attachments', 'default/zooms'), //保存目录
 );
 </pre>
- <pre><strong>5、addMark(dstImage, markInfo, newFileSuffix)</strong>
-  新建水印。  
+ <pre><strong>5、addMark(markInfo[, suffix])</strong>
+  新增水印图片。
   参数说明：
  </pre>
 <table>
@@ -190,45 +198,56 @@ $imageObj->zoomImage(
 		<td width="90">名称</td>
 		<td width="400">描述</td>
 	</tr>
-		<tr>
-		<td>dstImage</td>
-		<td>必需。水印图片路径</td>
-	</tr>
-		<tr>
+	<tr>
 		<td>markInfo</td>
 		<td>必需。水印参数。</td>
 	</tr>
-		<tr>
-		<td>newFileSuffix</td>
-		<td>可选。保存图片后缀。</td>
+	<tr>
+		<td>suffix</td>
+		<td>可选。新图名称后缀，保存目录为原图当前目录。如果这个参数不指定，则保存目录和文件名使用setDstImage()设置的。</td>
 	</tr>
   </table>  
   <p>实例如下：</p>
 <p>文字</p>
 <pre class="brush: php;">
-$imageObj->addMark($markImage, array(
-	'text',
+//会新增加了水印的图片test_mark.gif
+$imageObj->setSrcImage(ocPath('attachments', 'default/test.gif'));
+$imageObj->setDstImage(ocPath('attachments', 'default/test_mark.gif'));
+
+$imageObj->addMark(
 	array(
-		  'location' => 'left-up',
-		  'content' => 'A336',
-		  'font' => 'Verdana',
-		  'size' => '14',
-		  'color' => '#FF0000'
+		'text',
+		array(
+			  'location' => 'left-up',
+			  'content' => 'A336',
+			  'font' => 'Verdana',
+			  'size' => '14',
+			  'color' => '#FF0000'
+		)
 	)
-)); </pre>
+);
+
+</pre>
+
   <p>图片</p>
+
 <pre class="brush: php;">
-$imageObj->addMark($markImage, array(
-	'image', //图片类型
+//会新增加了水印的图片shuiyin_mark.gif
+$imageObj->addMark(
 	array(
-		'path' => ocPath('attachments', 'default/yaotou.gif'),  //水印图片
-		'location' => 'left-up', //水平位置
-		'transparent' => 5//透明度
-	)
-));
+		'image', //图片类型
+		array(
+			'path' => ocPath('attachments', 'default/shuiyin.gif'),  //水印图片
+			'location' => 'left-up', //水平位置
+			'transparent' => 5//透明度
+		)
+	),
+	'_mark', //保存后缀
+);
 </pre>
-<pre><strong>6、flipH(imageType)</strong>
-  水平翻转图片。 可翻转通过setSrcImage()或setDstImage()设置的图片。
+
+<pre><strong>6、flipH(suffix)</strong>
+  水平翻转图片。可以通过setDstImage()和后缀设置新图。
   参数说明：
  </pre>
 <table>
@@ -236,43 +255,42 @@ $imageObj->addMark($markImage, array(
 		<td width="90">名称</td>
 		<td width="400">描述</td>
 	</tr>
-		<tr>
-		<td>imageType</td>
-		<td>可选。默认为src。可取src和dst两上值，含义如下：
-          <br />
-          （1）src：表示对源图片，即setSrcImage()设置的图片；
-          <br />
-          （2）dst：表示目标图片，即setDstImage()设置的图片。		  </td>
-	</tr>
-  </table>  
-<p>实例如下：</p>
-<p>假设test.gif图片的宽高分别是100和110像素。</p>
- <pre class="brush: php;">		$imageObj = ocService()->image
-		$imageObj->setSrcImage(ocPath('attachments', 'default/logo.gif'));
-		$imageObj->setDstImage(ocPath('attachments', 'default/test.gif'));
-		$imageObj->flipH('src'); //水平翻转logo.gif
-</pre>
-<pre><strong>7、flipH(imageType)</strong>
-  垂直翻转图片。 也可翻转通过setSrcImage()或setDstImage()设置的图片。
-  参数说明：
- </pre>
-<table>
-	<tr class="head">
-		<td width="90">名称</td>
-		<td width="400">描述</td>
-	</tr>
-		<tr>
-		<td>imageType</td>
+	<tr>
+		<td>suffix</td>
 		<td>可选。同上。</td>
 	</tr>
-  </table>  
-<p>实例如下：</p>
+  </table>
+
 <p>假设test.gif图片的宽高分别是100和110像素。</p>
- <pre class="brush: php;">		$imageObj = ocService()->image
-		$imageObj->setSrcImage(ocPath('attachments', 'default/logo.gif'));
-		$imageObj->setDstImage(ocPath('attachments', 'default/test.gif'));
-		$imageObj->flipV('dst'); //垂直翻转test.gif
+ <pre class="brush: php;">
+$imageObj = ocService()->createService('image');
+$imageObj->setSrcImage(ocPath('attachments', 'default/logo.gif'));
+$imageObj->setDstImage(ocPath('attachments', 'default/logo_flipH.gif'));
+$imageObj->flipH(); //新图名为logo_flipH.gif
 </pre>
+
+<pre><strong>7、flipV(suffix)</strong>
+  垂直翻转图片。可以通过setDstImage()和后缀设置新图。
+  参数说明：
+ </pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+		<tr>
+		<td>suffix</td>
+		<td>可选。同上。</td>
+	</tr>
+  </table>
+
+<p>假设test.gif图片的宽高分别是100和110像素。</p>
+
+ <pre class="brush: php;">		$imageObj = ocService()->createService('image');
+		$imageObj->setSrcImage(ocPath('attachments', 'default/logo.gif'));
+		$imageObj->flipV('flipV'); //新图名为logo_flipV.gif
+</pre>
+
 </div>
 </body>
 </html>
