@@ -21,7 +21,8 @@
 	</tr>
 </table>
 <p><strong>二、应用实例</strong></p>
-<p>假设，保存的数据为数组。</p><pre class="brush: php;"> $fileCache = new FileCache();
+<p>假设，保存的数据为数组。</p><pre class="brush: php;">
+$fileCache = ocService()->createService('fileCache');
 
 $users = array(
 	array('小明', 12), 
@@ -98,13 +99,13 @@ Array ( [0] => Array ( [0] => 小明 [1] => 12 ) [1] => Array ( [0] => 小刚 [1
 		<td>必需。是否追加到缓存文件末尾，而不是覆盖内容。</td>
 	</tr>
 	<tr>
-		<td>append</td>
+		<td>perm</td>
 		<td>可选。如果文件不存在新建文件时添加的可读写权限，默认为0755。</td>
 	</tr>
   </table>
   <p>实例如下：</p>
  <pre class="brush: php;">
-$fileCache = new FileCache();
+$fileCache = ocService()->createService('fileCache');
 
 $users = array(
 	array('小明', 12),
@@ -143,10 +144,19 @@ print_r($content);
 
 <pre>
 
-<strong>3、format()</strong>
-       格式化数据，如果数据是数组，保存的缓存数组，会按平时手写的数组格式保存。否则，会以var_export()生成。但是数组太大
-时，没有性能没有后者快。
-       比如上例中，如果在保存前，使用该函数后，可以看到保存的数组内容会有易读的格式。否则，如果是数字型数组，数字键名也显示出来了。
+<strong>3、format(format)</strong>
+       是否格式化数组。
+
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>format</td>
+		<td>可选。是否格式化，默认为true。</td>
+	</tr>
+</table>
 </pre>
 </div>
 

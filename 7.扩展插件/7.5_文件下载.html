@@ -47,8 +47,7 @@
 
  <pre class="brush: php;">
   //假设data目录有一个文件test.txt
-$download = new Download();
-$download->download(ocPath('data', ''test.txt'), 'test.txt'); //执行该页面，会提示下载或设置了不需提示时直接就下载。
+ocService()->download->download(ocPath('data', ''test.txt'), 'test.txt'); //执行该页面，会提示下载或设置了不需提示时直接就下载。
  </pre>
 
 <pre><strong>2、downloadContent(content, saveName[, encode])</strong>
@@ -76,9 +75,8 @@ $download->download(ocPath('data', ''test.txt'), 'test.txt'); //执行该页面�
 
 <pre class="brush: php;">
 //假设data目录有一个文件test.txt
-$download = new Download();
 $content = ocRead(ocPath('data', ''test.txt'));
-$download->download($content, 'test.txt'); //执行该页面，会提示下载或设置了不需提示时直接就下载。
+ocService()->download->download($content, 'test.txt'); //执行该页面，会提示下载或设置了不需提示时直接就下载。
 </pre>
 
 <pre><strong>3、showFile(filePath[, encode])</strong>
@@ -101,11 +99,8 @@ $download->download($content, 'test.txt'); //执行该页面，会提示下载�
 	</table>
 
 <pre class="brush: php;">
-//假设data目录有一个文件test.txt
-$download = new Download();
-
 //显示该文件
-$download->showFile(ocPath('data', ''test.txt'));
+ocService()->download->showFile(ocPath('data', 'test.txt'));
  </pre>
 
 
@@ -134,11 +129,10 @@ $download->showFile(ocPath('data', ''test.txt'));
 
 <pre class="brush: php;">
 //假设data目录有一个文件test.txt
-$download = new Download();
 $content = ocRead(ocPath('data', 'test.txt'));
 
 //显示该文件
-$download->showContent($content, 'test.txt');
+ocService()->download->showContent($content, 'test.txt');
  </pre>
 </div>
 </body>
