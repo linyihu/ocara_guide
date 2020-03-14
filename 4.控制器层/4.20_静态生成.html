@@ -25,7 +25,22 @@
              （2）指定要生成的路由和参数数据；
              （3）生成静态页面。
 
-<strong>1、配置URL路由格式</strong>
+<strong>1、确定网站域名配置</strong>
+
+       首先要确定和修改application/config/application.php中的网站域名配置WEB_HOST是否正确。
+       这个配置就是静态生成和ocUrl()生成URL时使用的域名，如果为空，默认取的是当前访问域名。
+
+<pre class="brush: php;">
+    /*
+     * 当前网站的主机域名，比如www.baidu.com或bbs.baidu.com等。
+     * 建议填写，否则，系统自动获取当前网址中的域名；
+     * 如果不填写，baidu.com和www.baidu.com如果都可以访问的话
+     * 此时保存在数据库中的图片地址，建议不保存域名，只保存图片目录地址
+     */
+    'WEB_HOST' => 'localhost',
+</pre>
+
+<strong>2、配置URL路由格式</strong>
        静态生成，不是全站都要静态生成，所以，我们在做静态生成时，要确定哪些页面要静态生成。
        我们需要在application/conf/static.php中STATIC配置。
 <pre class="brush: php;">
@@ -116,7 +131,7 @@ return array(
     )
 );
 </pre>
-<strong>2、指定要生成的参数数据</strong>
+<strong>3、指定要生成的参数数据</strong>
       上面配置了静态生成的路由和参数格式，然后就要用回调函数去指定具体的参数值。
       比如上例的thread控制器。
      （1）函数回调
@@ -162,7 +177,7 @@ class StaticCallBack
 }
 </pre>
 
-<strong>3、生成静态页面</strong>
+<strong>4、生成静态页面</strong>
 
       通过以上两步，配置并写好了回调函数，下面我们只要调用生成函数，就能生成静态了。
 
