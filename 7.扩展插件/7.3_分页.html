@@ -16,6 +16,7 @@
 <strong>一、插件介绍</strong>
        分页插件，对应类Ocara\Service\Pager。可以轻松地实现分页，每次切换分页后，都会显示当前页左右最近的页码，满足一般的分页需求。</pre>
 <pre>
+
 <strong>二、公有属性介绍</strong>
        以下是公有属性，在页面模板中，可以自由使用。
 
@@ -55,12 +56,53 @@
 	</table>  
 </pre>
 
-<strong>三、方法函数介绍</strong>
+<strong>二、应用实例</strong>
+
+<pre class="brush: php;">
+namespace app\modules\admin\controller\guestbook;
+
+class IndexAction extends Controller
+{
+	/**
+	 * 初始化
+	 */
+	public function __action()
+	{
+	}
+
+	/**
+	 * 显示列表
+	 */
+	public function display()
+	{
+	    //查询数据
+		$result = $this->getList();
+		$data = $result['data'];
+		$total = $result['total'];
+
+		//生成分页HTML
+	    $curRoute = $this->getRoute();
+		$curGet = $this->request->getGet();
+
+		$this->pager
+	         ->setHtml($total, array($curRoute, $curGet));
+
+		//设置模板变量
+		$pager = $this->pager;
+		$this->assign(compact('pager', 'data'));
+	}
+}
+</pre>
+
+<strong>四、方法函数介绍</strong>
 <div class="function">
-<pre><strong>1、setPage(page)</strong>
-       设置当前页。
-       参数说明：
+<pre>
+
+       <strong>1、setPage(page)</strong>
+              设置当前页。
+              参数说明：
  </pre>
+
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -70,11 +112,15 @@
 		<td>page</td>
 		<td>必需。页码</td>
 	</tr>
-	</table>  
-<pre><strong>2、setPerPage(perPage)</strong>
-       设置每页显示多少条记录。
-       参数说明：
+</table>
+
+<pre>
+
+       <strong>2、setPerPage(perPage)</strong>
+              设置每页显示多少条记录。
+              参数说明：
  </pre>
+
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -84,11 +130,15 @@
 		<td>perPage</td>
 		<td>必需。每页显示的记录数</td>
 	</tr>
-	</table>  
-<pre><strong>3、setPageParam(pageParam)</strong>
-       设置查询字符串中的分页参数的名称。
-       参数说明：
- </pre>
+</table>
+
+<pre>
+
+       <strong>3、setPageParam(pageParam)</strong>
+              设置查询字符串中的分页参数的名称。
+              参数说明：
+</pre>
+
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -96,13 +146,17 @@
 	</tr>
 		<tr>
 		<td>pageParam</td>
-		<td>必需。参数名称。</td>
+		<td>必需。参数名称。默认为page。</td>
 	</tr>
-	</table>  
-<pre><strong>4、setPerShow(perShow)</strong>
-       设置每次显示多少页。
-       参数说明：
- </pre>
+</table>
+
+<pre>
+
+       <strong>4、setPerShow(perShow)</strong>
+              设置每次显示多少页。
+              参数说明：
+</pre>
+
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -112,11 +166,15 @@
 		<td>perShow</td>
 		<td>必需。每页显示的页数</td>
 	</tr>
-	</table>  
-<pre><strong>5、setUrl(url)</strong>
-       设置分页URL。
-       参数说明：
- </pre>
+</table>
+
+<pre>
+
+       <strong>5、setUrl(url)</strong>
+              设置分页URL。
+              参数说明：
+</pre>
+
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -127,10 +185,12 @@
 		<td>必需。页码的主要URL，可以是URL字符串或URL信息数组。其中不需要包含分页参数，分页参数会自动在该URL后面加上。</td>
 	</tr>
 	</table>  
-<pre><strong>6、setActiveClass(class)</strong>
-       设置当前页CSS样式。
-       参数说明：
- </pre>
+<pre>
+
+       <strong>6、setActiveClass(class)</strong>
+              设置当前页CSS样式。
+              参数说明：
+</pre>
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -140,11 +200,14 @@
 		<td>class</td>
 		<td>必需。当页选中页的超链接的css class名称。</td>
 	</tr>
-	</table>  
-<pre><strong>7、setHtml(total, url[, attr])</strong>
-       设置页码的主函数。
-       参数说明：
- </pre>
+</table>
+
+<pre>
+
+       <strong>7、setHtml(total, url[, attr])</strong>
+              设置页码的主函数。
+              参数说明：
+</pre>
 <table>
 	<tr class="head">
 		<td width="90">名称</td>
@@ -162,14 +225,18 @@
 		<td>attr</td>
 		<td>可选。参数数组。</td>
 	</tr>
-	</table>  
-<pre><strong>8、getInfo()</strong>
-       返回分页信息。 返回分页信息，即Mysql的limit语句的两个参数：记录开始指针和查询数量
+</table>
+
+<pre>
+
+       <strong>8、getInfo()</strong>
+              返回分页信息。 返回分页信息，即Mysql的limit语句的两个参数：记录开始指针和查询数量
 </pre>
 
 <pre>
-<strong>9、getPage()</strong>
-       获取当前页。
+
+       <strong>9、getPage()</strong>
+              获取当前页。
 </pre>
 </div>
 </body>
