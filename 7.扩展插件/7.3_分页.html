@@ -97,7 +97,7 @@ class IndexAction extends Controller
 	    }
 
 	    $result = $model
-	          ->page($this->pager->getInfo())
+	          ->page($this->pager->getInfo()) //分页查询
 	          ->getAll();
 
 		$data = $result['data'];
