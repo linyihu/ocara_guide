@@ -70,13 +70,31 @@ class IndexAction extends Controller
 	{
 	}
 
+	public function registerForms()
+	{
+		$this->form('form_search')
+             ->init(ocUrl('/admin/guestbook/index'));
+	}
+
 	/**
 	 * 显示列表
 	 */
 	public function display()
 	{
 	    //查询数据
-		$result = $this->getList();
+	    $data = $this->request->getGet();
+	    $model = $this->model();
+
+	    if (!empty($data['telephone1'])) {
+	         $model->where(array(
+			      'telephone1' => $data['telephone1']
+		      ));
+	    }
+
+	    $result = $model
+	          ->page($this->pager->getInfo())
+	          ->getAll();
+
 		$data = $result['data'];
 		$total = $result['total'];
 
