@@ -22,8 +22,8 @@
        Ocara静态生成很简单。
        只需三步:
              （1）配置静态生成的URL路由格式；
-             （2）通过回调函数或路由，返回要静态生成的MVC路由和参数；
-             （3）调用生成函数生成静态页面。
+             （2）指定要生成的路由和参数数据；
+             （3）生成静态页面。
 
 <strong>1、配置URL路由格式</strong>
        静态生成，不是全站都要静态生成，所以，我们在做静态生成时，要确定哪些页面要静态生成。
@@ -38,7 +38,7 @@ return array(
     /**
      * 是否开启静态生成
      */
-    'open' => '-',
+    'open' => 0,
 
     /**
      * 静态文件扩展名类型
@@ -63,7 +63,7 @@ return array(
 </pre>
        其中，open是静态生成开关，file_type是静态生成的文件扩展名，delimiter是参数分隔符。
 
-（1）配置路由格式（route）
+      <strong>（1）配置路由格式（route）</strong>
          说明：
               {c}代表控制器，{a}代表动作，{p}表示其他参数。
               路由分隔符只能是下划线"-"和顺斜杠"/"。
@@ -77,7 +77,8 @@ return array(
 	</tr>
 </table>
 <pre>
-（2）配置数据参数格式（params）
+
+      <strong>（2）配置数据参数格式（params）</strong>
          该配置项是多维数组，用于配置URL查询字符串参数的格式。
          说明：
              （a）模块、控制器和动作参数都作为数组键名。
@@ -115,24 +116,27 @@ return array(
     )
 );
 </pre>
-<strong>2、回调函数、类方法或路由</strong>
-      回调，主要是用来指定要静态生成的MVC路由和参数的数据。
-      如上已经配置了路由格式和参数格式，那么哪些具体的页面要生成呢。
-      比如我们的bbs/thread/read表示论坛版块阅读页面，那么具体是哪些论坛版块ID的阅读页面呢？
-      这时候，就要用到回调。 
-      下面就介绍一下回调函数、类方法或者MVC路由。
+<strong>2、指定要生成的参数数据</strong>
+      上面配置了静态生成的路由和参数格式，然后就要用回调函数去指定具体的参数值。
+      比如上例的thread控制器。
      （1）函数回调
-            使用getHtmlData函数回调。
-            比如上例，如果thread是数据表名并且几个参数都是数据库字段原名的话，代码简单多了：
-<pre class="brush: php;">function getHtmlData($module, $controller, $action, $params)
+
+<pre class="brush: php;">
+/**
+ * 回调函数
+ */
+function getHtmlData($module, $controller, $action, $params)
 {
      if ($controller == 'thread') {
            if ($action == 'list')  {
-                 //从数据库中查询路由
-                $class = '\app\model\database\\' . $controller;
-          		 $model = new $class();
-                 $fields = implode(',', $params);
-                 return $model->fields($fields)->getAll();
+          		 $model = new app\model\database\ThreadModel();
+                 //字段映射
+                 foreach ($params as $key => $field) {
+                       if ($field == 'fid') {
+                             $params[$key] = 'forum_id AS fid';
+                       }
+                 }
+                 return $model->fields($params)->getAll();
             } elseif ($action == 'read') {
                  //read动作的代码
             }
@@ -143,37 +147,13 @@ return array(
  	 return array();
 }
 </pre>
-            否则，<strong>假设某个参数不是字段原名，则需要注意返回结果中要包含该参数。</strong>
-            比如fid参数是forum_id字段的别名：
-<pre class="brush: php;">function getHtmlData($module, $controller, $action, $params)
- {
-	 if ($controller == 'thread') {
-           if ($action == 'list')  {
-                 //从数据库中查询路由
-                 $class = '\app\model\database\\' . $controller;
-                 $model = new $class();
-                 //字段名处理
-                 foreach ($params as $key => $field) {
-                       if ($field == 'fid') {
-                             $params[$key] = 'forum_id AS fid';
-                       }
-                 }
-                 $fields = implode(',', $params);
-                 return $model->fields($fields)->getAll();
-            } elseif  ($action == 'read')  {
-                 //read动作的代码
-            } 
-     } else {
-           //其他代码
-     }
-
- 	 return array();
-}
-
-</pre>
       （2）类方法回调
-          使用StaticCallBack类的getHtmlData方法回调。
-<pre class="brush: php;">class StaticCallBack 
+
+<pre class="brush: php;">
+/**
+ * 回调方法
+ */
+class StaticCallBack
 {
 　　  public function getHtmlData($module, $controller, $action, $params)
      {
@@ -181,38 +161,18 @@ return array(
      }
 }
 </pre>
-      （3）动作回调
-          使用static控制器的gethtmldata动作回调。
-          （a）使用控制动作类
-                   使用动作类时，回调要写在__action中。
-<pre class="brush: php;">class GethtmldataAction extends StaticController 
-{
-　　 public function __action($module, $controller, $action, $params)
-	 {
-      	 //代码同上
- 	 }
-}
-</pre>
-          （b）直接写在控制器中
-<pre class="brush: php;">class StaticController extends Controller 
-{
-　　 public function gethtmldataAction($module, $controller, $action, $params)
-	{
-      	//代码同上
- 	}
-}
-</pre>
 
+<strong>3、生成静态页面</strong>
 
-<strong>3、生成静态</strong>
       通过以上两步，配置并写好了回调函数，下面我们只要调用生成函数，就能生成静态了。
-<strong>（1）目录权限</strong>
-      请保证生成的目录public/static有可写权限，生成的静态页面都是在该目录下面。
+
+      <strong>（1）目录权限</strong>
+            请保证生成的目录public/static有可写权限，生成的静态页面都是在该目录下面。
 	  
-<strong>（2）生成静态</strong>
-      生成函数，就是使用系统插件StaticBuilder的genAll()方法，格式如下：
+      <strong>（2）生成静态</strong>
+            生成函数，就是使用系统插件StaticBuilder的genAll()方法，格式如下：
             <span class="function"><strong>genAll(callback)</strong></span>
-      参数说明：
+            参数说明：
           
 <table>
     <tr class="head">
@@ -221,32 +181,50 @@ return array(
     </tr>
         <tr>
         <td>callback</td>
-        <td>必需。回调函数、类的方法函数或MVC路由</td>
+        <td>必需。回调函数、类的方法。</td>
     </tr>
-</table>  
-      callback传递的参数值有三种：
-      （a）回调函数
-              如果是一个函数getHtmldata：
-<pre class="brush: php;">$static->genAll('getHtmldata');</pre>
-      （b）回调类方法
-              如果是StaticCallback的getHtmldata方法：
-<pre class="brush: php;">$static->genAll('StaticCallback::getHtmldata');</pre>
-      （c）回调控制器/动作
-              如果是一个static控制器的动作gethtmldata(控制器/动作)：
-<pre class="brush: php;">$static->genAll('static/gethtmldata')):</pre>
-              如果是一个是模块bbs的html控制器的动作gethtmldata：
-<pre class="brush: php;">$static->genAll('bbs/static/gethtmldata');</pre>
+</table>
 
-<strong>（3）实例</strong>
-      比如，以下是一个静态生成的控制器类，调用的是一个回调函数getHtmldata：
-<pre class="brush: php;">class staticGenerateController extends Controller
+            callback传递的参数值有三种：
+
+            （a）回调函数
+
+<pre class="brush: php;">
+class staticGenerateController extends Controller
 {
     public function actionGenerate()
 	{
-        $static = new StaticBuilder();
-        $static->genAll('getHtmldata');    
+        $this->staticBuilder->genAll('getHtmlData');
     }
 }
 </pre>
+
+            （b）回调对象方法
+
+<pre class="brush: php;">
+class staticGenerateController extends Controller
+{
+    public function actionGenerate()
+	{
+        $handler = new StaticCallback();
+        $this->staticBuilder->genAll(array($handler, 'getHtmlData'));
+    }
+}
+</pre>
+
+            （c）回调对象方法
+
+                  如果getHtmlData是静态方法，则使用StaticCallback::getHtmlData。
+
+<pre class="brush: php;">
+class staticGenerateController extends Controller
+{
+    public function actionGenerate()
+	{
+        $this->staticBuilder->genAll('StaticCallback::getHtmlData');
+    }
+}
+</pre>
+
 </pre>
 </body></html>
