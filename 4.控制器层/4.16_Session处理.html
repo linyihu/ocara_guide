@@ -5,6 +5,7 @@
 <title>4.16 Session处理</title>
 <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
 <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushSql.js"></script>
 <link type="text/css" rel="stylesheet" href="../style/base.css" />
 <link type="text/css" rel="stylesheet" href="../style/function.css" />
 <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
@@ -33,11 +34,13 @@ Ocara支持文件、数据库和缓存三种保存方式，也提供了session�
     ),
 </pre>
        说明：
-            （a）选项“save_type”为1；
+            （a）选项“save_time”为session的最长存活时间；
             （b）选项“location”为session的保存目录，默认是cache/sessions，上级目录规定是required/data。
 
 <strong>2、数据库保存方式</strong>
             修改配置文件/application/config/system.php。
+
+      （1）修改配置
             比如我们新建了Session\SessionHandler处理类。
             具体Session\SessionHandler类代码可参考PHP官方的session_set_save_handler()函数中说明。
 
@@ -52,13 +55,115 @@ Ocara支持文件、数据库和缓存三种保存方式，也提供了session�
         //选项设置，不同的处理器选项不同
         'options' => array(
             'save_time'	 => 0, //session的最长存活时间（单位为秒）
-            'location'	 => 'Session\SessionHandler', //Session处理类
+            'location'	 => 'Handlers\SessionHandler', //Session处理类
         ),
     ),
 </pre>
-       说明：
-            （a）选项“save_time”为session的最长存活时间（单位为秒）；
-            （b）选项“location”为session处理类名。
+            说明：
+                  （a）选项“save_time”为session的最长存活时间（单位为秒）；
+                  （b）选项“location”为session处理类名。
+
+      （2）新建session表
+
+<pre class="brush: sql;">
+CREATE TABLE `sessions` (
+  `session_id` varchar(255) NOT NULL COMMENT '当前Session会话的ID',
+  `session_expire_time` datetime NOT NULL COMMENT '当前Session会话有效期',
+  `session_data` text NOT NULL COMMENT '当前Session会话的数据',
+  `create_time` datetime DEFAULT NULL COMMENT '添加时间',
+  `update_time` datetime DEFAULT NULL COMMENT '最后修改时间',
+  PRIMARY KEY (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+</pre>
+
+      （3）添加事件处理器
+            在support下添加Handlers/SessionHandler处理器。
+
+<pre class="brush: php;">
+namespace Handlers;
+
+use Ocara\Core\Base;
+use Ocara\Exceptions\Exception;
+use app\model\database\SessionsModel;
+use app\model\entity\database\SessionsEntity;
+
+class SessionHandler extends Base
+{
+    /**
+     * 获取Session内容
+     * @param $sessionId
+     * @return mixed|null
+     */
+    public function read($sessionId)
+    {
+        $entity = SessionsEntity::build()->select($sessionId);
+
+        //不存在或过期
+        if (!empty($entity->session_id) && $entity->session_expire_time >= date('Y-m-d H:i:s')) {
+            return $entity->session_data;
+        }
+
+        return null;
+    }
+
+    /**
+     * 写入Session
+     * @param $data
+     * @return bool
+     * @throws Exception
+     */
+    public function write($data)
+    {
+        $entity = SessionsEntity::build()->select($data['session_id']);
+        $datetime = date('Y-m-d H:i:s');
+
+        if (empty($entity->session_id)) { //没有添加
+            $entity = SessionsEntity::build();
+            $entity->session_id = $data['session_id'];
+            $entity->session_expire_time = $data['session_expire_time'];
+            $entity->session_data = $data['session_data'];
+            $entity->create_time = $datetime;
+            $entity->update_time = $datetime;
+        } else { //有则更新
+            $entity->session_data = $data['session_data'];
+            $entity->update_time = $datetime;
+        }
+
+        $entity->save();
+        return true;
+    }
+
+    /**
+     * 销毁Session
+     * @param $sessionId
+     * @return bool
+     */
+    public function destory($sessionId)
+    {
+        $entity = SessionsEntity::build()->select($sessionId);
+
+        if (!empty($entity->session_id)) {
+            $entity->delete();
+        }
+
+        return true;
+    }
+
+    /**
+     * 垃圾回收
+     * @throws Exception
+     */
+    public function clear()
+    {
+        SessionsModel::build()
+            ->where(array(
+                'session_expire_time' => array('<', ocSql('now()'))
+            ))
+            ->delete();
+        return true;
+    }
+}
+</pre>
 
 <strong>3、缓存保存方式</strong>
       需要缓存支持。
