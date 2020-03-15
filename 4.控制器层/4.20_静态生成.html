@@ -25,22 +25,26 @@
              （2）指定要生成的路由和参数数据；
              （3）生成静态页面。
 
-<strong>1、确定网站域名配置</strong>
-
-       首先要确定和修改application/config/application.php中的网站域名配置WEB_HOST是否正确。
-       这个配置就是静态生成和ocUrl()生成URL时使用的域名，如果为空，默认取的是当前访问域名。
+       <strong>1、域名配置和目录权限</strong>
+              <strong>（1）域名配置</strong>
+                     首先要确定和修改application/config/application.php中的网站域名配置WEB_HOST是否正确。
+                     这个配置就是静态生成和ocUrl()生成URL时使用的域名，如果为空，默认取的是当前访问域名。
 
 <pre class="brush: php;">
     /*
      * 当前网站的主机域名，比如www.baidu.com或bbs.baidu.com等。
      * 建议填写，否则系统会自动获取当前网址中的域名。
      */
-    'WEB_HOST' => 'ocara.cn',
+    'WEB_HOST' => 'www.ocara.cn',
 </pre>
 
-<strong>2、配置URL路由格式</strong>
-       静态生成，不是全站都要静态生成，所以，我们在做静态生成时，要确定哪些页面要静态生成。
-       我们需要在application/conf/static.php中STATIC配置。
+              <strong>（2）目录权限</strong>
+                     请保证生成的目录public/static有可写权限，生成的静态页面都是在该目录下面。
+
+       <strong>2、配置URL路由格式</strong>
+              静态生成，不是全站都要静态生成，所以，我们在做静态生成时，要确定哪些页面要静态生成。
+              我们需要在application/conf/static.php中修改STATIC配置。
+
 <pre class="brush: php;">
 /*
  * ----------------------------------------------------------------------------
@@ -67,7 +71,7 @@ return array(
         /**
          * 路由格式
          */
-        'route' => '{c}/{a}-{p}',
+        'route' => '{controller}/{action}-{params}',
 
         /**
          * 参数格式
@@ -76,16 +80,30 @@ return array(
     )
 );
 </pre>
-       其中，open是静态生成开关，file_type是静态生成的文件扩展名，delimiter是参数分隔符。
+              其中，open是静态生成开关，file_type是静态生成的文件扩展名，delimiter是参数分隔符。
 
-      <strong>（1）配置路由格式（route）</strong>
-         说明：
-              {c}代表控制器，{a}代表动作，{p}表示其他参数。
-              路由分隔符只能是下划线"-"和顺斜杠"/"。
-         具体实例：
-                实例1，假设路由格式为http://域名/控制器/动作/其他参数，配置如下：
-<pre class="brush: php;">'route' => '{c}/{a}/{p}';</pre>                实例2,假设路由格式为http://域名/控制器/动作-其他参数，配置如下：
-<pre class="brush: php;">'route' => '{c}/{a}-{p}';</pre>
+              <strong>（1）分隔符说明</strong>
+                         （a）参数分隔符
+                                   参数分隔符必须是上面配置中的delimiter。
+                         （b）目录分隔符
+                                   顺斜杠"/"目录分隔符，表示分目录保存，比如'{controller}/{action}-{params}'表示按控制器名分目录。
+
+              <strong>（2）配置路由格式（route）</strong>
+                     说明：
+                            {controller}代表控制器，{action}代表动作，{params}表示其他参数。
+
+
+                     实例1，假设路由格式为http://域名/控制器/动作/其他参数：
+
+<pre class="brush: php;">
+    'route' => '{controller}/{action}/{params}'; //按控制器/动作分目录，参数名为文件名
+</pre>
+                     实例2，假设路由格式为http://域名/控制器/动作-其他参数：
+
+<pre class="brush: php;">
+    'route' => '{controller}/{action}-{params}'; //按控制器分目录，动作名-参数名为文件名
+</pre>
+
 </pre><table class="hint">
 	<tr class="head">
 		<td><h2>注意：</h2>模块是不需要配置的，因为模块是强制使用顺斜杠"/"将其与后面的参数分隔的。</td>
@@ -93,22 +111,23 @@ return array(
 </table>
 <pre>
 
-      <strong>（2）配置数据参数格式（params）</strong>
-         该配置项是多维数组，用于配置URL查询字符串参数的格式。
-         说明：
-             （a）模块、控制器和动作参数都作为数组键名。
-             （b）其他的参数字段都要用花括号括起来。并且以斜杠"/"或英文横杠“-”等分隔。
-                       （a1）“/”为目录名分隔符
-                                 也就是说其左边参数字符串会作为要保存的目录名称。 比如，若配置成&quot;{id}/{fid}-{tid}&quot;，那么生成静态时会将静态文件保存到id字段命名的目录中。
-                       （a2）”-“为文件名参数分隔符（可修改）
-                                 可以修改delimiter配置设置文件名分隔符，默认是“-”，必须是英文半角字符。 如下所示：
+              <strong>（3）配置数据参数格式（params）</strong>
+                     该配置项是多维数组，用于配置URL查询字符串参数的格式。
+                     说明：
+                            （a）模块、控制器和动作参数都作为数组键名。
+                            （b）其他的参数字段都要用花括号括起来。并且以斜杠"/"或英文横杠“-”等分隔。
+                                   （a1）“/”为目录名分隔符
+                                          也就是说其左边参数字符串会作为要保存的目录名称。 比如，若配置成&quot;{id}/{fid}-{tid}&quot;，那么生成静态时会将静态文件保存到id字段命名的目录中。
+                                   （a2）delimiter分隔符
+                                          可以修改delimiter配置设置文件名分隔符，默认是“-”，必须是英文半角字符。
+
 <pre class="brush: php;">
     /**
      * 文件名分隔符
      */
     'delimiter' => '-',
 </pre>
-         具体实例，假设上面的路由格式配置为'{c}/{a}-{p}'，有如下参数配置：
+                     具体参数配置，实例如下：
 		 
 <pre class="brush: php;">
     'params' => array(
@@ -131,10 +150,12 @@ return array(
     )
 );
 </pre>
-<strong>3、指定要生成的参数数据</strong>
-      上面配置了静态生成的路由和参数格式，然后就要用回调函数去指定具体的参数值。
-      比如上例的thread控制器。
-     （1）函数回调
+       <strong>3、一次性静态生成</strong>
+              <strong>（1）指定要生成的参数数据</strong>
+                     上面配置了静态生成的路由和参数格式，然后就要用回调函数去指定具体的参数值。
+                     比如上例的thread控制器。
+
+                     （a）函数回调
 
 <pre class="brush: php;">
 /**
@@ -146,11 +167,18 @@ function getHtmlData($module, $controller, $action, $params)
            if ($action == 'list')  {
           		 $model = new app\model\database\ThreadModel();
                  //字段映射
-                 foreach ($params as $key => $field) {
-                       if ($field == 'fid') {
-                             $params[$key] = 'forum_id AS fid';
-                       }
+                 $maps = array(
+                     'tid' => 'id AS tid',
+                     'fid' => 'forum_id AS fid'
+                 );
+                 $fields = array();
+                 foreach ($params as $value) {
+                     if (array_key_exists($value, $maps)) {
+                         $value = $maps[$value];
+                     }
+                     $fields[] = $value;
                  }
+                 //查询数据
                  return $model->fields($params)->getAll();
             } elseif ($action == 'read') {
                  //read动作的代码
@@ -162,7 +190,7 @@ function getHtmlData($module, $controller, $action, $params)
  	 return array();
 }
 </pre>
-      （2）类方法回调
+                     （b）类方法回调
 
 <pre class="brush: php;">
 /**
@@ -176,19 +204,11 @@ class StaticCallBack
      }
 }
 </pre>
+              <strong>（2）生成静态页面</strong>
+                     生成函数，就是使用系统插件StaticBuilder的genAll()方法，格式如下：
+                            <span class="function"><strong>genAll(callback)</strong></span>
+                     参数说明：
 
-<strong>4、生成静态页面</strong>
-
-      通过以上两步，配置并写好了回调函数，下面我们只要调用生成函数，就能生成静态了。
-
-      <strong>（1）目录权限</strong>
-            请保证生成的目录public/static有可写权限，生成的静态页面都是在该目录下面。
-	  
-      <strong>（2）生成静态</strong>
-            生成函数，就是使用系统插件StaticBuilder的genAll()方法，格式如下：
-            <span class="function"><strong>genAll(callback)</strong></span>
-            参数说明：
-          
 <table>
     <tr class="head">
         <td width="90">名称</td>
@@ -200,9 +220,9 @@ class StaticCallBack
     </tr>
 </table>
 
-            callback传递的参数值有三种：
+                     callback传递的参数值有三种：
 
-            （a）回调函数
+                            （a）回调函数
 
 <pre class="brush: php;">
 class staticGenerateController extends Controller
@@ -214,7 +234,7 @@ class staticGenerateController extends Controller
 }
 </pre>
 
-            （b）回调对象方法
+                            （b）回调对象方法
 
 <pre class="brush: php;">
 class staticGenerateController extends Controller
@@ -227,9 +247,9 @@ class staticGenerateController extends Controller
 }
 </pre>
 
-            （c）回调对象方法
+                            （c）回调对象方法
 
-                  如果getHtmlData是静态方法，则使用StaticCallback::getHtmlData。
+                                   如果getHtmlData是静态方法，则使用StaticCallback::getHtmlData。
 
 <pre class="brush: php;">
 class staticGenerateController extends Controller
@@ -239,22 +259,58 @@ class staticGenerateController extends Controller
         $this->staticBuilder->genAll('StaticCallback::getHtmlData');
     }
 }
+
 </pre>
+       <strong>4、单个动作静态生成</strong>
+                     上述第4点的genAll()是使用回调函数一次性生成所有的静态页面，但是有时候我们只想重新生成某个控制器动作，要用genAction()。
+                            <span class="function"><strong>genAction(route, data)</strong></span>
+                     参数说明：
 
-      <strong>5、访问静态页面</strong>
-
-            使用<span class="function"><strong>ocUrl()</strong></span>生成链接地址时，系统会根据静态配置规则查找静态链接的文件是否存在，存在的话直接访问，否则会访问动态地址。
+<table>
+    <tr class="head">
+        <td width="90">名称</td>
+        <td width="400">描述</td>
+    </tr>
+    <tr>
+        <td>route</td>
+        <td>必需。控制器动作路由。<span class="function"><strong>必须以“/”开头，如：/thread/list</strong></span></td>
+    </tr>
+    <tr>
+        <td>data</td>
+        <td>必需。数据数组。比如thread记录列表。</td>
+    </tr>
+</table>
 
 <pre class="brush: php;">
+//查询列表
+$model = ThreadModel::build();
+$list = $model
+    ->fields('id as tid, forum_id as fid')
+    ->where(array('status' => 1))
+    ->limit(100)
+    ->getAll();
+
+//静态生成
+ocService()
+    ->staticBuilder
+    ->genAction('/thread/list', $list);
+</pre>
+
+       <strong>5、访问静态页面</strong>
+
+              使用<span class="function"><strong>ocUrl()</strong></span>生成链接地址时，系统会根据静态配置规则查找静态链接的文件是否存在，存在的话直接访问，否则会访问动态地址。
+              注意：生成链接时的参数名要与生成静态页面时的字段名一样。
+
+<pre class="brush: php;">
+    $thread = ThreadEntity::build()->select(1);
     $url = ocUrl('thread/list', array(
-        'fid' => 12,
-        'tid' => 123,
+        'fid' => $thread->forum_id,
+        'tid' => $thread->id,
     ));
 
     //如果生成了静态链接：http://ocara.cn/thread/list/12-123.html，则会直接访问，否则会访问动态地址：http://ocara.cn/thread/list/fid/12/tid/123
     header('location:' . $url);
 </pre>
-
 
 </pre>
 </body></html>
