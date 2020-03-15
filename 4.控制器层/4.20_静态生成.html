@@ -304,7 +304,8 @@ ocService()
         'tid' => $thread->id,
     ));
 
-    //如果生成了静态链接：http://ocara.cn/thread/list/12-123.html，则会直接访问，否则会访问动态地址：http://ocara.cn/thread/list/fid/12/tid/123
+    //如果生成了静态链接：http://ocara.cn/thread/list/12-123.html，则会直接访问。
+    //否则会访问动态地址：http://ocara.cn/thread/list/fid/12/tid/123
     header('location:' . $url);
 </pre>
 
