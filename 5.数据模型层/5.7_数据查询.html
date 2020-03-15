@@ -100,7 +100,6 @@ $entity
 //查询
 $entity = $entity->select(1);
 </pre>
-
 <pre>
 <strong> 2、实体ORM模型条件查询</strong>
        使用Entity的selectFrom()方法按条件查询一条记录：
@@ -141,8 +140,7 @@ $option = array(
 $result = DetailEntity::build()
 	->select($where, $option);
 </pre>
-
-<strong>2、查询多条记录</strong>
+<strong>3、查询多条记录</strong>
      使用Model的getAll()或selectAll方法可以查询多行记录。
             <span class="STYLE1">getAll([condition, option])</span>
             <span class="STYLE1">selectAll([condition, option])</span>
@@ -201,8 +199,7 @@ $userModel = UserModel::build()
 	->where('status', '=', 1);
 	->selectAll();
 </pre>
-
-<strong>3、查询一条记录</strong>
+<strong>4、查询一条记录</strong>
         使用Model的getRow()方法可以查询一条记录：
                <span class="STYLE1">getRow([condition，option, debug])</span>
                <span class="STYLE1">selectRow([condition，option, debug])</span>
@@ -242,11 +239,77 @@ $userModel = UserModel::build()
 	->where('status', '=', 1);
 	->selectAll();
 </pre>
-
 <pre>
+<strong>5、自动分页查询</strong>
+         大量数据处理时需要分页查询并处理，使用Model的batch()方法可以实现自动分页。
+	               <span class="STYLE1">batch(batchLimit[, totalLimit])</span>
+         参数说明：
+</pre>
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>batchLimit</td>
+		<td>必须。每页查询数据。</td>
+	</tr>
+	<tr>
+		<td>totalLimit</td>
+		<td>可选。总数量。默认为0，表示不限制总记录数。  </td>
+	</tr>
+</table>
 
-<strong>4、查询某个字段值</strong>
-         使用Model的getValue(()方法可以按条件查询第一条记录的某个字段的值：
+<pre class="brush: php;">
+$data = array(
+	'update_time' => date('Y-m-d H:i:s')
+);
+
+$userModel = UsersModel::build();
+$userModel
+	->where(array(
+		'create_time' => array('>=', '2012-02-12'),
+	))
+	->where('gender=0')
+	->moreWhere(array(
+		'status' => 0
+	));
+
+foreach ($userModel->asEntity()->batch(100) as $entityList) {
+	foreach ($entityList as $entity) {
+		$entity->data($data);
+		$entity->save();
+	}
+}
+</pre>
+<pre>
+<strong>6、迭代一条一条查询处理</strong>
+         使用Model的each()方法可以一条一条迭代查询处理。
+	               <span class="STYLE1">each()</span>
+</pre>
+<pre class="brush: php;">
+$data = array(
+	'update_time' => date('Y-m-d H:i:s')
+);
+
+$userModel = UsersModel::build();
+$userModel
+	->where(array(
+		'create_time' => array('>=', '2012-02-12'),
+	))
+	->where('gender=0')
+	->moreWhere(array(
+		'status' => 0
+	));
+
+foreach ($userModel->asEntity()->each() as $entity) {
+	$entity->data($data);
+	$entity->save();
+}
+</pre>
+<pre>
+<strong>7、查询某个字段值</strong>
+         使用Model的getValue(()方法可以按条件查询第一条记录的某个字段的值。
                 <span class="STYLE1">getValue((field, [condition])</span>
          返回字段值，如果没有查到，则返回false。
          参数说明：
@@ -284,9 +347,7 @@ $result = $userModel
 	->where($where)
 	->getValue(('username');
 </pre>
-
-
-<strong>5、动态查询</strong>
+<strong>8、动态查询</strong>
      使用Model静态调用<span class="STYLE1">selectAllBy+字段名、selectOneBy+字段、getAllBy+字段名、getRowBy+字段名</span>可以按照某个字段进行查询。
 
 <pre class="brush: php;">
@@ -302,8 +363,7 @@ $result = UserModel::getAllByStatus(2);
 //查询一条记录数组
 $result = UserModel::getRowByStatus(2);
 </pre>
-
-<strong>6、原生SQL查询</strong>
+<strong>9、原生SQL查询</strong>
          使用Model的query()方法用原生的SQL进行查询，不会做预处理和安全过滤：
                 <span class="STYLE1">query(sql)</span>
          返回所有行的关联数组列表，失败返回false。
@@ -325,8 +385,7 @@ $result = UserModel::getRowByStatus(2);
 $userModel = new UserModel();
 $userModel->query('select * from user limit 10');
 </pre>
-
-<strong>7、原生SQL查询一行</strong>
+<strong>10、原生SQL查询一行</strong>
          使用Model的queryRow()方法可以按条件查询一条记录的某个字段的值：
                 <span class="STYLE1">queryRow(sql, [debug])</span>
          成功时关联数组，如果没有查到，失败返回false。
@@ -339,9 +398,9 @@ $userModel->query('select * from user limit 10');
 $userModel = new UsersModel();
 $userModel->queryRow('select * from user');
 </pre>
-
-<strong>8、多表联接查询</strong>
+<strong>11、多表联接查询</strong>
          使用<span class="STYLE1">leftJoin()、rightJoin()或innerJoin()</span>分别进行左联接、右联接和全联接的查询。
+
 <pre class="brush: php;">
 //查询结果
 $userModel = new UserModel();
@@ -354,9 +413,7 @@ $result = $userModel
     ->orderBy('c.create_time DESC') //排序
     ->getAll();
 </pre>
-
-
-<strong>9、合并查询（可分页）</strong>
+<strong>12、合并查询（可分页）</strong>
          （1）合并查询函数
                   使用union()和unionAll方法可以合并多个查询，格式如下:
                          <span class="STYLE1">union(model)</span>
@@ -464,8 +521,7 @@ $result = $userModel
 	->unionLimit($pageInfo['offset'], $pageInfo['rows'])
 	->getAll();
 </pre>
-
-<strong>10、更多SQL查询语句的生成方法</strong>
+<strong>13、更多SQL查询语句的生成方法</strong>
      更多SQL语句生成函数，请点击进入<a href="5.8_更多数据库查询函数.html">5.8_更多数据库查询函数</a>。
 
 </pre>
