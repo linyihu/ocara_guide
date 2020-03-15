@@ -42,8 +42,8 @@
                      请保证生成的目录public/static有可写权限，生成的静态页面都是在该目录下面。
 
        <strong>2、配置URL路由格式</strong>
-              静态生成，不是全站都要静态生成，所以，我们在做静态生成时，要确定哪些页面要静态生成。
-              我们需要在application/conf/static.php中修改STATIC配置。
+              静态生成，不是全站都要静态生成，所以，在做静态生成时需要确定哪些页面要静态生成。
+              需要在application/conf/static.php中修改STATIC配置。
 
 <pre class="brush: php;">
 /*
@@ -80,25 +80,32 @@ return array(
     )
 );
 </pre>
-              其中，open是静态生成开关，file_type是静态生成的文件扩展名，delimiter是参数分隔符。
+              其中，open是静态生成开关，file_type是静态生成的文件扩展名，delimiter是目录和参数分隔符。
 
               <strong>（1）分隔符说明</strong>
                          （a）参数分隔符
-                                   参数分隔符必须是上面配置中的delimiter。
+                                   参数分隔符必须是上面配置中的delimiter，默认是“-”，必须是英文半角。
+
+<pre class="brush: php;">
+    /**
+     * 文件名分隔符
+     */
+    'delimiter' => '-',
+</pre>
+
                          （b）目录分隔符
-                                   顺斜杠"/"目录分隔符，表示分目录保存，比如'{controller}/{action}-{params}'表示按控制器名分目录。
+                                   顺斜杠"/"目录分隔符，表示分目录保存，必须是英文半角。比如'{controller}/{action}-{params}'表示按控制器名分目录。
 
               <strong>（2）配置路由格式（route）</strong>
                      说明：
                             {controller}代表控制器，{action}代表动作，{params}表示其他参数。
 
-
-                     实例1，假设路由格式为http://域名/控制器/动作/其他参数：
+                     实例1，假设格式为http://域名/控制器/动作/其他参数：
 
 <pre class="brush: php;">
     'route' => '{controller}/{action}/{params}'; //按控制器/动作分目录，参数名为文件名
 </pre>
-                     实例2，假设路由格式为http://域名/控制器/动作-其他参数：
+                     实例2，假设格式为http://域名/控制器/动作-其他参数：
 
 <pre class="brush: php;">
     'route' => '{controller}/{action}-{params}'; //按控制器分目录，动作名-参数名为文件名
@@ -114,19 +121,8 @@ return array(
               <strong>（3）配置数据参数格式（params）</strong>
                      该配置项是多维数组，用于配置URL查询字符串参数的格式。
                      说明：
-                            （a）模块、控制器和动作参数都作为数组键名。
-                            （b）其他的参数字段都要用花括号括起来。并且以斜杠"/"或英文横杠“-”等分隔。
-                                   （a1）“/”为目录名分隔符
-                                          也就是说其左边参数字符串会作为要保存的目录名称。 比如，若配置成&quot;{id}/{fid}-{tid}&quot;，那么生成静态时会将静态文件保存到id字段命名的目录中。
-                                   （a2）delimiter分隔符
-                                          可以修改delimiter配置设置文件名分隔符，默认是“-”，必须是英文半角字符。
-
-<pre class="brush: php;">
-    /**
-     * 文件名分隔符
-     */
-    'delimiter' => '-',
-</pre>
+                            （a）键名为路由名，即模块名、控制器名和动作名；
+                            （b）键值为参数名。
                      具体参数配置，实例如下：
 		 
 <pre class="brush: php;">
@@ -216,7 +212,7 @@ class StaticCallBack
     </tr>
         <tr>
         <td>callback</td>
-        <td>必需。回调函数、类的方法。</td>
+        <td>必需。回调函数或类的方法。</td>
     </tr>
 </table>
 
@@ -273,7 +269,7 @@ class staticGenerateController extends Controller
     </tr>
     <tr>
         <td>route</td>
-        <td>必需。控制器动作路由。<span class="function"><strong>必须以“/”开头，如：/thread/list</strong></span></td>
+        <td>必需。控制器动作路由字符串或数组。<span class="function"><strong>字符串必须以“/”开头，如：/thread/list</strong></span></td>
     </tr>
     <tr>
         <td>data</td>
@@ -298,7 +294,7 @@ ocService()
 
        <strong>5、访问静态页面</strong>
 
-              使用<span class="function"><strong>ocUrl()</strong></span>生成链接地址时，系统会根据静态配置规则查找静态链接的文件是否存在，存在的话直接访问，否则会访问动态地址。
+              使用<span class="function"><strong>ocUrl()</strong></span>生成链接地址时，若静态页面URL（按静态配置规则生成）的静态文件存在则使用它，否则生成会动态URL。
               注意：生成链接时的参数名要与生成静态页面时的字段名一样。
 
 <pre class="brush: php;">
