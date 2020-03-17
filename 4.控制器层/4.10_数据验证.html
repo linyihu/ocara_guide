@@ -201,7 +201,7 @@ class EditAction extends Controller
 
         1.忽略参数字段
                 使用skip()可以忽略某个参数字段。
-                        <span class="STYLE1">skip(name)</span>
+                        <span class="STYLE1">skip(fieldName)</span>
                 参数说明：
 <table>
     <tr class="head">
@@ -209,8 +209,8 @@ class EditAction extends Controller
         <td width="400">描述</td>
     </tr>
     <tr>
-        <td>name</td>
-        <td>必须。参数字段名称。</td>
+        <td>fieldName</td>
+        <td>必须。参数名称。注：<strong>如果表字段必须是真实名称，不能是别名。</strong></td>
     </tr>
 </table>
 
