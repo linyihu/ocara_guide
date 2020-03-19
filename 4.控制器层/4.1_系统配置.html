@@ -58,7 +58,7 @@ namespace Callbacks;
 
 class GetEnvironment
 {
-    public function handle()
+    public function handle($args = null)
     {
         return get_cfg_var('local.env') ?: 'local');
     }

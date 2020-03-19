@@ -85,8 +85,8 @@
          * 安全过滤事件
          */
         'filters' => array(
-            'sql_keywords_filter' => 'EVENTS\SqlFilter', //SQL关键字过滤回调，必须返回值
-            'script_keywords_filter' => '', //前端脚本关键字过滤回调，必须返回值
+            'sql_keywords_filter' => array('EVENTS\SqlFilter'), //SQL关键字过滤回调，必须返回值
+            'script_keywords_filter' => array(), //前端脚本关键字过滤回调，必须返回值
         ),
 </pre>
                  下面是示例代码：
@@ -108,7 +108,7 @@ class SqlFilter extends Middleware
      * @return string|string[]|null
      * @throws Exception
      */
-    public function handle($content, $keywords, $event, $eventTarget)
+    public function handle($content = null, $keywords = array(), $event = null, $eventTarget = null)
     {
         foreach ($keywords as $key => $value) {
             $keywords[$key] = "/{$value}/i"; //i表示不区分大小写

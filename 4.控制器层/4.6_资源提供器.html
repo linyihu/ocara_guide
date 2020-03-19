@@ -41,9 +41,9 @@ use Ocara\Core\Resource;
 
 class CacheGetConfig extends Resource
 {
-    public function handler($params)
+    public function handle($args = array())
     {
-        if ($params['type'] == 'redis') {
+        if ($args['type'] == 'redis') {
             return array(
                 'type' => 'redis',
                 'host' => '127.0.0.1',

@@ -135,10 +135,10 @@ ocService()->error->show('路径检查出错！');
          * 错误输出事件
          */
         'error' => array(
-            'report' => 'Events\Callbacks\ErrorReport', //日志打印回调
-            'before_output' => '', //打印错误前回调
-            'output' => '', //打印错误回调
-            'after_output' => '', //打印错误后回调
+            'report' => array('Events\Callbacks\ErrorReport'), //日志打印回调
+            'before_output' => array(), //打印错误前回调
+            'output' => array(), //打印错误回调
+            'after_output' => array(), //打印错误后回调
         ),
 </pre>
         看以上代码释应该可以明白每个事件回调使用场景。
@@ -153,7 +153,7 @@ class ErrorReport extends Middleware
     /**
      * 事件回调处理
      */
-    public function handle(\Exception $exception, $event, $eventTarget)
+    public function handle(\Exception $exception = null, $event = null, $eventTarget = null)
     {
         //示例
         $message = $exception->getMessage();
