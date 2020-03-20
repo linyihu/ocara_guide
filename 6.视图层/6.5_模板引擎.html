@@ -17,7 +17,10 @@
       本框架已经集成了smarty模板，只要配置一下即可。而且还提供了模板引擎扩展。
 
 <strong>2、配置smarty模板</strong>
-（1）开启smarty
+（1）安装Smarty
+    请用composer安装，比如：composer require smarty/smarty ^3.1.34
+
+（2）开启smarty
 <pre class="brush: php;">
 /*
  * 模板配置
@@ -30,7 +33,7 @@
 ),
 </pre>      将其中的engine设置为smarty就可以开启smarty，将file_type设置为模板文件要使用的文件扩展名，如html或者htm等等。
   
-（2）配置smarty
+（3）配置smarty
 <pre class="brush: php;">
 /*
  * Smarty模板配置
