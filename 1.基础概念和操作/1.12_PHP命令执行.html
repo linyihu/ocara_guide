@@ -5,6 +5,7 @@
     <title>1.12 PHP命令执行</title>
     <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
     <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushBash.js"></script>
     <link type="text/css" rel="stylesheet" href="../style/base.css" />
     <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
     <script type="text/javascript" src="../treeview/base.js"></script>
@@ -34,5 +35,12 @@
     （2）可与路由参数分开：main/home/index id/1
 
                  <img src="../style/images/命令执行加参数.png" alt="命令执行加参数"/>
+
+<strong>3、修改参数传递方式</strong>
+    可以在参数后面加上post更新参数传递方式为POST。
+
+<pre class="brush: bash;">
+   php ocara main/home/refreshCache type/user post
+</pre>
 
 </pre></body></html>
