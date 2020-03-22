@@ -5,7 +5,6 @@ Compiling d:\wwwroot\Ocara 2.0手册.CHM
 1.基础概念和操作\1.1_MVC模型架构.html
 1.基础概念和操作\1.10_伪静态.html
 1.基础概念和操作\1.11_虚拟全局变量.html
-HHC3002: Warning: 1.12_PHP命令执行.html : The HTML tag "img" is missing a closing angle bracket.
 1.基础概念和操作\1.12_PHP命令执行.html
 1.基础概念和操作\1.13_单入口多通道.html
 1.基础概念和操作\1.14_多通道的使用.html
@@ -72,6 +71,7 @@ HHC3004: Warning: 5.10_关联模型操作.html : The HTML tag "=2; $i ++) {    $moneyE
 5.数据模型层\5.14_忽略SQL安全过滤.html
 5.数据模型层\5.15_逻辑实体和枚举常量对象.html
 5.数据模型层\5.16_默认条件和字段.html
+5.数据模型层\5.17_SQL调试.html
 5.数据模型层\5.2_数据库的使用.html
 5.数据模型层\5.3_数据模型.html
 5.数据模型层\5.4_实体模型（ORM）.html
@@ -275,12 +275,12 @@ treeview\ready.js
 TOC-Created-By-Easy-CHM.HHC
 Index-Created-By-Easy-CHM.HHK
 
-Compile time: 0 minutes, 6 seconds
-107	Topics
-431	Local links
+Compile time: 0 minutes, 5 seconds
+108	Topics
+435	Local links
 1	Internet link
 0	Graphics
 
 
-Created d:\wwwroot\Ocara 2.0手册.CHM, 1,914,037 bytes
-Compression decreased file by 934,380 bytes.
+Created d:\wwwroot\Ocara 2.0手册.CHM, 1,914,533 bytes
+Compression decreased file by 941,554 bytes.
