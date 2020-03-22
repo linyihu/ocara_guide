@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>5.17 SQL调试</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>5.17 SQL调试</h2>
+
+<pre>
+<strong>1、获取数据模型Model或实体Entity最后执行的SQL</strong>
+      使用getLastSql()方法，可以获取最后执行SQL，但是不一定是数据库最后执行的SQL。
+      返回的是二维数组。
+</pre>
+<pre class="brush: php;">
+$userModel = new \app\model\database\UsersModel();
+$dataList = $userModel
+    ->sharding(array(
+        'group_id' => 23
+    ))
+    ->fields('a.*,b.user_id')
+    ->leftJoin('userWechat', 'b', 'b.user_id=a.id')
+    ->leftJoin('app\model\database\OrdersModel', 'c', 'c.user_id=a.id')
+    ->where(array('password' => '234456', 'group_id' => 23))
+    ->where(array('id' => array('IN', array(3, 2, 1))), 'a')
+    ->orWhere(array('id' => 1), 'a')
+    ->where(1)
+    ->orderBy('a.id DESC, a.create_time DESC')
+    ->groupBy('a.id,b.user_id')
+    ->limit(0, 2)
+    ->getAll();
+
+print_r($dataList);
+print_r($userModel->getLastSql());
+
+</pre>
+
+      返回结果：
+
+Array
+(
+    [0] => Array
+        (
+            [id] => 1
+            [mobile] => 18255522112
+            [username] => ddd
+            [nickname] => aaaa
+            [status] => 0
+            [password] => ddd
+            [salt] => dasdf
+            [gender] => 0
+            [creator] => 0
+            [create_time] => 2020-03-11 02:05:46
+            [modifier] => 0
+            [update_time] => 2020-03-22 16:11:39
+            [hits] => 0
+            [user_id] => 1
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [0] => SELECT a.*,b.user_id FROM `mytest_23`.`user_23` AS  a  LEFT JOIN  `mytest_23`.`wechat_users_23` AS  b  ON  (b.user_id=a.id)  LEFT JOIN  `mytest`.`orders` AS  c  ON  (c.user_id=a.id)   WHERE ((`password` = ?) AND  a.id IN (3,2,1) OR  (a.id = ?) AND  (1))  GROUP BY a.id,b.user_id  ORDER BY a.id DESC, a.create_time DESC  LIMIT 0, 2
+            [1] => Array
+                (
+                    [0] => Array
+                        (
+                            [where] => Array
+                                (
+                                    [0] => 234456
+                                    [1] => 1
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+<pre>
+
+<strong>2、不执行SQL只得到SQL</strong>
+      如果不想执行SQL而是只获取SQL，只要使用数据模型的debug()方法禁止执行。
+</pre>
+<pre class="brush: php;">
+$userModel = new \app\model\database\UsersModel();
+$dataList = $userModel
+    ->sharding(array(
+        'group_id' => 23
+    ))
+    ->fields('a.*,b.user_id')
+    ->leftJoin('userWechat', 'b', 'b.user_id=a.id')
+    ->leftJoin('app\model\database\OrdersModel', 'c', 'c.user_id=a.id')
+    ->where(array('password' => '234456', 'group_id' => 23))
+    ->where(array('id' => array('IN', array(3, 2, 1))), 'a')
+    ->orWhere(array('id' => 1), 'a')
+    ->where(1)
+    ->orderBy('a.id DESC, a.create_time DESC')
+    ->groupBy('a.id,b.user_id')
+    ->limit(0, 2)
+    ->debug()
+    ->getAll();
+
+var_dump($dataList);
+print_r($userModel->getLastSql());
+</pre>
+
+      返回结果：
+
+bool(false)
+Array
+(
+    [0] => Array
+        (
+            [0] => SELECT a.*,b.user_id FROM `mytest_23`.`user_23` AS  a  LEFT JOIN  `mytest_23`.`wechat_users_23` AS  b  ON  (b.user_id=a.id)  LEFT JOIN  `mytest`.`orders` AS  c  ON  (c.user_id=a.id)   WHERE ((`password` = ?) AND  a.id IN (3,2,1) OR  (a.id = ?) AND  (1))  GROUP BY a.id,b.user_id  ORDER BY a.id DESC, a.create_time DESC  LIMIT 0, 2
+            [1] => Array
+                (
+                    [0] => Array
+                        (
+                            [where] => Array
+                                (
+                                    [0] => 234456
+                                    [1] => 1
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+<strong>3、迭代查询函数要用foreach()等循环才能获取SQL</strong>
+      使用Model的batch()和each()方法时，需要在foreach()迭代时获取SQL。
+
+<pre class="brush: php;">
+$data = array(
+    'update_time' => date('Y-m-d H:i:s')
+);
+
+$userModel = \app\model\database\UsersModel::build();
+$userModel
+    ->sharding(array(
+        'group_id' => 23
+    ))
+    ->where(array(
+        'create_time' => array('>=', '2012-02-12'),
+    ))
+    ->where('gender=0')
+    ->moreWhere(array(
+        'status' => 0
+    ));
+
+foreach ($batchObject = $userModel->asEntity()->batch(100) as $entityList) {
+    foreach ($entityList as $entity) {
+        $entity->data($data);
+        $entity->save();
+    }
+}
+
+print_r($batchObject->getLastSql());die;
+
+</pre>
+
+      返回结果：
+
+Array
+(
+    [0] => Array
+        (
+            [0] => SELECT `id`,`mobile`,`username`,`nickname`,`status`,`password`,`salt`,`gender`,`creator`,`create_time`,`modifier`,`update_time`,`hits` FROM `mytest_23`.`user_23`  WHERE ((`create_time` >= ?) AND  (gender=0)) AND (`status` = ?)  LIMIT 100, 100
+            [1] => Array
+                (
+                    [0] => Array
+                        (
+                            [where] => Array
+                                (
+                                    [0] => 2012-02-12
+                                    [1] => 0
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+</pre>
+</body>
+</html>
