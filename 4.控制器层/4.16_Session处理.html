@@ -1,16 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>4.16 Session处理</title>
-<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
-<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>4.16 Session处理</title>
+    <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
     <script type="text/javascript" src="../syntax/scripts/shBrushSql.js"></script>
-<link type="text/css" rel="stylesheet" href="../style/base.css" />
-<link type="text/css" rel="stylesheet" href="../style/function.css" />
-<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
-<script type="text/javascript" src="../treeview/base.js"></script>
-</head><body><pre><h2>4.16 Session保存方式</h2>
+    <link type="text/css" rel="stylesheet" href="../style/base.css"/>
+    <link type="text/css" rel="stylesheet" href="../style/function.css"/>
+    <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+    <script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body>
+<pre><h2>4.16 Session保存方式</h2>
 
 Ocara支持文件、数据库和缓存三种保存方式，也提供了session操作插件。
 
@@ -42,7 +45,6 @@ Ocara支持文件、数据库和缓存三种保存方式，也提供了session�
 
       （1）修改配置
             比如我们新建了Session\SessionHandler处理类。
-            具体Session\SessionHandler类代码可参考PHP官方的session_set_save_handler()函数中说明。
 
 <pre class="brush: php;">
     /*
@@ -77,7 +79,7 @@ CREATE TABLE `sessions` (
 </pre>
 
       （3）添加事件处理器
-            在support下添加Handlers/SessionHandler处理器。
+            在support下添加Handlers/SessionHandler处理器，需要继承Ocara\Interfaces\SessionDatabase接口。
 
 <pre class="brush: php;">
 namespace Handlers;
@@ -86,8 +88,9 @@ use Ocara\Core\Base;
 use Ocara\Exceptions\Exception;
 use app\model\database\SessionsModel;
 use app\model\entity\database\SessionsEntity;
+use Ocara\Interfaces\SessionDatabase;
 
-class SessionHandler extends Base
+class SessionHandler extends Base implements SessionDatabase
 {
     /**
      * 获取Session内容
@@ -240,4 +243,5 @@ $login_info = ocService()->session->get('login_info');
 </pre>
 
 </pre>
-</body></html>
+</body>
+</html>
