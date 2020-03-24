@@ -127,18 +127,23 @@ $userModel->where(array('type' => 2))
      （1）直接配置法
             用于比较简单的场景。复制一份默认数据库配置，修改键名并修改配置。请看上述实例。
      （2）使用资源提供器
-            适合于大型分布式数据库系统配置，配置繁多并且复杂，有不确定性。
+            适合于大型分布式数据库系统配置，配置繁多并且复杂，有不确定性。资源提供器请参考<a href="../1.基础架构/1.7_资源提供器.html">1.7_资源提供器</a>.
 <table class="hint">
 	<tr class="head">
 		<td><h2>注：</h2>如果上述两种同时存在，则会优先使用第（2）种。</td>
 	</tr>
 </table>
 
-            这里简单的做个配置类，现实中可能会有很多复杂的数据库配置：
+            这里简单的做个配置类，现实中可能会有很多复杂的数据库配置。
 
-<pre class="brush: php;">class DatabaseConfig extends Base
+<pre class="brush: php;">
+namespace Resource;
+
+use Base\Resource;
+
+class DatabaseConfig extends Resource
 {
-	public static function get($server)
+	public static function handle($server)
 	{
 		$config = array();
 		
@@ -185,7 +190,7 @@ $userModel->where(array('type' => 2))
  * 数据库相关
  */
 'database' => array(
-	'get_config' => 'DatabaseConfig::get', //获取数据库配置
+	'get_config' => 'Resource\DatabaseConfig', //获取数据库配置
 ),
 </pre>
 

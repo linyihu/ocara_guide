@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>1.10 插件委托机制</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+        <!--
+        .STYLE1 {
+                color: #0000FF;
+                font-weight: bold;
+        }
+        -->
+</style>
+</head>
+<body alink=#ff0000>
+<pre><h2>1.10 插件委托机制</h2>
+
+        只要新建的类继承了Ocara\Core\Base基类，同时使用setPlugin()设置了插件对象，那么其自身无法访问的方法函数，会自动使用plugin()调用同名方法进行处理。
+
+        （1）模板引擎的例子
+                同步渲染模式的视图Ocara\Views\Common类，如果设置了模板引擎比如smarty模板，则会将Ocara\Service\Smarty用<span class="STYLE1">setPlugin()</span>类设置为插件。
+                这样，如果调用Ocara\Views\Common不存在的方法函数时，会使用<span class="STYLE1">plugin()</span>来调用Ocara\Service\Smarty的同名方法。
+                而其实Ocara\Service\Smarty本身也设置了Smarty原生对象，所以最终会调用Smarty原生对象的函数。
+
+        （2）数据模型的例子
+                数据模型Model的plugin()是数据库连接对象Ocara\Database\MysqliDatabase等。
+
+        （3）实体模型的例子
+                实体模型Entity的plugin()是与其同名的数据模型Model，比如UsersEntity的plugin()是UsersModel。
+                所以如果调用UsersEntity不存在而UsersModel存在的fields()、where()、sharding()等等方法时，调用的其实是UsersModel的该方法。
+
+<pre class="brush: php;">
+//在Entity中调用Model的方法
+$userEntity = UsersEntity::build();
+
+$userEntity
+        ->where(array('status' => 1)) //where()是UsersModel的方法
+        ->fields('id, username'); //fields()是UsersModel的方法
+
+$userEntity->selectFrom(array('id' => 1));
+
+//使用Entity的plugin()可以获取它的Model
+$userModel = $userEntity->plugin();
+
+//直接使用Model查询
+$userEntity = UsersModel::build()
+        ->where(array(
+                'status' => 1,
+                'id' => 1
+        ))
+        ->fields('id, username')
+        ->selectOne();
+
+//获取数据库连接对象
+$database = $userEntity->plugin()->plugin();
+
+</pre>
+
+</pre>
+</body></html>

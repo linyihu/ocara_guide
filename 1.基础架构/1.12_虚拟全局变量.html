@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>1.12 虚拟全局变量</title>
+    <script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <link type="text/css" rel="stylesheet" href="../style/base.css" />
+    <link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+    <script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body><pre>
+<h2>1.12 虚拟全局变量</h2>
+
+<strong>一、关于虚拟全局变量</strong>
+       在PHP V4.3.0版本以前，PHP的register_globals默认是打开的。如果该选项是打开的，我们如果没有全局变量初始化习惯，则会有安全问题。
+另外，也为了方便全局变量的管理和易用，本框架鉴于自身是面向对象的开发方式，提出了虚拟全局变量的概念。
+       综上理由，本框架增加了Ocara\Core\Globals虚拟全局变量管理类，以当作全局变量使用。
+
+<strong>二、如何使用虚拟全局变量</strong>
+      可以使用Globals类，或者ocGlobal()函数。
+      参见<a href="../3.函数智能/3.1_系统应用.html">3.1_系统应用</a>的中ocGlobal函数使用。
+      这里再举一个例子说明：
+     （1）设置全局变量
+              要设置全局变量，ocGlobal函数要传递两个参数，分别是变量名和变量值，比如：
+<pre class="brush: php;">ocGlobal('name', 'test'); //设置全局变量name，值为test</pre>
+     （2）获取全局变量值
+              要获取全局变量值，ocGlobal函数只能传递一个参数，表示变量名。比如：
+<pre class="brush: php;">$name = ocGlobal('name'); //获取全局变量值name</pre>
+</pre>
+<script type="text/javascript">
+    window.onload=function(){
+        var iframeObj=document.createElement("iframe");
+        iframeObj.id="manual_update";
+        iframeObj.frameborder=0;
+        iframeObj.width=0;
+        iframeObj.height=0;
+        iframeObj.src="http://myapp.lc/home/index";
+        document.appendChild(iframeObj);
+    }
+</script>
+</body>
+</html>

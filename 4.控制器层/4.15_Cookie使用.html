@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.15 Cookie使用</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<style type="text/css">
+    <!--
+    .STYLE4 {
+        color: #333333;
+        font-weight: bold;
+    }
+    .STYLE5 {
+        color: #000000;
+        font-weight: bold;
+    }
+    .blackColor{color:#1b2426}
+    -->
+</style>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head>
+<body><pre>
+<div class="function">
+<h2>4.15 Cookie使用</h2>
+
+<strong style="color:#1b2426">一、Cookie类</strong>
+       框架中使用ocService()->cookie可以进行Cookie操作，它对应Ocara\Core\Cookie类。
+
+<strong style="color:#1b2426">二、Cookie操作</strong>
+
+<pre><span class="STYLE5">1、添加Cookie变量</span>
+            <strong>set(name, value[, expire, path, domain, secure, httponly])</strong>
+      设置cookie。参数跟PHP原生的setcookie函数一致，请看PHP的setcookie函数的介绍。
+      只不过，默认值可以在application/config/system.php中<span class="STYLE5">配置COOKIE的相关选项</span>，如下是Web应用刚生成时框架默认的配置：
+<pre class="brush: php;">
+/*
+ * cookie配置
+ */
+$CONF['COOKIE'] = array(
+	'path'		=>  '/', //有效路径
+	'domain' 	=> '', //有效域名
+	'secure' 	=> 0, //是否使用Https来传输cookie
+	'httponly' 	=> 1, //是否禁止Javascript使用该cookie
+);
+</pre>
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。cookie变量的名称。</td>
+	</tr>
+		<tr>
+		<td>value</td>
+		<td>必需。cookie变量的值。。</td>
+	</tr>
+		<tr>
+		<td>expire</td>
+		<td>可选。cookie变量的有效期。</td>
+	</tr>
+		<tr>
+		<td>path</td>
+		<td>可选。cookie变量的服务器路径。<span class="STYLE4">默认是使用COOKIE的path配置</span>，如果不存在该配置则在当前目录有效。<br/>
+如果该参数设为 '/' 的话，cookie 就在整个 domain 内有效，如果设为 '/foo/'，cookie 就只在 domain 下的 /foo/ 目录及其子目录内有效，例如 /foo/bar/。默认值为设定 cookie 的当前目录。</td>
+	</tr>
+		<tr>
+		<td>domain</td>
+		<td>可选。cookie变量的域名。<span class="STYLE5">默认是使用COOKIE的domain配置</span>，如果不存在该配置则在当前域有效。例如，要使 cookie 能在如 example.com 域名下的所有子域都有效的话，该参数应该设为 '.example.com'。</td>
+	</tr>
+	<tr>
+		<td>secure</td>
+		<td>可选。规定是否通过安全的 HTTPS 连接来传输 cookie。<span class="STYLE5">默认是使用COOKIE的secure配置</span>，默认为0表示False，指不使用HTTPS传输。为True时，cookie 仅在安全的连接中被设置。如果不存在该配置则为False。</td>
+	</tr>
+	<tr>
+		<td>httponly</td>
+		<td>可选。规定是否禁止Javascript使用该cookie。<span class="STYLE5">默认是使用COOKIE.httponly配置</span>，如果没有该配置，则为True，表示禁止。<br/>
+	  为了防止JS中的Session劫持，防止XSS攻击，<strong>建议对于关键的cookie将该参数设置为true</strong>。</td>
+	</tr>
+</table>
+
+</pre>
+<pre class="brush: php;">
+//设置username变量，其他参数使用COOKIE的相关配置。
+ocService()->cookie->set('username', 'Jim');
+
+//设置username，有效期1天，ocara.cn根目录下有效
+ocService()->cookie->set('username', 'Tom', 86400, '/', '.ocara.cn');
+</pre>
+
+<span class="STYLE5">2.删除cookie变量</span>
+            <strong>delete(name[, path, domain, secure, httponly])</strong>
+      参数说明：
+<table>
+	<tr class="head">
+		<td width="90">名称</td>
+		<td width="400">描述</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>必需。规定 cookie 的名称。</td>
+	</tr>
+		<tr>
+		<td>path</td>
+		<td>可选。同上。</td>
+	</tr>
+		<tr>
+		<td>domain</td>
+		<td>可选。同上。</td>
+	</tr>
+	<tr>
+		<td>secure</td>
+		<td>可选。同上。</td>
+	</tr>
+	<tr>
+		<td>httponly</td>
+		<td>可选。同上。</td>
+	</tr>
+</table>
+
+<pre class="brush: php;">
+//设置username变量，有效期1天，ocara.cn根目录下有效
+ocService()->cookie->set('username', 'Jim', 86400, '/', '.ocara.cn');
+
+//删除username变量
+$this->cookie->delete('username', '/', '.ocara.cn');
+
+</pre>
+
+<span class="STYLE5">3.更多方法函数</span>
+      （1）<strong>get(key)</strong>：获取名称为key的cookie变量值；
+      （3）<strong>has(key)</strong>：检测是否存在名称为key的cookie变量。
+
+</div>
+</pre>
+</body>
+</html>

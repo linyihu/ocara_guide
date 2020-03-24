@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>1.9 中间件</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+        <!--
+        .STYLE1 {
+                color: #0000FF;
+                font-weight: bold;
+        }
+        -->
+</style>
+</head>
+<body alink=#ff0000>
+<pre><h2>1.9 中间件</h2>
+
+<strong>1、什么是中间件？</strong>
+
+        Ocara中，中间件是由事件触发的，是业务层与底层程序间系统化地完成某一项特殊功能的处理器或拦截器，主要目的是解耦。
+        当然，中间件也可以手动直接调用。
+
+<strong>2、如何新建中间件？</strong>
+
+        中间件一般放在support/Middleware目录中，需要继承自Base\Middleware，最上层继承自Ocara\Core\Middleware基类。
+
+<pre class="brush: php;">
+namespace Middleware;
+
+use Base\Middleware;
+
+class AuthMiddleware extends Middleware
+{
+    /**
+     * 处理
+     * @param array $args
+     * @return mixed
+     */
+    public function handle($args = array())
+    {
+    }
+}
+</pre>
+
+<strong>3、中间件分组</strong>
+        在事件添加处理器时，可以通过<span class="STYLE1">appendAll(中间件列表, 分组名称)</span>添加分组处理器分组。请参考<a href="1.8_事件回调.html">1.8_事件回调</a>的批量或分组追加处理器一节。
+
+</pre>
+</body></html>

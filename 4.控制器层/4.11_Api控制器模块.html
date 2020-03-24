@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>4.11 Api控制器模块</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+</head><body><pre><h2>4.11 Api控制器模块</h2>
+
+        应用生成时默认在application/library/Base目录中生成了Base\Controller\ApiController.php控制器文件。
+
+<strong>1、如何添加Api模块</strong>
+        只要在开发者中心添加模块时，选择Api控制器类即可。
+        注意：命令模块（console）不需要建立Api控制器。
+
+<strong>2、Api控制器动作说明</strong>
+        （1）Action动作类
+                因为控制器本身就是API，类似于Ajax调用，所以api()方法无效。
+        （2）执行结果使用return返回。
+
+<pre class="brush: php;">
+namespace app\controller\test;
+
+class TestAction extends Controller
+{
+	/**
+	 * 初始化
+	 */
+	protected function __action()
+	{}
+
+	/**
+	 * 表单注册
+	 */
+	public function registerForms()
+	{}
+
+	/**
+	 * 提交后处理
+	 */
+	public function submit()
+	{
+	    $result = 'test';
+	    return $result;
+    }
+}
+</pre>
+
+<strong>3、修改Api控制器返回格式</strong>
+        API返回数据格式和AJAX一致，请参考<a href="4.9_Ajax处理.html">4.9_Ajax处理</a>中的第四点。
+        如果要自定义返回格式的方式，可修改控制器动作的beforeRender()事件方法。
+
+<pre class="brush: php;">
+/**
+ * Default module class Module
+ */
+namespace app\controller;
+
+use Base\Controller\ApiController;
+use Ocara\Core\Response;
+
+class Module extends ApiController
+{
+    /**
+     * 模块初始化函数
+     */
+    public function __module()
+    {}
+
+    public function beforeRender()
+    {
+        parent::beforeRender(); //这一步必须
+
+        $this->result = array(
+             'code' => $this->result['code'],
+             'message' => $this->result['message'],
+             'result' => $this->result['body'],
+             'status' => $this->result['status'],
+        );
+    }
+}
+</pre>
+
+</pre>
+</body></html>

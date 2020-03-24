@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>1.7 资源提供器</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #0000FF;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body><pre><h2>1.7 资源提供器</h2>
+
+<strong>一、资源提供器介绍</strong>
+       Ocara不仅提供了事件机制进行业务回调处理，用于解耦。
+       但是有时候我们可能还需要通过回调函数返回一些数据。所以资源提供器派上用场了。
+       （1）资源提供器与服务提供器的区别
+              服务提供器是一种服务组件类对处提供服务，资源提供器是一种一般用于事件回调的中间件处理器，重在返回数据。
+       （2）资源提供器与中间件的关系
+              资源提供器的父类Ocara\Core\Resource。
+
+<strong>二、资源提供器目录</strong>
+
+       资源提供器应该放在support/Resource目录中。
+
+<strong>三、使用方法</strong>
+       1、新建资源提供器
+              首先要新建一个资源提供器类，它需继承Base\Resource基类，该基类继承自Ocara\Core\Resource，必须提供handle()处理函数。
+
+<pre class="brush: php;">
+namespace Resource;
+
+use Base\Resource;
+
+class CacheGetConfig extends Resource
+{
+    public function handle($args = array())
+    {
+        if ($args['type'] == 'redis') {
+            return array(
+                'type' => 'redis',
+                'host' => '127.0.0.1',
+                'port' => 6379
+            );
+        } else {
+            /*...*/
+        }
+    }
+}
+
+</pre>
+
+       （2）调用资源提供器
+              调用资源提供器是使用资源管理器，也就是Ocara\Core\ResourceManager类，它其实是一个服务提供器（ServiceProvider）。
+              使用ocService()->resources可以获取对象实例。
+
+<pre class="brush: php;">
+use Ocara\Core\Base;
+
+class NewCache extends Base
+{
+    //事件触发
+    public function getConfig()
+    {
+         $config = array();
+
+         if (ocService()->resources->contain('cache.get_config')) {
+            $config = ocService()
+                ->resources
+                ->get('cache.get_config')
+                ->handler($connectName);
+        }
+
+        return $config;
+    }
+}
+</pre>
+<strong>四、资源提供器配置</strong>
+        资源提供器可以在resource.php中配置。目前框架默认提供了几个配置。
+        比如缓存配置获取资源提供器的配置：
+
+<pre class="brush: php;">
+        /*
+         * 缓存相关
+         */
+        'cache' => array(
+            'get_config' => '', //获取缓存配置事件回调
+        ),
+</pre>
+
+<strong>五、注册新的资源提供器</strong>
+        因为资源管理器是一个服务提供器， 所以可以使用服务提供器来注册绑定新的资源提供器。
+
+<pre class="brush: php;">
+ocService()->resources->bind('new_resource', 'Resource\NewResource');
+</pre>
+
+</pre>
+</body>
+</html>

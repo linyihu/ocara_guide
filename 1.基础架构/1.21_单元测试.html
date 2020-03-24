@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>1.21 单元测试</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+    <script type="text/javascript" src="../syntax/scripts/shBrushBash.js"></script>
+<script src="../treeview/lib/jquery.js" type="text/javascript"></script>
+<script src="../treeview/lib/jquery.cookie.js" type="text/javascript"></script>
+<script src="../treeview/jquery.treeview.js" type="text/javascript"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../style/function.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<link rel="stylesheet" href="../treeview/jquery.treeview.css" />
+<link type="text/css" rel="stylesheet" href="../style/plugin.css" />
+<script type="text/javascript" src="../treeview/base.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $("#browser").treeview({
+        persist: "location",
+        collapsed: false,
+        unique: true
+    });
+});
+</script>
+</head><body><pre><h2>1.21 单元测试</h2>
+
+      单元测试可以不需要联调就能测试自己的代码逻辑，比较重要。
+
+<strong>一、如何使用单元测试</strong>
+      首先，我们需要安装单元测试程序，比如PHPUnit，安装过程请看官方教程。
+      然后就按照下面的方法开始单元测试。
+
+<strong>2、如何开始单元测试</strong>
+      执行单元测试最主要的是如何启动框架。
+      在应用生成时，框架自动生成了tests目录，其中含有bootstrap.php文件存在启动代码，只要修改好框架的路径就好。
+            <img src="../style/images/单元测试启动.png" alt="单元测试启动"/>
+
+<pre class="brush: php;">/*
+/**
+ * 单元测试启动文件
+ */
+use Ocara\Core\Ocara;
+
+//程序执行开始时间
+define('OC_EXECUTE_START_TIME', microtime(true));
+
+//定义根目录
+define('OC_ROOT', dirname(__DIR__));
+
+/**
+ * 加载框架
+ * 请修改和确定以下路径
+ */
+//require_once(OC_ROOT . '/ocara/system/library/Core/Ocara.php');
+require_once OC_ROOT . '/vendor/autoload.php';
+
+Ocara::start('Ocara\Bootstraps\Tests');
+</pre>
+
+<strong>二、单元测试实例</strong>
+      1、添加单元测试类
+            假设已经安装了PHPUnit，在我们的应用根目录中新建tests目录，里面添加一个TestFirst.文件，截图如下：
+                  <img src="../style/images/单元测试目录.png" alt="单元测试目录"/>
+            文件内容如下:
+</pre>
+<pre class="brush: php;">
+use PHPUnit\Framework\TestCase;
+
+use dal\models\Users;
+
+class TestFirst extends TestCase
+{
+    public function testUser(){
+        $user = new Users();
+        print_r($user->selectOne(1));
+    }
+}
+</pre>
+<pre>
+      2、执行单元测试
+            （1）命令执行
+                  要带上--bootstrap参数，提前设置启动文件，或者在phpunit.xml配置（放在项目根目录）。
+<pre class="brush: bash;">
+    phpunit --bootstrap ./autoload.php TestFirst
+</pre>
+            （2）编辑器执行
+                  建议用编辑器调试，考虑到有的朋友不会配置，下面第三点给分享一下<a href="./1.22_单元测试编辑器设置分享.html">1.22_单元测试编辑器设置分享</a>。
+
+                        <img src="../style/images/单元测试编辑器执行.png" alt="单元测试编辑器执行" height="700"/>
+
+</pre>
+</body></html>
