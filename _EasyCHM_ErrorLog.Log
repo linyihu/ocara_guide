@@ -2,25 +2,30 @@ Microsoft HTML Help Compiler 4.74.8702
 
 Compiling d:\wwwroot\Ocara 2.0手册.CHM
 
-1.基础概念和操作\1.1_MVC模型架构.html
-1.基础概念和操作\1.10_伪静态.html
-1.基础概念和操作\1.11_虚拟全局变量.html
-1.基础概念和操作\1.12_PHP命令执行.html
-1.基础概念和操作\1.13_单入口多通道.html
-1.基础概念和操作\1.14_多通道的使用.html
-1.基础概念和操作\1.15_新建应用.html
-1.基础概念和操作\1.16_插件委托机制.html
-1.基础概念和操作\1.17_中间件.html
-1.基础概念和操作\1.2_控制反转和依赖注入.html
+1.基础架构\1.1_MVC模型架构.html
+1.基础架构\1.10_插件委托机制.html
+1.基础架构\1.11_动态行为绑定.html
+1.基础架构\1.12_虚拟全局变量.html
+1.基础架构\1.13_系统模式.html
+1.基础架构\1.14_目录结构.html
+1.基础架构\1.15_URL格式.html
+1.基础架构\1.16_伪静态.html
+1.基础架构\1.17_新建应用.html
+1.基础架构\1.18_PHP命令执行.html
+1.基础架构\1.19_单入口多通道.html
+1.基础架构\1.2_控制反转和依赖注入.html
+1.基础架构\1.20_多通道的使用.html
+1.基础架构\1.21_单元测试.html
+1.基础架构\1.22_单元测试编辑器设置分享.html
 HHC3004: Warning: 1.3_领域驱动设计.html : The HTML tag "=', 30)    -" is not a valid HTML tag (it does not begin with an alphanumeric character).
 HHC3004: Warning: 1.3_领域驱动设计.html : The HTML tag "=', 30)    -" is not a valid HTML tag (it does not begin with an alphanumeric character).
-1.基础概念和操作\1.3_领域驱动设计.html
-1.基础概念和操作\1.4_类的自动加载.html
-1.基础概念和操作\1.5_系统模式.html
-1.基础概念和操作\1.6_目录结构.html
-1.基础概念和操作\1.7_事件回调.html
-1.基础概念和操作\1.8_动态行为绑定.html
-1.基础概念和操作\1.9_URL格式.htm
+1.基础架构\1.3_领域驱动设计.html
+1.基础架构\1.4_类的自动加载.html
+1.基础架构\1.5_依赖注入容器.html
+1.基础架构\1.6_服务提供器.html
+1.基础架构\1.7_资源提供器.html
+1.基础架构\1.8_事件回调.html
+1.基础架构\1.9_中间件.html
 2.开发者中心\2.1_开发者中心介绍.html
 2.开发者中心\2.2_添加模块.html
 2.开发者中心\2.3_添加控制器.html
@@ -37,30 +42,25 @@ HHC3002: Warning: 2.6_添加缓存模型.html : The HTML tag "img" is missing a closin
 3.函数智能\3.5_内容处理.html
 3.函数智能\3.6_URL生成.html
 4.控制器层\4.1_系统配置.html
-4.控制器层\4.10_数据验证.html
-4.控制器层\4.11_HTTP请求.html
-4.控制器层\4.12_Ajax处理.html
-4.控制器层\4.13_HTTP响应.html
-4.控制器层\4.14_Api控制器模块.html
-4.控制器层\4.15_Rest控制器模块.html
-HHC3004: Warning: 4.16_Session处理.html : The HTML tag "', ocSql('now()'))            ))            -" is not a valid HTML tag (it does not begin with an alphanumeric character).
-4.控制器层\4.16_Session处理.html
-4.控制器层\4.17_Session操作.html
-4.控制器层\4.18_Cookie使用.html
-HHC3004: Warning: 4.19_分页的使用.html : The HTML tag "?php echo $pager-" is not a valid HTML tag (it does not begin with an alphanumeric character).
-4.控制器层\4.19_分页的使用.html
+4.控制器层\4.10_HTTP响应.html
+4.控制器层\4.11_Api控制器模块.html
+4.控制器层\4.12_Rest控制器模块.html
+HHC3004: Warning: 4.13_Session处理.html : The HTML tag "', ocSql('now()'))            ))            -" is not a valid HTML tag (it does not begin with an alphanumeric character).
+4.控制器层\4.13_Session处理.html
+4.控制器层\4.14_Session操作.html
+4.控制器层\4.15_Cookie使用.html
+HHC3004: Warning: 4.16_分页的使用.html : The HTML tag "?php echo $pager-" is not a valid HTML tag (it does not begin with an alphanumeric character).
+4.控制器层\4.16_分页的使用.html
+4.控制器层\4.17_静态生成.html
+4.控制器层\4.18_角色权限控制.html
 4.控制器层\4.2_缓存使用.html
-4.控制器层\4.20_静态生成.html
-4.控制器层\4.21_角色权限控制.html
-4.控制器层\4.22_单元测试.html
-4.控制器层\4.23_单元测试编辑器设置分享.html
 4.控制器层\4.3_多语言功能.html
-4.控制器层\4.4_依赖注入容器.html
-4.控制器层\4.5_服务提供器.html
-4.控制器层\4.6_资源提供器.html
-4.控制器层\4.7_异常错误处理.html
-4.控制器层\4.8_控制器的使用.html
-4.控制器层\4.9_动作Action的使用.html
+4.控制器层\4.4_异常错误处理.html
+4.控制器层\4.5_控制器的使用.html
+4.控制器层\4.6_动作Action的使用.html
+4.控制器层\4.7_数据验证.html
+4.控制器层\4.8_HTTP请求.html
+4.控制器层\4.9_Ajax处理.html
 5.数据模型层\5.1_数据库配置.html
 HHC3004: Warning: 5.10_关联模型操作.html : The HTML tag "=2; $i ++) {    $moneyEntity = new UserMoneyEnti..." is not a valid HTML tag (it does not begin with an alphanumeric character).
 HHC3004: Warning: 5.10_关联模型操作.html : The HTML tag "=2; $i ++) {    $moneyEntity = new userMoneyEnti..." is not a valid HTML tag (it does not begin with an alphanumeric character).
@@ -275,12 +275,12 @@ treeview\ready.js
 TOC-Created-By-Easy-CHM.HHC
 Index-Created-By-Easy-CHM.HHK
 
-Compile time: 0 minutes, 4 seconds
+Compile time: 0 minutes, 5 seconds
 108	Topics
 435	Local links
 1	Internet link
 0	Graphics
 
 
-Created d:\wwwroot\Ocara 2.0手册.CHM, 1,914,427 bytes
-Compression decreased file by 941,669 bytes.
+Created d:\wwwroot\Ocara 2.0手册.CHM, 1,914,439 bytes
+Compression decreased file by 941,534 bytes.

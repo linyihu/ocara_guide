@@ -271,7 +271,7 @@ class BeforeDispatch extends Base
 	/**
 	 * 事件处理
 	 */
-	public function handler($route, $event, $object)
+	public function handle($route, $event, $object)
 	{
 	    //获取角色ID
 		$roleId = ocService()->session->get(array('loginInfo', 'roleId')); //获取当前的角色

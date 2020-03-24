@@ -77,7 +77,7 @@ class NewCache extends Base
             $config = ocService()
                 ->resources
                 ->get('cache.get_config')
-                ->handler('defaults');
+                ->handle('defaults');
         }
 
         return $config;
