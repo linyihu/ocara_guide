@@ -27,9 +27,9 @@
 </table>
 
 <strong>1、数据库的新建</strong>
-      数据库都是通过工厂类Ocara\Core\DatabaseFactory的getInstance()方法来实例化服务器连接对象。
+      数据库都是通过工厂类Ocara\Core\DatabaseFactory的make()方法来实例化服务器连接对象。
       同一个服务器名仅在第一次实例化时才新建对象，工厂类会将其缓存起来。
-              <span class="STYLE1">getInstance([connectName, master, required])</span>
+              <span class="STYLE1">make([serverName, master, required])</span>
       参数说明：
 </pre>
 <table>
@@ -38,7 +38,7 @@
 		<td width="400">描述</td>
 	</tr>
 	<tr>
-		<td>connectName</td>
+		<td>serverName</td>
 		<td>可选。数据库服务器名，默认为defaults。</td>
 	</tr>
     <tr>
