@@ -27,7 +27,7 @@
 </table>
 
 <strong>1、数据库的新建</strong>
-      数据库都是通过工厂类Ocara\Core\DatabaseFactory的make()方法来实例化服务器连接对象。
+      数据库都是通过工厂类ocService()->databases（Ocara\Core\DatabaseFactory）的make()方法来实例化服务器连接对象。
       同一个服务器名仅在第一次实例化时才新建对象，工厂类会将其缓存起来。
               <span class="STYLE1">make([serverName, master, required])</span>
       参数说明：
@@ -52,7 +52,7 @@
 </table>
 <pre>
       实例如下；
-<pre class="brush: php;">$dbObj = \Ocara\Core\DatabaseFactory::make('bbs');
+<pre class="brush: php;">$dbObj = ocService()->databases->make('bbs');
 </pre>
 
 <strong>2、数据库的连接</strong>

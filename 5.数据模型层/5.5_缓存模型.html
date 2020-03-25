@@ -83,7 +83,7 @@ class VerifyCodeModel extends CacheModel
 </pre>
 
 <strong>3、直接使用缓存</strong>
-     直接使用缓存时，可以使用CacheFactory::make()来调用一个redis连接，默认是defaults。
+     直接使用缓存时，可以使用ocService()->caches（\Ocara\Core\CacheFactory）的make()来调用一个redis连接，默认是defaults。
            <span class="STYLE1"><strong>make(serverName)</strong></span>
      该方法只会在第一次调用时生成连接，以后每次调用都是同一个连接对象。
      参数说明：
@@ -138,10 +138,10 @@ return array(
 
 <pre class="brush: php;">
 //默认缓存
-$defaultCache = CacheFactory::make();
+$defaultCache = ocService()->caches->make();
 
 //redis_server1服务器
-$redisCache = CacheFactory::make('redis_server1');
+$redisCache = ocService()->caches->make('redis_server1');
 </pre>
 
 </pre></body>

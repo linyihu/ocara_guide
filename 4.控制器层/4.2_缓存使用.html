@@ -61,17 +61,16 @@ return array(
 );
 </pre>
       （2）调用缓存
-               调用缓存用\Ocara\Core\CacheFactory的make()方法。
+               调用缓存用ocService()->caches（\Ocara\Core\CacheFactory）的make()方法。
                比如上述配置的两个缓存，调用如下：
 
 <pre class="brush: php;">
-use Ocara\Core\CacheFactory;
 
 //调用默认的缓存（main）
-$mem = CacheFactory::make();
+$mem = ocService()->caches->make();
 
 //调用Redis缓存
-$redis = CacheFactory::make('redis1');
+$redis =ocService()->caches->make('redis1');
 </pre>
 
 <strong>3、缓存扩展</strong>
