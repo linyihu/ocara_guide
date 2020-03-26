@@ -26,13 +26,13 @@
          在事件处理机制中，有三个角色：
                   （1）触发事件的源对象：按钮的单击事件中，按钮就是觖发事件的源对象
                   （2）事件对象：按钮的单击这个事件可以定义为一个对象实例，用于面向对象化处理。
-                  （3）事件处理器：按钮的单击事件触发后要回调执行的每个操作，一般是以下几种。
-                           （a）回调函数
-                           （b）回调类方法
-                           （c）中间件类或对象
+                  （3）事件处理器：按钮的单击事件触发后要回调执行的每个操作，一般是以下2种。
+                           （a）回调函数或类的方法
+                           （b）类或对象，有中间件和事处理器资源包两种。
 
 <strong>二、注册和获取事件</strong>
-        使用本框架时，任何一个类只要继承自<span class="STYLE1">Ocara\Core\Base</span>，都可以使用本文说明的事件处理。
+        一个类要使用事件，必须继承<span class="STYLE1">Ocara\Core\Base</span>。
+		
 <pre class="brush: php;">
 class Test extends Ocara\Core\Base
 {}
@@ -83,8 +83,8 @@ class Test extends Ocara\Core\Base
 }
 </pre>
 <pre>
-<strong>三、给事件添加处理器</strong>
-        1、单个追加处理器
+<strong>三、添加事件的回调处理器</strong>
+        <strong>1、单个追加处理器</strong>
                 使用append()方法追加处理器。
                         <span class="STYLE1">append(callback[, name, priority])</span>
                 参数说明：
@@ -98,8 +98,8 @@ class Test extends Ocara\Core\Base
         <td>callback</td>
         <td>必填。回调的方法函数或类、对象。<br/>
         注：如果是类或对象，可以是以下两种：<br/>
-        （1）中间件类，继承自Base\Middleware，会回调它的handle()方法。<br/>
-        （2）包含与事件同名方法的类，会回调这个同名方法。
+        （1）可以是中间件类（放在support/Middleware）。继承自Base\Middleware，会回调它的handle()方法。<br/>
+        （2）可以是事件处理器包（放在support/Handlers）。包含与事件同名方法的类，会回调这个同名方法。
         </td>
     </tr>
     <tr>
@@ -112,7 +112,7 @@ class Test extends Ocara\Core\Base
     </tr>
 </table>
 
-                （1）回调函数或方法
+                <strong>（1）回调函数或方法</strong>
 
 <pre class="brush: php;">
 namespace app\services;
@@ -167,7 +167,7 @@ class OrderStatusLog extend Base
     }
 }
 </pre>
-                （2）回调中间件
+                <strong>（2）回调中间件</strong>
                         除此以外，框架还支持直接指定一个类或对象，然后回调它的handle()方法。
 
 <pre class="brush: php;">
@@ -181,7 +181,7 @@ class OrderStatusLog extend Base
 </pre>
                         这个对象类必须继承Ocara\Core\Middleware中间件基类。
                                 <span class="STYLE1">handle([args = null])</span>
-                        其中的参数为动态参数，对于PHP低版本需要给参数设置默认值。
+                        其中的参数为变动参数，对于低于PHP5.6版本需要给参数设置默认值，高版本需要下载高版本框架。
                         前面参数是每个事件调用时传递的自定义动态参数，最后两个参数$event和$eventTarget是必有的，分别表示事件对象和触发事件的源对象。
                         比如：handle($data = array(), $logData = array(), $event = null, $eventTarget = null)。
 
@@ -206,7 +206,7 @@ class OrderStatusLog extends Middleware
 }
 </pre>
 
-                （3）设置名称和优先级
+                <strong>（3）设置名称和优先级</strong>
                         注：事件处理器会按照优先级降序、添加顺序升序执行。
 
 <pre class="brush: php;">
@@ -218,7 +218,7 @@ class OrderStatusLog extends Middleware
     }
 </pre>
 
-        2、批量或分组追加处理器
+        <strong>2、批量或分组追加处理器</strong>
                 使用appendAll()可以批量添加处理器，每个数组元素和append()参数保持一致。
                 使用append()方法追加处理器。
                         <span class="STYLE1">appendAll(callbackList[, groupName, priority])</span>
@@ -271,7 +271,7 @@ class OrderStatusLog extends Middleware
     }
 </pre>
 
-        3、设置默认处理器
+        <strong>3、设置默认处理器</strong>
                 还可以用setDefault()来设置一个默认处理器，当调用append()方法时会被覆盖掉。
                         <span class="STYLE1">setDefault(callback)</span>
 
@@ -295,9 +295,9 @@ class OrderStatusLog extends Middleware
     }
 </pre>
 
-<strong>四、绑定事件处理器包</strong>
-        使用事件源对象的bindEventHandler()方法可以绑定一个处理器包对象，它包含了与所有事件同名的方法函数。相当于批量添加回调函数。
-        这些事件处理器包对象，应该放在support/Handlers目录中，除非绑定的是事件源对象自身。
+<strong>四、绑定源对象的事件处理器包</strong>
+        事件源对象的bindEventHandler()方法可以绑定一个事件处理器资源包对象，它包含了与所有事件同名的方法函数。相当于批量添加回调函数。
+        这些事件处理器包对象，应该放在support/Handlers目录中，并且以类文件和类名要以Handler结尾，除非绑定的是事件源对象自身。
         比如：实体模型Entity有一些beforeCreate()、afterCreate()等事件处理函数，其实就是将自身作为处理器包进行了绑定。
                 <span class="STYLE1">bindEventHandler(eventHandler)</span>
 
@@ -378,7 +378,7 @@ $user->show('user1');
 <strong>五、修改、删除处理器</strong>
         上述介绍了添加处理器，还可以修改、删除处理器。可以使用名称和序号来指定处理器。
         有以下方法：
-                （1）get(name)：获取某个处理器。其中name是定义的名称或者序号；
+                （1）get([name])：获取某个处理器。其中name是定义的名称或者序号，如果不传该参数，会返回所有处理器列表。
 
 <pre class="brush: php;">
     public function registerEvents()
@@ -399,7 +399,7 @@ $user->show('user1');
              ->get(2); //获取第2个处理器
     }
 </pre>
-                （2）has(name)：检测是否存在某个处理器。name参数类似；
+                （2）has([name])：检测是否存在某个处理器。name为处理器名称，如果不传，会检测当前处理器列表是否为空，非空为true。
 
 <pre class="brush: php;">
 //检测是否存在处理器order_status_log

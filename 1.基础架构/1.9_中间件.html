@@ -21,34 +21,115 @@
 <pre><h2>1.9 中间件</h2>
 
 <strong>1、什么是中间件？</strong>
+        我们听过消息中间件、远程调用中间件等概念，中间件的概念暂无一个确切的定义，但是它的特点很明朗。
+        在Ocara中，中间件是业务层与底层服务之间完成某一项特殊功能的处理器或拦截器，它不会直接接触用户，是切面编程模式的应用。
+        与其他框架不同的是，Ocara的中间件一般是由事件触发的，当然也可以手动直接调用。所以可以将中间件理解为具有统一协议的回调函数。
+		
+<strong>2、中间件与回调函数的区别</strong>
+        （1）简单的业务可以用事件的回调函数，它强烈依赖于对该事件的业务处理，不过多考虑可复用性。
+        （2）比较复杂的业务功能如果重在复用性，可以将其抽出来作为中间件开发，更多考虑可复用性。
 
-        Ocara中，中间件是由事件触发的，是业务层与底层程序间系统化地完成某一项特殊功能的处理器或拦截器，主要目的是解耦。
-        当然，中间件也可以手动直接调用。
-
-<strong>2、如何新建中间件？</strong>
+<strong>3、创建中间件</strong>
 
         中间件一般放在support/Middleware目录中，需要继承自Base\Middleware，最上层继承自Ocara\Core\Middleware基类。
-
+        中间件需要实现Ocara\Interfaces\Middleware接口，它的父类一般都作了实现。
+        它必须实现<span class="STYLE1">handle()</span>方法，作为上层调用的入口，其参数是不固定的。
+        低于PHP5.6版本需要对每个参数添加默认值，高于5.6版本需要下载高版本的框架才能用... $args变长参数语法。
+        实例如下：
+               比如以下在路由分发前增中AuthMiddleware中间件的拦截。
+		
 <pre class="brush: php;">
+
 namespace Middleware;
 
 use Base\Middleware;
+use Ocara\Core\Event;
 
 class AuthMiddleware extends Middleware
 {
     /**
-     * 处理
+     * @param array $route
      * @param array $args
-     * @return mixed
+     * @param Event $event
+     * @param object $eventSource
+     * @return mixed|void
      */
-    public function handle($args = array())
+    public function handle($route = array(), $args = array(), $event = null, $eventSource = null)
     {
+	    if (!$this->authCheck($route)) {
+		    ocService()->error->show('权限不够！');
+		}
+        
+    }
+	
+	/**
+     * @param array $route
+     * @return bool
+     */
+	public function authCheck($route)
+	{
+	    // ... ...
+		return false;
+	}
+}
+</pre>
+               在应用启动回调事件中设置路由分发事件：
+		
+<pre class="brush: php;">
+
+namespace Handlers;
+
+use Ocara\Core\Base;
+use Ocara\Dispatchers\Common as CommonDispatcher;
+use Middleware\AuthMiddleware;
+
+/**
+ * 应用启动事件处理器包
+ * Class BootstrapHandler
+ * @package Handlers
+ */
+class BootstrapHandler extends Base
+{
+    public function beforeBootstrap()
+    {
+        //路由分发前置事件
+        CommonDispatcher::eventBeforeDispatch()
+            ->append(new AuthMiddleware(), 'auth_check'); //调用AuthMiddleware中间件进行权限过滤
     }
 }
 </pre>
+               在应用启动回调事件中设置路由分发事件：
+<pre class="brush: php;">
+	/*
+	 * 应用启动事件
+	 */
+	'bootstrap' => array(
+		//应用启动前回调
+		'before_bootstrap' => array(
+			'Handlers\BootstrapHandler'
+		), 
+	),
+</pre>
+              或者，直接配置路由分发事件：
+		
+<pre class="brush: php;">
+        /*
+         * 路由分发事件
+         */
+        'dispatch' => array(
+            //路由分发前回调
+            'before_dispatch' => array(
+			    'Middleware\AuthMiddleware'
+			),
+
+            //路由分发后回调
+            'after_dispatch' => array(),
+        ),
+</pre>
 
 <strong>3、中间件分组</strong>
-        在事件添加处理器时，可以通过<span class="STYLE1">appendAll(中间件列表, 分组名称)</span>添加分组处理器分组。请参考<a href="1.7_事件回调.html">1.7_事件回调</a>的批量或分组追加处理器一节。
+        在事件添加处理器时，可以通过<span class="STYLE1">appendAll(中间件列表, 分组名称)</span>添加分组处理器分组。
+        请参考<a href="1.7_事件回调.html">1.7_事件回调</a>的批量或分组追加处理器一节。
 
 </pre>
 </body></html>

@@ -24,8 +24,8 @@
        在有些地方，我们需要通过事件的回调函数获取一些数据，这种称为资源提供器。
 
 <strong>二、使用方法</strong>
-        事件的回调处理函数可以添加多个，但是作为资源提供器时，只需要一个回调函数。
-        这时只要使用事件的resource()方法声明为资源事件即可。
+        虽然可以为事件添加无限个回调处理器，但用于资源提供器的事件当且仅当只需添加一个。
+        只要使用事件的resource()方法声明为资源事件，会永远只使用第一个处理器，除非使用clear()清理后重新添加。
               <span class="STYLE1">resource([isResource])</span>
 
 <table>
@@ -35,7 +35,7 @@
 	</tr>
 		<tr>
 		<td>isResource</td>
-		<td>可选。指定是否为资源事件。</td>
+		<td>可选。指定是否为资源提供器事件。</td>
 	</tr>
 </table>
 
@@ -58,7 +58,9 @@ class OneCache extends Resource
     public function connect(serverName)
     {
         //资源事件触发
-        $config = $this->fire(self::EVENT_GET_CONFIG, array($serverName)); 
+		if ($result = $this->fire(self::EVENT_GET_CONFIG, array($serverName))) {
+		    $config = $result;
+		}
         
         // 这里写其他代码 ... ...
     }
@@ -67,7 +69,7 @@ class OneCache extends Resource
 </pre>
 
 <strong>三、资源提供器配置</strong>
-        类似于事件配置。资源提供器可以在resource.php中配置。目前框架默认提供了几个配置。
+        不同于部分普通的事件回调是在events.php中配置。资源提供器是在resource.php中配置。目前框架默认提供了几个配置。
         比如缓存配置获取资源提供器的配置：
 
 <pre class="brush: php;">

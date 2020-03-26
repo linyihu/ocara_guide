@@ -23,8 +23,8 @@ HHC3004: Warning: 1.3_领域驱动设计.html : The HTML tag "=', 30)    -" is not a v
 1.基础架构\1.4_类的自动加载.html
 1.基础架构\1.5_依赖注入容器.html
 1.基础架构\1.6_服务提供器.html
-1.基础架构\1.7_资源提供器.html
-1.基础架构\1.8_事件回调.html
+1.基础架构\1.7_事件回调.html
+1.基础架构\1.8_资源提供器.html
 1.基础架构\1.9_中间件.html
 2.开发者中心\2.1_开发者中心介绍.html
 2.开发者中心\2.2_添加模块.html
@@ -275,12 +275,12 @@ treeview\ready.js
 TOC-Created-By-Easy-CHM.HHC
 Index-Created-By-Easy-CHM.HHK
 
-Compile time: 0 minutes, 3 seconds
+Compile time: 0 minutes, 4 seconds
 108	Topics
 435	Local links
 1	Internet link
 0	Graphics
 
 
-Created d:\wwwroot\Ocara 2.0手册.CHM, 1,914,307 bytes
-Compression decreased file by 941,656 bytes.
+Created d:\wwwroot\Ocara 2.0手册.CHM, 1,914,221 bytes
+Compression decreased file by 941,836 bytes.
