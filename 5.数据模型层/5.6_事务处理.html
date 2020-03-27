@@ -156,7 +156,8 @@ if (!$result) {
 
     （1）嵌套事务原理
              事务管理器使用事务计数器进行多级事务管理。
-             只有计数器为0时也就是最后一个commit()才是真正的数据库事务提交，其他的都是计数器增减而已。
+             （a）只有计数器为0时也就是最后一个commit()才是真正的数据库事务提交，其他的都是计数器递减而已。
+             （b）只要有一个rollback()执行了，到最后结束事条是都不会commit()。
 
     （2）跨服务器事务原理
              事务管理器保存了数据库服务器连接，因此支持跨服务器事务处理。
@@ -173,50 +174,69 @@ use Base\BaseService;
 
 class UserService extends BaseService
 {
+     /**
+     * 入口
+     */
     public function handle()
     {
-        $transaction = ocService()->transaction;
-
         //一级事务开始（计数器+1，由0变为1）（没有数据库操作也可以）
-        $transaction->begin(); //或者使用
+        ocService()->transaction->begin(); //或者使用
 
-        //二级事务开始（计数器+1，变为2）
-        $transaction->begin();
+        $usersEntity = UsersEntity::build()->select(53290);
+        $usersEntity->avatar = 'test';
+        $usersEntity->save();
 
-            $usersEntity = UsersEntity::build()->select(53290);
-            $usersEntity->avatar = 'test';
-            $usersEntity->save();
-
-            //三级事务开始（计数器+1，变为3）
-            $this->transaction->begin();
-
-                $verifyEntity = new UsersVerifyEntity();
-                $verifyEntity->verify_status = 2;
-                $verifyEntity->pushTransaction();  //也可以手动提前推入事务池
-                $verifyResult = $verifyEntity->save();
-
-                $moneyEntity = new UserMoneyEntity();
-                $moneyEntity->money = 100;
-                $moneyResult = $moneyEntity->save();
-
-                if (!$verifyResult) {
-                    $transaction->rollback(); //事务回滚（添加回滚标记）
-                    ocService()->error->show('用户实名认证添加失败！');
-                }
-
-                if (!$moneyResult) {
-                    $transaction->rollback(); //事务回滚（添加回滚标记）
-                    ocService()->error->show('用户金额添加失败！');
-                }
-
-            //三级事务提交（提交成功后计数器-1，为2）
-            $transaction->commit();
-
-        //二级事务提交（提交成功后计数器-1，为1）
-        $transaction->commit();
+        //二级事务
+        $this->subTransaction();
 
         //一级事务提交（计数器为1，真正提交事务）
-        $transaction->commit();
+        ocService()->transaction->commit();
+    }
+
+    /**
+     * 二级子事务操作
+     */
+    public function subTransaction()
+    {
+        //二级事务开始（计数器+1，变为2）
+        ocService()->transaction->begin();
+
+        $verifyEntity = new UsersVerifyEntity();
+        $verifyEntity->verify_status = 2;
+        $verifyEntity->pushTransaction();  //也可以手动提前推入事务池
+        $verifyResult = $verifyEntity->save();
+
+         if (!$verifyResult) {
+            $transaction->rollback(); //事务回滚（添加回滚标记）
+            ocService()->error->show('用户实名认证添加失败！');
+        }
+
+        //三级事务
+        $this->subTransaction();
+
+        //二级事务提交（提交成功后计数器-1，为1）
+        ocService()->transaction->commit();
+    }
+
+    /**
+     * 三级子事务操作
+     */
+    public function subTransaction2()
+    {
+        //三级事务开始（计数器+1，变为3）
+        ocService()->transaction->begin();
+
+        $moneyEntity = new UserMoneyEntity();
+        $moneyEntity->money = 100;
+        $moneyResult = $moneyEntity->save();
+
+        if (!$moneyResult) {
+            $transaction->rollback(); //事务回滚（添加回滚标记）
+            ocService()->error->show('用户金额添加失败！');
+        }
+
+        //三级事务提交（提交成功后计数器-1，为2）
+        ocService()->transaction->commit();
     }
 }
 </pre>
