@@ -105,7 +105,7 @@ class BootstrapHandler extends Base
 	 */
 	'bootstrap' => array(
 		//应用启动前回调
-		'before_bootstrap' => array(
+		'beforeBootstrap' => array(
 			'Handlers\BootstrapHandler'
 		), 
 	),
@@ -118,12 +118,12 @@ class BootstrapHandler extends Base
          */
         'dispatch' => array(
             //路由分发前回调
-            'before_dispatch' => array(
+            'beforeDispatch' => array(
 			    'Middleware\AuthMiddleware'
 			),
 
             //路由分发后回调
-            'after_dispatch' => array(),
+            'afterDispatch' => array(),
         ),
 </pre>
 

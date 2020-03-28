@@ -55,13 +55,13 @@
       （2）自定义表单令牌的加密算法
                框架对表单令牌的加密一般是md5()函数加密的，其中必须包括<span class="STYLE1">当前路由 + 随机数</span>，否则会出现验证问题。
                如果要自定义加密算法，要在application/config/resource.php配置文件中配置回调函数。
-               默认选项是如下generate_token：
+               默认选项是如下generateToken：
 <pre class="brush: php;">
         /*
          * 表单使用
          */
         'form' => array(
-            'generate_token' => '', //表单令牌加密事件回调
+            'generateToken' => '', //表单令牌加密事件回调
         ),
 </pre>
 

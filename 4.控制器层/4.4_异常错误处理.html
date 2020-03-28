@@ -136,9 +136,9 @@ ocService()->error->show('路径检查出错！');
          */
         'error' => array(
             'report' => array('Events\Callbacks\ErrorReport'), //日志打印回调
-            'before_output' => array(), //打印错误前回调
+            'beforeOutput' => array(), //打印错误前回调
             'output' => array(), //打印错误回调
-            'after_output' => array(), //打印错误后回调
+            'afterOutput' => array(), //打印错误后回调
         ),
 </pre>
         看以上代码释应该可以明白每个事件回调使用场景。
@@ -165,7 +165,7 @@ class ErrorReport extends Middleware
                 用于打印日志。框架默认打印在/runtime/logs/common目录下面。
                 对应事件名称为Ocara\Core\ExceptionHandler::EVENT_REPORT常量。
 
-        （2）before_output事件回调
+        （2）beforeOutput事件回调
                 用户在输出错误前的一些操作，比如修改内容和格式。
                 对应事件名称为Ocara\Core\ExceptionHandler::EVENT_BEFORE_OUTPUT常量。
 
@@ -173,7 +173,7 @@ class ErrorReport extends Middleware
                 这里替换掉框架底层提供的错误输出操作，开发者可以将期跳转到某个控制器动作或者直接回调某个类方法执行。
                 对应事件名称为Ocara\Core\ExceptionHandler::EVENT_OUTPUT常量。
 
-        （2）after_output事件回调
+        （2）afterOutput事件回调
                 用户在输出错误结束以后的一些操作。
                 对应事件名称为Ocara\Core\ExceptionHandler::EVENT_AFTER_OUTPUT常量。
 

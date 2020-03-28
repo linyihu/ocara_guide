@@ -183,14 +183,14 @@ class DatabaseConfig extends Resource
 		return $config;
 	}
 }</pre>
-            然后，在resource.php配置文件中修改database的get_config选项：
+            然后，在resource.php配置文件中修改database的getConfig选项：
 
 <pre class="brush: php;">
 /*
  * 数据库相关
  */
 'database' => array(
-	'get_config' => 'Resource\DatabaseConfig', //获取数据库配置
+	'getConfig' => 'Resource\DatabaseConfig', //获取数据库配置
 ),
 </pre>
 

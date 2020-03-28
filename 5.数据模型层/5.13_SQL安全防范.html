@@ -78,15 +78,15 @@
     ),
 </pre>
                  如果不希望只是首尾加上字符，可以使用Ocara\Core\Filter类的SQL过滤事件。
-                 需要配置application/config/events.php的EVENTS的filters的sql_keywords_filter项。
+                 需要配置application/config/events.php的EVENTS的filters的sqlKeywordsFilter项。
 
 <pre class="brush: php;">
         /**
          * 安全过滤事件
          */
         'filters' => array(
-            'sql_keywords_filter' => array('EVENTS\SqlFilter'), //SQL关键字过滤回调，必须返回值
-            'script_keywords_filter' => array(), //前端脚本关键字过滤回调，必须返回值
+            'sqlKeywordsFilter' => array('EVENTS\SqlFilter'), //SQL关键字过滤回调，必须返回值
+            'scriptKeywordsFilter' => array(), //前端脚本关键字过滤回调，必须返回值
         ),
 </pre>
                  下面是示例代码：

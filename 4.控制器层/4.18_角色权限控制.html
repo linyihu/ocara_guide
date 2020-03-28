@@ -237,15 +237,15 @@ $result = $auth->check(array('role1', 'role2'), 1); //1为路由记录ID
 
 2、事件配置
       检测权限时，需要在路由分发前置事件回调函数中进行。
-      具体配置在events.php中修改before_dispatch选项。
+      具体配置在events.php中修改beforeDispatch选项。
 </pre>
 <pre class="brush: php;">
 	/*
 	 * 路由分发事件
 	 */
 	'dispatch' => array(
-		'before_dispatch' => array('Events\BeforeDispatch'), //路由分发前回调
-		'after_dispatch' => array('Events\AfterDispatch'), //路由分发后回调
+		'beforeDispatch' => array('Events\BeforeDispatch'), //路由分发前回调
+		'afterDispatch' => array('Events\AfterDispatch'), //路由分发后回调
 	),
 </pre>
 <pre>

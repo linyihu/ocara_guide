@@ -43,13 +43,13 @@
               （g）多运行环境配置
                        本框架提供了多运行环境配置env目录，默认提供了local（本地环境）、develop（开发环境）、alpha（测试环境）和production（生产环境）四个配置文件。
                      <img src="../style/images/环境配置.png" width="600"/>
-                      对于运行环境的获取，框架提供了资源回调的方式，修改resource.php中的env的get_env配置即可。
+                      对于运行环境的获取，框架提供了资源回调的方式，修改resource.php中的env的getEnv配置即可。
 <pre class="brush: php;">
         /**
          * 运行环境配置
          */
         'env' => array(
-            'get_env' => 'Callbacks\GetEnvironment', //获取环境类型事件回调
+            'getEnv' => 'Callbacks\GetEnvironment', //获取环境类型事件回调
         ),
 </pre>
                       其中support下的Callbacks\GetEnvironment类代码，如下实例：

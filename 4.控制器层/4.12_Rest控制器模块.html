@@ -65,6 +65,50 @@
         <strong>（4）增加更多URL参数</strong>
                 如果要增加更多URL参数，请使用“?参数名=参数值”格式，比如：http://localhost/user/123?limit=100&fields=id,name。
 
+        <strong>（5）修改HTTP请求方式判断</strong>
+                HTTP请求方式一般是使用$_SERVER['REQUEST_METHOD']来获取。
+                如果要自定义判断方式，可以使用Ocara\Core\Request对象的afterGetMethod事件的资源提供器，对应常量EVENT_AFTER_GET_METHOD。
+                配置是application/resource.php中的request的afterGetMethod。
+                比如配置如下：
+
+<pre class="brush: php;">
+        /*
+         * 请求处理
+         */
+        'request' => array(
+            'afterGetMethod' => 'Handlers\RequestHandler', //获取请求方法后回调
+        ),
+</pre>
+
+                在support/Handlers增加处理器包的类文件Handlers/RequestHandler.php，代码如下：
+
+<pre class="brush: php;">
+
+namespace Handlers;
+
+use Ocara\Core\Base;
+use Ocara\Core\Event;
+
+class RequestHandler extends Base
+{
+    /**
+     * 获取HTTP方式后置事件处理
+     * @param $method
+     * @param $event
+     * @param $eventTarget
+     * @return mixed
+     */
+    public function afterGetMethod($method, Event $event, $eventTarget)
+    {
+        if (!empty($_GET['_method'])) {
+            $method = $_GET['_method'];
+        }
+
+        return $method;
+    }
+}
+</pre>
+
 <strong>3、如何自定义返回数据格式</strong>
         Rest控制器继承于Api控制器，返回数据格式和AJAX一致，请参考<a href="4.9_Ajax处理.html">4.9_Ajax处理</a>中的第四点。
         如果要修改返回格式，同样使用beforeRender()事件。
