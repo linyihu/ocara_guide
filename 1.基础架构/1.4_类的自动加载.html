@@ -49,7 +49,19 @@
        （3）第三方程序或者自定义的加载机制
               一些第三方程序或者我们自己都可通过spl_autoload_register()来指定自己的加载机制。符合这些规则的类受其定义，不会从support目录加载。
 
-<strong>3、第三方程序是否与框架的自动加载类函数冲突？</strong>
+<strong>3、添加新的命名空间</strong>
+    要增加新的命名空间，只要修改application/system.php中的NEW_NAMESPACE_MAPS。
+
+<pre class="brush: php;">
+    /*
+     * 添加新的命名空间
+     */
+    'NEW_NAMESPACE_MAPS' => array(
+        'Test' => ocPath('support', 'TestNamespace/Test'), //support/TestNamespace/Test目录
+    ),
+</pre>
+
+<strong>4、第三方程序是否与框架的自动加载类函数冲突？</strong>
         本框架的自动加载，一般不会与其他第三方程序的自动加载冲突。因为框架如果检测类不存在，会自动遍历所有其他注册的类自动加载函数。
 
 </pre>

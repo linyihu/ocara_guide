@@ -18,7 +18,7 @@
         注意：命令模块（console）不需要建立Restful控制器。
 
 <strong>2、如何配置路由</strong>
-        （1）配置说明
+        <strong>（1）配置说明</strong>
                 框架默认的rest路由配置如下：
 <pre class="brush: php;">
 /*
@@ -55,8 +55,15 @@
                         （2）content_type，指定RESTFUL返回结果的数据类型，小写，默认为json。
                         （3）action_map，指定路由映射方式。带“/id”表示需要带上ID参数。
                         （4）success_code_map，指定请求成功后返回的HTTP状态码。
-        （2）修改配置
+
+        <strong>（2）修改配置</strong>
                 如果要修改Rest路由，只要在system.php中修改相关KEY即可。
+
+        <strong>（3）关于版本号</strong>
+                如果有版本号，请新增模块，以模块名区分版本号。或者增加更多URL参数。
+
+        <strong>（4）增加更多URL参数</strong>
+                如果要增加更多URL参数，请使用“?参数名=参数值”格式，比如：http://localhost/user/123?limit=100&fields=id,name。
 
 <strong>3、如何自定义返回数据格式</strong>
         Rest控制器继承于Api控制器，返回数据格式和AJAX一致，请参考<a href="4.9_Ajax处理.html">4.9_Ajax处理</a>中的第四点。
