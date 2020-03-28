@@ -56,16 +56,13 @@
                         （3）action_map，指定路由映射方式。带“/id”表示需要带上ID参数。
                         （4）success_code_map，指定请求成功后返回的HTTP状态码。
 
-        <strong>（2）修改配置</strong>
-                如果要修改Rest路由，只要在system.php中修改相关KEY即可。
-
-        <strong>（3）关于版本号</strong>
+        <strong>（2）关于版本号</strong>
                 如果有版本号，请新增模块，以模块名区分版本号。或者增加更多URL参数。
 
-        <strong>（4）增加更多URL参数</strong>
+        <strong>（3）增加更多URL参数</strong>
                 如果要增加更多URL参数，请使用“?参数名=参数值”格式，比如：http://localhost/user/123?limit=100&fields=id,name。
 
-        <strong>（5）修改HTTP请求方式判断</strong>
+        <strong>（4）修改HTTP请求方式判断</strong>
                 HTTP请求方式一般是使用$_SERVER['REQUEST_METHOD']来获取。
                 如果要自定义判断方式，可以使用Ocara\Core\Request对象的afterGetMethod事件的资源提供器，对应常量EVENT_AFTER_GET_METHOD。
                 配置是application/resource.php中的request的afterGetMethod。
@@ -79,7 +76,6 @@
             'afterGetMethod' => 'Handlers\RequestHandler', //获取请求方法后回调
         ),
 </pre>
-
                 在support/Handlers增加处理器包的类文件Handlers/RequestHandler.php，代码如下：
 
 <pre class="brush: php;">
