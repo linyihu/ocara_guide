@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>1.23 多环境配置</title>
+<script type="text/javascript" src="../syntax/scripts/shCore.js"></script>
+<script type="text/javascript" src="../syntax/scripts/shBrushPhp.js"></script>
+<link type="text/css" rel="stylesheet" href="../style/base.css" />
+<link type="text/css" rel="stylesheet" href="../syntax/styles/shCoreDefault.css"/>
+<script type="text/javascript" src="../treeview/base.js"></script>
+	<style type="text/css">
+		<!--
+		.STYLE1 {
+			color: #0000FF;
+			font-weight: bold;
+		}
+		-->
+	</style>
+</head>
+
+<body>
+<pre><h2>1.23 多环境配置</h2>
+
+<strong>  1、多环境配置</strong>
+       为了让本地、开发、测试和生产环境的部分配置不同，可采用多环境配置。
+	   
+<strong>  2、环境的指定</strong>
+       （1）配置环境变量
+              指定当前是哪个运行环境，除了使用操作系统的环境变量，或者类似nginx增加自定义环境变量，比较方便的在php.ini增加自定义配置选项。
+              比如在php.ini中增加local.env选项：local.env=local。可以定义为local，表示本地环境。
+              然后我们可以在php代码中使用<strong>get_cfg_var('local.env')</strong>获取。
+
+       （2）使用环增变量
+              在index.php中定义一个常量LOCAL_ENV。
+
+<pre class="brush: php;">
+defined('LOCAL_ENV') OR define('LOCAL_ENV', get_cfg_var('local.env') ?: 'local');\
+</pre>
+
+              新建一个处理器包文件support/Handlers/EnvironmentHandler.php，作为环境变量资源提供器。
+
+<pre class="brush: php;">
+namespace Handlers;
+
+use Ocara\Core\Base;
+
+class EnvironmentHandler extends Base
+{
+    public function getEnvironment()
+    {
+        return LOCAL_ENV;
+    }
+}
+</pre>
+              然后，在application的resource.php中配置资源提供器调用：
+<pre class="brush: php;">
+        /*
+         * 运行环境配置
+         */
+        'env' => array(
+            'getEnv' => 'Handlers\EnvironmentHandler', //获取环境类型回调
+        ),
+</pre>
+
+<strong>3、环境的不同配置</strong>
+       在框架新建应用时，自动在application/env目录新增了local、develop、alpha和production配置文件。
+       在其中添加要修改的配置即可，文件名称必须与环境变量名称一样。
+       比如，local.php可以这样配置local（本地环境）的域名：
+
+<pre class="brush: php;">
+return array(
+    'WEB_HOST' => 'localhost',
+);
+</pre>
+
+</pre>
+</body>
+</html>
